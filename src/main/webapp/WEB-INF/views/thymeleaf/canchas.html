@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Canchas</title>
+    <link rel="stylesheet" th:href="@{/webjars/bootstrap/5.2.0/css/bootstrap.min.css}">
+</head>
+<body class="container mt-5">
+    <h1>Reservar Canchas</h1>
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th>Nombre</th>
+                <th>Disponibilidad</th>
+                <th>Acción</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr th:each="cancha : ${canchas}">
+                <td th:text="${cancha.nombre}"></td>
+                <td>
+                    <span th:text="${cancha.disponible ? 'Disponible' : 'Reservada'}"></span>
+                </td>
+                <td>
+                    <form th:if="${cancha.disponible}" 
+                          th:action="@{/canchas/reservar/{id}(id=${cancha.id})}" method="post">
+                        <button class="btn btn-success">Reservar</button>
+                    </form>
+                    <form th:if="${!cancha.disponible}" 
+                          th:action="@{/canchas/cancelar/{id}(id=${cancha.id})}" method="post">
+                        <button class="btn btn-danger">Cancelar</button>
+                    </form>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</body>
+</html>
