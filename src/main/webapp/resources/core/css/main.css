@@ -5,6 +5,16 @@ body {
   padding: 3rem 1.5rem;
   text-align: center;
 }
+.horario-item {
+  display: inline-block;
+  margin: 5px;
+  padding: 8px 12px;
+  border-radius: 5px;
+}
+.horario-disponible {
+  background-color: #d4edda;
+  border: 1px solid #c3e6cb;
+}
 
 h1{
 	color:#0000FF;

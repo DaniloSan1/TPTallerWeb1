@@ -10,8 +10,8 @@ public class ServicioCanchaImpl implements ServicioCancha {
     private List<Cancha> canchas = new ArrayList<>();
 
 public ServicioCanchaImpl() {
-    canchas.add(new Cancha(1L, "Cancha 1", true));
-    canchas.add(new Cancha(2L, "Cancha 2", true));
+    canchas.add(new Cancha(1L, "Cancha 1", "5x5"));
+    canchas.add(new Cancha(2L, "Cancha 2", "7x7"));
 }
 
 @Override
@@ -19,20 +19,20 @@ public List<Cancha> obtenerCancha() {
     return canchas;
 }
 @Override
-public boolean reservarCancha(Long id) {
+public boolean reservarCancha(Long id, String horario, String usuario) {
     for (Cancha cancha : canchas) {
         if (cancha.getId().equals(id)) {
-            cancha.setDisponible(false);
+            cancha.reservar(horario, usuario);
             return true;
         }
     }
     return false;
 }
 @Override
-public boolean cancelarCancha(Long id) {
+public boolean cancelarCancha(Long id, String horario) {
     for (Cancha cancha : canchas) {
         if (cancha.getId().equals(id)) {
-            cancha.setDisponible(true);
+            cancha.cancelar(horario);
             return true;
         }
     }

@@ -23,13 +23,13 @@ public class ControladorCancha {
         return "canchas";
     }
     @PostMapping("/reservar/{id}")
-    public String reservarCancha(@PathVariable Long id) {
-        servicioCancha.reservarCancha(id);
+    public String reservarCancha(@PathVariable Long id, String horario, String usuario) {
+        servicioCancha.reservarCancha(id, horario, usuario);
         return "redirect:/canchas";
     }
     @PostMapping("/cancelar/{id}")
-    public String cancelarCancha(@PathVariable Long id) {
-        servicioCancha.cancelarCancha(id);
+    public String cancelarCancha(@PathVariable Long id, String horario) {
+        servicioCancha.cancelarCancha(id, horario);
         return "redirect:/canchas";
     }
 }
