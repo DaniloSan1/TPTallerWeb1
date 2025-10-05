@@ -1,14 +1,29 @@
 package com.tallerwebi.dominio;
 
+import javax.persistence.*;
+
+@Entity
 public class Cancha {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String nombre;
-    private Boolean disponible;
+    private Integer capacidad;
+    private String tipoSuelo;
+    private Boolean disponible = true;
+    @Enumerated(EnumType.STRING)
+    private Zona zona;
 
-    public Cancha(Long id, String nombre, Boolean disponible) {
-        this.id = id;
+    // Constructor por defecto para JPA
+    public Cancha() {
+    }
+
+    public Cancha(String nombre, Boolean disponible, Integer capacidad, String tipoSuelo, Zona zona) {
         this.nombre = nombre;
         this.disponible = disponible;
+        this.capacidad = capacidad;
+        this.tipoSuelo = tipoSuelo;
+        this.zona = zona;
     }
 
     public Long getId() {
@@ -25,6 +40,30 @@ public class Cancha {
 
     public void setNombre(String nombre) {
         this.nombre = nombre;
+    }
+
+    public Integer getCapacidad() {
+        return capacidad;
+    }
+
+    public void setCapacidad(Integer capacidad) {
+        this.capacidad = capacidad;
+    }
+
+    public String getTipoSuelo() {
+        return tipoSuelo;
+    }
+
+    public void setTipoSuelo(String tipoSuelo) {
+        this.tipoSuelo = tipoSuelo;
+    }
+
+    public Zona getZona() {
+        return zona;
+    }
+
+    public void setZona(Zona zona) {
+        this.zona = zona;
     }
 
     public Boolean getDisponible() {
