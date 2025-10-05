@@ -16,8 +16,16 @@ public class Usuario {
     private String email;
     private String password;
     private String rol;
+    private String posicionFavorita;
     private Boolean activo = false;
 
+    public String getPosicionFavorita() {
+        return posicionFavorita;
+    }
+
+    public void setPosicionFavorita(String posicionFavorita) {
+        this.posicionFavorita = posicionFavorita;
+    }
 
     public String getNombre() {
         return nombre;
