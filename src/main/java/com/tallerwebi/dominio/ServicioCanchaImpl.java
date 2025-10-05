@@ -9,33 +9,35 @@ import java.util.List;
 public class ServicioCanchaImpl implements ServicioCancha {
     private List<Cancha> canchas = new ArrayList<>();
 
-public ServicioCanchaImpl() {
-    canchas.add(new Cancha(1L, "Cancha 1", true));
-    canchas.add(new Cancha(2L, "Cancha 2", true));
-}
+    public ServicioCanchaImpl() {
+        canchas.add(new Cancha("Cancha 1", true, 5, "Césped", Zona.OESTE));
+        canchas.add(new Cancha("Cancha 2", true, 7, "Césped", Zona.NORTE));
+    }
 
-@Override
-public List<Cancha> obtenerCancha() {
-    return canchas;
-}
-@Override
-public boolean reservarCancha(Long id) {
-    for (Cancha cancha : canchas) {
-        if (cancha.getId().equals(id)) {
-            cancha.setDisponible(false);
-            return true;
-        }
+    @Override
+    public List<Cancha> obtenerCancha() {
+        return canchas;
     }
-    return false;
-}
-@Override
-public boolean cancelarCancha(Long id) {
-    for (Cancha cancha : canchas) {
-        if (cancha.getId().equals(id)) {
-            cancha.setDisponible(true);
-            return true;
+
+    @Override
+    public boolean reservarCancha(Long id) {
+        for (Cancha cancha : canchas) {
+            if (cancha.getId().equals(id)) {
+                cancha.setDisponible(false);
+                return true;
+            }
         }
+        return false;
     }
-    return false;
-}
+
+    @Override
+    public boolean cancelarCancha(Long id) {
+        for (Cancha cancha : canchas) {
+            if (cancha.getId().equals(id)) {
+                cancha.setDisponible(true);
+                return true;
+            }
+        }
+        return false;
+    }
 }
