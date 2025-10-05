@@ -21,6 +21,17 @@ public class Usuario {
     private Double calificacionPromedio = 0.0;
     private Integer totalCalificaciones = 0;
 
+    public Usuario() {
+    }
+
+    public Usuario(String nombre, String password, String email) {
+        this.nombre = nombre;
+        this.password = password;
+        this.email = email;
+        this.rol = "ROLE_USER";
+        this.activo = true;
+    }
+
     public String getPosicionFavorita() {
         return posicionFavorita;
     }
