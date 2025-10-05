@@ -6,9 +6,7 @@ import com.tallerwebi.dominio.excepcion.UsuarioExistente;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
@@ -25,7 +23,6 @@ public class ControladorLogin {
 
     @RequestMapping("/login")
     public ModelAndView irALogin() {
-
         ModelMap modelo = new ModelMap();
         modelo.put("datosLogin", new DatosLogin());
         return new ModelAndView("login", modelo);
@@ -38,6 +35,11 @@ public class ControladorLogin {
         Usuario usuarioBuscado = servicioLogin.consultarUsuario(datosLogin.getEmail(), datosLogin.getPassword());
         if (usuarioBuscado != null) {
             request.getSession().setAttribute("ROL", usuarioBuscado.getRol());
+            request.getSession().setAttribute("EMAIL", usuarioBuscado.getEmail());
+            request.getSession().setAttribute("NOMBRE", usuarioBuscado.getNombre());
+            request.getSession().setAttribute("APELLIDO", usuarioBuscado.getApellido());
+            request.getSession().setAttribute("PASSWORD", usuarioBuscado.getPassword());
+            request.getSession().setAttribute("POSICION_FAVORITA", usuarioBuscado.getPosicionFavorita());
             return new ModelAndView("redirect:/home");
         } else {
             model.put("error", "Usuario o clave incorrecta");
@@ -60,6 +62,7 @@ public class ControladorLogin {
         return new ModelAndView("redirect:/login");
     }
 
+
     @RequestMapping(path = "/nuevo-usuario", method = RequestMethod.GET)
     public ModelAndView nuevoUsuario() {
         ModelMap model = new ModelMap();
@@ -77,4 +80,3 @@ public class ControladorLogin {
         return new ModelAndView("redirect:/login");
     }
 }
-
