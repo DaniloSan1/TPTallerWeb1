@@ -31,7 +31,8 @@ public class ServicioPartidoImplTest {
     public void deberiaDevolverUnPartidoExistente() throws PartidoNoEncontrado {
         Cancha cancha = new Cancha("Cancha 1", null, null, "Direccion 1", Zona.NORTE);
         Usuario creador = new Usuario("usuario1", "password", "email@example.com");
-        Partido partidoEsperado = new Partido("Partido de prueba", Zona.NORTE, Nivel.INTERMEDIO, LocalDateTime.now(),
+        Partido partidoEsperado = new Partido("Partido de prueba", "Descripción del partido", Zona.NORTE,
+                Nivel.INTERMEDIO, LocalDateTime.now(),
                 10, cancha, creador);
 
         Long id = Mockito.anyLong();

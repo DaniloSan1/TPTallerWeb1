@@ -50,7 +50,8 @@ public class RepositorioPartidoImplTest {
         this.sessionFactory.getCurrentSession().save(creador);
         this.sessionFactory.getCurrentSession().flush();
 
-        Partido nuevoPartido = new Partido("Partido de prueba", Zona.NORTE, Nivel.INTERMEDIO, LocalDateTime.now(), 10,
+        Partido nuevoPartido = new Partido("Partido de prueba", "Descripción del partido", Zona.NORTE, Nivel.INTERMEDIO,
+                LocalDateTime.now(), 10,
                 cancha, creador);
 
         this.sessionFactory.getCurrentSession().save(nuevoPartido);

@@ -32,17 +32,8 @@ public class Partido {
     public Partido() {
     }
 
-    public Partido(Long id, String titulo, Zona zona, Nivel nivel, LocalDateTime fecha, int cupoMaximo) {
-        this.id = id;
-        this.titulo = titulo;
-        this.zona = zona;
-        this.nivel = nivel;
-        this.fecha = fecha;
-        this.cupoMaximo = cupoMaximo;
-    }
-
-    public Partido(String titulo, Zona zona, Nivel nivel, LocalDateTime fecha, int cupoMaximo, Cancha cancha,
-            Usuario creador) {
+    public Partido(String titulo, String descripcion, Zona zona, Nivel nivel, LocalDateTime fecha, int cupoMaximo,
+            Cancha cancha, Usuario creador) {
         this.titulo = titulo;
         this.zona = zona;
         this.nivel = nivel;
@@ -50,6 +41,7 @@ public class Partido {
         this.cupoMaximo = cupoMaximo;
         this.cancha = cancha;
         this.creador = creador;
+        this.descripcion = descripcion;
     }
 
     public Long getId() {
