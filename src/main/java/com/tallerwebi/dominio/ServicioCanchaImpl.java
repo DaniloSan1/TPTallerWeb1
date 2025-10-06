@@ -22,8 +22,8 @@ public List<Cancha> obtenerCancha() {
 public boolean reservarCancha(Long id, String horario, String usuario) {
     for (Cancha cancha : canchas) {
         if (cancha.getId().equals(id)) {
-            cancha.reservar(horario, usuario);
-            return true;
+         return cancha.reservar(horario, usuario);
+        
         }
     }
     return false;

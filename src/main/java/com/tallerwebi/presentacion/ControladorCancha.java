@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import com.tallerwebi.dominio.ServicioCancha;
 @Controller
@@ -23,12 +24,15 @@ public class ControladorCancha {
         return "canchas";
     }
     @PostMapping("/reservar/{id}")
-    public String reservarCancha(@PathVariable Long id, String horario, String usuario) {
+    public String reservarCancha(@PathVariable Long id, 
+                                 @RequestParam String horario, 
+                                 @RequestParam String usuario) {
         servicioCancha.reservarCancha(id, horario, usuario);
         return "redirect:/canchas";
     }
     @PostMapping("/cancelar/{id}")
-    public String cancelarCancha(@PathVariable Long id, String horario) {
+    public String cancelarCancha(@PathVariable Long id, 
+                                 @RequestParam String horario) {
         servicioCancha.cancelarCancha(id, horario);
         return "redirect:/canchas";
     }
