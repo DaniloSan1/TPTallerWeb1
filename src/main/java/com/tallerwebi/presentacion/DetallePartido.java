@@ -27,9 +27,9 @@ public class DetallePartido {
         this.fecha = partido.getFecha();
         this.cupoMaximo = partido.getCupoMaximo();
         this.descripcion = partido.getDescripcion();
-        this.canchaId = partido.getCancha().getId();
+        this.canchaId = partido.getHorario().getCancha().getId();
         this.creadorId = partido.getCreador().getId();
-        this.cancha = partido.getCancha().getNombre();
+        this.cancha = partido.getHorario().getCancha().getNombre();
         this.creador = partido.getCreador().getNombre();
     }
 

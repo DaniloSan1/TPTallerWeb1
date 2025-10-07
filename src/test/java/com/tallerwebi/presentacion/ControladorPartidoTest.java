@@ -42,7 +42,7 @@ public class ControladorPartidoTest {
         Cancha canchaMock = Mockito.mock(Cancha.class);
         when(canchaMock.getId()).thenReturn(1L);
         when(canchaMock.getNombre()).thenReturn("Cancha 1");
-        when(partidoMock.getCancha()).thenReturn(canchaMock);
+        when(partidoMock.getHorario().getCancha()).thenReturn(canchaMock);
 
         Usuario creadorMock = Mockito.mock(Usuario.class);
         when(creadorMock.getId()).thenReturn(1L);

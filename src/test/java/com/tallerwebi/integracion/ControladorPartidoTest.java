@@ -8,7 +8,9 @@ import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import java.time.DayOfWeek;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 
 import javax.transaction.Transactional;
 
@@ -28,6 +30,7 @@ import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.tallerwebi.dominio.Cancha;
+import com.tallerwebi.dominio.Horario;
 import com.tallerwebi.dominio.Nivel;
 import com.tallerwebi.dominio.Partido;
 import com.tallerwebi.dominio.Usuario;
@@ -66,13 +69,17 @@ public class ControladorPartidoTest {
 		this.sessionFactory.getCurrentSession().save(cancha);
 		this.sessionFactory.getCurrentSession().flush();
 
+		Horario horario = new Horario(cancha, DayOfWeek.MONDAY, LocalTime.now(), LocalTime.now().plusHours(1));
+		this.sessionFactory.getCurrentSession().save(horario);
+		this.sessionFactory.getCurrentSession().flush();
+
 		Usuario creador = new Usuario("usuario1", "password", "email@example.com");
 		this.sessionFactory.getCurrentSession().save(creador);
 		this.sessionFactory.getCurrentSession().flush();
 
 		Partido nuevoPartido = new Partido("Partido de prueba", "Descripción del partido", Zona.NORTE, Nivel.INTERMEDIO,
 				LocalDateTime.now(), 10,
-				cancha, creador);
+				horario, creador);
 
 		this.sessionFactory.getCurrentSession().save(nuevoPartido);
 		this.sessionFactory.getCurrentSession().flush();

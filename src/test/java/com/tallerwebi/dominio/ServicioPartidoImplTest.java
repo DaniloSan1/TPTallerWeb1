@@ -3,11 +3,14 @@ package com.tallerwebi.dominio;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
+import java.time.DayOfWeek;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
+import org.springframework.cglib.core.Local;
 
 import com.tallerwebi.dominio.excepcion.PartidoNoEncontrado;
 
@@ -30,10 +33,11 @@ public class ServicioPartidoImplTest {
     @Test
     public void deberiaDevolverUnPartidoExistente() throws PartidoNoEncontrado {
         Cancha cancha = new Cancha("Cancha 1", null, null, "Direccion 1", Zona.NORTE);
+        Horario horario = new Horario(cancha, DayOfWeek.MONDAY, LocalTime.now(), LocalTime.now().plusHours(1));
         Usuario creador = new Usuario("usuario1", "password", "email@example.com");
         Partido partidoEsperado = new Partido("Partido de prueba", "Descripción del partido", Zona.NORTE,
                 Nivel.INTERMEDIO, LocalDateTime.now(),
-                10, cancha, creador);
+                10, horario, creador);
 
         Long id = Mockito.anyLong();
         Mockito.when(repositorioPartidoMock.porId(id)).thenReturn(partidoEsperado);

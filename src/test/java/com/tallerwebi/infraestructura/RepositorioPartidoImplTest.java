@@ -6,6 +6,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import com.tallerwebi.dominio.Cancha;
+import com.tallerwebi.dominio.Horario;
 import com.tallerwebi.dominio.Nivel;
 import com.tallerwebi.dominio.Partido;
 import com.tallerwebi.dominio.RepositorioPartido;
@@ -13,7 +14,9 @@ import com.tallerwebi.dominio.Usuario;
 import com.tallerwebi.dominio.Zona;
 import com.tallerwebi.infraestructura.config.HibernateTestInfraestructuraConfig;
 
+import java.time.DayOfWeek;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 
 import javax.transaction.Transactional;
 
@@ -46,13 +49,17 @@ public class RepositorioPartidoImplTest {
         this.sessionFactory.getCurrentSession().save(cancha);
         this.sessionFactory.getCurrentSession().flush();
 
+        Horario horario = new Horario(cancha, DayOfWeek.MONDAY, LocalTime.now(), LocalTime.now().plusHours(1));
+        this.sessionFactory.getCurrentSession().save(horario);
+        this.sessionFactory.getCurrentSession().flush();
+
         Usuario creador = new Usuario("usuario1", "password", "email@example.com");
         this.sessionFactory.getCurrentSession().save(creador);
         this.sessionFactory.getCurrentSession().flush();
 
         Partido nuevoPartido = new Partido("Partido de prueba", "Descripción del partido", Zona.NORTE, Nivel.INTERMEDIO,
                 LocalDateTime.now(), 10,
-                cancha, creador);
+                horario, creador);
 
         this.sessionFactory.getCurrentSession().save(nuevoPartido);
         // Implementar el test para obtener un partido por ID
