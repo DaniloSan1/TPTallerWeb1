@@ -1,6 +1,10 @@
-package com.tallerwebi.dominio;
+package com.tallerwebi.presentacion;
 
 import java.time.LocalDateTime;
+
+import com.tallerwebi.dominio.Nivel;
+import com.tallerwebi.dominio.Partido;
+import com.tallerwebi.dominio.Zona;
 
 public class DetallePartido {
     private Long id;

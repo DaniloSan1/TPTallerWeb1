@@ -11,7 +11,6 @@ import org.mockito.Mockito;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.tallerwebi.dominio.Cancha;
-import com.tallerwebi.dominio.DetallePartido;
 import com.tallerwebi.dominio.Nivel;
 import com.tallerwebi.dominio.Partido;
 import com.tallerwebi.dominio.ServicioPartido;

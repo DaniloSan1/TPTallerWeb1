@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8" />
+    <title>Detalle del Partido</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+  </head>
+  <body>
+    <div class="app">
+      <header class="header">
+        <div class="wrap header-grid">
+          <div class="logo">Logo</div>
+          <div class="sport">Deporte</div>
+          <div class="user">User</div>
+        </div>
+      </header>
+
+      <main class="wrap content">
+        <h1 class="title">Detalle del Partido</h1>
+
+        <div th:if="${error}" class="error" th:text="${error}"></div>
+
+        <div th:if="${partido}" class="match-card">
+          <h2 th:text="${partido.titulo}">Título del Partido</h2>
+          <p>
+            <strong>Zona:</strong> <span th:text="${partido.zona}">Zona</span>
+          </p>
+          <p>
+            <strong>Nivel:</strong>
+            <span th:text="${partido.nivel}">Nivel</span>
+          </p>
+          <p>
+            <strong>Fecha:</strong>
+            <span th:text="${partido.fecha}">Fecha</span>
+          </p>
+          <p>
+            <strong>Cupo máximo:</strong>
+            <span th:text="${partido.cupoMaximo}">Cupo</span>
+          </p>
+          <p>
+            <strong>Descripción:</strong>
+            <span th:text="${partido.descripcion}">Descripción</span>
+          </p>
+          <p>
+            <strong>Cancha:</strong>
+            <span th:text="${partido.cancha}">Cancha</span>
+          </p>
+          <p>
+            <strong>Creador:</strong>
+            <span th:text="${partido.creador}">Creador</span>
+          </p>
+        </div>
+
+        <div th:unless="${partido}" class="no-match">
+          <p>No se encontró el partido.</p>
+        </div>
+
+        <a href="/partidos">← Volver a partidos</a>
+      </main>
+    </div>
+  </body>
+</html>
