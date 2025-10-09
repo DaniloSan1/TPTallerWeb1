@@ -1,19 +1,29 @@
 package com.tallerwebi.dominio;
 
-import java.util.ArrayList;
-import java.util.List;
+import javax.persistence.*;
 
-
+@Entity
 public class Cancha {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String nombre;
-    private String tipo;
-    private List <Reserva> reservas = new ArrayList<>();
-    private List <String> horariosDisponibles = new ArrayList<>();
-    public Cancha(Long id, String nombre, String tipo) {
-        this.id = id;
+    private Integer capacidad;
+    private String tipoSuelo;
+    private Boolean disponible = true;
+    @Enumerated(EnumType.STRING)
+    private Zona zona;
+
+    // Constructor por defecto para JPA
+    public Cancha() {
+    }
+
+    public Cancha(String nombre, Boolean disponible, Integer capacidad, String tipoSuelo, Zona zona) {
         this.nombre = nombre;
-        this.tipo = tipo;
+        this.disponible = disponible;
+        this.capacidad = capacidad;
+        this.tipoSuelo = tipoSuelo;
+        this.zona = zona;
     }
 
     public Long getId() {
@@ -32,48 +42,35 @@ public class Cancha {
         this.nombre = nombre;
     }
 
-    public String getTipo() {
-        return tipo;
+    public Integer getCapacidad() {
+        return capacidad;
     }
 
-    public void setTipo(String tipo) {
-        this.tipo = tipo;
+    public void setCapacidad(Integer capacidad) {
+        this.capacidad = capacidad;
     }
 
-    public List<Reserva> getReservas() {
-        return reservas;
+    public String getTipoSuelo() {
+        return tipoSuelo;
     }
 
-    public void setReservas(List<Reserva> reservas) {
-        this.reservas = reservas;
+    public void setTipoSuelo(String tipoSuelo) {
+        this.tipoSuelo = tipoSuelo;
     }
-    public Boolean estaDisponible() {
-        return reservas.isEmpty();
+
+    public Zona getZona() {
+        return zona;
     }
-    public Boolean estaDisponible(String horario) {
-        return reservas.stream().noneMatch(reserva -> reserva.getHorario().equals(horario));
+
+    public void setZona(Zona zona) {
+        this.zona = zona;
     }
-    public Boolean reservar(String horario, String usuario) {
-        if (estaDisponible(horario)) {
-            reservas.add(new Reserva(horario, usuario));
-            return true;
-        }
-        return false;
+
+    public Boolean getDisponible() {
+        return disponible;
     }
-    public void cancelar(String horario) {
-        reservas.removeIf(reserva -> reserva.getHorario().equals(horario));
-    }
-    public List<String> getHorariosDisponibles() {
-        this.horariosDisponibles.clear();
-        for (int i = 8; i <= 22; i++) {
-            String horario = String.format("%02d:00", i);
-            if (estaDisponible(horario)) {
-                this.horariosDisponibles.add(horario);
-            }
-        }
-        return this.horariosDisponibles;
-    }
-    public void setHorariosDisponibles(List<String> horariosDisponibles) {
-        this.horariosDisponibles = horariosDisponibles;
+
+    public void setDisponible(Boolean disponible) {
+        this.disponible = disponible;
     }
 }

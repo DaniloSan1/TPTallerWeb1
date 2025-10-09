@@ -1,27 +1,119 @@
 package com.tallerwebi.dominio;
 
-public class Reserva {
-    private String horario;
-    private String usuario;
+import javax.persistence.*;
+import java.time.LocalDateTime;
 
-    public Reserva(String horario, String usuario) {
-        this.horario = horario;
-        this.usuario = usuario;
+@Entity
+public class Reserva {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @ManyToOne
+    @JoinColumn(name = "horario_id", nullable = false)
+    private Horario horario;
+
+    @ManyToOne
+    @JoinColumn(name = "usuario_id", nullable = false)
+    private Usuario usuario;
+
+    private LocalDateTime fechaReserva; // Fecha específica para la cual se hace la reserva
+    private Boolean activa = true;
+    private LocalDateTime fechaCreacion;
+
+    // Constructor por defecto para JPA
+    public Reserva() {
+        this.fechaCreacion = LocalDateTime.now();
     }
 
-    public String getHorario() {
+    public Reserva(Horario horario, Usuario usuario, LocalDateTime fechaReserva) {
+        this.horario = horario;
+        this.usuario = usuario;
+        this.fechaReserva = fechaReserva;
+        this.activa = true;
+        this.fechaCreacion = LocalDateTime.now();
+    }
+
+    // Getters y Setters
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public Horario getHorario() {
         return horario;
     }
 
-    public void setHorario(String horario) {
+    public void setHorario(Horario horario) {
         this.horario = horario;
     }
 
-    public String getUsuario() {
+    // Convenience method to get the Cancha through Horario
+    public Cancha getCancha() {
+        return horario != null ? horario.getCancha() : null;
+    }
+
+    public Usuario getUsuario() {
         return usuario;
     }
 
-    public void setUsuario(String usuario) {
+    public void setUsuario(Usuario usuario) {
         this.usuario = usuario;
+    }
+
+    public LocalDateTime getFechaReserva() {
+        return fechaReserva;
+    }
+
+    public void setFechaReserva(LocalDateTime fechaReserva) {
+        this.fechaReserva = fechaReserva;
+    }
+
+    // Convenience methods to get start and end times based on horario and fecha
+    public LocalDateTime getFechaHoraInicio() {
+        if (horario == null || fechaReserva == null)
+            return null;
+        return fechaReserva.toLocalDate().atTime(horario.getHoraInicio());
+    }
+
+    public LocalDateTime getFechaHoraFin() {
+        if (horario == null || fechaReserva == null)
+            return null;
+        return fechaReserva.toLocalDate().atTime(horario.getHoraFin());
+    }
+
+    public Boolean getActiva() {
+        return activa;
+    }
+
+    public void setActiva(Boolean activa) {
+        this.activa = activa;
+    }
+
+    public LocalDateTime getFechaCreacion() {
+        return fechaCreacion;
+    }
+
+    public void setFechaCreacion(LocalDateTime fechaCreacion) {
+        this.fechaCreacion = fechaCreacion;
+    }
+
+    // Métodos de negocio
+    public void cancelar() {
+        this.activa = false;
+    }
+
+    public boolean estaActiva() {
+        return this.activa && LocalDateTime.now().isBefore(this.getFechaHoraInicio());
+    }
+
+    public boolean conflictaCon(LocalDateTime inicio, LocalDateTime fin) {
+        LocalDateTime inicioReserva = this.getFechaHoraInicio();
+        LocalDateTime finReserva = this.getFechaHoraFin();
+        return this.activa && inicioReserva != null && finReserva != null &&
+                !(fin.isBefore(inicioReserva) || inicio.isAfter(finReserva));
     }
 }

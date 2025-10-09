@@ -3,6 +3,7 @@ package com.tallerwebi.dominio;
 import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.stream.Collectors;
+import java.time.LocalDateTime;
 
 @Service
 public class ServicioPartidoImpl implements ServicioPartido {
@@ -27,14 +28,16 @@ public class ServicioPartidoImpl implements ServicioPartido {
                                      Zona zona, Nivel nivel, int cupoMaximo) {
          Reserva r = (reservaId != null) ? repoReserva.porId(reservaId) : null;
         if (r == null) {
-            return null; 
+            return null;
         }
-        java.time.LocalDateTime fecha = r.getInicio();
+        LocalDateTime fecha = r.getFechaHoraInicio();
+        if (fecha == null) {
+            return null;
+        }
 
-    Partido p = new Partido(null, titulo, descripcion, zona, nivel, fecha,  Math.max(0, cupoMaximo), r.getId());
+        Partido p = new Partido(null, titulo, zona, nivel, fecha, Math.max(0, cupoMaximo));
+        p.setDescripcion(descripcion);
         repoPartido.guardar(p);
-        r.setPartidoId(p.getId());
-        repoReserva.guardar(r);
         return p;
     }
 }
