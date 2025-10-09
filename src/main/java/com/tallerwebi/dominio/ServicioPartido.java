@@ -3,4 +3,7 @@ import java.util.List;
 
 public interface ServicioPartido {
     List<Partido> buscar(Zona zona, Nivel nivel, boolean soloConCupo);
+
+    Partido crearDesdeReserva(Long reservaId, String titulo, String descripcion, 
+                              Zona zona, Nivel nivel, int cupoMaximo);
 }
