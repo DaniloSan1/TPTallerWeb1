@@ -11,6 +11,7 @@ import org.mockito.Mockito;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.tallerwebi.dominio.Cancha;
+import com.tallerwebi.dominio.Horario;
 import com.tallerwebi.dominio.Nivel;
 import com.tallerwebi.dominio.Partido;
 import com.tallerwebi.dominio.ServicioPartido;
@@ -38,10 +39,17 @@ public class ControladorPartidoTest {
         when(partidoMock.getCupoMaximo()).thenReturn(10);
         when(partidoMock.getDescripcion()).thenReturn("Descripción del partido");
 
+        Horario horarioMock = Mockito.mock(Horario.class);
+        when(partidoMock.getHorario()).thenReturn(horarioMock);
+        when(horarioMock.getDiaSemana()).thenReturn(java.time.DayOfWeek.SUNDAY);
+        when(horarioMock.getHoraInicio()).thenReturn(java.time.LocalTime.of(18, 0));
+        when(horarioMock.getHoraFin()).thenReturn(java.time.LocalTime.of(20, 0));
+
         // Mock the related objects
         Cancha canchaMock = Mockito.mock(Cancha.class);
         when(canchaMock.getId()).thenReturn(1L);
         when(canchaMock.getNombre()).thenReturn("Cancha 1");
+        when(partidoMock.getHorario()).thenReturn(horarioMock);
         when(partidoMock.getHorario().getCancha()).thenReturn(canchaMock);
 
         Usuario creadorMock = Mockito.mock(Usuario.class);
