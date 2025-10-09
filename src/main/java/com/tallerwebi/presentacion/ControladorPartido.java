@@ -17,7 +17,6 @@ import com.tallerwebi.dominio.ServicioPartido;
 import com.tallerwebi.dominio.Zona;
 
 @Controller
-@RequestMapping("/partidos")
 public class ControladorPartido {
 
     private ServicioPartido servicio;
@@ -27,7 +26,7 @@ public class ControladorPartido {
         this.servicio = servicio;
     }
 
-    @GetMapping
+    @GetMapping("/partidos")
     public String listar(@RequestParam(required = false) Zona zona,
             @RequestParam(required = false) Nivel nivel,
             @RequestParam(defaultValue = "true") boolean soloConCupo,
@@ -44,7 +43,7 @@ public class ControladorPartido {
         return "partidos";
     }
 
-    @GetMapping("/{id}")
+    @GetMapping("detalle-partido/{id}")
     public ModelAndView detalle(@PathVariable long id) {
         ModelMap modelo = new ModelMap();
 

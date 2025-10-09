@@ -84,7 +84,7 @@ public class ControladorPartidoTest {
 		this.sessionFactory.getCurrentSession().save(nuevoPartido);
 		this.sessionFactory.getCurrentSession().flush();
 
-		MvcResult result = this.mockMvc.perform(get("/partidos/{id}", nuevoPartido.getId()))
+		MvcResult result = this.mockMvc.perform(get("/detalle-partido/{id}", nuevoPartido.getId()))
 				.andExpect(status().isOk())
 				.andReturn();
 
@@ -120,7 +120,7 @@ public class ControladorPartidoTest {
 	@Transactional
 	@Rollback
 	public void debeRetornarLaPaginaDetallePartidoConErrorCuandoElPartidoNoExiste() throws Exception {
-		MvcResult result = this.mockMvc.perform(get("/partidos/{id}", 999L))
+		MvcResult result = this.mockMvc.perform(get("/detalle-partido/{id}", 999L))
 				.andExpect(status().isOk())
 				.andReturn();
 
@@ -136,7 +136,7 @@ public class ControladorPartidoTest {
 			// El partido en el modelo es de tipo DetallePartido
 			String errorDetalle = (String) errorEnModelo;
 			assertThat("El mensaje de error debe coincidir", errorDetalle,
-					equalToIgnoringCase("No se encontro el partido"));
+					equalToIgnoringCase("No se encontró el partido"));
 		}
 	}
 }

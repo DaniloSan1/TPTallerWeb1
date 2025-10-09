@@ -1,62 +1,124 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
   <head>
     <meta charset="utf-8" />
-    <title>Detalle del Partido</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, shrink-to-fit=no"
+    />
+
+    <title>Taller Web I</title>
+
+    <link
+      rel="stylesheet"
+      th:href="@{/webjars/bootstrap/5.2.0/css/bootstrap.min.css}"
+    />
+    <link rel="stylesheet" th:href="@{/css/main.css}" />
   </head>
+
   <body>
-    <div class="app">
-      <header class="header">
-        <div class="wrap header-grid">
-          <div class="logo">Logo</div>
-          <div class="sport">Deporte</div>
-          <div class="user">User</div>
+    <nav class="navbar navbar-expand-md navbar-dark bg-dark fixed-top">
+      <a class="navbar-brand" href="#">UNLAM</a>
+    </nav>
+
+    <main role="main" class="container">
+      <div th:if="${error != null && partido == null}" class="error" th:text="${error}"></div>
+      
+      <div th:unless="${partido}" class="no-match">
+      </div>
+      
+      <div
+        class="container d-flex flex-column justify-content-center align-items-center"
+      >
+        <div
+        th:if="${partido}"
+          id="loginbox"
+          style="margin-top: 50px"
+          class="mainbox col-md-6 col-md-offset-3 col-sm-8 col-sm-offset-2"
+        >
+          <form action="#" th:object="${partido}">
+            <h3 class="form-signin-heading">Detalle de partido</h3>
+            <hr class="colorgraph" />
+            <br />
+            <label for="titulo" class="form-label mt-3">Título:</label>
+            <input
+              th:value="${partido.titulo}"
+              class="form-control"
+              id="titulo"
+              disabled
+            />
+
+            <label for="zona" class="form-label mt-3">Zona:</label>
+            <input
+              th:value="${partido.zona}"
+              class="form-control"
+              id="zona"
+              disabled
+            />
+
+            <label for="nivel" class="form-label mt-3">Nivel:</label>
+            <input
+              th:value="${partido.nivel}"
+              class="form-control"
+              id="nivel"
+              disabled
+            />
+
+            <label for="fecha" class="form-label mt-3">Fecha:</label>
+            <input
+              th:value="${partido.fecha}"
+              class="form-control"
+              id="fecha"
+              disabled
+            />
+
+            <label for="cupoMaximo" class="form-label mt-3">Cupo máximo:</label>
+            <input
+              th:value="${partido.cupoMaximo}"
+              class="form-control"
+              id="cupoMaximo"
+              disabled
+            />
+
+            <label for="descripcion" class="form-label mt-3"
+              >Descripción:</label
+            >
+            <textarea
+              th:text="${partido.descripcion}"
+              class="form-control"
+              id="descripcion"
+              rows="3"
+              disabled
+            ></textarea>
+
+            <label for="cancha" class="form-label mt-3">Cancha:</label>
+            <input
+              th:value="${partido.cancha}"
+              class="form-control"
+              id="cancha"
+              disabled
+            />
+
+            <label for="creador" class="form-label mt-3">Creador:</label>
+            <input
+              th:value="${partido.creador}"
+              class="form-control"
+              id="creador"
+              disabled
+            />
+            
+          </br>
+          <button id="btn-volver" class="btn btn-lg btn-primary btn-block">
+            Volver
+          </button>
+          </form>
         </div>
-      </header>
+      </div>
+    </main>
 
-      <main class="wrap content">
-        <h1 class="title">Detalle del Partido</h1>
-
-        <div th:if="${error}" class="error" th:text="${error}"></div>
-
-        <div th:if="${partido}" class="match-card">
-          <h2 th:text="${partido.titulo}">Título del Partido</h2>
-          <p>
-            <strong>Zona:</strong> <span th:text="${partido.zona}">Zona</span>
-          </p>
-          <p>
-            <strong>Nivel:</strong>
-            <span th:text="${partido.nivel}">Nivel</span>
-          </p>
-          <p>
-            <strong>Fecha:</strong>
-            <span th:text="${partido.fecha}">Fecha</span>
-          </p>
-          <p>
-            <strong>Cupo máximo:</strong>
-            <span th:text="${partido.cupoMaximo}">Cupo</span>
-          </p>
-          <p>
-            <strong>Descripción:</strong>
-            <span th:text="${partido.descripcion}">Descripción</span>
-          </p>
-          <p>
-            <strong>Cancha:</strong>
-            <span th:text="${partido.cancha}">Cancha</span>
-          </p>
-          <p>
-            <strong>Creador:</strong>
-            <span th:text="${partido.creador}">Creador</span>
-          </p>
-        </div>
-
-        <div th:unless="${partido}" class="no-match">
-          <p>No se encontró el partido.</p>
-        </div>
-
-        <a href="/partidos">← Volver a partidos</a>
-      </main>
-    </div>
+    <script
+      type="text/javascript"
+      th:src="@{webjars/bootstrap/5.2.0/js/bootstrap.min.js}"
+    ></script>
   </body>
 </html>
