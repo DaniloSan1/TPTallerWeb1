@@ -19,8 +19,8 @@ public class Partido {
     private int cupoMaximo;
     private String descripcion;
     @ManyToOne
-    @JoinColumn(name = "cancha_id")
-    private Cancha cancha;
+    @JoinColumn(name = "horario_id")
+    private Horario horario;
     @ManyToOne
     @JoinColumn(name = "creador_id")
     private Usuario creador;
@@ -32,24 +32,16 @@ public class Partido {
     public Partido() {
     }
 
-    public Partido(Long id, String titulo, Zona zona, Nivel nivel, LocalDateTime fecha, int cupoMaximo) {
-        this.id = id;
+    public Partido(String titulo, String descripcion, Zona zona, Nivel nivel, LocalDateTime fecha, int cupoMaximo,
+            Horario horario, Usuario creador) {
         this.titulo = titulo;
         this.zona = zona;
         this.nivel = nivel;
         this.fecha = fecha;
         this.cupoMaximo = cupoMaximo;
-    }
-
-    public Partido(String titulo, Zona zona, Nivel nivel, LocalDateTime fecha, int cupoMaximo, Cancha cancha,
-            Usuario creador) {
-        this.titulo = titulo;
-        this.zona = zona;
-        this.nivel = nivel;
-        this.fecha = fecha;
-        this.cupoMaximo = cupoMaximo;
-        this.cancha = cancha;
+        this.horario = horario;
         this.creador = creador;
+        this.descripcion = descripcion;
     }
 
     public Long getId() {
@@ -92,12 +84,12 @@ public class Partido {
         this.descripcion = descripcion;
     }
 
-    public Cancha getCancha() {
-        return cancha;
+    public Horario getHorario() {
+        return horario;
     }
 
-    public void setCancha(Cancha cancha) {
-        this.cancha = cancha;
+    public void setHorario(Horario horario) {
+        this.horario = horario;
     }
 
     public Usuario getCreador() {
