@@ -10,8 +10,7 @@ public class ServicioCanchaImpl implements ServicioCancha {
     private List<Cancha> canchas = new ArrayList<>();
 
     public ServicioCanchaImpl() {
-        canchas.add(new Cancha("Cancha 1", true, 5, "Césped", Zona.OESTE));
-        canchas.add(new Cancha("Cancha 2", true, 7, "Césped", Zona.NORTE));
+       
     }
 
     @Override

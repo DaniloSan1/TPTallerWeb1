@@ -1,1 +1,2 @@
 INSERT INTO Usuario(id, email, password, rol, activo) VALUES(null, 'test@unlam.edu.ar', 'test', 'ADMIN', true);
+INSERT INTO Cancha(nombre, direccion,capacidad,tipoSuelo,disponible,zona) VALUES('Cancha 1', 'Calle Falsa 123', 22, 'Cesped', true,'NORTE');
