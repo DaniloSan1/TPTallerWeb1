@@ -17,11 +17,11 @@ public class Reserva {
     @JoinColumn(name = "usuario_id", nullable = false)
     private Usuario usuario;
 
-    private LocalDateTime fechaReserva; // Fecha específica para la cual se hace la reserva
+    private LocalDateTime fechaReserva;
     private Boolean activa = true;
     private LocalDateTime fechaCreacion;
 
-    // Constructor por defecto para JPA
+    
     public Reserva() {
         this.fechaCreacion = LocalDateTime.now();
     }
@@ -34,7 +34,7 @@ public class Reserva {
         this.fechaCreacion = LocalDateTime.now();
     }
 
-    // Getters y Setters
+    
     public Long getId() {
         return id;
     }
@@ -51,7 +51,7 @@ public class Reserva {
         this.horario = horario;
     }
 
-    // Convenience method to get the Cancha through Horario
+   
     public Cancha getCancha() {
         return horario != null ? horario.getCancha() : null;
     }
@@ -72,7 +72,7 @@ public class Reserva {
         this.fechaReserva = fechaReserva;
     }
 
-    // Convenience methods to get start and end times based on horario and fecha
+    
     public LocalDateTime getFechaHoraInicio() {
         if (horario == null || fechaReserva == null)
             return null;
@@ -101,7 +101,7 @@ public class Reserva {
         this.fechaCreacion = fechaCreacion;
     }
 
-    // Métodos de negocio
+    
     public void cancelar() {
         this.activa = false;
     }
