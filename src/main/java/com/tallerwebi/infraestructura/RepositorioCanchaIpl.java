@@ -21,7 +21,7 @@ public class RepositorioCanchaIpl implements RepositorioCancha {
     }
 
     @Override
-    public List<Cancha> MostrarCanchasDisponibles() {
+    public List<Cancha> MostrarCanchasConHorariosDisponibles() {
         return sessionFactory.getCurrentSession()
                 .createQuery("SELECT DISTINCT c FROM Cancha c JOIN c.horarios h WHERE h.disponible = true", Cancha.class)
                 .getResultList();

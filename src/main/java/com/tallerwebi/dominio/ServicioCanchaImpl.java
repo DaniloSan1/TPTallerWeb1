@@ -22,7 +22,7 @@ public class ServicioCanchaImpl implements ServicioCancha {
     public boolean reservarCancha(Long id) {
         for (Cancha cancha : canchas) {
             if (cancha.getId().equals(id)) {
-                cancha.setDisponible(false);
+                
                 return true;
             }
         }
@@ -33,7 +33,7 @@ public class ServicioCanchaImpl implements ServicioCancha {
     public boolean cancelarCancha(Long id) {
         for (Cancha cancha : canchas) {
             if (cancha.getId().equals(id)) {
-                cancha.setDisponible(true);
+                
                 return true;
             }
         }
