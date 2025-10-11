@@ -4,7 +4,8 @@ import java.time.DayOfWeek;
 import java.time.LocalTime;
 import java.util.List;
 
-import javax.persistence.Query;
+
+import javax.transaction.Transactional;
 
 import com.tallerwebi.dominio.Cancha;
 import com.tallerwebi.dominio.Horario;
@@ -13,10 +14,12 @@ import com.tallerwebi.dominio.RepositorioCancha;
 import com.tallerwebi.infraestructura.RepositorioCanchaIpl;
 
 import org.hibernate.SessionFactory;
-import org.hsqldb.Session;
+
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -26,10 +29,20 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 @ExtendWith(SpringExtension.class)
 @ContextConfiguration(classes = {HibernateTestInfraestructuraConfig.class})
 public class RepositorioCanchaImplTest {
+    @Autowired
     private SessionFactory sessionFactory;
+    private RepositorioCancha repositorioCancha;
+
+    @BeforeEach
+    public void init() {
+    this.repositorioCancha = new RepositorioCanchaIpl(this.sessionFactory);
+    }
 
     @Test
-    public void DadoQueTengo3CanchasPeroSolo2TienenHorariosDisponiblesMostrarSoloDisponibles() {
+    @Transactional
+    @Rollback
+    public void MostrarSoloDisponibles() {
+        //Preparacion
         Cancha cancha1 = new Cancha();
         cancha1.setId(1L);
         cancha1.setNombre("Cancha 1");
@@ -63,22 +76,40 @@ public class RepositorioCanchaImplTest {
         horario2.setHoraInicio(LocalTime.now());
         horario2.setHoraFin(LocalTime.now().plusHours(1));
 
-        RepositorioCancha repositorioCancha = new RepositorioCanchaIpl(null);
-        // Guardar las canchas y horarios en el repositorio
-        String hql="INSERT INTO Cancha (id, nombre, direccion, capacidad) VALUES (:id, :nombre, :direccion, :capacidad)";
-        String hql2="INSERT INTO Horario (id, cancha_id, diaSemana, horaInicio, horaFin, disponible) VALUES (:id, :cancha_id, :diaSemana, :horaInicio, :horaFin, :disponible)";
-        Query query = this.sessionFactory.getCurrentSession().createQuery(hql);
-        query.setParameter("id", cancha1.getId());
-        query.setParameter("nombre", cancha1.getNombre());
-        query.setParameter("direccion", cancha1.getDireccion());
-        query.setParameter("capacidad", cancha1.getCapacidad());
-        query.executeUpdate();
+        
+        
+        this.sessionFactory.getCurrentSession().save(cancha1);
+        this.sessionFactory.getCurrentSession().save(cancha2);
+        this.sessionFactory.getCurrentSession().save(cancha3);
+        this.sessionFactory.getCurrentSession().save(horario1);
+        this.sessionFactory.getCurrentSession().save(horario2);
+        
+        
+        //Ejecucion
         List<Cancha> canchasDisponibles = repositorioCancha.MostrarCanchasConHorariosDisponibles();
 
-        // Verificar que solo se devuelven las canchas con horarios disponibles
+       //Verificacion
         assertEquals(2, canchasDisponibles.size());
         assertTrue(canchasDisponibles.contains(cancha1));
-        assertTrue(canchasDisponibles.contains(cancha2));
-        assertFalse(canchasDisponibles.contains(cancha3));
+        assertTrue(canchasDisponibles.contains(cancha3));
+        assertFalse(canchasDisponibles.contains(cancha2));
+    }
+    
+    
+    @Test
+    @Transactional
+    @Rollback
+    public void dadoQueHayUnaCanchaGuardadaBuscarlaPorId() {
+        // Preparación
+        Cancha cancha = new Cancha("Cancha 1", "Calle", null, null, null);
+        this.sessionFactory.getCurrentSession().save(cancha);
+        this.sessionFactory.getCurrentSession().flush();
+        // Ejecución
+        Cancha canchaEncontrada = this.repositorioCancha.BuscarCanchaPorId(cancha.getId());
+
+        // Verificación
+        assertEquals(cancha.getId(), canchaEncontrada.getId());
+        assertEquals(cancha.getNombre(), canchaEncontrada.getNombre());
+        assertEquals(cancha.getDireccion(), canchaEncontrada.getDireccion());
     }
 }
