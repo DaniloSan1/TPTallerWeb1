@@ -1,13 +1,19 @@
 package com.tallerwebi.dominio;
 
 import org.springframework.stereotype.Service;
+
+import com.tallerwebi.dominio.excepcion.PartidoNoEncontrado;
+
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
 public class ServicioPartidoImpl implements ServicioPartido {
     private final RepositorioPartido repo;
-    public ServicioPartidoImpl(RepositorioPartido repo) { this.repo = repo; }
+
+    public ServicioPartidoImpl(RepositorioPartido repo) {
+        this.repo = repo;
+    }
 
     @Override
     public List<Partido> buscar(Zona zona, Nivel nivel, boolean soloConCupo) {
@@ -16,5 +22,14 @@ public class ServicioPartidoImpl implements ServicioPartido {
                 .filter(p -> nivel == null || p.getNivel() == nivel)
                 .filter(p -> !soloConCupo || p.tieneCupo())
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    public Partido obtenerPorId(Long id) {
+        Partido partido = repo.porId(id);
+        if (partido == null) {
+            throw new PartidoNoEncontrado();
+        }
+        return partido;
     }
 }

@@ -83,7 +83,10 @@ public class Horario {
         this.disponible = disponible;
     }
 
-    // Métodos de negocio
+    public String getHorarioCompleto() {
+        return diaSemana + " " + horaInicio + " - " + horaFin;
+    }
+
     public boolean estaDisponibleEn(LocalDateTime fechaHora) {
         return this.disponible &&
                 this.diaSemana.equals(fechaHora.getDayOfWeek()) &&
