@@ -18,9 +18,6 @@ public class Partido {
     private int cupoMaximo;
     private String descripcion;
     @ManyToOne
-    @JoinColumn(name = "cancha_id")
-    private Cancha cancha;
-    @ManyToOne
     @JoinColumn(name = "reserva_id")
     private Reserva reserva;
     @ManyToOne
@@ -102,11 +99,7 @@ public class Partido {
     }
 
     public Cancha getCancha() {
-        return cancha;
-    }
-
-    public void setCancha(Cancha cancha) {
-        this.cancha = cancha;
+        return reserva.getCancha();
     }
 
     public Usuario getCreador() {
