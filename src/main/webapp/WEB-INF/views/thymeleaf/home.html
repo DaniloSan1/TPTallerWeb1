@@ -13,17 +13,54 @@
 <body>
 
 <nav class="navbar navbar-expand-md navbar-dark bg-dark fixed-top">
-    <a class="navbar-brand" href="#">UNLAM</a>
-    <a href="perfil.html">Mi perfil</a>
+    <div class="container">
+        <a class="navbar-brand" th:href="@{/}">UNLAM</a>
+        <div class="ms-auto d-flex gap-3">
+            <a class="nav-link text-white" th:href="@{/perfil}">Mi perfil</a>
+            <a class="btn btn-outline-light btn-sm" th:href="@{/login}">Volver</a>
+        </div>
+    </div>
 </nav>
 
-<main role="main" class="container">
-    <div class="container">
-        <h1>Gestión de canchas</h1>
-        <a href="login.html" class="btn btn-lg btn-primary btn-block">Volver</a>
+<main role="main" class="container" style="padding-top: 80px;">
+    <div class="d-flex align-items-center justify-content-between mb-3">
+        <h1 class="h3 m-0">Partidos disponibles</h1>
+        <a class="btn btn-primary" th:href="@{/partidos/nuevo}">Crear partido</a>
+    </div>
+
+    <!-- Estado vacío -->
+    <div class="alert alert-info" role="alert" th:if="${#lists.isEmpty(partidos)}">
+        No hay partidos por el momento.
+    </div>
+
+    <!-- Grilla de tarjetas -->
+    <div class="row g-3" th:if="${!#lists.isEmpty(partidos)}">
+        <div class="col-12 col-sm-6 col-lg-4" th:each="p : ${partidos}">
+            <div class="card h-100">
+                <div class="card-body d-flex flex-column">
+                    <h5 class="card-title" th:text="${p.titulo}">Título</h5>
+
+                    <ul class="list-unstyled small mb-3">
+                        <li><strong>Zona:</strong> <span th:text="${p.zona}">Zona</span></li>
+                        <li><strong>Nivel:</strong> <span th:text="${p.nivel}">Nivel</span></li>
+                        <li><strong>Cupo máx.:</strong> <span th:text="${p.cupoMaximo}">10</span></li>
+                        <li th:if="${p.cancha != null}">
+                            <strong>Cancha:</strong> <span th:text="${p.cancha.nombre}">Cancha 1</span>
+                        </li>
+                    </ul>
+
+                    <div class="mt-auto d-flex gap-2">
+                        <a class="btn btn-outline-primary btn-sm"
+                           th:href="@{|/detalle-partido/${p.id}|}">Ver detalle</a>
+                        <a class="btn btn-success btn-sm"
+                           th:href="@{|/reservas/partido/${p.id}|}">Reservar</a>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 </main>
 
-<script type="text/javascript" th:src="@{webjars/bootstrap/5.2.0/js/bootstrap.min.js}"></script>
+<script type="text/javascript" th:src="@{/webjars/bootstrap/5.2.0/js/bootstrap.min.js}"></script>
 </body>
 </html>

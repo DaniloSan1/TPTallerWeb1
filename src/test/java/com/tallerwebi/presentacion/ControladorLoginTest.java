@@ -32,7 +32,7 @@ public class ControladorLoginTest {
 		requestMock = mock(HttpServletRequest.class);
 		sessionMock = mock(HttpSession.class);
 		servicioLoginMock = mock(ServicioLogin.class);
-		controladorLogin = new ControladorLogin(servicioLoginMock);
+		controladorLogin = new ControladorLogin(servicioLoginMock, null);
 	}
 
 	@Test

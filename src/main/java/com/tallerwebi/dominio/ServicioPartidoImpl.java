@@ -17,6 +17,10 @@ public class ServicioPartidoImpl implements ServicioPartido {
         this.repoPartido = repoPartido;
         this.repoReserva = repoReserva;
     }
+    @Override
+    public List<Partido> listarTodos() {
+        return repoPartido.todos();
+    }
 
     @Override
     public List<Partido> buscar(Zona zona, Nivel nivel, boolean soloConCupo) {

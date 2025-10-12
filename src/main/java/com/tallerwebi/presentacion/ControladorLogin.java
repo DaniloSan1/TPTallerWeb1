@@ -1,13 +1,18 @@
 package com.tallerwebi.presentacion;
 
+import com.tallerwebi.dominio.Partido;
 import com.tallerwebi.dominio.ServicioLogin;
 import com.tallerwebi.dominio.Usuario;
 import com.tallerwebi.dominio.excepcion.UsuarioExistente;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
+import com.tallerwebi.dominio.ServicioPartido;
+
+import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -15,10 +20,12 @@ import javax.servlet.http.HttpServletRequest;
 public class ControladorLogin {
 
     private ServicioLogin servicioLogin;
+    private ServicioPartido servicioPartido;
 
     @Autowired
-    public ControladorLogin(ServicioLogin servicioLogin){
+    public ControladorLogin(ServicioLogin servicioLogin, ServicioPartido servicioPartido) {
         this.servicioLogin = servicioLogin;
+        this.servicioPartido = servicioPartido;
     }
 
     @RequestMapping("/login")
@@ -72,7 +79,11 @@ public class ControladorLogin {
 
     @RequestMapping(path = "/home", method = RequestMethod.GET)
     public ModelAndView irAHome() {
-        return new ModelAndView("home");
+        ModelMap model = new ModelMap();
+        List<Partido> partidos = servicioPartido.listarTodos();
+        System.out.println(partidos);
+        model.put("partidos", partidos);
+        return new ModelAndView("home", model);
     }
 
     @RequestMapping(path = "/", method = RequestMethod.GET)
