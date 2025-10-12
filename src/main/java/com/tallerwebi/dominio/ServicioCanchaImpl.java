@@ -10,12 +10,13 @@ public class ServicioCanchaImpl implements ServicioCancha {
     private List<Cancha> canchas = new ArrayList<>();
 
     public ServicioCanchaImpl() {
-        Cancha c1 = new Cancha("Cancha 1", true, 5, "Césped", Zona.OESTE);
+        Cancha c1 = new Cancha("Cancha 1","Direc Cancha 1", 5, "Césped", Zona.OESTE);
         c1.setId(1L);
-        Cancha c2 = new Cancha("Cancha 2", true, 7, "Césped", Zona.NORTE);
+        Cancha c2 = new Cancha("Cancha 2", "Direc Cancha 2" , 7, "Césped", Zona.NORTE);
         c2.setId(2L);
         canchas.add(c1);
         canchas.add(c2);
+
     }
 
     @Override
@@ -26,8 +27,7 @@ public class ServicioCanchaImpl implements ServicioCancha {
     @Override
     public boolean reservarCancha(Long id) {
         for (Cancha cancha : canchas) {
-            if (cancha.getId() != null && cancha.getId().equals(id)) {
-                cancha.setDisponible(false);
+            if (cancha.getId().equals(id)) {
                 return true;
             }
         }
@@ -37,8 +37,7 @@ public class ServicioCanchaImpl implements ServicioCancha {
     @Override
     public boolean cancelarCancha(Long id) {
         for (Cancha cancha : canchas) {
-            if (cancha.getId() != null && cancha.getId().equals(id)) {
-                cancha.setDisponible(true);
+            if (cancha.getId().equals(id)) {
                 return true;
             }
         }

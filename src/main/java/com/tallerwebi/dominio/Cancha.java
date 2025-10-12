@@ -1,5 +1,7 @@
 package com.tallerwebi.dominio;
 
+import java.util.ArrayList;
+import java.util.List;
 import javax.persistence.*;
 
 @Entity
@@ -8,19 +10,21 @@ public class Cancha {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String nombre;
+    private String direccion;
     private Integer capacidad;
     private String tipoSuelo;
-    private Boolean disponible = true;
+
     @Enumerated(EnumType.STRING)
     private Zona zona;
-
-    // Constructor por defecto para JPA
+    @OneToMany(mappedBy = "cancha", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    private List<Horario> horarios = new ArrayList<>();
+  
     public Cancha() {
     }
 
-    public Cancha(String nombre, Boolean disponible, Integer capacidad, String tipoSuelo, Zona zona) {
+    public Cancha(String nombre,String direccion, Integer capacidad, String tipoSuelo, Zona zona) {
         this.nombre = nombre;
-        this.disponible = disponible;
+        this.direccion = direccion;
         this.capacidad = capacidad;
         this.tipoSuelo = tipoSuelo;
         this.zona = zona;
@@ -44,6 +48,7 @@ public class Cancha {
 
     public Integer getCapacidad() {
         return capacidad;
+
     }
 
     public void setCapacidad(Integer capacidad) {
@@ -66,11 +71,33 @@ public class Cancha {
         this.zona = zona;
     }
 
-    public Boolean getDisponible() {
-        return disponible;
+   
+    public List<Horario> getHorarios() {
+        return horarios;
     }
 
-    public void setDisponible(Boolean disponible) {
-        this.disponible = disponible;
+    public void setHorarios(List<Horario> horarios) {
+        this.horarios = horarios;
+       
+    }
+
+    public void addHorario(Horario h) {
+        horarios.add(h);
+        h.setCancha(this);
+       
+    }
+
+    public void removeHorario(Horario h) {
+        horarios.remove(h);
+        h.setCancha(null);
+       
+    }
+    
+    
+    public String getDireccion() {
+        return direccion;
+    }
+    public void setDireccion(String direccion) {
+        this.direccion = direccion;
     }
 }

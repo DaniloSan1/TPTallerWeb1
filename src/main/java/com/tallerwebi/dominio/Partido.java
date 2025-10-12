@@ -22,17 +22,20 @@ public class Partido {
     @JoinColumn(name = "cancha_id")
     private Cancha cancha;
     @ManyToOne
+    @JoinColumn(name = "horario_id")
+    private Horario horario;
+    @ManyToOne
     @JoinColumn(name = "creador_id")
     private Usuario creador;
 
     @OneToMany(mappedBy = "partido", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private Set<PartidoParticipante> participantes = new HashSet<>();
 
+
     // Constructor por defecto para JPA
     public Partido() {
     }
-
-    public Partido(Long id, String titulo, Zona zona, Nivel nivel, LocalDateTime fecha, int cupoMaximo) {
+       public Partido(Long id, String titulo, Zona zona, Nivel nivel, LocalDateTime fecha, int cupoMaximo) {
         this.id = id;
         this.titulo = titulo;
         this.zona = zona;
@@ -41,17 +44,32 @@ public class Partido {
         this.cupoMaximo = cupoMaximo;
     }
 
-    public Partido(String titulo, Zona zona, Nivel nivel, LocalDateTime fecha, int cupoMaximo, Cancha cancha,
-            Usuario creador) {
+    public Partido(Long id, String titulo, String descripcion, Zona zona, Nivel nivel, LocalDateTime fecha, int cupoMaximo,
+            Horario horario, Usuario creador) {
         this.titulo = titulo;
         this.zona = zona;
         this.nivel = nivel;
         this.fecha = fecha;
         this.cupoMaximo = cupoMaximo;
-        this.cancha = cancha;
+        this.horario = horario;
         this.creador = creador;
+        this.descripcion = descripcion;
     }
 
+   
+    // helpers para manejar participantes
+    public Set<PartidoParticipante> getParticipantes() {
+        return participantes;
+    }
+
+    public Set<Long> getParticipantesIds() {
+        return participantes.stream()
+                .map(pp -> pp.getUsuario().getId())
+                .collect(java.util.stream.Collectors.toSet());
+    }
+    public Horario getHorario() {
+        return horario;
+    }
     public Long getId() {
         return id;
     }
@@ -132,14 +150,4 @@ public class Partido {
         this.cupoMaximo = cupoMaximo;
     }
 
-    // helpers para manejar participantes
-    public Set<PartidoParticipante> getParticipantes() {
-        return participantes;
-    }
-
-    public Set<Long> getParticipantesIds() {
-        return participantes.stream()
-                .map(pp -> pp.getUsuario().getId())
-                .collect(java.util.stream.Collectors.toSet());
-    }
 }

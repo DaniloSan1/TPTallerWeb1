@@ -21,3 +21,9 @@ hs_err_pid*
 
 **/node_modules/
 .vscode/
+
+**/HibernateConfig.java
+**/HibernateTestConfig.java
+**/HibernateTestInfraestructuraConfig.java
+.env
+DockerfileSQL

@@ -1,6 +1,9 @@
 package com.tallerwebi.dominio;
 
 import org.springframework.stereotype.Service;
+
+import com.tallerwebi.dominio.excepcion.PartidoNoEncontrado;
+
 import java.util.List;
 import java.util.stream.Collectors;
 import java.time.LocalDateTime;
@@ -39,5 +42,13 @@ public class ServicioPartidoImpl implements ServicioPartido {
         p.setDescripcion(descripcion);
         repoPartido.guardar(p);
         return p;
+    }
+    @Override
+    public Partido obtenerPorId(Long id) {
+        Partido partido = repoPartido.porId(id);
+        if (partido == null) {
+            throw new PartidoNoEncontrado();
+        }
+        return partido;
     }
 }
