@@ -33,6 +33,7 @@ import com.tallerwebi.dominio.Cancha;
 import com.tallerwebi.dominio.Horario;
 import com.tallerwebi.dominio.Nivel;
 import com.tallerwebi.dominio.Partido;
+import com.tallerwebi.dominio.Reserva;
 import com.tallerwebi.dominio.Usuario;
 import com.tallerwebi.dominio.Zona;
 import com.tallerwebi.integracion.config.HibernateTestConfig;
@@ -67,22 +68,23 @@ public class ControladorPartidoTest {
 
 		Cancha cancha = new Cancha("Cancha 1", null, null, "Direccion 1", Zona.NORTE);
 		this.sessionFactory.getCurrentSession().save(cancha);
-		this.sessionFactory.getCurrentSession().flush();
 
 		Horario horario = new Horario(cancha, DayOfWeek.MONDAY, LocalTime.now(), LocalTime.now().plusHours(1));
 		this.sessionFactory.getCurrentSession().save(horario);
-		this.sessionFactory.getCurrentSession().flush();
 
 		Usuario creador = new Usuario("usuario1", "password", "email@example.com");
 		this.sessionFactory.getCurrentSession().save(creador);
-		this.sessionFactory.getCurrentSession().flush();
 
-		Partido nuevoPartido = new Partido(null,"Partido de prueba", "Descripción del partido", Zona.NORTE, Nivel.INTERMEDIO,
-				LocalDateTime.now(), 10,
-				horario, creador);
+		Reserva reserva = new Reserva(horario, creador, LocalDateTime.now().plusDays(1));
+		this.sessionFactory.getCurrentSession().save(reserva);
+
+		Partido nuevoPartido = new Partido(null, "Partido de prueba", "Descripción del partido", Zona.NORTE,
+				Nivel.INTERMEDIO,
+				10,
+				reserva,
+				creador);
 
 		this.sessionFactory.getCurrentSession().save(nuevoPartido);
-		this.sessionFactory.getCurrentSession().flush();
 
 		MvcResult result = this.mockMvc.perform(get("/detalle-partido/{id}", nuevoPartido.getId()))
 				.andExpect(status().isOk())

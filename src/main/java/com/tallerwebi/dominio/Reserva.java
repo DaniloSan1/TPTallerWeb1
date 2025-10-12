@@ -19,6 +19,7 @@ public class Reserva {
     private LocalDateTime fechaReserva; // Fecha específica para la cual se hace la reserva
     private Boolean activa = true;
     private LocalDateTime fechaCreacion;
+
     public Reserva() {
         this.fechaCreacion = LocalDateTime.now();
     }
@@ -30,6 +31,7 @@ public class Reserva {
         this.activa = true;
         this.fechaCreacion = LocalDateTime.now();
     }
+
     public Long getId() {
         return id;
     }
@@ -45,6 +47,7 @@ public class Reserva {
     public void setHorario(Horario horario) {
         this.horario = horario;
     }
+
     public Cancha getCancha() {
         return horario != null ? horario.getCancha() : null;
     }
@@ -64,6 +67,7 @@ public class Reserva {
     public void setFechaReserva(LocalDateTime fechaReserva) {
         this.fechaReserva = fechaReserva;
     }
+
     public LocalDateTime getFechaHoraInicio() {
         if (horario == null || fechaReserva == null)
             return null;
@@ -91,6 +95,7 @@ public class Reserva {
     public void setFechaCreacion(LocalDateTime fechaCreacion) {
         this.fechaCreacion = fechaCreacion;
     }
+
     public void cancelar() {
         this.activa = false;
     }

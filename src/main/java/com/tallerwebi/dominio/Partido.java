@@ -15,15 +15,14 @@ public class Partido {
     private Zona zona;
     @Enumerated(EnumType.STRING)
     private Nivel nivel;
-    private LocalDateTime fecha;
     private int cupoMaximo;
     private String descripcion;
     @ManyToOne
     @JoinColumn(name = "cancha_id")
     private Cancha cancha;
     @ManyToOne
-    @JoinColumn(name = "horario_id")
-    private Horario horario;
+    @JoinColumn(name = "reserva_id")
+    private Reserva reserva;
     @ManyToOne
     @JoinColumn(name = "creador_id")
     private Usuario creador;
@@ -31,32 +30,22 @@ public class Partido {
     @OneToMany(mappedBy = "partido", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private Set<PartidoParticipante> participantes = new HashSet<>();
 
-
     // Constructor por defecto para JPA
     public Partido() {
     }
-       public Partido(Long id, String titulo, Zona zona, Nivel nivel, LocalDateTime fecha, int cupoMaximo) {
-        this.id = id;
-        this.titulo = titulo;
-        this.zona = zona;
-        this.nivel = nivel;
-        this.fecha = fecha;
-        this.cupoMaximo = cupoMaximo;
-    }
 
-    public Partido(Long id, String titulo, String descripcion, Zona zona, Nivel nivel, LocalDateTime fecha, int cupoMaximo,
-            Horario horario, Usuario creador) {
+    public Partido(Long id, String titulo, String descripcion, Zona zona, Nivel nivel,
+            int cupoMaximo,
+            Reserva reserva, Usuario creador) {
         this.titulo = titulo;
         this.zona = zona;
         this.nivel = nivel;
-        this.fecha = fecha;
         this.cupoMaximo = cupoMaximo;
-        this.horario = horario;
+        this.reserva = reserva;
         this.creador = creador;
         this.descripcion = descripcion;
     }
 
-   
     // helpers para manejar participantes
     public Set<PartidoParticipante> getParticipantes() {
         return participantes;
@@ -67,9 +56,11 @@ public class Partido {
                 .map(pp -> pp.getUsuario().getId())
                 .collect(java.util.stream.Collectors.toSet());
     }
-    public Horario getHorario() {
-        return horario;
+
+    public Reserva getReserva() {
+        return reserva;
     }
+
     public Long getId() {
         return id;
     }
@@ -87,7 +78,7 @@ public class Partido {
     }
 
     public LocalDateTime getFecha() {
-        return fecha;
+        return reserva.getFechaHoraInicio();
     }
 
     public int getCupoMaximo() {
@@ -140,10 +131,6 @@ public class Partido {
 
     public void setNivel(Nivel nivel) {
         this.nivel = nivel;
-    }
-
-    public void setFecha(LocalDateTime fecha) {
-        this.fecha = fecha;
     }
 
     public void setCupoMaximo(int cupoMaximo) {

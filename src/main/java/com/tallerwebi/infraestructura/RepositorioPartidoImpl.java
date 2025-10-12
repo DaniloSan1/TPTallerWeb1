@@ -37,14 +37,14 @@ public class RepositorioPartidoImpl implements RepositorioPartido {
     @Override
     public List<Partido> todos() {
         Map<Long, Partido> data = new HashMap<>();
-        guardar(new Partido(null,"Mix Norte", "Descripción Mix Norte", Zona.NORTE, Nivel.INTERMEDIO,
-                LocalDateTime.now().plusDays(1), 6, null, null));
-        guardar(new Partido(null,"Centro Pro", "Descripción Centro Pro", Zona.CENTRO, Nivel.AVANZADO,
-                LocalDateTime.now().plusHours(6), 4, null, null));
-        guardar(new Partido(null,"Sur Tranqui", "Descripción Sur Tranqui", Zona.SUR, Nivel.PRINCIPIANTE,
-                LocalDateTime.now().plusDays(2), 8, null, null));
-        guardar(new Partido(null,"Este Inter", "Descripción Este Inter", Zona.ESTE, Nivel.INTERMEDIO,
-                LocalDateTime.now().plusDays(3), 5, null, null));
+        guardar(new Partido(null, "Mix Norte", "Descripción Mix Norte", Zona.NORTE, Nivel.INTERMEDIO,
+                6, null, null));
+        guardar(new Partido(null, "Centro Pro", "Descripción Centro Pro", Zona.CENTRO, Nivel.AVANZADO,
+                4, null, null));
+        guardar(new Partido(null, "Sur Tranqui", "Descripción Sur Tranqui", Zona.SUR, Nivel.PRINCIPIANTE,
+                8, null, null));
+        guardar(new Partido(null, "Este Inter", "Descripción Este Inter", Zona.ESTE, Nivel.INTERMEDIO,
+                5, null, null));
 
         return data.values().stream()
                 .sorted(Comparator.comparing(Partido::getFecha))
