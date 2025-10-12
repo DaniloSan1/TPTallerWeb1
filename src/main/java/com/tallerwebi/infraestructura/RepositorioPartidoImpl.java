@@ -31,6 +31,7 @@ public class RepositorioPartidoImpl implements RepositorioPartido {
     public List<Partido> todos() {
         final Session session = sessionFactory.getCurrentSession();
         return (List<Partido>) session.createCriteria(Partido.class).list();
+
     }
 
     @Override

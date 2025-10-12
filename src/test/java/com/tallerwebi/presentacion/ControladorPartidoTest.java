@@ -11,12 +11,13 @@ import org.mockito.Mockito;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.tallerwebi.dominio.Cancha;
-import com.tallerwebi.dominio.Horario;
 import com.tallerwebi.dominio.Nivel;
 import com.tallerwebi.dominio.Partido;
+import com.tallerwebi.dominio.Reserva;
 import com.tallerwebi.dominio.ServicioPartido;
 import com.tallerwebi.dominio.Usuario;
 import com.tallerwebi.dominio.Zona;
+import com.tallerwebi.dominio.excepcion.PartidoNoEncontrado;
 
 public class ControladorPartidoTest {
     private ServicioPartido servicioPartidoMock;
@@ -39,22 +40,21 @@ public class ControladorPartidoTest {
         when(partidoMock.getCupoMaximo()).thenReturn(10);
         when(partidoMock.getDescripcion()).thenReturn("Descripción del partido");
 
-        Horario horarioMock = Mockito.mock(Horario.class);
-        when(partidoMock.getHorario()).thenReturn(horarioMock);
-        when(horarioMock.getDiaSemana()).thenReturn(java.time.DayOfWeek.SUNDAY);
-        when(horarioMock.getHoraInicio()).thenReturn(java.time.LocalTime.of(18, 0));
-        when(horarioMock.getHoraFin()).thenReturn(java.time.LocalTime.of(20, 0));
-
-        // Mock the related objects
+        // Create mocks for related objects
         Cancha canchaMock = Mockito.mock(Cancha.class);
         when(canchaMock.getId()).thenReturn(1L);
         when(canchaMock.getNombre()).thenReturn("Cancha 1");
-        when(partidoMock.getHorario()).thenReturn(horarioMock);
-        when(partidoMock.getHorario().getCancha()).thenReturn(canchaMock);
 
         Usuario creadorMock = Mockito.mock(Usuario.class);
         when(creadorMock.getId()).thenReturn(1L);
         when(creadorMock.getNombre()).thenReturn("Usuario Creador");
+
+        // Create mock for Reserva
+        Reserva reservaMock = Mockito.mock(Reserva.class);
+        when(reservaMock.getCancha()).thenReturn(canchaMock);
+
+        // Set up the partido mock with all required relationships
+        when(partidoMock.getReserva()).thenReturn(reservaMock);
         when(partidoMock.getCreador()).thenReturn(creadorMock);
 
         controladorPartido = new ControladorPartido(servicioPartidoMock);
@@ -78,7 +78,7 @@ public class ControladorPartidoTest {
     @Test
     public void detalleDeberiallevarADetallePartidoYDevolverUnErrorAlNoEncontrarElPartido() {
         when(servicioPartidoMock.obtenerPorId(Mockito.anyLong()))
-                .thenThrow(new RuntimeException("Partido no encontrado"));
+                .thenThrow(new PartidoNoEncontrado());
 
         ModelAndView modelAndView = controladorPartido.detalle(1L);
 

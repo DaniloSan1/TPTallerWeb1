@@ -10,6 +10,7 @@ import com.tallerwebi.dominio.Horario;
 import com.tallerwebi.dominio.Nivel;
 import com.tallerwebi.dominio.Partido;
 import com.tallerwebi.dominio.RepositorioPartido;
+import com.tallerwebi.dominio.Reserva;
 import com.tallerwebi.dominio.Usuario;
 import com.tallerwebi.dominio.Zona;
 import com.tallerwebi.infraestructura.config.HibernateTestInfraestructuraConfig;
@@ -57,9 +58,12 @@ public class RepositorioPartidoImplTest {
         this.sessionFactory.getCurrentSession().save(creador);
         this.sessionFactory.getCurrentSession().flush();
 
-        Partido nuevoPartido = new Partido(null,"Partido de prueba", "Descripción del partido", Zona.NORTE, Nivel.INTERMEDIO,
-                LocalDateTime.now(), 10,
-                horario, creador);
+        Reserva reserva = new Reserva(horario, creador, LocalDateTime.now().plusDays(1));
+
+        Partido nuevoPartido = new Partido(null, "Partido de prueba", "Descripción del partido", Zona.NORTE,
+                Nivel.INTERMEDIO,
+                10,
+                reserva, creador);
 
         this.sessionFactory.getCurrentSession().save(nuevoPartido);
         // Implementar el test para obtener un partido por ID
