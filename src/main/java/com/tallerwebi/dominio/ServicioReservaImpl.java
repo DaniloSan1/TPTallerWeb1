@@ -37,7 +37,7 @@ public class ServicioReservaImpl implements ServicioReserva {
     }
 
     @Override
-    public Boolean cancelarReserva(Long id) {
+    public Reserva cancelarReserva(Long id) {
         if (id == null) {
             throw new RuntimeException("El id de la reserva no puede ser nulo");
         }
@@ -52,7 +52,7 @@ public class ServicioReservaImpl implements ServicioReserva {
 
         reserva.cancelar();
         this.repositorioReserva.guardar(reserva);
-        return true;
+        return reserva;
     }
 
     @Override
