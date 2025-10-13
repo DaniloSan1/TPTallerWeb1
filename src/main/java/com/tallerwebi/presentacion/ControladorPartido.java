@@ -67,9 +67,12 @@ public class ControladorPartido {
     }
 
     @PostMapping("partidos/{id}/inscripcion")
-    public ResponseEntity<?> inscripcion(@PathVariable long partidoId, HttpServletRequest request) throws Exception {
+    public ResponseEntity<?> inscripcion(@PathVariable long id, HttpServletRequest request) throws Exception {
         try {
-            servicio.anotarParticipante(partidoId, request.getSession().getAttribute("EMAIL").toString());
+            System.out.println("Entro al endpoint");
+            System.out.println("ID del partido: " + id);
+            System.out.println(request.getSession());
+            servicio.anotarParticipante(id, request.getSession().getAttribute("EMAIL").toString());
             return ResponseEntity.ok().build();
         } catch (NoHayCupoEnPartido e) {
             return ResponseEntity.unprocessableEntity().body(e.getMessage());
