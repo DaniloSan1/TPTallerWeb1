@@ -14,13 +14,15 @@ import javax.servlet.http.HttpServletRequest;
 @RequestMapping("/perfil")
 public class ControladorUsuario {
     private ServicioLogin serivicioLogin;
+
     public ControladorUsuario(ServicioLogin serivicioLogin) {
         this.serivicioLogin = serivicioLogin;
     }
+
     @GetMapping
     public String perfil(ModelMap modelo, HttpServletRequest request) {
         String email = (String) request.getSession().getAttribute("EMAIL");
-        if(email != null){
+        if (email != null) {
             Usuario usuario = serivicioLogin.buscarPorEmail(email);
             modelo.addAttribute("usuario", usuario);
             return "perfil";
@@ -28,18 +30,9 @@ public class ControladorUsuario {
         return "redirect:/login";
     }
 
-
     @GetMapping("/logout")
     public ModelAndView logout(HttpServletRequest request) {
         request.getSession().invalidate();
         return new ModelAndView("redirect:/login");
     }
-
 }
-
-
-
-
-
-
-

@@ -2,8 +2,10 @@ package com.tallerwebi.dominio;
 
 import java.util.List;
 
+import com.tallerwebi.dominio.excepcion.NoExisteElUsuario;
 import com.tallerwebi.dominio.excepcion.NoHayCupoEnPartido;
 import com.tallerwebi.dominio.excepcion.PartidoNoEncontrado;
+import com.tallerwebi.dominio.excepcion.YaExisteElParticipante;
 
 public interface ServicioPartido {
     List<Partido> listarTodos();
@@ -15,5 +17,6 @@ public interface ServicioPartido {
 
     Partido obtenerPorId(Long id);
 
-    void anotarParticipante(Long partidoId, String username) throws NoHayCupoEnPartido, PartidoNoEncontrado;
+    void anotarParticipante(Long partidoId, String username)
+            throws NoExisteElUsuario, NoHayCupoEnPartido, PartidoNoEncontrado, YaExisteElParticipante;
 }

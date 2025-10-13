@@ -2,6 +2,7 @@ package com.tallerwebi.dominio;
 
 import org.springframework.stereotype.Service;
 
+import com.tallerwebi.dominio.excepcion.NoExisteElUsuario;
 import com.tallerwebi.dominio.excepcion.NoHayCupoEnPartido;
 import com.tallerwebi.dominio.excepcion.PartidoNoEncontrado;
 import com.tallerwebi.dominio.excepcion.YaExisteElParticipante;
@@ -76,7 +77,12 @@ public class ServicioPartidoImpl implements ServicioPartido {
     @Override
     @Transactional
     public void anotarParticipante(Long partidoId, String username)
-            throws NoHayCupoEnPartido, PartidoNoEncontrado, YaExisteElParticipante {
+            throws NoExisteElUsuario, NoHayCupoEnPartido, PartidoNoEncontrado, YaExisteElParticipante {
+        Usuario usuario = repoUsuario.buscar(username);
+        if (usuario == null) {
+            throw new NoExisteElUsuario();
+        }
+
         Partido partido = repoPartido.porId(partidoId);
 
         if (partido == null) {
@@ -86,8 +92,6 @@ public class ServicioPartidoImpl implements ServicioPartido {
         if (!partido.validarCupo()) {
             throw new NoHayCupoEnPartido();
         }
-
-        Usuario usuario = repoUsuario.buscar(username);
         if (partido.validarParticipanteExistente(usuario.getId())) {
             throw new YaExisteElParticipante();
         }

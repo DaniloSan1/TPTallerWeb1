@@ -12,6 +12,7 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.cglib.core.Local;
 
+import com.tallerwebi.dominio.excepcion.NoExisteElUsuario;
 import com.tallerwebi.dominio.excepcion.NoHayCupoEnPartido;
 import com.tallerwebi.dominio.excepcion.PartidoNoEncontrado;
 import com.tallerwebi.dominio.excepcion.YaExisteElParticipante;
@@ -61,34 +62,56 @@ public class ServicioPartidoImplTest {
     }
 
     @Test
-    public void deberiaLanzarExcepcionAlAnotarParticipante() throws NoHayCupoEnPartido {
+    public void deberiaLanzarExcepcionAlAnotarParticipanteInexistente() throws NoExisteElUsuario {
         Mockito.when(repositorioPartidoMock.porId(Mockito.anyLong())).thenReturn(partidoMock);
         Mockito.when(partidoMock.validarCupo()).thenReturn(false);
+        Mockito.when(repositorioUsuarioMock.buscar(Mockito.anyString()))
+                .thenReturn(null);
+
+        ServicioPartido servicioPartido = new ServicioPartidoImpl(repositorioPartidoMock, repositorioReservaMock,
+                repositorioUsuarioMock, repositorioPartidoParticipanteMock);
+
+        assertThrows(NoExisteElUsuario.class, () -> servicioPartido.anotarParticipante(1L, "usuario1@email.com"));
+        Mockito.verify(repositorioUsuarioMock, Mockito.times(1)).buscar(Mockito.anyString());
+        Mockito.verify(repositorioPartidoMock, Mockito.times(0)).porId(Mockito.anyLong());
+        Mockito.verify(repositorioPartidoParticipanteMock, Mockito.times(0)).guardar(Mockito.any());
+    }
+
+    @Test
+    public void deberiaLanzarExcepcionAlAnotarParticipanteSiNoHayCupo() throws NoHayCupoEnPartido {
+        Mockito.when(repositorioPartidoMock.porId(Mockito.anyLong())).thenReturn(partidoMock);
+        Mockito.when(partidoMock.validarCupo()).thenReturn(false);
+        Mockito.when(repositorioUsuarioMock.buscar(Mockito.anyString()))
+                .thenReturn(usuarioMock);
+        Mockito.when(usuarioMock.getId()).thenReturn(1L);
 
         ServicioPartido servicioPartido = new ServicioPartidoImpl(repositorioPartidoMock, repositorioReservaMock,
                 repositorioUsuarioMock, repositorioPartidoParticipanteMock);
 
         assertThrows(NoHayCupoEnPartido.class, () -> servicioPartido.anotarParticipante(1L, "usuario1@email.com"));
         Mockito.verify(repositorioPartidoMock, Mockito.times(1)).porId(Mockito.anyLong());
-        Mockito.verify(repositorioUsuarioMock, Mockito.times(0)).buscar(Mockito.anyString());
+        Mockito.verify(repositorioUsuarioMock, Mockito.times(1)).buscar(Mockito.anyString());
         Mockito.verify(repositorioPartidoParticipanteMock, Mockito.times(0)).guardar(Mockito.any());
     }
 
     @Test
     public void deberiaLanzarExcepcionAlAnotarParticipanteEnPartidoInexistente() throws PartidoNoEncontrado {
         Mockito.when(repositorioPartidoMock.porId(Mockito.anyLong())).thenReturn(null);
+        Mockito.when(repositorioUsuarioMock.buscar(Mockito.anyString()))
+                .thenReturn(usuarioMock);
+        Mockito.when(usuarioMock.getId()).thenReturn(1L);
 
         ServicioPartido servicioPartido = new ServicioPartidoImpl(repositorioPartidoMock, repositorioReservaMock,
                 repositorioUsuarioMock, repositorioPartidoParticipanteMock);
 
         assertThrows(PartidoNoEncontrado.class, () -> servicioPartido.anotarParticipante(1L, "usuario1@email.com"));
         Mockito.verify(repositorioPartidoMock, Mockito.times(1)).porId(Mockito.anyLong());
-        Mockito.verify(repositorioUsuarioMock, Mockito.times(0)).buscar(Mockito.anyString());
+        Mockito.verify(repositorioUsuarioMock, Mockito.times(1)).buscar(Mockito.anyString());
         Mockito.verify(repositorioPartidoParticipanteMock, Mockito.times(0)).guardar(Mockito.any());
     }
 
     @Test
-    public void deberiaLanzarExcepcionSiElParticipanteYaEstaAnotado() throws YaExisteElParticipante {
+    public void deberiaLanzarExcepcionAlAnotarParticipanteSiYaEstaAnotado() throws YaExisteElParticipante {
         Mockito.when(repositorioPartidoMock.porId(Mockito.anyLong())).thenReturn(partidoMock);
         Mockito.when(partidoMock.validarCupo()).thenReturn(true);
         Mockito.when(partidoMock.validarParticipanteExistente(Mockito.anyLong())).thenReturn(true);
