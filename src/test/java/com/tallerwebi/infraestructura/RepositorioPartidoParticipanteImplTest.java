@@ -76,7 +76,6 @@ public class RepositorioPartidoParticipanteImplTest {
                 .add(Restrictions.eq("partido.id", nuevoPartido.getId()))
                 .add(Restrictions.eq("usuario.id", participante.getId()))
                 .uniqueResult();
-
         assertThat(partidoParticipanteObtenido, is(equalTo(partidoParticipante)));
     }
 }
