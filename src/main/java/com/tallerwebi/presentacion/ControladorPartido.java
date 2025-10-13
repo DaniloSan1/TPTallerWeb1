@@ -18,7 +18,9 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.tallerwebi.dominio.Nivel;
 import com.tallerwebi.dominio.Partido;
+import com.tallerwebi.dominio.ServicioLogin;
 import com.tallerwebi.dominio.ServicioPartido;
+import com.tallerwebi.dominio.Usuario;
 import com.tallerwebi.dominio.Zona;
 import com.tallerwebi.dominio.excepcion.NoHayCupoEnPartido;
 import com.tallerwebi.dominio.excepcion.PartidoNoEncontrado;
@@ -28,10 +30,12 @@ import com.tallerwebi.dominio.excepcion.YaExisteElParticipante;
 public class ControladorPartido {
 
     private ServicioPartido servicio;
+    private ServicioLogin servicioLogin;
 
     @Autowired
-    public ControladorPartido(ServicioPartido servicio) {
+    public ControladorPartido(ServicioPartido servicio, ServicioLogin servicioLogin) {
         this.servicio = servicio;
+        this.servicioLogin = servicioLogin;
     }
 
     @GetMapping("/partidos")
@@ -52,12 +56,17 @@ public class ControladorPartido {
     }
 
     @GetMapping("detalle-partido/{id}")
-    public ModelAndView detalle(@PathVariable long id) {
+    public ModelAndView detalle(@PathVariable long id, HttpServletRequest request) {
         ModelMap modelo = new ModelMap();
-
         try {
+            String email = (String) request.getSession().getAttribute("EMAIL");
+            if (email == null) {
+                return new ModelAndView("redirect:/login");
+            }
+
+            Usuario usuario = servicioLogin.buscarPorEmail(request.getSession().getAttribute("EMAIL").toString());
             Partido partido = servicio.obtenerPorId(id);
-            modelo.put("partido", new DetallePartido(partido));
+            modelo.put("partido", new DetallePartido(partido, usuario));
 
         } catch (Exception e) {
             modelo.put("error", e.getMessage());
@@ -69,9 +78,6 @@ public class ControladorPartido {
     @PostMapping("partidos/{id}/inscripcion")
     public ResponseEntity<?> inscripcion(@PathVariable long id, HttpServletRequest request) throws Exception {
         try {
-            System.out.println("Entro al endpoint");
-            System.out.println("ID del partido: " + id);
-            System.out.println(request.getSession());
             servicio.anotarParticipante(id, request.getSession().getAttribute("EMAIL").toString());
             return ResponseEntity.ok().build();
         } catch (NoHayCupoEnPartido e) {

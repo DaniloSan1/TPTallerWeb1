@@ -24,7 +24,7 @@ public class Partido {
     @JoinColumn(name = "creador_id")
     private Usuario creador;
 
-    @OneToMany(mappedBy = "partido", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "partido", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
     private Set<PartidoParticipante> participantes = new HashSet<>();
 
     // Constructor por defecto para JPA

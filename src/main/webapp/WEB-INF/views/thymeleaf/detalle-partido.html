@@ -106,12 +106,25 @@
               id="creador"
               disabled
             />
-            
+            <label for="hayCupo" class="form-label mt-3">Hay Cupo?:</label>
+            <input
+              th:value="${partido.hayCupo ? 'Sí' : 'No'}"
+              class="form-control"
+              id="hayCupo"
+              disabled
+            />
+            <label for="yaParticipa" class="form-label mt-3">Ya participa?:</label>
+            <input
+              th:value="${partido.yaParticipa ? 'Sí' : 'No'}"
+              class="form-control"
+              id="yaParticipa"
+              disabled
+            />
           </br>
           <a id="btn-volver" class="btn btn-lg btn-secondary btn-block" th:href="@{/home}" role="button">
             Volver
           </a>
-          <button id="btn-unirse" class="btn btn-lg btn-primary btn-block" th:onclick="|unirseAPartido(${partido.id})|">
+          <button id="btn-unirse" class="btn btn-lg btn-primary btn-block" th:onclick="|unirseAPartido(${partido.id})|" th:disabled="${!partido.hayCupo || partido.yaParticipa}">
             Unirse
           </button>
           </form>

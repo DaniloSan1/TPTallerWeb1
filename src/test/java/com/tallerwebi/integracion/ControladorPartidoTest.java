@@ -86,7 +86,8 @@ public class ControladorPartidoTest {
 
 		this.sessionFactory.getCurrentSession().save(nuevoPartido);
 
-		MvcResult result = this.mockMvc.perform(get("/detalle-partido/{id}", nuevoPartido.getId()))
+		MvcResult result = this.mockMvc.perform(get("/detalle-partido/{id}", nuevoPartido.getId())
+				.sessionAttr("EMAIL", "email@example.com"))
 				.andExpect(status().isOk())
 				.andReturn();
 
@@ -122,7 +123,8 @@ public class ControladorPartidoTest {
 	@Transactional
 	@Rollback
 	public void debeRetornarLaPaginaDetallePartidoConErrorCuandoElPartidoNoExiste() throws Exception {
-		MvcResult result = this.mockMvc.perform(get("/detalle-partido/{id}", 999L))
+		MvcResult result = this.mockMvc.perform(get("/detalle-partido/{id}", 999L)
+				.sessionAttr("EMAIL", "email@example.com"))
 				.andExpect(status().isOk())
 				.andReturn();
 
