@@ -4,6 +4,7 @@ import java.time.LocalDateTime;
 
 import com.tallerwebi.dominio.Nivel;
 import com.tallerwebi.dominio.Partido;
+import com.tallerwebi.dominio.Usuario;
 import com.tallerwebi.dominio.Zona;
 
 public class DetallePartido {
@@ -18,8 +19,10 @@ public class DetallePartido {
     private Long creadorId;
     private String cancha;
     private String creador;
+    private Boolean hayCupo;
+    private Boolean yaParticipa;
 
-    public DetallePartido(Partido partido) {
+    public DetallePartido(Partido partido, Usuario usuario) {
         this.id = partido.getId();
         this.titulo = partido.getTitulo();
         this.zona = partido.getZona();
@@ -31,6 +34,8 @@ public class DetallePartido {
         this.creadorId = partido.getCreador().getId();
         this.cancha = partido.getReserva().getCancha().getNombre();
         this.creador = partido.getCreador().getNombre();
+        this.hayCupo = partido.tieneCupo();
+        this.yaParticipa = partido.validarParticipanteExistente(usuario.getId());
     }
 
     public Long getId() {
@@ -77,4 +82,11 @@ public class DetallePartido {
         return creador;
     }
 
+    public Boolean getHayCupo() {
+        return hayCupo;
+    }
+
+    public Boolean getYaParticipa() {
+        return yaParticipa;
+    }
 }

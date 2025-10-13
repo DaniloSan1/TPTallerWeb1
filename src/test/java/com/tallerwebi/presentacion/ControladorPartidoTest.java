@@ -19,6 +19,7 @@ import com.tallerwebi.dominio.Cancha;
 import com.tallerwebi.dominio.Nivel;
 import com.tallerwebi.dominio.Partido;
 import com.tallerwebi.dominio.Reserva;
+import com.tallerwebi.dominio.ServicioLogin;
 import com.tallerwebi.dominio.ServicioPartido;
 import com.tallerwebi.dominio.Usuario;
 import com.tallerwebi.dominio.Zona;
@@ -28,18 +29,21 @@ import com.tallerwebi.dominio.excepcion.YaExisteElParticipante;
 
 public class ControladorPartidoTest {
     private ServicioPartido servicioPartidoMock;
+    private ServicioLogin servicioLoginMock;
     private Partido partidoMock;
     private ControladorPartido controladorPartido;
     private HttpServletRequest requestMock;
     private HttpSession sessionMock;
+    private Usuario usuarioMock;
 
     @BeforeEach
     public void init() {
         requestMock = Mockito.mock(HttpServletRequest.class);
         sessionMock = Mockito.mock(javax.servlet.http.HttpSession.class);
+        servicioLoginMock = Mockito.mock(ServicioLogin.class);
         servicioPartidoMock = Mockito.mock(ServicioPartido.class);
         partidoMock = Mockito.mock(Partido.class);
-
+        usuarioMock = Mockito.mock(Usuario.class);
         when(requestMock.getSession()).thenReturn(sessionMock);
 
         // Mock the necessary methods that will be called by DetallePartido constructor
@@ -68,14 +72,26 @@ public class ControladorPartidoTest {
         when(partidoMock.getReserva()).thenReturn(reservaMock);
         when(partidoMock.getCreador()).thenReturn(creadorMock);
 
-        controladorPartido = new ControladorPartido(servicioPartidoMock);
+        controladorPartido = new ControladorPartido(servicioPartidoMock, servicioLoginMock);
+    }
+
+    @Test
+    public void detalleDeberiallevarALoginSiNoExisteEMAILEnSesion() {
+        when(sessionMock.getAttribute("EMAIL")).thenReturn(null);
+
+        ModelAndView modelAndView = controladorPartido.detalle(1L, requestMock);
+
+        assertNotNull(modelAndView);
+        assertEquals("redirect:/login", modelAndView.getViewName());
     }
 
     @Test
     public void detalleDeberiallevarADetallePartido() {
+        when(sessionMock.getAttribute("EMAIL")).thenReturn("usuario1@email.com");
         when(servicioPartidoMock.obtenerPorId(Mockito.anyLong())).thenReturn(partidoMock);
+        when(servicioLoginMock.buscarPorEmail(Mockito.anyString())).thenReturn(usuarioMock);
 
-        ModelAndView modelAndView = controladorPartido.detalle(1L);
+        ModelAndView modelAndView = controladorPartido.detalle(1L, requestMock);
 
         assertNotNull(modelAndView);
         assertEquals("detalle-partido", modelAndView.getViewName());
@@ -88,10 +104,12 @@ public class ControladorPartidoTest {
 
     @Test
     public void detalleDeberiallevarADetallePartidoYDevolverUnErrorAlNoEncontrarElPartido() {
+        when(sessionMock.getAttribute("EMAIL")).thenReturn("usuario1@email.com");
+        when(servicioLoginMock.buscarPorEmail(Mockito.anyString())).thenReturn(usuarioMock);
         when(servicioPartidoMock.obtenerPorId(Mockito.anyLong()))
                 .thenThrow(new PartidoNoEncontrado());
 
-        ModelAndView modelAndView = controladorPartido.detalle(1L);
+        ModelAndView modelAndView = controladorPartido.detalle(1L, requestMock);
 
         assertNotNull(modelAndView);
         assertEquals("detalle-partido", modelAndView.getViewName());
