@@ -9,6 +9,7 @@ import com.tallerwebi.dominio.Cancha;
 import com.tallerwebi.dominio.Horario;
 import com.tallerwebi.dominio.Nivel;
 import com.tallerwebi.dominio.Partido;
+import com.tallerwebi.dominio.PartidoParticipante;
 import com.tallerwebi.dominio.RepositorioPartido;
 import com.tallerwebi.dominio.Reserva;
 import com.tallerwebi.dominio.Usuario;
@@ -66,9 +67,45 @@ public class RepositorioPartidoImplTest {
                 reserva, creador);
 
         this.sessionFactory.getCurrentSession().save(nuevoPartido);
-        // Implementar el test para obtener un partido por ID
+        // Implementar el test para obtener un partido por ID.
         Partido partido = this.repositorioPartido.porId(nuevoPartido.getId());
 
         assertThat(partido, is(equalTo(nuevoPartido)));
+    }
+
+    @Test
+    @Transactional
+    @Rollback
+    public void deberiaContarLaCantidadDeParticipantesEnUnPartido() {
+        Cancha cancha = new Cancha("Cancha 1", null, null, "Direccion 1", Zona.NORTE);
+        this.sessionFactory.getCurrentSession().save(cancha);
+
+        Horario horario = new Horario(cancha, DayOfWeek.MONDAY, LocalTime.now(), LocalTime.now().plusHours(1));
+        this.sessionFactory.getCurrentSession().save(horario);
+
+        Usuario creador = new Usuario("usuario1", "password", "email@example.com");
+        this.sessionFactory.getCurrentSession().save(creador);
+
+        Reserva reserva = new Reserva(horario, creador, LocalDateTime.now().plusDays(1));
+        this.sessionFactory.getCurrentSession().save(reserva);
+
+        Partido nuevoPartido = new Partido(null, "Partido de prueba", "Descripción del partido", Zona.NORTE,
+                Nivel.INTERMEDIO,
+                10,
+                reserva, creador);
+
+        this.sessionFactory.getCurrentSession().save(nuevoPartido);
+
+        Usuario participante = new Usuario("participante1", "password", "participante1@example.com");
+        this.sessionFactory.getCurrentSession().save(participante);
+
+        PartidoParticipante partidoParticipante = new PartidoParticipante(nuevoPartido, participante);
+        this.sessionFactory.getCurrentSession().save(partidoParticipante);
+
+        this.sessionFactory.getCurrentSession().flush();
+        // Contar la cantidad de participantes en el partido
+        Long cantidadParticipantes = this.repositorioPartido.contarParticipantes(nuevoPartido.getId());
+
+        assertThat(cantidadParticipantes, is(equalTo(1L)));
     }
 }
