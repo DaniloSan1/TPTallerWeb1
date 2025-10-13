@@ -146,4 +146,139 @@ public class ServicioPartidoImplTest {
         Mockito.verify(repositorioUsuarioMock, Mockito.times(1)).buscar(Mockito.anyString());
         Mockito.verify(repositorioPartidoParticipanteMock, Mockito.times(1)).guardar(Mockito.any());
     }
+
+    @Test
+    public void deberiaFiltrarPartidosPorZona() {
+        Partido partidoNorte = Mockito.mock(Partido.class);
+        Partido partidoSur = Mockito.mock(Partido.class);
+
+        Mockito.when(partidoNorte.getZona()).thenReturn(Zona.NORTE);
+        Mockito.when(partidoSur.getZona()).thenReturn(Zona.SUR);
+
+        Mockito.when(repositorioPartidoMock.todos()).thenReturn(java.util.List.of(partidoNorte, partidoSur));
+
+        ServicioPartido servicioPartido = new ServicioPartidoImpl(
+                repositorioPartidoMock,
+                repositorioReservaMock,
+                repositorioUsuarioMock,
+                repositorioPartidoParticipanteMock
+        );
+
+        var partidosFiltrados = servicioPartido.buscar(Zona.NORTE, null, false);
+
+        assertEquals(1, partidosFiltrados.size());
+        assertEquals(Zona.NORTE, partidosFiltrados.get(0).getZona());
+        Mockito.verify(repositorioPartidoMock, Mockito.times(1)).todos();
+    }
+
+    @Test
+    public void deberiaFiltrarPartidosPorNivel() {
+        Partido partidoAvanzado = Mockito.mock(Partido.class);
+        Partido partidoPrincipiante = Mockito.mock(Partido.class);
+
+        Mockito.when(partidoAvanzado.getNivel()).thenReturn(Nivel.AVANZADO);
+        Mockito.when(partidoPrincipiante.getNivel()).thenReturn(Nivel.PRINCIPIANTE);
+
+        Mockito.when(repositorioPartidoMock.todos()).thenReturn(java.util.List.of(partidoAvanzado, partidoPrincipiante));
+
+        ServicioPartido servicioPartido = new ServicioPartidoImpl(
+                repositorioPartidoMock,
+                repositorioReservaMock,
+                repositorioUsuarioMock,
+                repositorioPartidoParticipanteMock
+        );
+
+        var partidosFiltrados = servicioPartido.buscar(null, Nivel.AVANZADO, false);
+
+        assertEquals(1, partidosFiltrados.size());
+        assertEquals(Nivel.AVANZADO, partidosFiltrados.get(0).getNivel());
+        Mockito.verify(repositorioPartidoMock, Mockito.times(1)).todos();
+    }
+
+    @Test
+    public void abandonarPartidoDeberiaEliminarAlUsuarioDeLaListaDeParticipantes() {
+        Usuario usuario = new Usuario("usuario", "123", "email@mail.com");
+        usuario.setId(1L);
+        Partido partido = new Partido();
+        partido.setId(1L);
+        PartidoParticipante participante = new PartidoParticipante(partido, usuario);
+        partido.getParticipantes().add(participante);
+
+        Mockito.when(repositorioPartidoMock.porId(1L)).thenReturn(partido);
+
+        ServicioPartido servicioPartido = new ServicioPartidoImpl(
+                repositorioPartidoMock,
+                repositorioReservaMock,
+                repositorioUsuarioMock,
+                repositorioPartidoParticipanteMock
+        );
+
+        servicioPartido.abandonarPartido(1L, 1L);
+
+        assertEquals(0, partido.getParticipantes().size());
+        Mockito.verify(repositorioPartidoMock, Mockito.times(1)).porId(1L);
+    }
+
+    @Test
+    public void deberiaLanzarExcepcionAlAbandonarPartidoYElPartidoNoExiste() {
+        Mockito.when(repositorioPartidoMock.porId(1L)).thenReturn(null);
+        ServicioPartido servicioPartido = new ServicioPartidoImpl(
+                repositorioPartidoMock,
+                repositorioReservaMock,
+                repositorioUsuarioMock,
+                repositorioPartidoParticipanteMock
+        );
+
+        assertThrows(PartidoNoEncontrado.class, () -> servicioPartido.abandonarPartido(1L, 1L));
+        Mockito.verify(repositorioPartidoMock, Mockito.times(1)).porId(1L);
+    }
+
+    @Test
+    public void deberiaLanzarExcepcionAlAbandonarPartidoSiElUsuarioNoEstaAnotado() {
+        Partido partido = new Partido();
+        partido.setId(1L);
+
+        Mockito.when(repositorioPartidoMock.porId(1L)).thenReturn(partido);
+
+        ServicioPartido servicioPartido = new ServicioPartidoImpl(
+                repositorioPartidoMock,
+                repositorioReservaMock,
+                repositorioUsuarioMock,
+                repositorioPartidoParticipanteMock
+        );
+
+        assertThrows(RuntimeException.class, () -> servicioPartido.abandonarPartido(1L, 1L));
+        Mockito.verify(repositorioPartidoMock, Mockito.times(1)).porId(1L);
+        Mockito.verify(repositorioPartidoMock, Mockito.never()).guardar(Mockito.any());
+    }
+
+    @Test
+    public void deberiaEliminarSoloAlUsuarioCorrecto() {
+        Usuario usuario1 = new Usuario("user1", "123", "email1@email.com");
+        usuario1.setId(1L);
+
+        Usuario usuario2 = new Usuario("user2", "123", "email2@email.com");
+        usuario2.setId(2L);
+
+        Partido partido = new Partido();
+        partido.setId(1L);
+        partido.getParticipantes().add(new PartidoParticipante(partido, usuario1));
+        partido.getParticipantes().add(new PartidoParticipante(partido, usuario2));
+
+        Mockito.when(repositorioPartidoMock.porId(1L)).thenReturn(partido);
+
+        ServicioPartido servicioPartido = new ServicioPartidoImpl(
+                repositorioPartidoMock,
+                repositorioReservaMock,
+                repositorioUsuarioMock,
+                repositorioPartidoParticipanteMock
+        );
+
+        servicioPartido.abandonarPartido(1L, 1L);
+
+        assertEquals(1, partido.getParticipantes().size());
+        assertEquals(2L, partido.getParticipantes().iterator().next().getUsuario().getId());
+    }
+
+
 }

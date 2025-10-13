@@ -9,13 +9,14 @@ import com.tallerwebi.dominio.excepcion.YaExisteElParticipante;
 
 public interface ServicioPartido {
     List<Partido> listarTodos();
-
     List<Partido> buscar(Zona zona, Nivel nivel, boolean soloConCupo);
 
     Partido crearDesdeReserva(Long reservaId, String titulo, String descripcion,
             Zona zona, Nivel nivel, int cupoMaximo, String username);
 
     Partido obtenerPorId(Long id);
+
+    public void abandonarPartido(Long partidoId, Long usuarioId);
 
     void anotarParticipante(Long partidoId, String username)
             throws NoExisteElUsuario, NoHayCupoEnPartido, PartidoNoEncontrado, YaExisteElParticipante;

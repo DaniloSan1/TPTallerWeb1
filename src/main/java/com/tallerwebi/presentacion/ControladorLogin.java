@@ -3,7 +3,7 @@ package com.tallerwebi.presentacion;
 import com.tallerwebi.dominio.Partido;
 import com.tallerwebi.dominio.ServicioLogin;
 import com.tallerwebi.dominio.Usuario;
-import com.tallerwebi.dominio.excepcion.UsuarioExistente;
+import com.tallerwebi.dominio.excepcion.UsuarioExistenteException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -47,6 +47,7 @@ public class ControladorLogin {
             request.getSession().setAttribute("APELLIDO", usuarioBuscado.getApellido());
             request.getSession().setAttribute("PASSWORD", usuarioBuscado.getPassword());
             request.getSession().setAttribute("POSICION_FAVORITA", usuarioBuscado.getPosicionFavorita());
+            request.getSession().setAttribute("USUARIO",usuarioBuscado);
             return new ModelAndView("redirect:/home");
         } else {
             model.put("error", "Usuario o clave incorrecta");
@@ -59,9 +60,6 @@ public class ControladorLogin {
         ModelMap model = new ModelMap();
         try {
             servicioLogin.registrar(usuario);
-        } catch (UsuarioExistente e) {
-            model.put("error", "El usuario ya existe");
-            return new ModelAndView("nuevo-usuario", model);
         } catch (Exception e) {
             model.put("error", "Error al registrar el nuevo usuario");
             return new ModelAndView("nuevo-usuario", model);

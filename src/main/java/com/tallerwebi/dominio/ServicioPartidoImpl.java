@@ -1,5 +1,6 @@
 package com.tallerwebi.dominio;
 
+import org.hibernate.Session;
 import org.springframework.stereotype.Service;
 
 import com.tallerwebi.dominio.excepcion.NoExisteElUsuario;
@@ -98,5 +99,23 @@ public class ServicioPartidoImpl implements ServicioPartido {
 
         PartidoParticipante partidoParticipante = new PartidoParticipante(partido, usuario);
         repoPartidoParticipante.guardar(partidoParticipante);
+    }
+
+    @Override
+    @Transactional
+    public void abandonarPartido(Long partidoId, Long usuarioId) {
+        Partido partido = repoPartido.porId(partidoId);
+        if (partido == null) {
+            throw new PartidoNoEncontrado();
+        }
+
+        PartidoParticipante partidoParticipante = partido.getParticipantes().stream()
+                .filter(pp -> pp.getUsuario().getId().equals(usuarioId))
+                .findFirst()
+                .orElseThrow(() -> new RuntimeException("El usuario no está inscripto en este partido"));
+
+        boolean removed = partido.getParticipantes().remove(partidoParticipante);
+        // El @Transactional se encarga del guardado automático
+
     }
 }

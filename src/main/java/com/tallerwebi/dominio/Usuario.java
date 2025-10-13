@@ -1,9 +1,6 @@
 package com.tallerwebi.dominio;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 
 @Entity
 public class Usuario {
@@ -13,7 +10,10 @@ public class Usuario {
     private Long id;
     private String nombre;
     private String apellido;
+
+    @Column(unique = true)
     private String email;
+
     private String password;
     private String rol;
     private String posicionFavorita;

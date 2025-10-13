@@ -3,6 +3,7 @@ package com.tallerwebi.presentacion;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -28,7 +29,6 @@ import com.tallerwebi.dominio.excepcion.YaExisteElParticipante;
 
 @Controller
 public class ControladorPartido {
-
     private ServicioPartido servicio;
     private ServicioLogin servicioLogin;
 
@@ -90,4 +90,16 @@ public class ControladorPartido {
             return ResponseEntity.status(500).body(e.getMessage());
         }
     }
+    @PostMapping("/partido/{id}/abandonar")
+    public String abandonarPartido(@PathVariable Long id, HttpServletRequest request) {
+        Usuario usuario = (Usuario) request.getSession().getAttribute("USUARIO");
+        if (usuario == null) {
+            // si no hay usuario logueado, lo mandamos al login
+            return "redirect:/login";
+        }
+
+        servicio.abandonarPartido(id, usuario.getId());
+        return "redirect:/home";
+    }
+
 }
