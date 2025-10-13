@@ -16,7 +16,7 @@ public class Reserva {
     @ManyToOne
     @JoinColumn(name = "usuario_id", nullable = false)
     private Usuario usuario;
-    private LocalDateTime fechaReserva; // Fecha específica para la cual se hace la reserva
+    private LocalDateTime fechaReserva;
     private Boolean activa = true;
     private LocalDateTime fechaCreacion;
 
