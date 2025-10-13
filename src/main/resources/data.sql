@@ -5,11 +5,13 @@ INSERT INTO Usuario(id, email, password, rol, activo) VALUES(null, 'test@unlam.e
 INSERT INTO Usuario(id, nombre, email, password, rol, activo) VALUES(null, 'credor1', 'credor1@example.com', 'password', 'ROLE_USER', true);
 INSERT INTO Usuario(id, nombre, email, password, rol, activo) VALUES(null, 'participante1', 'participante1@example.com', 'password', 'ROLE_USER', true);
 -- Insert Cancha (equivalent to: Cancha cancha = new Cancha("Cancha 1", null, null, "Direccion 1", Zona.NORTE))
-INSERT INTO Cancha(id, nombre, capacidad, tipoSuelo, zona) VALUES(null, 'Cancha 1', null, 'Direccion 1', 'NORTE');
+INSERT INTO Cancha(id, nombre, capacidad, direccion, zona) VALUES(null, 'Cancha 1', null, 'Direccion 1', 'NORTE'),
+(null, 'Cancha 2', null, 'Direccion 2', 'SUR'),
+(null, 'Cancha 3', null, 'Direccion 3', 'ESTE');
 
 -- Insert Horario (equivalent to: Horario horario = new Horario(cancha, DayOfWeek.MONDAY, LocalTime.now(), LocalTime.now().plusHours(1)))
 INSERT INTO Horario(id, cancha_id, diaSemana, horaInicio, horaFin, disponible) VALUES(null, 1, 'MONDAY', '14:00:00', '15:00:00', true);
-INSERT INTO Horario(id, cancha_id, diaSemana, horaInicio, horaFin, disponible) VALUES(null, 1, 'TUESDAY', '14:00:00', '15:00:00', true);
+INSERT INTO Horario(id, cancha_id, diaSemana, horaInicio, horaFin, disponible) VALUES(null, 3, 'TUESDAY', '14:00:00', '15:00:00', true);
 
 INSERT INTO Reserva(id, horario_id, usuario_id, fechaReserva) VALUES(null, 1, 2, '2024-10-07 14:00:00');
 INSERT INTO Reserva(id, horario_id, usuario_id, fechaReserva) VALUES(null, 2, 2, '2024-10-08 14:00:00');

@@ -13,6 +13,7 @@ public class Cancha {
     private String direccion;
     private Integer capacidad;
     private String tipoSuelo;
+    private Double precio;
 
     @Enumerated(EnumType.STRING)
     private Zona zona;
@@ -99,5 +100,11 @@ public class Cancha {
     }
     public void setDireccion(String direccion) {
         this.direccion = direccion;
+    }
+    public Double getPrecio() {
+        return precio;
+    }
+    public void setPrecio(Double precio) {
+        this.precio = precio;
     }
 }
