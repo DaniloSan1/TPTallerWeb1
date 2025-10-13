@@ -2,10 +2,16 @@ package com.tallerwebi.dominio;
 
 import org.springframework.stereotype.Service;
 
+import com.tallerwebi.dominio.excepcion.NoHayCupoEnPartido;
 import com.tallerwebi.dominio.excepcion.PartidoNoEncontrado;
+import com.tallerwebi.dominio.excepcion.YaExisteElParticipante;
 
 import java.util.List;
 import java.util.stream.Collectors;
+
+import javax.persistence.LockModeType;
+import javax.transaction.Transactional;
+
 import java.time.LocalDateTime;
 
 @Service
@@ -13,13 +19,16 @@ public class ServicioPartidoImpl implements ServicioPartido {
     private final RepositorioPartido repoPartido;
     private final RepositorioReserva repoReserva;
     private final RepositorioUsuario repoUsuario;
+    private final RepositorioPartidoParticipante repoPartidoParticipante;
 
     public ServicioPartidoImpl(RepositorioPartido repoPartido, RepositorioReserva repoReserva,
-            RepositorioUsuario repoUsuario) {
+            RepositorioUsuario repoUsuario, RepositorioPartidoParticipante repoPartidoParticipante) {
         this.repoPartido = repoPartido;
         this.repoReserva = repoReserva;
+        this.repoPartidoParticipante = repoPartidoParticipante;
         this.repoUsuario = repoUsuario;
     }
+
     @Override
     public List<Partido> listarTodos() {
         return repoPartido.todos();
@@ -62,5 +71,28 @@ public class ServicioPartidoImpl implements ServicioPartido {
             throw new PartidoNoEncontrado();
         }
         return partido;
+    }
+
+    @Override
+    @Transactional
+    public void anotarParticipante(Long partidoId, String username)
+            throws NoHayCupoEnPartido, PartidoNoEncontrado, YaExisteElParticipante {
+        Partido partido = repoPartido.porId(partidoId);
+
+        if (partido == null) {
+            throw new PartidoNoEncontrado();
+        }
+
+        if (!partido.validarCupo()) {
+            throw new NoHayCupoEnPartido();
+        }
+
+        Usuario usuario = repoUsuario.buscar(username);
+        if (partido.validarParticipanteExistente(usuario.getId())) {
+            throw new YaExisteElParticipante();
+        }
+
+        PartidoParticipante partidoParticipante = new PartidoParticipante(partido, usuario);
+        repoPartidoParticipante.guardar(partidoParticipante);
     }
 }

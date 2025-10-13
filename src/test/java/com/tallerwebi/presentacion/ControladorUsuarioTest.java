@@ -15,7 +15,6 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalToIgnoringCase;
 import static org.mockito.Mockito.*;
 
-
 public class ControladorUsuarioTest {
     private ServicioLogin servicioLoginMock;
     private ControladorUsuario controladorUsuario;
@@ -38,7 +37,7 @@ public class ControladorUsuarioTest {
     }
 
     @Test
-    public void perfilConUsuarioLogueadoDeberiaCargarElPerfil(){
+    public void perfilConUsuarioLogueadoDeberiaCargarElPerfil() {
         when(httpServletRequestMock.getSession()).thenReturn(sessionMock);
         when(sessionMock.getAttribute("EMAIL")).thenReturn("usuario@test.com");
         when(servicioLoginMock.buscarPorEmail("usuario@test.com")).thenReturn(usuarioMock);
@@ -52,7 +51,7 @@ public class ControladorUsuarioTest {
     }
 
     @Test
-    public void perfilSinUsuarioLogueadoDeberiaIrAlLogin(){
+    public void perfilSinUsuarioLogueadoDeberiaIrAlLogin() {
         when(httpServletRequestMock.getSession()).thenReturn(sessionMock);
         when(sessionMock.getAttribute("EMAIL")).thenReturn(null);
 
@@ -71,8 +70,5 @@ public class ControladorUsuarioTest {
 
         verify(sessionMock, times(1)).invalidate();
         assertThat(vista.getViewName(), equalToIgnoringCase("redirect:/login"));
-
-
     }
-
 }

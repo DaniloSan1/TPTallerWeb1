@@ -130,4 +130,12 @@ public class Partido {
         this.cupoMaximo = cupoMaximo;
     }
 
+    public boolean validarCupo() {
+        return participantes.size() < cupoMaximo;
+    }
+
+    public boolean validarParticipanteExistente(Long usuarioId) {
+        return participantes.stream()
+                .anyMatch(pp -> pp.getUsuario().getId().equals(usuarioId));
+    }
 }
