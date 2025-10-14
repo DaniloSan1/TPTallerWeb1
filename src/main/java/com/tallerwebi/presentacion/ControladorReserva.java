@@ -68,7 +68,7 @@ public class ControladorReserva {
             model.put("error", e.getMessage());
             return "reservaForm";
         }
-    }
+    } 
 
     @PostMapping("/cancelar/{id}")
     public String cancelarReserva(
