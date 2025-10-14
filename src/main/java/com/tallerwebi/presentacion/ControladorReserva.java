@@ -66,6 +66,14 @@ public class ControladorReserva {
 
         } catch (Exception e) {
             model.put("error", e.getMessage());
+            Horario horario = servicioHorario.obtenerPorId(horarioId);
+            Cancha cancha = horario.getCancha();
+
+            model.put("usuarioId", usuarioId);
+            model.put("horarioId", horarioId);
+            model.put("cancha", cancha);
+            model.put("horario", horario);
+
             return "reservaForm";
         }
     } 
