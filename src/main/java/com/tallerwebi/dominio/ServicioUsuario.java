@@ -10,4 +10,5 @@ Usuario buscarPorEmailYPassword(String email, String password) throws UsuarioNoE
 void registrarUsuario(Usuario usuario) throws UsuarioNoEncontradoException, UsuarioExistenteException;
 Usuario buscarPorEmail(String email);
 void modificarUsuario(Usuario usuario);
+Usuario buscarPorId(Long id);
 }

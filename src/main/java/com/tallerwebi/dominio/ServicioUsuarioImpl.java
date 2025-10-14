@@ -39,4 +39,8 @@ public class ServicioUsuarioImpl implements ServicioUsuario {
     public void modificarUsuario(Usuario usuario) {
     repositorioUsuario.modificar(usuario);
     }
+    @Override
+    public Usuario buscarPorId(Long id) {
+        return repositorioUsuario.buscarPorId(id);
+    }
 }
