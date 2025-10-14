@@ -22,7 +22,6 @@
         <a class="navbar-brand" th:href="@{/}">UNLAM</a>
         <div class="ms-auto d-flex gap-3">
           <a class="nav-link text-white" th:href="@{/perfil}">Mi perfil</a>
-          <a class="btn btn-outline-light btn-sm" th:href="@{/login}">Volver</a>
         </div>
       </div>
     </nav>
@@ -30,8 +29,8 @@
     <main role="main" class="container" style="padding-top: 80px">
       <div class="d-flex align-items-center justify-content-between mb-3">
         <h1 class="h3 m-0">Partidos disponibles</h1>
-        <a class="btn btn-primary" th:href="@{/partidos/nuevo}"
-          >Crear partido</a
+        <a class="btn btn-primary" th:href="@{/canchas-disponibles}"
+          >Ver Canchas</a
         >
       </div>
 
@@ -75,11 +74,7 @@
                   th:href="@{|/detalle-partido/${p.id}|}"
                   >Ver detalle</a
                 >
-                <a
-                  class="btn btn-success btn-sm"
-                  th:href="@{|/reservas/partido/${p.id}|}"
-                  >Reservar</a
-                >
+              
               </div>
             </div>
           </div>
