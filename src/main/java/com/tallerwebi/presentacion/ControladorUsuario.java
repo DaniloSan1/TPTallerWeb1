@@ -25,6 +25,7 @@ public class ControladorUsuario {
         if (email != null) {
             Usuario usuario = serivicioLogin.buscarPorEmail(email);
             modelo.addAttribute("usuario", usuario);
+            modelo.put("currentPage", "perfil");
             return "perfil";
         }
         return "redirect:/login";

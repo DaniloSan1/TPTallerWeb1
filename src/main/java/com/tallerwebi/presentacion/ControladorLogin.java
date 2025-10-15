@@ -47,7 +47,7 @@ public class ControladorLogin {
             request.getSession().setAttribute("APELLIDO", usuarioBuscado.getApellido());
             request.getSession().setAttribute("PASSWORD", usuarioBuscado.getPassword());
             request.getSession().setAttribute("POSICION_FAVORITA", usuarioBuscado.getPosicionFavorita());
-            request.getSession().setAttribute("USUARIO",usuarioBuscado);
+            request.getSession().setAttribute("USUARIO", usuarioBuscado);
             return new ModelAndView("redirect:/home");
         } else {
             model.put("error", "Usuario o clave incorrecta");
@@ -85,6 +85,7 @@ public class ControladorLogin {
         List<Partido> partidos = servicioPartido.listarTodos();
         System.out.println(partidos);
         model.put("partidos", partidos);
+        model.put("currentPage", "home");
         return new ModelAndView("home", model);
     }
 
