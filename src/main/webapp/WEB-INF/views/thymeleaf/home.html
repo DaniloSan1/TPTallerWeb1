@@ -72,14 +72,6 @@
                   <h5 class="card-title" th:text="${p.titulo}">Título</h5>
                   <ul class="list-unstyled small mb-3">
                     <li>
-                      <strong>Zona:</strong>
-                      <span th:text="${p.zona}">Zona</span>
-                    </li>
-                    <li>
-                      <strong>Nivel:</strong>
-                      <span th:text="${p.nivel}">Nivel</span>
-                    </li>
-                    <li>
                       <strong>Cupo máx.:</strong>
                       <span th:text="${p.cupoMaximo}">10</span>
                     </li>
@@ -88,6 +80,12 @@
                       <span th:text="${p.cancha.nombre}">Cancha 1</span>
                     </li>
                   </ul>
+                </div>
+                <div class="card-footer card-footer-chips">
+                  <span class="chip chip-zona" th:text="${p.zona}">Zona</span>
+                  <span class="chip chip-nivel" th:text="${p.nivel}"
+                    >Nivel</span
+                  >
                 </div>
               </div>
             </a>
