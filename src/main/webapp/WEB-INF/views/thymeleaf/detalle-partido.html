@@ -17,11 +17,42 @@
   </head>
 
   <body>
-    <nav class="navbar navbar-expand-md navbar-dark bg-dark fixed-top">
-      <a class="navbar-brand" href="#">UNLAM</a>
+    <nav class="navbar navbar-expand-md navbar-dark fixed-top">
+      <div class="container">
+        <a th:href="@{/home}">
+          <img
+            class="navbar-brand"
+            th:src="@{/assets/logo.png}"
+            alt="Logo"
+            style="height: 80px"
+          />
+        </a>
+        <button
+          class="navbar-toggler"
+          type="button"
+          data-bs-toggle="collapse"
+          data-bs-target="#navbarNav"
+          aria-controls="navbarNav"
+          aria-expanded="false"
+          aria-label="Toggle navigation"
+        >
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+          <div class="navbar-nav ms-auto d-flex gap-3">
+            <a class="nav-link text-white active" th:href="@{/home}"
+              >Partidos disponibles</a
+            >
+            <a class="nav-link text-white" th:href="@{/canchas-disponibles}"
+              >Canchas disponibles</a
+            >
+            <a class="nav-link text-white" th:href="@{/perfil}">Mi perfil</a>
+          </div>
+        </div>
+      </div>
     </nav>
 
-    <main role="main" class="container">
+    <main role="main" class="container" style="padding-top: 175px;">
       <div th:if="${error != null && partido == null}" class="error" th:text="${error}"></div>
       
       <div th:unless="${partido}" class="no-match">

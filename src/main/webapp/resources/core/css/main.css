@@ -14,7 +14,7 @@
 }
 
 h1{
-	color:#0000FF;
+	color:#1c2560;
 }
 
 h2{
@@ -33,4 +33,13 @@ h2{
 
 .navbar-brand{
     margin:0 2rem;
+}
+
+.navbar{
+    background-color: #1c2560;
+}
+
+.nav-link.active {
+    border-bottom: 2px solid white !important;
+    font-weight: bold;
 }
