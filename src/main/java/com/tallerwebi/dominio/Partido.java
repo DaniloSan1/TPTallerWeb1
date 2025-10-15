@@ -31,11 +31,10 @@ public class Partido {
     public Partido() {
     }
 
-    public Partido(Long id, String titulo, String descripcion, Zona zona, Nivel nivel,
+    public Partido(Long id, String titulo, String descripcion, Nivel nivel,
             int cupoMaximo,
             Reserva reserva, Usuario creador) {
         this.titulo = titulo;
-        this.zona = zona;
         this.nivel = nivel;
         this.cupoMaximo = cupoMaximo;
         this.reserva = reserva;
@@ -67,7 +66,7 @@ public class Partido {
     }
 
     public Zona getZona() {
-        return zona;
+        return reserva.getCancha().getZona();
     }
 
     public Nivel getNivel() {

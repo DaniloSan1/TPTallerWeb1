@@ -59,7 +59,7 @@ public class RepositorioPartidoParticipanteImplTest {
         Reserva reserva = new Reserva(horario, creador, LocalDateTime.now().plusDays(1));
         this.sessionFactory.getCurrentSession().save(reserva);
 
-        Partido nuevoPartido = new Partido(null, "Partido de prueba", "Descripción del partido", Zona.NORTE,
+        Partido nuevoPartido = new Partido(null, "Partido de prueba", "Descripción del partido",
                 Nivel.INTERMEDIO,
                 10,
                 reserva, creador);

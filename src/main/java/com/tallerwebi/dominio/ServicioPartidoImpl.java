@@ -48,8 +48,7 @@ public class ServicioPartidoImpl implements ServicioPartido {
     }
 
     @Override
-    public Partido crearDesdeReserva(Reserva nuevaReserva, String titulo, String descripcion,
-            Zona zona, Nivel nivel, int cupoMaximo, Usuario usuario) {
+    public Partido crearDesdeReserva(Reserva nuevaReserva, String titulo, String descripcion, Nivel nivel, int cupoMaximo, Usuario usuario) {
 
 
         Partido partido = new Partido();
@@ -58,7 +57,6 @@ public class ServicioPartidoImpl implements ServicioPartido {
 
         String tituloFinal = (titulo != null && !titulo.isEmpty()) ? titulo : "Partido en " + nuevaReserva.getCancha().getNombre();
         partido.setTitulo(tituloFinal);
-        partido.setZona(zona != null ? zona : Zona.CENTRO);
         partido.setNivel(nivel != null ? nivel : Nivel.INTERMEDIO);
         partido.setDescripcion(descripcion);
 

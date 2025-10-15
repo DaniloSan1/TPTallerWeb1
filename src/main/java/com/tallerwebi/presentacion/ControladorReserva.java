@@ -46,37 +46,7 @@ public class ControladorReserva {
 
         return "reservaForm";
     }
-    /* 
-   @PostMapping("/crear")
-public String crearReserva(
-        @RequestParam Long usuarioId,
-        @RequestParam Long horarioId,
-        @RequestParam String fecha,
-        @RequestParam(required = false) String titulo,
-        @RequestParam(required = false) String descripcion,
-        @RequestParam(required = false) Zona zona,
-        @RequestParam(required = false) Nivel nivel,
-        @RequestParam(name = "cupoMaximo", defaultValue = "0") int cupoMaximo, // <-- int con default
-        javax.servlet.http.HttpServletRequest request,
-        ModelMap model
-) {
-    // ... guardás la reserva como ya lo tenés ...
 
-    String emailCreador = (String) request.getSession().getAttribute("EMAIL");
-
-    servicioPartido.crearDesdeReserva(
-            guardada.getId(),
-            (titulo == null || titulo.isBlank()) ? null : titulo,
-            (descripcion == null || descripcion.isBlank()) ? null : descripcion,
-            zona,      // si vienen null, el servicio pone defaults
-            nivel,     // idem
-            cupoMaximo, // <-- pasás el int directo
-            emailCreador
-    );
-
-    return "redirect:/home";
-}
-*/
     @PostMapping("/crear")
     public String crearReserva(
             @RequestParam Long horarioId,
@@ -103,7 +73,6 @@ public String crearReserva(
                     reservaCreada,
                     titulo,
                     descripcion,
-                    null,//que venga de la cancha
                     nivel, 
                     0,//que venga de la cancha
                     usuario

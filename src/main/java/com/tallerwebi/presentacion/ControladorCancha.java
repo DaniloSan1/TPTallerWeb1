@@ -12,9 +12,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.tallerwebi.dominio.Cancha;
 import com.tallerwebi.dominio.ServicioCancha;
+
 @Controller
 public class ControladorCancha {
     private final ServicioCancha servicioCancha;
+
     @Autowired
     public ControladorCancha(ServicioCancha servicioCancha) {
         this.servicioCancha = servicioCancha;
@@ -25,9 +27,11 @@ public class ControladorCancha {
         List<Cancha> canchas = servicioCancha.obtenerCanchasDisponibles();
         if (canchas.isEmpty()) {
             model.put("error", "No hay canchas disponibles en este momento");
+            model.put("currentPage", "canchas");
             return "canchas";
         }
         model.put("canchas", canchas);
+        model.put("currentPage", "canchas");
         return "canchas";
     }
 

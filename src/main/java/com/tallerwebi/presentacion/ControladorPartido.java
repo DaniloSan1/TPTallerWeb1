@@ -103,6 +103,7 @@ public class ControladorPartido {
             return ResponseEntity.status(500).body(e.getMessage());
         }
     }
+    
     @PostMapping("/partido/{id}/abandonar")
     public String abandonarPartido(@PathVariable Long id, HttpServletRequest request) {
         Usuario usuario = (Usuario) request.getSession().getAttribute("USUARIO");

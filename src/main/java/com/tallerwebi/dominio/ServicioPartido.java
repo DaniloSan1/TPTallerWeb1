@@ -18,6 +18,6 @@ public interface ServicioPartido {
     void anotarParticipante(Long partidoId, String username)
             throws NoExisteElUsuario, NoHayCupoEnPartido, PartidoNoEncontrado, YaExisteElParticipante;
 
-        Partido crearDesdeReserva(Reserva nuevaReserva, String titulo, String descripcion, Zona zona, Nivel nivel,
+        Partido crearDesdeReserva(Reserva nuevaReserva, String titulo, String descripcion, Nivel nivel,
                         int cupoMaximo, Usuario usuario);
 }
