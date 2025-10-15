@@ -7,7 +7,7 @@
       content="width=device-width, initial-scale=1, shrink-to-fit=no"
     />
 
-    <title>Taller Web I</title>
+    <title>Partidazo</title>
 
     <link
       rel="stylesheet"
@@ -62,45 +62,52 @@
           <img th:src="@{/assets/map.svg}" alt="map" class="w-75 p-4" />
           <div class="w-25">
             <br />
-            <div th:if="${partido != null}">
-              <p>
-                <strong>Cupo máximo:</strong>
-                <span th:text="${partido.cupoMaximo}"></span>
-              </p>
-              <p>
-                <strong>Cancha:</strong>
-                <span th:text="${partido.cancha}"></span>
-              </p>
-              <p>
-                <strong>Creador:</strong>
-                <span th:text="${partido.creador}"></span>
-              </p>
-              <p>
-                <strong>Descripción:</strong>
-              </p>
-              <p th:text="${partido.descripcion}"></p>
-              <button
-                id="btn-unirse"
-                class="btn btn-lg btn-primary btn-block"
-                th:if="${!partido.yaParticipa}"
-                th:disabled="${!partido.hayCupo || partido.yaParticipa}"
-                th:onclick="|unirseAPartido(${partido.id})|"
-              >
-                Unirse
-              </button>
-              <form
-                th:action="@{/partido/{id}/abandonar(id=${partido.id})}"
-                method="post"
-                style="margin-top: 10px"
-              >
+            <div
+              th:if="${partido != null}"
+              style="max-height: 585px; height: 100vh"
+              class="d-flex flex-column justify-content-between"
+            >
+              <div>
+                <p>
+                  <strong>Cupo máximo:</strong>
+                  <span th:text="${partido.cupoMaximo}"></span>
+                </p>
+                <p>
+                  <strong>Cancha:</strong>
+                  <span th:text="${partido.cancha}"></span>
+                </p>
+                <p>
+                  <strong>Creador:</strong>
+                  <span th:text="${partido.creador}"></span>
+                </p>
+                <p>
+                  <strong>Descripción:</strong>
+                </p>
+                <p th:text="${partido.descripcion}"></p>
+              </div>
+              <div>
                 <button
-                  type="submit"
-                  class="btn btn-lg btn-danger btn-block"
-                  th:if="${partido.yaParticipa}"
+                  id="btn-unirse"
+                  class="btn btn-lg btn-primary btn-block"
+                  th:if="${!partido.yaParticipa}"
+                  th:disabled="${!partido.hayCupo || partido.yaParticipa}"
+                  th:onclick="|unirseAPartido(${partido.id})|"
                 >
-                  Abandonar partido
+                  Unirse
                 </button>
-              </form>
+                <form
+                  th:action="@{/partido/{id}/abandonar(id=${partido.id})}"
+                  method="post"
+                >
+                  <button
+                    type="submit"
+                    class="btn btn-lg btn-danger btn-block"
+                    th:if="${partido.yaParticipa}"
+                  >
+                    Abandonar partido
+                  </button>
+                </form>
+              </div>
             </div>
             <div th:if="${partido == null}">
               <p th:text="${error}"></p>
@@ -109,10 +116,9 @@
         </div>
       </div>
     </main>
-
     <script
       type="text/javascript"
-      th:src="@{webjars/bootstrap/5.2.0/js/bootstrap.min.js}"
+      th:src="@{/webjars/bootstrap/5.2.0/js/bootstrap.min.js}"
     ></script>
     <script type="module" th:src="@{/js/detalle_partido.js}"></script>
   </body>
