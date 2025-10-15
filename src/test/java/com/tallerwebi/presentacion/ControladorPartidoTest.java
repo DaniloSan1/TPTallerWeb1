@@ -72,7 +72,7 @@ public class ControladorPartidoTest {
         when(partidoMock.getReserva()).thenReturn(reservaMock);
         when(partidoMock.getCreador()).thenReturn(creadorMock);
 
-        controladorPartido = new ControladorPartido(servicioPartidoMock, servicioLoginMock);
+        controladorPartido = new ControladorPartido(servicioPartidoMock, servicioLoginMock, null, null, servicioPartidoMock, null);
     }
 
     @Test

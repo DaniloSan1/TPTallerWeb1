@@ -6,8 +6,7 @@ import org.springframework.stereotype.Service;
 import com.tallerwebi.dominio.excepcion.NoExisteElUsuario;
 import com.tallerwebi.dominio.excepcion.NoHayCupoEnPartido;
 import com.tallerwebi.dominio.excepcion.PartidoNoEncontrado;
-import com.tallerwebi.dominio.excepcion.YaExisteElParticipante;
-
+import com.tallerwebi.dominio.excepcion.YaExisteElParticipante;  
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -15,6 +14,9 @@ import javax.persistence.LockModeType;
 import javax.transaction.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.Optional;
+import java.util.ArrayList;
+import java.util.HashSet;
 
 @Service
 public class ServicioPartidoImpl implements ServicioPartido {
@@ -46,24 +48,28 @@ public class ServicioPartidoImpl implements ServicioPartido {
     }
 
     @Override
-    public Partido crearDesdeReserva(Long reservaId, String titulo, String descripcion,
-            Zona zona, Nivel nivel, int cupoMaximo, String username) {
-        Reserva reserva = (reservaId != null) ? repoReserva.porId(reservaId) : null;
+    public Partido crearDesdeReserva(Reserva nuevaReserva, String titulo, String descripcion,
+            Zona zona, Nivel nivel, int cupoMaximo, Usuario usuario) {
 
-        if (reserva == null) {
-            return null;
-        }
 
-        LocalDateTime fecha = reserva.getFechaHoraInicio();
-        if (fecha == null) {
-            return null;
-        }
+        Partido partido = new Partido();
+        partido.setUsuario(usuario);
+        partido.setReserva(nuevaReserva);
 
-        Usuario usuario = repoUsuario.buscar(username);
+        String tituloFinal = (titulo != null && !titulo.isEmpty()) ? titulo : "Partido en " + nuevaReserva.getCancha().getNombre();
+        partido.setTitulo(tituloFinal);
+        partido.setZona(zona != null ? zona : Zona.CENTRO);
+        partido.setNivel(nivel != null ? nivel : Nivel.INTERMEDIO);
+        partido.setDescripcion(descripcion);
 
-        Partido p = new Partido(null, titulo, descripcion, zona, nivel, cupoMaximo, reserva, usuario);
-        repoPartido.guardar(p);
-        return p;
+        int capacidadCancha = nuevaReserva.getHorario().getCancha().getCapacidad() != null
+            ? nuevaReserva.getHorario().getCancha().getCapacidad()
+            : 10; 
+    partido.setCupoMaximo(cupoMaximo > 0 ? cupoMaximo : capacidadCancha);
+
+    repoPartido.guardar(partido);
+    return partido; 
+
     }
 
     @Override

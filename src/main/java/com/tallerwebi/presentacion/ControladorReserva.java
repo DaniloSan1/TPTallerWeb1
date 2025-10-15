@@ -16,12 +16,18 @@ public class ControladorReserva {
     private final ServicioReserva servicioReserva;
     private final ServicioHorario servicioHorario;
     private final ServicioUsuario servicioUsuario;
+    private final ServicioPartido servicioPartido;
+    private Horario guardada;
 
     @Autowired
-    public ControladorReserva(ServicioReserva servicioReserva, ServicioHorario servicioHorario, ServicioUsuario servicioUsuario) {
+    public ControladorReserva( ServicioReserva servicioReserva,
+        ServicioHorario servicioHorario,
+        ServicioUsuario servicioUsuario,
+        ServicioPartido servicioPartido) {
         this.servicioReserva = servicioReserva;
         this.servicioHorario = servicioHorario;
         this.servicioUsuario = servicioUsuario;
+        this.servicioPartido = servicioPartido;
     }
  
     @GetMapping("/nueva")
@@ -40,12 +46,45 @@ public class ControladorReserva {
 
         return "reservaForm";
     }
+    /* 
+   @PostMapping("/crear")
+public String crearReserva(
+        @RequestParam Long usuarioId,
+        @RequestParam Long horarioId,
+        @RequestParam String fecha,
+        @RequestParam(required = false) String titulo,
+        @RequestParam(required = false) String descripcion,
+        @RequestParam(required = false) Zona zona,
+        @RequestParam(required = false) Nivel nivel,
+        @RequestParam(name = "cupoMaximo", defaultValue = "0") int cupoMaximo, // <-- int con default
+        javax.servlet.http.HttpServletRequest request,
+        ModelMap model
+) {
+    // ... guardás la reserva como ya lo tenés ...
 
+    String emailCreador = (String) request.getSession().getAttribute("EMAIL");
+
+    servicioPartido.crearDesdeReserva(
+            guardada.getId(),
+            (titulo == null || titulo.isBlank()) ? null : titulo,
+            (descripcion == null || descripcion.isBlank()) ? null : descripcion,
+            zona,      // si vienen null, el servicio pone defaults
+            nivel,     // idem
+            cupoMaximo, // <-- pasás el int directo
+            emailCreador
+    );
+
+    return "redirect:/home";
+}
+*/
     @PostMapping("/crear")
     public String crearReserva(
             @RequestParam Long horarioId,
             @RequestParam String fechaReserva,
             @RequestParam Long usuarioId,
+            @RequestParam String titulo,
+            @RequestParam String descripcion,
+            @RequestParam Nivel nivel,
             ModelMap model) {
 
         try {
@@ -60,6 +99,15 @@ public class ControladorReserva {
             Reserva reserva = new Reserva(horario, usuario, fecha);
 
             Reserva reservaCreada = servicioReserva.crearReserva(reserva);
+            servicioPartido.crearDesdeReserva(
+                    reservaCreada,
+                    titulo,
+                    descripcion,
+                    null,//que venga de la cancha
+                    nivel, 
+                    0,//que venga de la cancha
+                    usuario
+            );
 
             model.put("mensajeExito", "Reserva creada con éxito para el " + fecha);
             return "redirect:/reserva/" + reservaCreada.getId();

@@ -138,4 +138,12 @@ public class Partido {
         return participantes.stream()
                 .anyMatch(pp -> pp.getUsuario().getId().equals(usuarioId));
     }
-}
+
+    public void setReserva(Reserva reserva) {
+        this.reserva = reserva;
+    }
+
+    public void setUsuario(Usuario usuario) {
+        this.creador = usuario;
+    }
+}   
