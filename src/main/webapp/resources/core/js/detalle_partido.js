@@ -17,6 +17,7 @@ async function unirseAPartido(partidoId) {
 
     // Opcional: mostrar un mensaje de éxito o recargar la página
     alert("Te has unido al partido exitosamente!");
+    window.location.reload(); // Refresh the page after a successful response
   } catch (error) {
     console.error(error);
     alert("Error al unirse al partido");
