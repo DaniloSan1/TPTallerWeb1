@@ -86,28 +86,6 @@ h2{
     opacity: 0.6;
 }
 
-/* Link styling - all links use secondary color */
-a {
-    color: var(--secondary-color);
-    text-decoration: none;
-}
-
-a:hover {
-    color: var(--secondary-color);
-    text-decoration: underline;
-    opacity: 0.8;
-}
-
-a:visited {
-    color: var(--secondary-color);
-}
-
-a:focus {
-    color: var(--secondary-color);
-    outline: 2px solid var(--secondary-color);
-    outline-offset: 2px;
-}
-
 /* Chip styles for cards */
 .chip {
     display: inline-block;
