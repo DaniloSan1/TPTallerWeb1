@@ -61,7 +61,7 @@ public class RepositorioPartidoImplTest {
 
         Reserva reserva = new Reserva(horario, creador, LocalDateTime.now().plusDays(1));
 
-        Partido nuevoPartido = new Partido(null, "Partido de prueba", "Descripción del partido", Zona.NORTE,
+        Partido nuevoPartido = new Partido(null, "Partido de prueba", "Descripción del partido",
                 Nivel.INTERMEDIO,
                 10,
                 reserva, creador);

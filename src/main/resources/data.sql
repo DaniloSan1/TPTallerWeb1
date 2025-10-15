@@ -17,8 +17,8 @@ INSERT INTO Reserva(id, horario_id, usuario_id, fechaReserva) VALUES(null, 1, 2,
 INSERT INTO Reserva(id, horario_id, usuario_id, fechaReserva) VALUES(null, 2, 2, '2024-10-08 14:00:00');
 
 -- Insert Partido (equivalent to: Partido nuevoPartido = new Partido("Partido de prueba", "Descripción del partido", Zona.NORTE, Nivel.INTERMEDIO, LocalDateTime.now(), 10, horario, creador))
-INSERT INTO Partido(id, titulo, descripcion, zona, nivel, cupoMaximo, reserva_id, creador_id) VALUES(null, 'Partido de prueba 1', 'Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.', 'NORTE', 'INTERMEDIO', 10, 1, 2);
-INSERT INTO Partido(id, titulo, descripcion, zona, nivel, cupoMaximo, reserva_id, creador_id) VALUES(null, 'Partido de prueba 2', 'Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.', 'NORTE', 'INTERMEDIO', 1, 2, 2);
+INSERT INTO Partido(id, titulo, descripcion, nivel, cupoMaximo, reserva_id, creador_id) VALUES(null, 'Partido de prueba 1', 'Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.', 'INTERMEDIO', 10, 1, 2);
+INSERT INTO Partido(id, titulo, descripcion, nivel, cupoMaximo, reserva_id, creador_id) VALUES(null, 'Partido de prueba 2', 'Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.', 'INTERMEDIO', 1, 2, 2);
 
 INSERT INTO PartidoParticipante(id, partido_id, usuario_id) VALUES(null, 2, 3);
 
@@ -50,14 +50,14 @@ INSERT INTO Reserva(id, horario_id, usuario_id, fechaReserva) VALUES
 
 
 -- Insert Partido (equivalent to: Partido nuevoPartido = new Partido("Partido de prueba", "Descripción del partido", Zona.NORTE, Nivel.INTERMEDIO, LocalDateTime.now(), 10, horario, creador))
-INSERT INTO Partido(id, titulo, descripcion, zona, nivel, cupoMaximo, reserva_id, creador_id) VALUES
-(NULL, 'Partido de prueba', 'Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.', 'NORTE', 'INTERMEDIO', 10,
+INSERT INTO Partido(id, titulo, descripcion, nivel, cupoMaximo, reserva_id, creador_id) VALUES
+(NULL, 'Partido de prueba', 'Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.', 'INTERMEDIO', 10,
        (SELECT r.id FROM Reserva r WHERE r.horario_id = 1 AND r.usuario_id = 1 ORDER BY r.id DESC LIMIT 1), 2),
-(NULL, 'Partido avanzado', 'Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.', 'SUR', 'AVANZADO', 8,
+(NULL, 'Partido avanzado', 'Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.', 'AVANZADO', 8,
        (SELECT r.id FROM Reserva r WHERE r.horario_id = 2 AND r.usuario_id = 1 ORDER BY r.id DESC LIMIT 1), 2),
-(NULL, 'Partido para principiantes', 'Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.', 'ESTE', 'PRINCIPIANTE', 12,
+(NULL, 'Partido para principiantes', 'Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.', 'PRINCIPIANTE', 12,
        (SELECT r.id FROM Reserva r WHERE r.horario_id = 3 AND r.usuario_id = 1 ORDER BY r.id DESC LIMIT 1), 2),
-(NULL, 'Partido mixto', 'Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.', 'OESTE', 'AVANZADO', 10,
+(NULL, 'Partido mixto', 'Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.', 'AVANZADO', 10,
        (SELECT r.id FROM Reserva r WHERE r.horario_id = 4 AND r.usuario_id = 1 ORDER BY r.id DESC LIMIT 1), 2),
-(NULL, 'Partido nocturno', 'Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.', 'CENTRO', 'INTERMEDIO', 6,
+(NULL, 'Partido nocturno', 'Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.', 'INTERMEDIO', 6,
        (SELECT r.id FROM Reserva r WHERE r.horario_id = 5 AND r.usuario_id = 1 ORDER BY r.id DESC LIMIT 1), 2);
