@@ -14,6 +14,10 @@
       th:href="@{/webjars/bootstrap/5.2.0/css/bootstrap.min.css}"
     />
     <link rel="stylesheet" th:href="@{/css/main.css}" />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&icon_names=person"
+    />
   </head>
 
   <body>
@@ -30,8 +34,18 @@
         flex-direction: column;
       "
     >
-    <div th:if="${mensajeExito}" class="alert alert-success" id="alerReservaExito" th:text="${mensajeExito}"></div>
-    <div th:if="${mensajeError}" class="alert alert-danger" id="alerReservaError" th:text="${mensajeError}"></div>
+      <div
+        th:if="${mensajeExito}"
+        class="alert alert-success"
+        id="alerReservaExito"
+        th:text="${mensajeExito}"
+      ></div>
+      <div
+        th:if="${mensajeError}"
+        class="alert alert-danger"
+        id="alerReservaError"
+        th:text="${mensajeError}"
+      ></div>
       <div class="d-flex align-items-center justify-content-between mb-3">
         <h1 class="h3 m-0">Partidos disponibles</h1>
       </div>
@@ -58,6 +72,7 @@
               <div
                 class="card h-100"
                 style="
+                  position: relative;
                   cursor: pointer;
                   transition: transform 0.2s ease-in-out,
                     box-shadow 0.2s ease-in-out;
@@ -65,6 +80,21 @@
                 onmouseover="this.style.transform='translateY(-5px)'; this.style.boxShadow='0 4px 15px rgba(0,0,0,0.2)';"
                 onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 1px 3px rgba(0,0,0,0.12)';"
               >
+                <span
+                  id="owner-icon"
+                  class="material-symbols-outlined"
+                  th:if="${p.esCreador(#session.getAttribute('EMAIL'))}"
+                  style="
+                    background-color: #ffffff;
+                    position: absolute;
+                    top: 10px;
+                    left: 10px;
+                    color: var(--secondary-color);
+                    font-size: 32px;
+                    z-index: 10;
+                  "
+                  >person</span
+                >
                 <img
                   th:src="@{/assets/cancha.webp}"
                   alt="cancha"
@@ -100,10 +130,14 @@
       th:src="@{/webjars/bootstrap/5.2.0/js/bootstrap.min.js}"
     ></script>
     <script>
-  setTimeout(() => {
-    document.querySelectorAll('#alerReservaExito').forEach(el => el.remove());
-    document.querySelectorAll('#alerReservaError').forEach(el => el.remove());
-  }, 3000);
-</script>
+      setTimeout(() => {
+        document
+          .querySelectorAll("#alerReservaExito")
+          .forEach((el) => el.remove());
+        document
+          .querySelectorAll("#alerReservaError")
+          .forEach((el) => el.remove());
+      }, 3000);
+    </script>
   </body>
 </html>
