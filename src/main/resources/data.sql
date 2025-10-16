@@ -1,10 +1,8 @@
 -- Fixed SQL syntax issues while keeping the full Lorem Ipsum text intact
 
--- Keep the original admin user
-INSERT INTO Usuario(id, email, password, rol, activo) VALUES(NULL, 'test@unlam.edu.ar', 'test', 'ADMIN', TRUE);
-
 -- Insert additional users
 INSERT INTO Usuario(id, nombre, email, password, rol, activo) VALUES
+(NULL, 'test', 'test@unlam.edu.ar', 'test', 'ADMIN', TRUE), 
 (NULL, 'credor1', 'credor1@example.com', 'password', 'ROLE_USER', TRUE),
 (NULL, 'participante1', 'participante1@example.com', 'password', 'ROLE_USER', TRUE),
 (NULL, 'usuario1', 'email@example.com', 'password', 'ROLE_USER', TRUE);
