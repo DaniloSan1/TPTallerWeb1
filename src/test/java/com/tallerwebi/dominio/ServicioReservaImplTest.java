@@ -9,6 +9,7 @@ import static org.mockito.Mockito.when;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.time.DayOfWeek;
 import java.time.LocalDateTime;
 import java.util.Collections;
 public class ServicioReservaImplTest {
@@ -22,7 +23,8 @@ public class ServicioReservaImplTest {
         repositorioMock = mock(RepositorioReserva.class);
         servicioReserva = new ServicioReservaImpl(repositorioMock);
         horario = new Horario();
-        horario.setId(1L);
+        horario.setId(4L);
+        horario.setDiaSemana(DayOfWeek.THURSDAY);
         usuario = new Usuario();
         usuario.setId(1L);
     }
