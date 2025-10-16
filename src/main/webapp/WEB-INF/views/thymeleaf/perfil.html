@@ -1,63 +1,72 @@
 <!DOCTYPE html>
 <html lang="es" xmlns:th="http://www.thymeleaf.org">
-  <head>
+<head>
     <meta charset="utf-8" />
     <meta
-      name="viewport"
-      content="width=device-width, initial-scale=1, shrink-to-fit=no"
+            name="viewport"
+            content="width=device-width, initial-scale=1, shrink-to-fit=no"
     />
-
     <title>Mi perfil</title>
 
-    <!-- Bootstrap core css -->
+    <!-- Bootstrap core CSS -->
     <link
-      rel="stylesheet"
-      th:href="@{/webjars/bootstrap/5.2.0/css/bootstrap.min.css}"
+            rel="stylesheet"
+            th:href="@{/webjars/bootstrap/5.2.0/css/bootstrap.min.css}"
     />
-
-    <!-- custom style -->
     <link rel="stylesheet" th:href="@{/css/main.css}" />
-  </head>
+    <link rel="stylesheet" th:href="@{/css/perfil.css}" />
 
-  <body>
-    <!-- Include the navbar fragment -->
-    <div th:replace="~{fragments/navbar :: navbar}"></div>
+</head>
 
-    <main role="main" class="container" style="padding-top: 175px">
-      <div class="row justify-content-center">
+<body>
+
+<div th:replace="~{fragments/navbar :: navbar}"></div>
+
+
+<div class="profile-header">
+    <div class="profile-avatar"></div>
+</div>
+
+
+<main role="main" class="container">
+    <div class="row justify-content-center">
         <div class="col-md-6">
-          <div class="card shadow-sm">
-            <div class="card-header bg-primary text-white">
-              <h5 class="mb-0">Datos de usuario</h5>
+            <div class="card shadow profile-card">
+                <div class="card-header">
+                    <h4 class="mb-0" th:text="${usuario.nombre + ' ' + usuario.apellido}">Nombre Apellido</h4>
+                    <small th:text="${usuario.email}">email@ejemplo.com</small>
+                </div>
+                <div class="card-body">
+                    <p>
+                        <strong>Nombre:</strong>
+                        <span th:text="${usuario.nombre}"></span>
+                    </p>
+                    <p>
+                        <strong>Apellido:</strong>
+                        <span th:text="${usuario.apellido}"></span>
+                    </p>
+                    <p>
+                        <strong>Email:</strong>
+                        <span th:text="${usuario.email}"></span>
+                    </p>
+                    <p>
+                        <strong>Posición favorita:</strong>
+                        <span th:text="${usuario.posicionFavorita}"></span>
+                    </p>
+                </div>
+                <div class="card-footer text-end">
+                    <a th:href="@{/login}" class="btn btn-logout btn-lg text-white">
+                        Cerrar sesión
+                    </a>
+                </div>
             </div>
-            <div class="card-body">
-              <p>
-                <strong>Nombre:</strong>
-                <span th:text="${usuario.nombre}"></span>
-              </p>
-              <p>
-                <strong>Apellido:</strong>
-                <span th:text="${usuario.apellido}"></span>
-              </p>
-              <p>
-                <strong>Email:</strong> <span th:text="${usuario.email}"></span>
-              </p>
-              <p>
-                <strong>Posición favorita:</strong>
-                <span th:text="${usuario.posicionFavorita}"></span>
-              </p>
-            </div>
-            <div class="card-footer text-end">
-              <a th:href="@{/login}" class="btn btn-danger">Cerrar sesión</a>
-            </div>
-          </div>
         </div>
-      </div>
-    </main>
-
-    <script
-      type="text/javascript"
-      th:src="@{/webjars/bootstrap/5.2.0/js/bootstrap.bundle.min.js}"
-    ></script>
-  </body>
+    </div>
+</main>
+<script
+        type="text/javascript"
+        th:src="@{/webjars/bootstrap/5.2.0/js/bootstrap.bundle.min.js}"
+></script>
+</body>
 </html>
+
