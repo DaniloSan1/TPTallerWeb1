@@ -27,7 +27,8 @@ public class ControladorCancha {
     private final ServicioLogin servicioLogin;
 
     @Autowired
-    public ControladorCancha(ServicioCancha servicioCancha, ServicioHorario servicioHorario, ServicioLogin servicioLogin) {
+    public ControladorCancha(ServicioCancha servicioCancha, ServicioHorario servicioHorario,
+            ServicioLogin servicioLogin) {
         this.servicioCancha = servicioCancha;
         this.servicioHorario = servicioHorario;
         this.servicioLogin = servicioLogin;
@@ -38,6 +39,7 @@ public class ControladorCancha {
         try {
             List<Cancha> canchas = servicioCancha.obtenerCanchasDisponibles();
             model.put("canchas", canchas);
+            model.put("currentPage", "canchas-disponibles");
         } catch (Exception e) {
             model.put("error", e.getMessage());
         }
@@ -46,24 +48,24 @@ public class ControladorCancha {
 
     @GetMapping("/cancha/{id}")
     public ModelAndView verCancha(@PathVariable Long id, ModelMap model, HttpServletRequest request) {
-       
+
         try {
-             String email = (String) request.getSession().getAttribute("EMAIL");
+            String email = (String) request.getSession().getAttribute("EMAIL");
             if (email == null) {
                 return new ModelAndView("redirect:/login");
             }
 
-        Usuario usuario = servicioLogin.buscarPorEmail(request.getSession().getAttribute("EMAIL").toString());
-           Cancha cancha = servicioCancha.obtenerCanchaPorId(id);
-           List<Horario> horarios = servicioHorario.obtenerPorCancha(cancha);
-           model.put("cancha", cancha);
-           model.put("horarios", horarios);
-           model.put("usuarioId", usuario.getId());
+            Usuario usuario = servicioLogin.buscarPorEmail(request.getSession().getAttribute("EMAIL").toString());
+            Cancha cancha = servicioCancha.obtenerCanchaPorId(id);
+            List<Horario> horarios = servicioHorario.obtenerPorCancha(cancha);
+            model.put("cancha", cancha);
+            model.put("horarios", horarios);
+            model.put("usuarioId", usuario.getId());
 
-       } catch (Exception e) {
-           model.put("error", e.getMessage());
-       }
-       return new ModelAndView("cancha", model);
+        } catch (Exception e) {
+            model.put("error", e.getMessage());
+        }
+        return new ModelAndView("cancha", model);
     }
 
 }
