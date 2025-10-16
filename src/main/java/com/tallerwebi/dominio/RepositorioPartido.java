@@ -8,4 +8,5 @@ public interface RepositorioPartido {
     Partido porId(Long id);
 
     void guardar(Partido partido);
+    
 }
