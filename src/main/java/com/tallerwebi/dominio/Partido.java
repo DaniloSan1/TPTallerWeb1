@@ -149,4 +149,8 @@ public class Partido {
     public boolean esCreador(String email) {
         return creador.getEmail().equals(email);
     }
+
+    public boolean partidoActivo() {
+        return this.reserva != null && this.reserva.getActiva();
+    }
 }
