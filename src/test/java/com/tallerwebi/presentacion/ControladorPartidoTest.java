@@ -16,6 +16,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.tallerwebi.dominio.Cancha;
+import com.tallerwebi.dominio.Horario;
 import com.tallerwebi.dominio.Nivel;
 import com.tallerwebi.dominio.Partido;
 import com.tallerwebi.dominio.Reserva;
@@ -75,10 +76,17 @@ public class ControladorPartidoTest {
         // Create mock for Reserva
         Reserva reservaMock = Mockito.mock(Reserva.class);
         when(reservaMock.getCancha()).thenReturn(canchaMock);
+        when(reservaMock.getId()).thenReturn(1L);
+
+        // Create mock for Horario
+        Horario horarioMock = Mockito.mock(Horario.class);
+        when(horarioMock.getId()).thenReturn(1L);
+        when(reservaMock.getHorario()).thenReturn(horarioMock);
 
         // Set up the partido mock with all required relationships
         when(partidoMock.getReserva()).thenReturn(reservaMock);
         when(partidoMock.getCreador()).thenReturn(creadorMock);
+        when(partidoMock.cuposDisponibles()).thenReturn(5);
 
         controladorPartido = new ControladorPartido(servicioPartidoMock, servicioLoginMock, null, null,
                 servicioPartidoMock, null);

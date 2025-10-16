@@ -24,6 +24,7 @@ public class DetallePartido {
     private boolean esCreador;
     private Long reservaId;
     private Long horarioId;
+    private int cuposDisponibles;
 
     public DetallePartido(Partido partido, Usuario usuario) {
         this.id = partido.getId();
@@ -42,6 +43,7 @@ public class DetallePartido {
         this.esCreador = partido.esCreador(usuario.getEmail());
         this.reservaId = partido.getReserva().getId();
         this.horarioId = partido.getReserva().getHorario().getId();
+        this.cuposDisponibles = partido.cuposDisponibles();
     }
 
     public Long getId() {
@@ -106,5 +108,9 @@ public class DetallePartido {
 
     public Long getHorarioId() {
         return horarioId;
+    }
+
+    public int getCuposDisponibles() {
+        return cuposDisponibles;
     }
 }
