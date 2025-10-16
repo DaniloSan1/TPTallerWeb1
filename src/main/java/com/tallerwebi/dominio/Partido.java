@@ -153,4 +153,8 @@ public class Partido {
     public boolean partidoActivo() {
         return this.reserva != null && this.reserva.getActiva();
     }
+
+    public int cuposDisponibles() {
+        return this.cupoMaximo - this.participantes.size();
+    }
 }
