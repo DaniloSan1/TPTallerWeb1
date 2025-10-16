@@ -16,12 +16,18 @@ public class ControladorReserva {
     private final ServicioReserva servicioReserva;
     private final ServicioHorario servicioHorario;
     private final ServicioUsuario servicioUsuario;
+    private final ServicioPartido servicioPartido;
+    private Horario guardada;
 
     @Autowired
-    public ControladorReserva(ServicioReserva servicioReserva, ServicioHorario servicioHorario, ServicioUsuario servicioUsuario) {
+    public ControladorReserva( ServicioReserva servicioReserva,
+        ServicioHorario servicioHorario,
+        ServicioUsuario servicioUsuario,
+        ServicioPartido servicioPartido) {
         this.servicioReserva = servicioReserva;
         this.servicioHorario = servicioHorario;
         this.servicioUsuario = servicioUsuario;
+        this.servicioPartido = servicioPartido;
     }
  
     @GetMapping("/nueva")
@@ -46,6 +52,9 @@ public class ControladorReserva {
             @RequestParam Long horarioId,
             @RequestParam String fechaReserva,
             @RequestParam Long usuarioId,
+            @RequestParam String titulo,
+            @RequestParam String descripcion,
+            @RequestParam Nivel nivel,
             ModelMap model) {
 
         try {
@@ -60,6 +69,14 @@ public class ControladorReserva {
             Reserva reserva = new Reserva(horario, usuario, fecha);
 
             Reserva reservaCreada = servicioReserva.crearReserva(reserva);
+            servicioPartido.crearDesdeReserva(
+                    reservaCreada,
+                    titulo,
+                    descripcion,
+                    nivel, 
+                    0,//que venga de la cancha
+                    usuario
+            );
 
             model.put("mensajeExito", "Reserva creada con éxito para el " + fecha);
             return "redirect:/reserva/" + reservaCreada.getId();
@@ -73,9 +90,10 @@ public class ControladorReserva {
             model.put("horarioId", horarioId);
             model.put("cancha", cancha);
             model.put("horario", horario);
+
             return "reservaForm";
         }
-    }
+    } 
 
     @PostMapping("/cancelar/{id}")
     public String cancelarReserva(

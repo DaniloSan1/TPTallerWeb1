@@ -31,11 +31,10 @@ public class Partido {
     public Partido() {
     }
 
-    public Partido(Long id, String titulo, String descripcion, Zona zona, Nivel nivel,
+    public Partido(Long id, String titulo, String descripcion, Nivel nivel,
             int cupoMaximo,
             Reserva reserva, Usuario creador) {
         this.titulo = titulo;
-        this.zona = zona;
         this.nivel = nivel;
         this.cupoMaximo = cupoMaximo;
         this.reserva = reserva;
@@ -67,7 +66,7 @@ public class Partido {
     }
 
     public Zona getZona() {
-        return zona;
+        return reserva.getCancha().getZona();
     }
 
     public Nivel getNivel() {
@@ -138,4 +137,15 @@ public class Partido {
         return participantes.stream()
                 .anyMatch(pp -> pp.getUsuario().getId().equals(usuarioId));
     }
-}
+
+    public void setReserva(Reserva reserva) {
+        this.reserva = reserva;
+    }
+
+    public void setUsuario(Usuario usuario) {
+        this.creador = usuario;
+    }
+    public boolean partidoActivo() {
+        return this.reserva != null && this.reserva.getActiva();
+    }
+}   
