@@ -1,6 +1,7 @@
 package com.tallerwebi.dominio;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.time.DayOfWeek;
@@ -9,6 +10,7 @@ import java.time.LocalTime;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.ArgumentCaptor;
 import org.mockito.Mockito;
 import org.springframework.cglib.core.Local;
 
@@ -279,6 +281,50 @@ public class ServicioPartidoImplTest {
         assertEquals(1, partido.getParticipantes().size());
         assertEquals(2L, partido.getParticipantes().iterator().next().getUsuario().getId());
     }
+   @Test
+   public void crearDesdeReservaDeberiaCrearUnPartidoCorrectamente() {
+    RepositorioPartido repositorioPartidoMock = Mockito.mock(RepositorioPartido.class);
+    RepositorioReserva repositorioReservaMock = Mockito.mock(RepositorioReserva.class);
+    RepositorioUsuario repositorioUsuarioMock = Mockito.mock(RepositorioUsuario.class);
+    RepositorioPartidoParticipante repositorioPartidoParticipanteMock = Mockito.mock(RepositorioPartidoParticipante.class);
 
+    ServicioPartido servicioPartido = new ServicioPartidoImpl(
+            repositorioPartidoMock,
+            repositorioReservaMock,
+            repositorioUsuarioMock,
+            repositorioPartidoParticipanteMock
+    );
+
+    Cancha cancha = new Cancha("Cancha 1", null, null, "Dirección 1", Zona.NORTE);
+    cancha.setCapacidad(12);
+
+    Horario horario = new Horario(cancha, DayOfWeek.MONDAY, LocalTime.of(18, 0), LocalTime.of(19, 0));
+    Usuario creadorReserva = new Usuario("creador", "123", "c@c.com");
+
+    Reserva reserva = new Reserva(horario, creadorReserva, LocalDateTime.now().plusDays(1));
+    reserva.setId(1L);
+    reserva.setActiva(true);
+
+    Usuario usuarioCreadorPartido = new Usuario("mora", "123", "mora@unlam.edu.ar");
+
+    Partido partidoCreado = servicioPartido.crearDesdeReserva(
+            reserva,
+            "Título X",
+            "Descripción X",
+            Nivel.AVANZADO,
+            8,
+            usuarioCreadorPartido
+    );
+
+    // Assert (validamos el estado del objeto devuelto)
+    assertEquals("Título X", partidoCreado.getTitulo());
+    assertEquals("Descripción X", partidoCreado.getDescripcion());
+    assertEquals(Nivel.AVANZADO, partidoCreado.getNivel());
+    assertEquals(8, partidoCreado.getCupoMaximo());
+    assertSame(reserva, partidoCreado.getReserva());
+    assertSame(usuarioCreadorPartido, partidoCreado.getCreador());
+
+    Mockito.verify(repositorioPartidoMock, Mockito.times(1)).guardar(Mockito.same(partidoCreado));
+}
 
 }
