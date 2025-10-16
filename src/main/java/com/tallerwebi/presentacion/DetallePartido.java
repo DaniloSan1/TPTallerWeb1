@@ -21,6 +21,9 @@ public class DetallePartido {
     private String creador;
     private Boolean hayCupo;
     private Boolean yaParticipa;
+    private boolean esCreador;
+    private Long reservaId;
+    private Long horarioId;
 
     public DetallePartido(Partido partido, Usuario usuario) {
         this.id = partido.getId();
@@ -36,6 +39,9 @@ public class DetallePartido {
         this.creador = partido.getCreador().getNombre();
         this.hayCupo = partido.tieneCupo();
         this.yaParticipa = partido.validarParticipanteExistente(usuario.getId());
+        this.esCreador = partido.esCreador(usuario.getEmail());
+        this.reservaId = partido.getReserva().getId();
+        this.horarioId = partido.getReserva().getHorario().getId();
     }
 
     public Long getId() {
@@ -88,5 +94,17 @@ public class DetallePartido {
 
     public Boolean getYaParticipa() {
         return yaParticipa;
+    }
+
+    public boolean getEsCreador() {
+        return esCreador;
+    }
+
+    public Long getReservaId() {
+        return reservaId;
+    }
+
+    public Long getHorarioId() {
+        return horarioId;
     }
 }

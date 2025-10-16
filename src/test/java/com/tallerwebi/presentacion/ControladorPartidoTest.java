@@ -54,6 +54,14 @@ public class ControladorPartidoTest {
         when(partidoMock.getFecha()).thenReturn(LocalDateTime.of(2025, 10, 5, 18, 0));
         when(partidoMock.getCupoMaximo()).thenReturn(10);
         when(partidoMock.getDescripcion()).thenReturn("Descripción del partido");
+        when(partidoMock.getCreador()).thenReturn(usuarioMock);
+        when(partidoMock.getReserva()).thenReturn(Mockito.mock(Reserva.class));
+        when(usuarioMock.getEmail()).thenReturn("usuario1@email.com");
+        when(usuarioMock.getId()).thenReturn(1L);
+        when(usuarioMock.getNombre()).thenReturn("Usuario Creador");
+        when(partidoMock.tieneCupo()).thenReturn(true);
+        when(partidoMock.validarParticipanteExistente(Mockito.anyLong())).thenReturn(false);
+        when(partidoMock.esCreador(Mockito.anyString())).thenReturn(true);
 
         // Create mocks for related objects
         Cancha canchaMock = Mockito.mock(Cancha.class);
@@ -72,7 +80,8 @@ public class ControladorPartidoTest {
         when(partidoMock.getReserva()).thenReturn(reservaMock);
         when(partidoMock.getCreador()).thenReturn(creadorMock);
 
-        controladorPartido = new ControladorPartido(servicioPartidoMock, servicioLoginMock, null, null, servicioPartidoMock, null);
+        controladorPartido = new ControladorPartido(servicioPartidoMock, servicioLoginMock, null, null,
+                servicioPartidoMock, null);
     }
 
     @Test
@@ -100,6 +109,17 @@ public class ControladorPartidoTest {
         assertNotNull(partidoEnModelo);
         assertEquals(partidoMock.getId(), partidoEnModelo.getId());
         assertEquals(partidoMock.getTitulo(), partidoEnModelo.getTitulo());
+        assertEquals(partidoMock.getDescripcion(), partidoEnModelo.getDescripcion());
+        assertEquals(partidoMock.getZona(), partidoEnModelo.getZona());
+        assertEquals(partidoMock.getNivel(), partidoEnModelo.getNivel());
+        assertEquals(partidoMock.getCupoMaximo(), partidoEnModelo.getCupoMaximo());
+        assertEquals(partidoMock.getCreador().getNombre(), partidoEnModelo.getCreador());
+        assertEquals(partidoMock.getReserva().getCancha().getNombre(), partidoEnModelo.getCancha());
+        assertEquals(partidoMock.getFecha(), partidoEnModelo.getFecha());
+        assertEquals(partidoMock.tieneCupo(), partidoEnModelo.getHayCupo());
+        assertEquals(partidoMock.validarParticipanteExistente(usuarioMock.getId()), partidoEnModelo.getYaParticipa());
+        assertEquals(partidoMock.esCreador(usuarioMock.getEmail()), partidoEnModelo.getEsCreador());
+        assertNull(modelAndView.getModel().get("error"));
     }
 
     @Test

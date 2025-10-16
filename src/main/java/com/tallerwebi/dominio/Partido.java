@@ -145,4 +145,8 @@ public class Partido {
     public void setUsuario(Usuario usuario) {
         this.creador = usuario;
     }
-}   
+
+    public boolean esCreador(String email) {
+        return creador.getEmail().equals(email);
+    }
+}

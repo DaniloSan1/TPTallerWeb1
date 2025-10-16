@@ -42,7 +42,10 @@
               <div
                 class="d-flex align-items-center justify-content-between gap-3"
               >
-                <h3 th:text="${partido.titulo}"></h3>
+                <h3
+                  th:text="${partido.titulo}"
+                  style="margin: 0 !important"
+                ></h3>
                 <div class="d-flex align-items-center g-3">
                   <span class="chip chip-zona" th:text="${partido.zona}"></span>
                   <span
@@ -105,6 +108,24 @@
                     th:if="${partido.yaParticipa}"
                   >
                     Abandonar partido
+                  </button>
+                </form>
+                <form
+                  th:action="@{/reserva/{id}(id=${partido.reservaId})}"
+                  th:if="${partido.esCreador}"
+                >
+                  <input
+                    type="hidden"
+                    name="usuarioId"
+                    th:value="${partido.creadorId}"
+                  />
+                  <input
+                    type="hidden"
+                    name="horarioId"
+                    th:value="${partido.horarioId}"
+                  />
+                  <button type="submit" class="btn btn-danger">
+                    Cancelar reserva
                   </button>
                 </form>
               </div>
