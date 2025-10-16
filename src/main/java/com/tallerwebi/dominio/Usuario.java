@@ -1,9 +1,6 @@
 package com.tallerwebi.dominio;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 
 @Entity
 public class Usuario {
@@ -13,11 +10,35 @@ public class Usuario {
     private Long id;
     private String nombre;
     private String apellido;
+
+    @Column(unique = true)
     private String email;
+
     private String password;
     private String rol;
+    private String posicionFavorita;
     private Boolean activo = false;
+    private Double calificacionPromedio = 0.0;
+    private Integer totalCalificaciones = 0;
 
+    public Usuario() {
+    }
+
+    public Usuario(String nombre, String password, String email) {
+        this.nombre = nombre;
+        this.password = password;
+        this.email = email;
+        this.rol = "ROLE_USER";
+        this.activo = true;
+    }
+
+    public String getPosicionFavorita() {
+        return posicionFavorita;
+    }
+
+    public void setPosicionFavorita(String posicionFavorita) {
+        this.posicionFavorita = posicionFavorita;
+    }
 
     public String getNombre() {
         return nombre;
@@ -38,30 +59,39 @@ public class Usuario {
     public Long getId() {
         return id;
     }
+
     public void setId(Long id) {
         this.id = id;
     }
+
     public String getEmail() {
         return email;
     }
+
     public void setEmail(String email) {
         this.email = email;
     }
+
     public String getPassword() {
         return password;
     }
+
     public void setPassword(String password) {
         this.password = password;
     }
+
     public String getRol() {
         return rol;
     }
+
     public void setRol(String rol) {
         this.rol = rol;
     }
+
     public Boolean getActivo() {
         return activo;
     }
+
     public void setActivo(Boolean activo) {
         this.activo = activo;
     }
@@ -72,5 +102,21 @@ public class Usuario {
 
     public void activar() {
         activo = true;
+    }
+
+    public Double getCalificacionPromedio() {
+        return calificacionPromedio;
+    }
+
+    public void setCalificacionPromedio(Double calificacionPromedio) {
+        this.calificacionPromedio = calificacionPromedio;
+    }
+
+    public Integer getTotalCalificaciones() {
+        return totalCalificaciones;
+    }
+
+    public void setTotalCalificaciones(Integer totalCalificaciones) {
+        this.totalCalificaciones = totalCalificaciones;
     }
 }

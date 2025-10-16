@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+  <head>
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, shrink-to-fit=no"
+    />
+    <title>Detalle de la Reserva</title>
+
+    <link
+      rel="stylesheet"
+      th:href="@{/webjars/bootstrap/5.2.0/css/bootstrap.min.css}"
+    />
+    <link rel="stylesheet" th:href="@{/css/main.css}" />
+  </head>
+
+  <body>
+    <!-- Include the navbar fragment -->
+    <div th:replace="~{fragments/navbar :: navbar}"></div>
+
+    <main role="main" class="container" style="padding-top: 175px">
+      <div th:if="${error}" class="alert alert-danger" th:text="${error}"></div>
+      <div
+        th:if="${mensajeExito}"
+        class="alert alert-success"
+        th:text="${mensajeExito}"
+      ></div>
+
+      <div class="card shadow p-4 mx-auto" style="max-width: 600px">
+        <h3 class="text-center mb-3">Detalle de la Reserva</h3>
+
+        <div class="mb-3">
+          <label class="form-label fw-bold">Cancha:</label>
+          <span th:text="${cancha.nombre}"></span>
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label fw-bold">Tipo de suelo:</label>
+          <span th:text="${cancha.tipoSuelo}"></span>
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label fw-bold">Horario:</label>
+          <span th:text="${horario.diaSemana}"></span>
+          <span th:text="${horario.horaInicio}"></span> -
+          <span th:text="${horario.horaFin}"></span>
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label fw-bold">Fecha de la reserva:</label>
+          <span th:text="${reserva.fechaReserva}"></span>
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label fw-bold">Usuario:</label>
+          <span th:text="${reserva.usuario.nombre}"></span>
+        </div>
+
+        <div class="d-flex justify-content-between mt-4">
+          <a
+            th:href="@{/reserva/nueva(usuarioId=${reserva.usuario.id}, horarioId=${horario.id})}"
+            class="btn btn-secondary"
+            >Hacer otra reserva</a
+          >
+
+          <form
+            th:action="@{/reserva/cancelar/{id}(id=${reserva.id})}"
+            method="post"
+          >
+            <input
+              type="hidden"
+              name="usuarioId"
+              th:value="${reserva.usuario.id}"
+            />
+            <input type="hidden" name="horarioId" th:value="${horario.id}" />
+            <button type="submit" class="btn btn-danger">
+              Cancelar reserva
+            </button>
+          </form>
+        </div>
+      </div>
+    </main>
+
+    <script
+      th:src="@{/webjars/bootstrap/5.2.0/js/bootstrap.bundle.min.js}"
+    ></script>
+  </body>
+</html>

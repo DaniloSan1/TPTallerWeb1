@@ -1,10 +1,72 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
 <head>
-    <meta charset="UTF-8">
-    <title>Title</title>
+    <meta charset="utf-8" />
+    <meta
+            name="viewport"
+            content="width=device-width, initial-scale=1, shrink-to-fit=no"
+    />
+    <title>Mi perfil</title>
+
+    <!-- Bootstrap core CSS -->
+    <link
+            rel="stylesheet"
+            th:href="@{/webjars/bootstrap/5.2.0/css/bootstrap.min.css}"
+    />
+    <link rel="stylesheet" th:href="@{/css/main.css}" />
+    <link rel="stylesheet" th:href="@{/css/perfil.css}" />
+
 </head>
+
 <body>
 
+<div th:replace="~{fragments/navbar :: navbar}"></div>
+
+
+<div class="profile-header">
+    <div class="profile-avatar"></div>
+</div>
+
+
+<main role="main" class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card shadow profile-card">
+                <div class="card-header">
+                    <h4 class="mb-0" th:text="${usuario.nombre + ' ' + usuario.apellido}">Nombre Apellido</h4>
+                    <small th:text="${usuario.email}">email@ejemplo.com</small>
+                </div>
+                <div class="card-body">
+                    <p>
+                        <strong>Nombre:</strong>
+                        <span th:text="${usuario.nombre}"></span>
+                    </p>
+                    <p>
+                        <strong>Apellido:</strong>
+                        <span th:text="${usuario.apellido}"></span>
+                    </p>
+                    <p>
+                        <strong>Email:</strong>
+                        <span th:text="${usuario.email}"></span>
+                    </p>
+                    <p>
+                        <strong>Posición favorita:</strong>
+                        <span th:text="${usuario.posicionFavorita}"></span>
+                    </p>
+                </div>
+                <div class="card-footer text-end">
+                    <a th:href="@{/login}" class="btn btn-logout btn-lg text-white">
+                        Cerrar sesión
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+<script
+        type="text/javascript"
+        th:src="@{/webjars/bootstrap/5.2.0/js/bootstrap.bundle.min.js}"
+></script>
 </body>
 </html>
+

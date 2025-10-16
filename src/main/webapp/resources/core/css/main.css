@@ -1,19 +1,125 @@
-body {
-  padding-top: 5rem;
+:root {
+  --primary-color: #1c2560;
+  --secondary-color: #f35626;
+  --tertiary-color:  #03984d;
 }
+
 .starter-template {
   padding: 3rem 1.5rem;
   text-align: center;
 }
+.horario-item {
+  display: inline-block;
+  margin: 5px;
+  padding: 8px 12px;
+  border-radius: 5px;
+}
+.horario-disponible {
+  background-color: #d4edda;
+  border: 1px solid #c3e6cb;
+}
+
+.material-symbols-outlined {
+  font-variation-settings:
+  'FILL' 1,
+  'wght' 400,
+  'GRAD' 0,
+  'opsz' 24
+}
 
 h1{
-	color:#0000FF;
+	color: var(--primary-color);
 }
 
 h2{
-	color:#FF0000;
+	color: var(--secondary-color);
+} 
+
+#loginbox h2 {
+    color: #000;
+    margin-bottom: 2rem;
+    text-align: center;
+}
+
+#btn-login {
+  margin-top: 1rem;
 }
 
 .navbar-brand{
-    margin:0 2rem;
+    margin: 0;
+}
+
+.navbar{
+    background-color: var(--primary-color);
+}
+
+.nav-link.active {
+    border-bottom: 2px solid white !important;
+    font-weight: bold;
+}
+
+/* Tertiary color is available as var(--tertiary-color) for accent elements */
+/* Example usage: color: var(--tertiary-color); or background-color: var(--tertiary-color); */
+
+/* Bootstrap button overrides */
+.btn-primary {
+    background-color: var(--primary-color) !important;
+    border-color: var(--primary-color) !important;
+    color: white !important;
+}
+
+.btn-primary:hover {
+    background-color: var(--primary-color) !important;
+    border-color: var(--primary-color) !important;
+    opacity: 0.9;
+}
+
+.btn-primary:focus,
+.btn-primary.focus {
+    background-color: var(--primary-color) !important;
+    border-color: var(--primary-color) !important;
+    box-shadow: 0 0 0 0.2rem rgba(28, 37, 96, 0.25) !important;
+}
+
+.btn-primary:active,
+.btn-primary.active {
+    background-color: var(--primary-color) !important;
+    border-color: var(--primary-color) !important;
+}
+
+.btn-primary:disabled,
+.btn-primary.disabled {
+    background-color: var(--primary-color) !important;
+    border-color: var(--primary-color) !important;
+    opacity: 0.6;
+}
+
+/* Chip styles for cards */
+.chip {
+    display: inline-block;
+    padding: 0.25rem 0.75rem;
+    margin: 0.125rem;
+    font-size: 0.75rem;
+    font-weight: 500;
+    border-radius: 6px;
+    color: white;
+    background-color: var(--secondary-color);
+}
+
+.chip.chip-zona {
+    background-color: var(--secondary-color);
+}
+
+.chip.chip-nivel {
+    background-color: var(--tertiary-color);
+}
+
+.card-footer-chips {
+    background-color: transparent;
+    border-top: 1px solid rgba(0,0,0,0.125);
+    padding: 0.75rem;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.25rem;
+    justify-content: flex-end;
 }
