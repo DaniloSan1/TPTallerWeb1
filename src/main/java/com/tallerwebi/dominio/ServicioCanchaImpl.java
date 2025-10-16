@@ -2,40 +2,37 @@ package com.tallerwebi.dominio;
 
 import org.springframework.stereotype.Service;
 
+import com.tallerwebi.dominio.excepcion.CanchaNoEncontrada;
+import com.tallerwebi.dominio.excepcion.NoHayCanchasDisponibles;
+
 import java.util.ArrayList;
 import java.util.List;
 
-@Service
+@Service("servicioCancha")
 public class ServicioCanchaImpl implements ServicioCancha {
-    private List<Cancha> canchas = new ArrayList<>();
 
-public ServicioCanchaImpl() {
-    canchas.add(new Cancha(1L, "Cancha 1", true));
-    canchas.add(new Cancha(2L, "Cancha 2", true));
-}
+    private final RepositorioCancha repositorioCancha;
 
-@Override
-public List<Cancha> obtenerCancha() {
-    return canchas;
-}
-@Override
-public boolean reservarCancha(Long id) {
-    for (Cancha cancha : canchas) {
-        if (cancha.getId().equals(id)) {
-            cancha.setDisponible(false);
-            return true;
-        }
+    public ServicioCanchaImpl(RepositorioCancha repositorioCancha) {
+        this.repositorioCancha = repositorioCancha;
     }
-    return false;
-}
-@Override
-public boolean cancelarCancha(Long id) {
-    for (Cancha cancha : canchas) {
-        if (cancha.getId().equals(id)) {
-            cancha.setDisponible(true);
-            return true;
+
+    @Override
+    public List<Cancha> obtenerCanchasDisponibles() {
+        List<Cancha> canchasDisponibles = repositorioCancha.MostrarCanchasConHorariosDisponibles();
+        if (canchasDisponibles.isEmpty()) {
+            throw new NoHayCanchasDisponibles();
         }
+        return canchasDisponibles;
     }
-    return false;
-}
+    
+    @Override
+    public Cancha obtenerCanchaPorId(Long id){
+        Cancha cancha = repositorioCancha.BuscarCanchaPorId(id);
+        if (cancha==null) {
+            throw new CanchaNoEncontrada("No se encontró la cancha con ID: " + id);
+            
+        }
+        return cancha;
+    }
 }

@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+  <head>
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, shrink-to-fit=no"
+    />
+    <title>Reserva de Cancha</title>
+
+    <link
+      rel="stylesheet"
+      th:href="@{/webjars/bootstrap/5.2.0/css/bootstrap.min.css}"
+    />
+    <link rel="stylesheet" th:href="@{/css/main.css}" />
+  </head>
+
+  <body>
+    <!-- Include the navbar fragment -->
+    <div th:replace="~{fragments/navbar :: navbar}"></div>
+
+    <main role="main" class="container" style="padding-top: 175px">
+      <div th:if="${error}" class="alert alert-danger" th:text="${error}"></div>
+      <div
+        th:if="${mensajeExito}"
+        class="alert alert-success"
+        th:text="${mensajeExito}"
+      ></div>
+
+      <div class="card shadow p-4 mx-auto" style="max-width: 600px">
+        <h3 class="text-center mb-3">Confirmar Reserva</h3>
+        <form th:action="@{/reserva/crear}" method="post">
+          <input type="hidden" name="usuarioId" th:value="${usuarioId}" />
+          <input type="hidden" name="horarioId" th:value="${horarioId}" />
+
+          <div class="mb-3">
+            <label class="form-label fw-bold">Cancha:</label>
+            <span th:text="${cancha.nombre}"></span>
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label fw-bold">Tipo de suelo:</label>
+            <span th:text="${cancha.tipoSuelo}"></span>
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label fw-bold">Horario:</label>
+            <span th:text="${horario.diaSemana}"></span>
+            <span th:text="${horario.horaInicio}"></span> -
+            <span th:text="${horario.horaFin}"></span>
+          </div>
+
+          <div class="mb-3">
+            <label for="fechaReserva" class="form-label fw-bold"
+              >Fecha de la reserva:</label
+            >
+            <input
+              type="date"
+              class="form-control"
+              name="fechaReserva"
+              required
+            />
+          </div>
+          <div class="mb-3">
+          <label for="titulo" class="form-label fw-bold">Título:</label>
+          <input type="input" class="form-control" name="titulo" required />
+        </div>
+        <div class="mb-3">
+          <label for="descripcion" class="form-label fw-bold">Descripción:</label>
+          <textarea class="form-control" name="descripcion" rows="3" required></textarea>
+        </div>
+        <div class="mb-3">
+          <label for="nivel" class="form-label fw-bold">Nivel:</label>
+          <select class="form-select" name="nivel" required>
+            <option value="" disabled selected>Seleccione su nivel</option>
+            <option value="PRINCIPIANTE">Principiante</option>
+            <option value="INTERMEDIO">Intermedio</option>
+            <option value="AVANZADO">Avanzado</option>
+          </select>
+        </div>
+
+          <div class="d-flex justify-content-between mt-4">
+            <a th:href="@{/home}" class="btn btn-secondary">Volver</a>
+            <button type="submit" class="btn btn-primary">
+              Confirmar Reserva
+            </button>
+          </div>
+        </form>
+      </div>
+    </main>
+
+  <script th:src="@{/webjars/bootstrap/5.2.0/js/bootstrap.bundle.min.js}"></script>
+</body>
+</html>

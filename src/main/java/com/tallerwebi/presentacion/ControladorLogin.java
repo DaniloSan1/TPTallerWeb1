@@ -1,13 +1,18 @@
 package com.tallerwebi.presentacion;
 
+import com.tallerwebi.dominio.Partido;
 import com.tallerwebi.dominio.ServicioLogin;
 import com.tallerwebi.dominio.Usuario;
-import com.tallerwebi.dominio.excepcion.UsuarioExistente;
+import com.tallerwebi.dominio.excepcion.UsuarioExistenteException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
+import com.tallerwebi.dominio.ServicioPartido;
+
+import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -15,10 +20,12 @@ import javax.servlet.http.HttpServletRequest;
 public class ControladorLogin {
 
     private ServicioLogin servicioLogin;
+    private ServicioPartido servicioPartido;
 
     @Autowired
-    public ControladorLogin(ServicioLogin servicioLogin){
+    public ControladorLogin(ServicioLogin servicioLogin, ServicioPartido servicioPartido) {
         this.servicioLogin = servicioLogin;
+        this.servicioPartido = servicioPartido;
     }
 
     @RequestMapping("/login")
@@ -40,6 +47,7 @@ public class ControladorLogin {
             request.getSession().setAttribute("APELLIDO", usuarioBuscado.getApellido());
             request.getSession().setAttribute("PASSWORD", usuarioBuscado.getPassword());
             request.getSession().setAttribute("POSICION_FAVORITA", usuarioBuscado.getPosicionFavorita());
+            request.getSession().setAttribute("USUARIO", usuarioBuscado);
             return new ModelAndView("redirect:/home");
         } else {
             model.put("error", "Usuario o clave incorrecta");
@@ -50,18 +58,14 @@ public class ControladorLogin {
     @RequestMapping(path = "/registrarme", method = RequestMethod.POST)
     public ModelAndView registrarme(@ModelAttribute("usuario") Usuario usuario) {
         ModelMap model = new ModelMap();
-        try{
+        try {
             servicioLogin.registrar(usuario);
-        } catch (UsuarioExistente e){
-            model.put("error", "El usuario ya existe");
-            return new ModelAndView("nuevo-usuario", model);
-        } catch (Exception e){
+        } catch (Exception e) {
             model.put("error", "Error al registrar el nuevo usuario");
             return new ModelAndView("nuevo-usuario", model);
         }
         return new ModelAndView("redirect:/login");
     }
-
 
     @RequestMapping(path = "/nuevo-usuario", method = RequestMethod.GET)
     public ModelAndView nuevoUsuario() {
@@ -71,8 +75,18 @@ public class ControladorLogin {
     }
 
     @RequestMapping(path = "/home", method = RequestMethod.GET)
-    public ModelAndView irAHome() {
-        return new ModelAndView("home");
+    public ModelAndView irAHome(HttpServletRequest request) {
+        String email = (String) request.getSession().getAttribute("EMAIL");
+        if (email == null) {
+            return new ModelAndView("redirect:/login");
+        }
+
+        ModelMap model = new ModelMap();
+        List<Partido> partidos = servicioPartido.listarTodos();
+        System.out.println(partidos);
+        model.put("partidos", partidos);
+        model.put("currentPage", "home");
+        return new ModelAndView("home", model);
     }
 
     @RequestMapping(path = "/", method = RequestMethod.GET)

@@ -1,0 +1,142 @@
+package com.tallerwebi.presentacion;
+
+import com.tallerwebi.dominio.*;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.mockito.*;
+import org.springframework.ui.ModelMap;
+import org.springframework.web.servlet.ModelAndView;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
+import java.util.Arrays;
+import java.util.List;
+
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.*;
+import static org.mockito.Mockito.*;
+
+class ControladorCanchaTest {
+
+    @Mock
+    private ServicioCancha servicioCanchaMock;
+
+    @Mock
+    private ServicioHorario servicioHorarioMock;
+
+    @Mock
+    private ServicioLogin servicioLoginMock;
+
+    @Mock
+    private HttpServletRequest request;
+
+    @Mock
+    private HttpSession session;
+
+    @InjectMocks
+    private ControladorCancha controladorCancha;
+
+    @BeforeEach
+    void setUp() {
+        MockitoAnnotations.openMocks(this);
+    }
+
+  
+
+    @Test
+    void listarCanchas_deberiaRetornarVistaCanchasConLista() {
+       
+        List<Cancha> canchas = Arrays.asList(new Cancha(), new Cancha());
+        when(servicioCanchaMock.obtenerCanchasDisponibles()).thenReturn(canchas);
+        ModelMap model = new ModelMap();
+
+        
+        String vista = controladorCancha.listarCanchas(model);
+
+        
+        assertThat(vista, is("canchas"));
+        assertThat(model, hasEntry("canchas", canchas));
+        assertThat(model, hasEntry("currentPage", "canchas-disponibles"));
+        verify(servicioCanchaMock, times(1)).obtenerCanchasDisponibles();
+    }
+
+    @Test
+    void listarCanchas_deberiaManejarExcepcionYAgregarErrorAlModel() {
+        // given
+        when(servicioCanchaMock.obtenerCanchasDisponibles()).thenThrow(new RuntimeException("Error inesperado"));
+        ModelMap model = new ModelMap();
+
+        // when
+        String vista = controladorCancha.listarCanchas(model);
+
+        // then
+        assertThat(vista, is("canchas"));
+        assertThat(model, hasEntry("error", "Error inesperado"));
+    }
+
+    @Test
+    void verCancha_conUsuarioLogueadoDeberiaMostrarVistaCancha() {
+        // given
+        Long canchaId = 1L;
+        String email = "test@correo.com";
+
+        Usuario usuario = new Usuario();
+        usuario.setId(5L);
+
+        Cancha cancha = new Cancha();
+        cancha.setId(canchaId);
+
+        Horario horario = new Horario();
+        List<Horario> horarios = List.of(horario);
+
+        when(request.getSession()).thenReturn(session);
+        when(session.getAttribute("EMAIL")).thenReturn(email);
+
+        when(servicioLoginMock.buscarPorEmail(email)).thenReturn(usuario);
+        when(servicioCanchaMock.obtenerCanchaPorId(canchaId)).thenReturn(cancha);
+        when(servicioHorarioMock.obtenerPorCancha(cancha)).thenReturn(horarios);
+
+        ModelMap model = new ModelMap();
+
+        // when
+        ModelAndView mav = controladorCancha.verCancha(canchaId, model, request);
+
+        // then
+        assertThat(mav.getViewName(), is("cancha"));
+        assertThat(mav.getModel(), hasEntry("cancha", cancha));
+        assertThat(mav.getModel(), hasEntry("horarios", horarios));
+        assertThat(mav.getModel(), hasEntry("usuarioId", usuario.getId()));
+    }
+
+    @Test
+    void verCancha_sinUsuarioEnSesionDebeRedirigirALogin() {
+        // given
+        when(request.getSession()).thenReturn(session);
+        when(session.getAttribute("EMAIL")).thenReturn(null);
+        ModelMap model = new ModelMap();
+
+        // when
+        ModelAndView mav = controladorCancha.verCancha(1L, model, request);
+
+        // then
+        assertThat(mav.getViewName(), is("redirect:/login"));
+        verifyNoInteractions(servicioCanchaMock, servicioHorarioMock, servicioLoginMock);
+    }
+
+    @Test
+    void verCancha_deberiaManejarExcepcionYAgregarError() {
+        // given
+        when(request.getSession()).thenReturn(session);
+        when(session.getAttribute("EMAIL")).thenReturn("usuario@correo.com");
+        when(servicioLoginMock.buscarPorEmail(anyString())).thenThrow(new RuntimeException("Falla al obtener usuario"));
+
+        ModelMap model = new ModelMap();
+
+        // when
+        ModelAndView mav = controladorCancha.verCancha(1L, model, request);
+
+        // then
+        assertThat(mav.getViewName(), is("cancha"));
+        assertThat(mav.getModel(), hasEntry("error", "Falla al obtener usuario"));
+    }
+}

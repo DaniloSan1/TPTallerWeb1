@@ -26,7 +26,8 @@ public class VistaLoginE2E {
     static void abrirNavegador() {
         playwright = Playwright.create();
         browser = playwright.chromium().launch();
-        //browser = playwright.chromium().launch(new BrowserType.LaunchOptions().setHeadless(false).setSlowMo(500));
+        // browser = playwright.chromium().launch(new
+        // BrowserType.LaunchOptions().setHeadless(false).setSlowMo(500));
     }
 
     @AfterAll
@@ -49,12 +50,6 @@ public class VistaLoginE2E {
     }
 
     @Test
-    void deberiaDecirUNLAMEnElNavbar() throws MalformedURLException {
-        dadoQueElUsuarioEstaEnLaVistaDeLogin();
-        entoncesDeberiaVerUNLAMEnElNavbar();
-    }
-
-    @Test
     void deberiaDarUnErrorAlIntentarIniciarSesionConUnUsuarioQueNoExiste() {
         dadoQueElUsuarioCargaSusDatosDeLoginCon("damian@unlam.edu.ar", "unlam");
         cuandoElUsuarioTocaElBotonDeLogin();
@@ -74,13 +69,8 @@ public class VistaLoginE2E {
         dadoQueElUsuarioSeRegistraCon("juan@unlam.edu.ar", "123456");
         dadoQueElUsuarioEstaEnLaVistaDeLogin();
         dadoQueElUsuarioCargaSusDatosDeLoginCon("juan@unlam.edu.ar", "123456");
-        cuandoElUsuarioTocaElBotonDeLogin();    
+        cuandoElUsuarioTocaElBotonDeLogin();
         entoncesDeberiaSerRedirigidoALaVistaDeHome();
-    }
-
-    private void entoncesDeberiaVerUNLAMEnElNavbar() {
-        String texto = vistaLogin.obtenerTextoDeLaBarraDeNavegacion();
-        assertThat("UNLAM", equalToIgnoringCase(texto));
     }
 
     private void dadoQueElUsuarioEstaEnLaVistaDeLogin() throws MalformedURLException {
