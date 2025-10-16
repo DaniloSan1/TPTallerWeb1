@@ -1,63 +1,123 @@
 <!DOCTYPE html>
 <html lang="es" xmlns:th="http://www.thymeleaf.org">
-  <head>
+<head>
     <meta charset="utf-8" />
     <meta
-      name="viewport"
-      content="width=device-width, initial-scale=1, shrink-to-fit=no"
+            name="viewport"
+            content="width=device-width, initial-scale=1, shrink-to-fit=no"
     />
-
     <title>Mi perfil</title>
 
-    <!-- Bootstrap core css -->
+    <!-- Bootstrap core CSS -->
     <link
-      rel="stylesheet"
-      th:href="@{/webjars/bootstrap/5.2.0/css/bootstrap.min.css}"
+            rel="stylesheet"
+            th:href="@{/webjars/bootstrap/5.2.0/css/bootstrap.min.css}"
     />
-
     <!-- custom style -->
     <link rel="stylesheet" th:href="@{/css/main.css}" />
-  </head>
 
-  <body>
-    <!-- Include the navbar fragment -->
-    <div th:replace="~{fragments/navbar :: navbar}"></div>
+    <style>
+        .profile-header {
+            background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)),
+            url("https://images.unsplash.com/photo-1505842465776-3acb39a1d5a5")
+            center/cover no-repeat;
+            height: 250px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            position: relative;
+        }
 
-    <main role="main" class="container" style="padding-top: 175px">
-      <div class="row justify-content-center">
+        .profile-avatar {
+            width: 130px;
+            height: 130px;
+            border-radius: 50%;
+            border: 4px solid white;
+            position: absolute;
+            bottom: -65px;
+            background: url("https://cdn-icons-png.flaticon.com/512/847/847969.png")
+            center/cover no-repeat;
+        }
+
+        .profile-card {
+            margin-top: 90px;
+            border: none;
+            border-radius: 15px;
+            overflow: hidden;
+        }
+
+        .profile-card .card-header {
+            background-color: #0d6efd;
+            color: white;
+            text-align: center;
+        }
+
+        .profile-card .card-body p {
+            font-size: 1rem;
+            margin-bottom: 12px;
+        }
+
+        .btn-logout {
+            background-color: #dc3545;
+            border: none;
+        }
+
+        .btn-logout:hover {
+            background-color: #b92c38;
+        }
+    </style>
+</head>
+
+<body>
+<!-- Navbar -->
+<div th:replace="~{fragments/navbar :: navbar}"></div>
+
+<!-- Portada -->
+<div class="profile-header">
+    <div class="profile-avatar"></div>
+</div>
+
+<!-- Contenido -->
+<main role="main" class="container">
+    <div class="row justify-content-center">
         <div class="col-md-6">
-          <div class="card shadow-sm">
-            <div class="card-header bg-primary text-white">
-              <h5 class="mb-0">Datos de usuario</h5>
+            <div class="card shadow profile-card">
+                <div class="card-header">
+                    <h4 class="mb-0" th:text="${usuario.nombre + ' ' + usuario.apellido}">Nombre Apellido</h4>
+                    <small th:text="${usuario.email}">email@ejemplo.com</small>
+                </div>
+                <div class="card-body">
+                    <p>
+                        <strong>Nombre:</strong>
+                        <span th:text="${usuario.nombre}"></span>
+                    </p>
+                    <p>
+                        <strong>Apellido:</strong>
+                        <span th:text="${usuario.apellido}"></span>
+                    </p>
+                    <p>
+                        <strong>Email:</strong>
+                        <span th:text="${usuario.email}"></span>
+                    </p>
+                    <p>
+                        <strong>Posición favorita:</strong>
+                        <span th:text="${usuario.posicionFavorita}"></span>
+                    </p>
+                </div>
+                <div class="card-footer text-end">
+                    <a th:href="@{/login}" class="btn btn-logout btn-lg text-white">
+                        Cerrar sesión
+                    </a>
+                </div>
             </div>
-            <div class="card-body">
-              <p>
-                <strong>Nombre:</strong>
-                <span th:text="${usuario.nombre}"></span>
-              </p>
-              <p>
-                <strong>Apellido:</strong>
-                <span th:text="${usuario.apellido}"></span>
-              </p>
-              <p>
-                <strong>Email:</strong> <span th:text="${usuario.email}"></span>
-              </p>
-              <p>
-                <strong>Posición favorita:</strong>
-                <span th:text="${usuario.posicionFavorita}"></span>
-              </p>
-            </div>
-            <div class="card-footer text-end">
-              <a th:href="@{/login}" class="btn btn-danger">Cerrar sesión</a>
-            </div>
-          </div>
         </div>
-      </div>
-    </main>
-
-    <script
-      type="text/javascript"
-      th:src="@{/webjars/bootstrap/5.2.0/js/bootstrap.bundle.min.js}"
-    ></script>
-  </body>
+    </div>
+</main>
+<script
+        type="text/javascript"
+        th:src="@{/webjars/bootstrap/5.2.0/js/bootstrap.bundle.min.js}"
+></script>
+</body>
 </html>
+
