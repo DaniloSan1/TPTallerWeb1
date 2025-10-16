@@ -13,6 +13,7 @@
       rel="stylesheet"
       th:href="@{/webjars/bootstrap/5.2.0/css/bootstrap.min.css}"
     />
+
     <link rel="stylesheet" th:href="@{/css/main.css}" />
   </head>
 
@@ -20,7 +21,7 @@
     <!-- Include the navbar fragment -->
     <div th:replace="~{fragments/navbar :: navbar}"></div>
 
-    <main role="main" class="container" style="padding-top: 175px">
+    <main role="main" class="container" style="padding-top: 135px">
       <div
         th:if="${error != null && partido == null}"
         class="error"
@@ -60,17 +61,20 @@
           <hr class="colorgraph" />
         </div>
         <div
-          class="d-flex flex-row align-items-start justify-content-between g-3"
+          class="d-flex flex-row flex-wrap align-items-center justify-content-center"
         >
-          <img th:src="@{/assets/map.svg}" alt="map" class="w-75 p-4" />
-          <div class="w-25">
-            <br />
+          <img th:src="@{/assets/map.svg}" alt="map" class="w-75 p-1" />
+          <div class="w-25 p-1">
             <div
               th:if="${partido != null}"
               style="max-height: 585px; height: 100vh"
               class="d-flex flex-column justify-content-between"
             >
               <div>
+                <p>
+                  <strong>Descripción:</strong>
+                </p>
+                <p th:text="${partido.descripcion}"></p>
                 <p>
                   <strong>Cupo máximo:</strong>
                   <span th:text="${partido.cupoMaximo}"></span>
@@ -83,15 +87,13 @@
                   <strong>Creador:</strong>
                   <span th:text="${partido.creador}"></span>
                 </p>
-                <p>
-                  <strong>Descripción:</strong>
-                </p>
-                <p th:text="${partido.descripcion}"></p>
               </div>
-              <div>
+              <div
+                class="d-flex flex-column justify-content-center align-items-center gap-1"
+              >
                 <button
                   id="btn-unirse"
-                  class="btn btn-lg btn-primary btn-block"
+                  class="btn btn-primary w-100"
                   th:if="${!partido.yaParticipa}"
                   th:disabled="${!partido.hayCupo || partido.yaParticipa}"
                   th:onclick="|unirseAPartido(${partido.id})|"
@@ -101,10 +103,11 @@
                 <form
                   th:action="@{/partido/{id}/abandonar(id=${partido.id})}"
                   method="post"
+                  class="w-100"
                 >
                   <button
                     type="submit"
-                    class="btn btn-lg btn-danger btn-block"
+                    class="btn btn-danger w-100"
                     th:if="${partido.yaParticipa}"
                   >
                     Abandonar partido
@@ -113,6 +116,7 @@
                 <form
                   th:action="@{/reserva/{id}(id=${partido.reservaId})}"
                   th:if="${partido.esCreador}"
+                  class="w-100"
                 >
                   <input
                     type="hidden"
@@ -124,7 +128,7 @@
                     name="horarioId"
                     th:value="${partido.horarioId}"
                   />
-                  <button type="submit" class="btn btn-danger">
+                  <button type="submit" class="btn btn-danger w-100">
                     Cancelar reserva
                   </button>
                 </form>
