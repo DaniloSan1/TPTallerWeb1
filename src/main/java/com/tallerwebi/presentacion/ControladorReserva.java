@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.tallerwebi.dominio.*;
 
@@ -102,14 +103,16 @@ public class ControladorReserva {
             @PathVariable Long id,
             @RequestParam Long usuarioId,
             @RequestParam Long horarioId,
+            RedirectAttributes redirectAttributes,
             ModelMap model) {
         try {
             servicioReserva.cancelarReserva(id);
-            model.put("mensajeExito", "Reserva cancelada correctamente");
+            redirectAttributes.addFlashAttribute("mensajeExito", "Reserva cancelada correctamente");
+
         } catch (RuntimeException e) {
-            model.put("mensajeError", e.getMessage());
+            redirectAttributes.addFlashAttribute("mensajeError", e.getMessage());
         }
-        return "redirect:/reserva/" + id;
+        return "redirect:/home";
     }
 
     @GetMapping("/{id}")
