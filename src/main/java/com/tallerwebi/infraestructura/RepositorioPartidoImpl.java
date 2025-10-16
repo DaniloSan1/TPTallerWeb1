@@ -12,7 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.tallerwebi.dominio.Partido;
 import com.tallerwebi.dominio.RepositorioPartido;
 
-@Repository // podés dejar el nombre por defecto, no hace falta ("repositorioPartido")
+@Repository 
 @Transactional
 public class RepositorioPartidoImpl implements RepositorioPartido {
 
@@ -32,7 +32,9 @@ public class RepositorioPartidoImpl implements RepositorioPartido {
     @Override
     public List<Partido> todos() {
         final Session session = sessionFactory.getCurrentSession();
-        return (List<Partido>) session.createCriteria(Partido.class).list();
+        String hql = "FROM Partido p " +
+                     "WHERE p.reserva.activa = true";
+        return session.createQuery(hql, Partido.class).list();
     }
 
     @Override
