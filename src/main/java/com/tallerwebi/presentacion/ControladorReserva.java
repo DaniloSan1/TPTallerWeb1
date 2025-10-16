@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.tallerwebi.dominio.*;
 
@@ -20,20 +21,20 @@ public class ControladorReserva {
     private Horario guardada;
 
     @Autowired
-    public ControladorReserva( ServicioReserva servicioReserva,
-        ServicioHorario servicioHorario,
-        ServicioUsuario servicioUsuario,
-        ServicioPartido servicioPartido) {
+    public ControladorReserva(ServicioReserva servicioReserva,
+            ServicioHorario servicioHorario,
+            ServicioUsuario servicioUsuario,
+            ServicioPartido servicioPartido) {
         this.servicioReserva = servicioReserva;
         this.servicioHorario = servicioHorario;
         this.servicioUsuario = servicioUsuario;
         this.servicioPartido = servicioPartido;
     }
- 
+
     @GetMapping("/nueva")
     public String mostrarFormularioReserva(
             @RequestParam Long usuarioId,
-            @RequestParam  Long horarioId,
+            @RequestParam Long horarioId,
             ModelMap model) {
 
         Horario horario = servicioHorario.obtenerPorId(horarioId);
@@ -58,9 +59,12 @@ public class ControladorReserva {
             ModelMap model) {
 
         try {
-            if (usuarioId == null) throw new RuntimeException("El usuario es nulo");
-            if (horarioId == null) throw new RuntimeException("El horario es nulo");
-            if (fechaReserva == null) throw new RuntimeException("La fecha es nula");
+            if (usuarioId == null)
+                throw new RuntimeException("El usuario es nulo");
+            if (horarioId == null)
+                throw new RuntimeException("El horario es nulo");
+            if (fechaReserva == null)
+                throw new RuntimeException("La fecha es nula");
 
             Horario horario = servicioHorario.obtenerPorId(horarioId);
             Usuario usuario = servicioUsuario.buscarPorId(usuarioId);
@@ -73,10 +77,9 @@ public class ControladorReserva {
                     reservaCreada,
                     titulo,
                     descripcion,
-                    nivel, 
-                    0,//que venga de la cancha
-                    usuario
-            );
+                    nivel,
+                    0, // que venga de la cancha
+                    usuario);
 
             model.put("mensajeExito", "Reserva creada con éxito para el " + fecha);
             return "redirect:/reserva/" + reservaCreada.getId();
@@ -93,28 +96,31 @@ public class ControladorReserva {
 
             return "reservaForm";
         }
-    } 
+    }
 
     @PostMapping("/cancelar/{id}")
     public String cancelarReserva(
             @PathVariable Long id,
             @RequestParam Long usuarioId,
             @RequestParam Long horarioId,
+            RedirectAttributes redirectAttributes,
             ModelMap model) {
         try {
             servicioReserva.cancelarReserva(id);
-            model.put("mensajeExito", "Reserva cancelada correctamente");
+            redirectAttributes.addFlashAttribute("mensajeExito", "Reserva cancelada correctamente");
+
         } catch (RuntimeException e) {
-            model.put("mensajeError", e.getMessage());
+            redirectAttributes.addFlashAttribute("mensajeError", e.getMessage());
         }
-        return "redirect:/reserva/" + id;
+        return "redirect:/home";
     }
+
     @GetMapping("/{id}")
-public String verDetalleReserva(@PathVariable Long id, ModelMap model) {
-    Reserva reserva = servicioReserva.obtenerReservaPorId(id);
-    model.put("reserva", reserva);
-    model.put("cancha", reserva.getHorario().getCancha());
-    model.put("horario", reserva.getHorario());
-    return "detalleReserva";
-}
+    public String verDetalleReserva(@PathVariable Long id, ModelMap model) {
+        Reserva reserva = servicioReserva.obtenerReservaPorId(id);
+        model.put("reserva", reserva);
+        model.put("cancha", reserva.getHorario().getCancha());
+        model.put("horario", reserva.getHorario());
+        return "detalleReserva";
+    }
 }

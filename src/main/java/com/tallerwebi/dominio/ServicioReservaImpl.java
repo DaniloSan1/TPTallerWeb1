@@ -32,6 +32,19 @@ public class ServicioReservaImpl implements ServicioReserva {
         if (!this.estaDisponible(reserva.getHorario(), reserva.getFechaReserva())) {
             throw new RuntimeException("La cancha no está disponible en el horario seleccionado");
         }
+        java.time.LocalDate hoy = java.time.LocalDate.now();
+        java.time.LocalDate diaSemana = reserva.getFechaReserva().toLocalDate();
+
+        if (diaSemana.isBefore(hoy)) {
+            throw new RuntimeException("No se puede reservar una fecha pasada. Elegí desde hoy en adelante.");
+        }
+        java.time.DayOfWeek diaSemanaDow = diaSemana.getDayOfWeek();
+        java.time.DayOfWeek diaHorario = reserva.getHorario().getDiaSemana();
+
+        if(!diaSemanaDow.equals(diaHorario)) {
+            throw new RuntimeException("La fecha elegida " + diaSemanaDow +
+                " no coincide con el día del horario " + diaHorario + ".");
+        }
 
         reserva.setFechaCreacion(LocalDateTime.now());
         reserva.setActiva(true);
