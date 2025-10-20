@@ -65,7 +65,7 @@
         <div class="row g-3" th:if="${!#lists.isEmpty(partidos)}">
           <div class="col-12 col-sm-6 col-lg-3" th:each="p : ${partidos}">
             <a
-              th:href="@{|/detalle-partido/${p.id}|}"
+              th:href="@{|/partidos/${p.id}|}"
               class="text-decoration-none"
               style="color: inherit"
             >

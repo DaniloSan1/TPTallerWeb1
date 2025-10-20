@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -33,6 +34,7 @@ import com.tallerwebi.dominio.excepcion.PartidoNoEncontrado;
 import com.tallerwebi.dominio.excepcion.YaExisteElParticipante;
 
 @Controller
+@RequestMapping("/partidos")
 public class ControladorPartido {
     private ServicioPartido servicio;
     private ServicioLogin servicioLogin;
@@ -51,7 +53,7 @@ public class ControladorPartido {
         this.servicioUsuario = servicioUsuario;
     }
 
-    @GetMapping("/partidos")
+    @GetMapping()
     public String listar(@RequestParam(required = false) Zona zona,
             @RequestParam(required = false) Nivel nivel,
             @RequestParam(defaultValue = "true") boolean soloConCupo,
@@ -68,7 +70,7 @@ public class ControladorPartido {
         return "partidos";
     }
 
-    @GetMapping("detalle-partido/{id}")
+    @GetMapping("/{id}")
     public ModelAndView detalle(@PathVariable long id, HttpServletRequest request) {
         ModelMap modelo = new ModelMap();
         try {
@@ -88,23 +90,27 @@ public class ControladorPartido {
         return new ModelAndView("detalle-partido", modelo);
     }
 
-    @PostMapping("partidos/{id}/inscripcion")
-    public ResponseEntity<?> inscripcion(@PathVariable long id, HttpServletRequest request) throws Exception {
+    @RequestMapping(params = "join", path = "/{id}", method = RequestMethod.POST)
+    public ModelAndView inscripcion(@PathVariable long id, HttpServletRequest request) throws Exception {
+        ModelMap modelo = new ModelMap();
         try {
-            servicio.anotarParticipante(id, request.getSession().getAttribute("EMAIL").toString());
-            return ResponseEntity.ok().build();
-        } catch (NoHayCupoEnPartido e) {
-            return ResponseEntity.unprocessableEntity().body(e.getMessage());
-        } catch (PartidoNoEncontrado e) {
-            return ResponseEntity.status(404).body(e.getMessage());
-        } catch (YaExisteElParticipante e) {
-            return ResponseEntity.unprocessableEntity().body(e.getMessage());
+            String email = (String) request.getSession().getAttribute("EMAIL");
+            if (email == null) {
+                return new ModelAndView("redirect:/login");
+            }
+
+            Usuario usuario = servicioLogin.buscarPorEmail(request.getSession().getAttribute("EMAIL").toString());
+            Partido partido = servicio.anotarParticipante(id, usuario);
+
+            modelo.put("success", "Te has unido al partido correctamente.");
+            modelo.put("partido", new DetallePartido(partido, usuario));
         } catch (Exception e) {
-            return ResponseEntity.status(500).body(e.getMessage());
+            modelo.put("error", e.getMessage());
         }
+        return new ModelAndView("detalle-partido", modelo);
     }
-    
-    @PostMapping("/partido/{id}/abandonar")
+
+    @RequestMapping(params = "leave", path = "/{id}", method = RequestMethod.POST)
     public String abandonarPartido(@PathVariable Long id, HttpServletRequest request) {
         Usuario usuario = (Usuario) request.getSession().getAttribute("USUARIO");
         if (usuario == null) {
