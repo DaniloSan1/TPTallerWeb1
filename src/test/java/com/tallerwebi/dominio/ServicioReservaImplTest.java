@@ -12,39 +12,48 @@ import org.junit.jupiter.api.Test;
 import java.time.DayOfWeek;
 import java.time.LocalDateTime;
 import java.util.Collections;
+
 public class ServicioReservaImplTest {
     private ServicioReservaImpl servicioReserva;
     private RepositorioReserva repositorioMock;
-    private Horario horario;
-    private Usuario usuario;
-    
+    private Horario horarioMock;
+    private Usuario usuarioMock;
+    private Reserva reservaMock;
+
     @BeforeEach
     public void setUp() {
         repositorioMock = mock(RepositorioReserva.class);
         servicioReserva = new ServicioReservaImpl(repositorioMock);
-        horario = new Horario();
-        horario.setId(4L);
-        horario.setDiaSemana(DayOfWeek.THURSDAY);
-        usuario = new Usuario();
-        usuario.setId(1L);
+        horarioMock = mock(Horario.class);
+        when(horarioMock.getId()).thenReturn(4L);
+        when(horarioMock.getDiaSemana()).thenReturn(LocalDateTime.now().plusDays(1).getDayOfWeek());
+        usuarioMock = mock(Usuario.class);
+        when(usuarioMock.getId()).thenReturn(1L);
+
+        reservaMock = mock(Reserva.class);
+        when(reservaMock.getId()).thenReturn(1L);
+        when(reservaMock.getHorario()).thenReturn(horarioMock);
+        when(reservaMock.getUsuario()).thenReturn(usuarioMock);
+        when(reservaMock.getFechaReserva()).thenReturn(LocalDateTime.now().plusDays(1));
     }
+
     @Test
     public void DeberiaCrearUnaReserva() {
         when(repositorioMock.porHorarioYFecha(any(), any())).thenReturn(Collections.emptyList());
-        Reserva reserva = new Reserva(horario, usuario, LocalDateTime.now());
-        Reserva creada = servicioReserva.crearReserva(reserva);
-        verify(repositorioMock).guardar(reserva);
-        assertEquals(reserva, creada);
+        Reserva creada = servicioReserva.crearReserva(reservaMock);
+        verify(repositorioMock).guardar(reservaMock);
+        assertEquals(reservaMock, creada);
     }
+
     @Test
     public void AlCrearUnaReservaExistenteDeberiaLanzarExcepcion() {
         when(repositorioMock.porHorarioYFecha(any(), any())).thenReturn(Collections.singletonList(new Reserva()));
-        Reserva reserva = new Reserva(horario, usuario, LocalDateTime.now());
-        assertThrows(RuntimeException.class, () -> servicioReserva.crearReserva(reserva));
+        assertThrows(RuntimeException.class, () -> servicioReserva.crearReserva(reservaMock));
     }
+
     @Test
     public void AlCancelarUnaReservaDeberiaCambiarSuEstado() {
-        Reserva reserva = new Reserva(horario, usuario, LocalDateTime.now());
+        Reserva reserva = new Reserva(horarioMock, usuarioMock, LocalDateTime.now());
         reserva.setActiva(true);
         reserva.setId(1L);
         when(repositorioMock.porId(1L)).thenReturn(reserva);
@@ -52,9 +61,10 @@ public class ServicioReservaImplTest {
         verify(repositorioMock).guardar(reserva);
         assertEquals(false, reserva.getActiva());
     }
+
     @Test
     public void AlCancelarUnaReservaInactivaDeberiaLanzarExcepcion() {
-        Reserva reserva = new Reserva(horario, usuario, LocalDateTime.now());
+        Reserva reserva = new Reserva(horarioMock, usuarioMock, LocalDateTime.now());
         reserva.setActiva(false);
         reserva.setId(1L);
         when(repositorioMock.porId(1L)).thenReturn(reserva);
