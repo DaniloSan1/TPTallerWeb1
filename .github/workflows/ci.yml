@@ -16,7 +16,7 @@ jobs:
         uses: actions/checkout@v3
       - run: echo "💡 El repositorio ${{ github.repository }} ha sido clonado."
       - name: Copiar HibernateTestConfig main
-        run: cp src\main\java\com\tallerwebi\config\HibernateConfig.ejemplo src\main\java\com\tallerwebi\config\HibernateConfig.java
+        run: cp src/main/java/com/tallerwebi/config/HibernateConfig.ejemplo src/main/java/com/tallerwebi/config/HibernateConfig.java
       - name: Copiar HibernateTestConfig tests
         run: cp src/test/java/com/tallerwebi/integracion/config/HibernateTestConfig.ejemplo src/test/java/com/tallerwebi/integracion/config/HibernateTestConfig.java
       - name: Copiar HibernateTestInfraestructuraConfig tests
