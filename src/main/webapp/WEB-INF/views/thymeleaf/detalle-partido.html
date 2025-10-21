@@ -70,11 +70,20 @@
         <div
           class="d-flex flex-row flex-wrap align-items-center justify-content-center"
         >
-          <img th:src="@{/assets/map.svg}" alt="map" class="w-75 p-1" />
+          <iframe
+            id="map-iframe"
+            width="100%"
+            height="608px"
+            frameborder="0"
+            style="border: 0"
+            allowfullscreen
+            class="w-75 p-1"
+            th:src="'https://www.google.com/maps/embed/v1/place?key=AIzaSyCB2Jsk_wlMEsQ5phtgegFGXuNTlHB7YNY&q=' + ${#strings.replace(partido.direccion, ' ', '+')}"
+          ></iframe>
           <div class="w-25 p-1">
             <div
               th:if="${partido != null}"
-              style="max-height: 608px; height: 100vh"
+              style="max-height: 595px; height: 100vh"
               class="d-flex flex-column justify-content-between"
             >
               <div>

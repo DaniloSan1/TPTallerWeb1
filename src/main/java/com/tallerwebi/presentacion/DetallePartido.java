@@ -25,6 +25,7 @@ public class DetallePartido {
     private Long reservaId;
     private Long horarioId;
     private int cuposDisponibles;
+    private String direccion;
 
     public DetallePartido(Partido partido, Usuario usuario) {
         this.id = partido.getId();
@@ -44,6 +45,8 @@ public class DetallePartido {
         this.reservaId = partido.getReserva().getId();
         this.horarioId = partido.getReserva().getHorario().getId();
         this.cuposDisponibles = partido.cuposDisponibles();
+        this.direccion = partido.getReserva().getCancha().getDireccion();
+
     }
 
     public Long getId() {
@@ -112,5 +115,9 @@ public class DetallePartido {
 
     public int getCuposDisponibles() {
         return cuposDisponibles;
+    }
+
+    public String getDireccion() {
+        return direccion;
     }
 }
