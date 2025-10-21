@@ -10,7 +10,7 @@ INSERT INTO Usuario(id, nombre, apellido, email, password, rol, activo, posicion
 -- Insert fields
 INSERT INTO Cancha(id, nombre, capacidad, direccion, zona, precio, tipoSuelo) VALUES
 (NULL, 'Cancha 1', 20, 'Direccion 1', 'NORTE', 5000.00, 'CÉSPED'),
-(NULL, 'Cancha 2', 10, 'Direccion 2', 'SUR', 8000.00, 'CÉSPED'),
+(NULL, 'Leloir Football Point', 10, 'Martín Fierro 3585, B1715 BRO, Provincia de Buenos Aires, Argentina', 'OESTE', 8000.00, 'CÉSPED'),
 (NULL, 'Cancha 3', 14, 'Direccion 3', 'ESTE', 9000.00, 'CÉSPED'),
 (NULL, 'Cancha 4', 20, 'Direccion 4', 'OESTE', 1000.00, 'CÉSPED'),
 (NULL, 'Cancha 5', 10, 'Direccion 5', 'CENTRO', 8500.00, 'CÉSPED');
