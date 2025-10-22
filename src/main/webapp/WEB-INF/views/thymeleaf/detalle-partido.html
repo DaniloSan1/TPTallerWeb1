@@ -15,6 +15,11 @@
     />
 
     <link rel="stylesheet" th:href="@{/css/main.css}" />
+    <link rel="stylesheet" th:href="@{/css/detalle-partido.css}" />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&icon_names=calendar_month,groups"
+    />
   </head>
 
   <body>
@@ -45,120 +50,147 @@
           style="margin-top: 50px"
           class="mainbox width-100"
         >
-          <div class="d-flex align-items-center justify-content-between mb-4">
-            <div class="d-flex justify-content-between align-items-start">
-              <div
-                class="d-flex align-items-center justify-content-between gap-3"
+          <div class="d-flex flex-row align-items-center">
+            <div class="d-flex align-items-center flex-column mb-4">
+              <h1
+                class="w-100 mb-2"
+                th:text="${partido.titulo}"
+                style="margin: 0 !important"
+              ></h1>
+              <h3
+                id="fecha-partido"
+                class="w-100 d-flex align-items-center gap-2"
               >
-                <h3
-                  th:text="${partido.titulo}"
-                  style="margin: 0 !important"
-                ></h3>
-                <div class="d-flex align-items-center g-3">
-                  <span class="chip chip-zona" th:text="${partido.zona}"></span>
-                  <span
-                    class="chip chip-nivel"
-                    th:text="${partido.nivel}"
-                  ></span>
-                </div>
-              </div>
+                <span class="material-symbols-outlined">calendar_month</span>
+                <span th:text="${partido.fecha}"></span>
+              </h3>
             </div>
-            <h3 th:text="${partido.fecha}"></h3>
           </div>
           <hr class="colorgraph" />
         </div>
         <div
+          id="contendor-mapa-detalle"
           class="d-flex flex-row flex-wrap align-items-center justify-content-center"
         >
           <iframe
             id="map-iframe"
-            width="100%"
-            height="608px"
             frameborder="0"
-            style="border: 0"
             allowfullscreen
-            class="w-75 p-1"
+            th:if="${partido != null}"
             th:src="'https://www.google.com/maps/embed/v1/place?key=AIzaSyCB2Jsk_wlMEsQ5phtgegFGXuNTlHB7YNY&q=' + ${#strings.replace(partido.direccion, ' ', '+')}"
           ></iframe>
-          <div class="w-25 p-1">
-            <div
-              th:if="${partido != null}"
-              style="max-height: 595px; height: 100vh"
-              class="d-flex flex-column justify-content-between"
-            >
-              <div>
-                <p>
-                  <strong>Descripción:</strong>
-                </p>
-                <p th:text="${partido.descripcion}"></p>
-                <p>
-                  <strong>Cupo máximo:</strong>
-                  <span th:text="${partido.cupoMaximo}"></span>
-                </p>
-                <p>
-                  <strong>Cupos disponibles:</strong>
-                  <span th:text="${partido.cuposDisponibles}"></span>
-                </p>
-                <p>
-                  <strong>Cancha:</strong>
-                  <span th:text="${partido.cancha}"></span>
-                </p>
-                <p>
-                  <strong>Creador:</strong>
-                  <span th:text="${partido.creador}"></span>
-                </p>
+          <div id="contenedor-detalle">
+            <div id="contenedor-detalle-info" th:if="${partido != null}">
+              <div class="w-100">
+                <strong>Acerca del partido:</strong>
+                <span
+                  style="text-align: justify"
+                  th:text="${partido.descripcion}"
+                ></span>
               </div>
-              <div
-                class="d-flex flex-column justify-content-center align-items-center gap-1"
-              >
-                <form
-                  th:action="@{/partidos/{id}(id=${partido.id})}"
-                  method="post"
-                  class="w-100"
-                >
-                  <button
-                    id="btn-unirse"
-                    class="btn btn-primary w-100"
-                    name="join"
-                    th:if="${!partido.yaParticipa}"
-                    th:disabled="${!partido.hayCupo || partido.yaParticipa}"
-                  >
-                    Unirse
-                  </button>
-                  <button
-                    type="submit"
-                    name="leave"
-                    class="btn btn-danger w-100"
-                    th:if="${partido.yaParticipa}"
-                  >
-                    Abandonar partido
-                  </button>
-                </form>
-                <form
-                  th:action="@{/reserva/{id}(id=${partido.reservaId})}"
-                  th:if="${partido.esCreador}"
-                  class="w-100"
-                >
-                  <input
-                    type="hidden"
-                    name="usuarioId"
-                    th:value="${partido.creadorId}"
-                  />
-                  <input
-                    type="hidden"
-                    name="horarioId"
-                    th:value="${partido.horarioId}"
-                  />
-                  <button type="submit" class="btn btn-danger w-100">
-                    Cancelar reserva
-                  </button>
-                </form>
+
+              <div class="detalle-columna">
+                <div class="w-100">
+                  <strong>Creado por:</strong>
+                  <span th:text="${partido.creador}"></span>
+                </div>
+                <div>
+                  <strong>Se juega en:</strong>
+                  <span th:text="${partido.cancha}"></span>
+                </div>
+              </div>
+
+              <div class="detalle-columna">
+                <div class="w-100">
+                  <strong>Zona:</strong>
+                  <span th:text="${partido.zona}"></span>
+                </div>
+                <div class="w-100">
+                  <strong>Nivel:</strong>
+                  <span th:text="${partido.nivel}"></span>
+                </div>
+              </div>
+
+              <div class="w-100">
+                <strong>Cupo:</strong>
+                <span
+                  th:text="${ (partido.cupoMaximo - partido.cuposDisponibles) + '/' + partido.cupoMaximo }"
+                ></span>
               </div>
             </div>
-            <div th:if="${partido == null}">
-              <p th:text="${error}"></p>
+
+            <div
+              id="contenedor-detalle-acciones"
+              class="d-flex flex-column justify-content-center align-items-center gap-1"
+              th:if="${partido != null}"
+            >
+              <form
+                th:action="@{/partidos/{id}(id=${partido.id})}"
+                method="post"
+                class="w-100"
+              >
+                <button
+                  id="btn-unirse"
+                  class="btn btn-primary w-100"
+                  name="join"
+                  th:if="${!partido.yaParticipa}"
+                  th:disabled="${!partido.hayCupo || partido.yaParticipa}"
+                >
+                  Unirse
+                </button>
+                <button
+                  type="submit"
+                  name="leave"
+                  class="btn btn-danger w-100"
+                  th:if="${partido.yaParticipa}"
+                >
+                  Abandonar partido
+                </button>
+              </form>
+              <form
+                th:action="@{/reserva/{id}(id=${partido.reservaId})}"
+                th:if="${partido.esCreador}"
+                class="w-100"
+              >
+                <input
+                  type="hidden"
+                  name="usuarioId"
+                  th:value="${partido.creadorId}"
+                />
+                <input
+                  type="hidden"
+                  name="horarioId"
+                  th:value="${partido.horarioId}"
+                />
+                <button type="submit" class="btn btn-danger w-100">
+                  Cancelar reserva
+                </button>
+              </form>
             </div>
           </div>
+        </div>
+        <div id="contenedor-participantes" th:if="${partido != null}">
+          <h2 class="participantes-titulo">&iexcl;Conoce a los Jugadores!</h2>
+          <hr class="colorgraph" />
+          <ul
+            id="listado-participantes"
+            class="list-group"
+            th:if="${partido.participantes != null and !partido.participantes.isEmpty()}"
+          >
+            <li
+              class="participante-item list-group-item"
+              th:each="participante : ${partido.participantes}"
+            >
+              <span class="profile-avatar"></span>
+              <strong th:text="${participante.nombreCompleto}"></strong> -
+              <span th:text="${participante.posicionFavorita}"></span>
+            </li>
+          </ul>
+          <p
+            th:if="${partido.participantes == null or partido.participantes.isEmpty()}"
+          >
+            No hay participantes aún.
+          </p>
         </div>
       </div>
     </main>
