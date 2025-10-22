@@ -52,6 +52,10 @@ public class Usuario {
         return apellido;
     }
 
+    public String getNombreCompleto() {
+        return this.nombre.trim() + " " + this.apellido.trim();
+    }
+
     public void setApellido(String apellido) {
         this.apellido = apellido;
     }

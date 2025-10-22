@@ -52,10 +52,19 @@ public class ServicioPartidoImplTest {
                 Mockito.when(partidoMock.getCupoMaximo()).thenReturn(10);
                 Mockito.when(partidoMock.getZona()).thenReturn(Zona.NORTE);
                 Mockito.when(partidoMock.getNivel()).thenReturn(Nivel.INTERMEDIO);
+                Mockito.when(partidoMock.getTitulo()).thenReturn("Partido de prueba");
+                Mockito.when(partidoMock.getDescripcion()).thenReturn("Descripción del partido");
+                PartidoParticipante participanteMock1 = Mockito.mock(PartidoParticipante.class);
+                PartidoParticipante participanteMock2 = Mockito.mock(PartidoParticipante.class);
+                PartidoParticipante participanteMock3 = Mockito.mock(PartidoParticipante.class);
+                PartidoParticipante participanteMock4 = Mockito.mock(PartidoParticipante.class);
+                Mockito.when(partidoMock.getParticipantes()).thenReturn(java.util.Set.of(participanteMock1,
+                                participanteMock2, participanteMock3, participanteMock4));
 
                 ServicioPartido servicioPartido = new ServicioPartidoImpl(repositorioPartidoMock,
                                 repositorioReservaMock,
                                 repositorioUsuarioMock, repositorioPartidoParticipanteMock);
+
                 Partido partidoObtenido = servicioPartido.obtenerPorId(id);
                 assertEquals(partidoMock, partidoObtenido);
                 Mockito.verify(repositorioPartidoMock, Mockito.times(1)).porId(Mockito.anyLong());

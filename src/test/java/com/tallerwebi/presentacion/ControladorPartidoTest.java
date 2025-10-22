@@ -119,7 +119,7 @@ public class ControladorPartidoTest {
         assertEquals(partidoMock.getZona(), partidoEnModelo.getZona());
         assertEquals(partidoMock.getNivel(), partidoEnModelo.getNivel());
         assertEquals(partidoMock.getCupoMaximo(), partidoEnModelo.getCupoMaximo());
-        assertEquals(partidoMock.getCreador().getNombre(), partidoEnModelo.getCreador());
+        assertEquals(partidoMock.getCreador().getNombreCompleto(), partidoEnModelo.getCreador());
         assertEquals(partidoMock.getReserva().getCancha().getNombre(), partidoEnModelo.getCancha());
         assertEquals(partidoMock.getFecha(), partidoEnModelo.getFecha());
         assertEquals(partidoMock.tieneCupo(), partidoEnModelo.getHayCupo());

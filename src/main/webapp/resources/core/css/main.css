@@ -19,6 +19,7 @@
   border: 1px solid #c3e6cb;
 }
 
+
 .material-symbols-outlined {
   font-variation-settings:
   'FILL' 1,
@@ -32,7 +33,7 @@ h1{
 }
 
 h2{
-	color: var(--secondary-color);
+	color: var(--primary-color);
 } 
 
 #loginbox h2 {
@@ -96,14 +97,17 @@ h2{
 
 /* Chip styles for cards */
 .chip {
-    display: inline-block;
+    min-height: 32px;
+     display: flex;
+    align-items: center;
+    gap: 0.25rem;
+    justify-content: center;
     padding: 0.25rem 0.75rem;
     margin: 0.125rem;
     font-size: 0.75rem;
     font-weight: 500;
     border-radius: 6px;
     color: white;
-    background-color: var(--secondary-color);
 }
 
 .chip.chip-zona {
@@ -113,6 +117,23 @@ h2{
 .chip.chip-nivel {
     background-color: var(--tertiary-color);
 }
+
+.chip.chip-jugadores {
+    background-color: var(--primary-color);
+}
+
+.chip.chip-zona-reversed {
+    color: var(--secondary-color);
+}
+
+.chip.chip-nivel-reversed {
+    color: var(--tertiary-color);
+}
+
+.chip.chip-jugadores-reversed {
+    color: var(--primary-color);
+}
+
 
 .card-footer-chips {
     background-color: transparent;
