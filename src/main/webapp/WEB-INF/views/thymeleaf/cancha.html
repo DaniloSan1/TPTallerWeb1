@@ -33,6 +33,13 @@
           <h1 class="card-title text-center mb-4" th:text="${cancha.nombre}">
             Nombre Cancha
           </h1>
+          <iframe
+            id="map-iframe"
+            frameborder="0"
+            allowfullscreen
+            th:if="${cancha != null}"
+            th:src="'https://www.google.com/maps/embed/v1/place?key=AIzaSyCB2Jsk_wlMEsQ5phtgegFGXuNTlHB7YNY&q=' + ${#strings.replace(cancha.direccion, ' ', '+')}"
+          ></iframe>
 
           <ul class="list-group list-group-flush mb-4">
             <li class="list-group-item">

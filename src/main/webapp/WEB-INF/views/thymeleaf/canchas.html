@@ -32,6 +32,60 @@
       <div class="d-flex align-items-center justify-content-between mb-3">
         <h1 class="h3 m-0">Canchas Disponibles</h1>
       </div>
+       <form
+        class="mb-4"
+        th:action="@{/canchas-disponibles}"
+        method="get"
+        style="max-width: 400px"
+      >
+        <div class="input-group">
+          <input
+            type="text"
+            name="busqueda"
+            class="form-control"
+            placeholder="Buscar por nombre o dirección..."
+            aria-label="Buscar cancha"
+          />
+          <button class="btn btn-primary" type="submit">
+            <i class="bi bi-search"></i> Buscar
+          </button>
+        </div>
+         <div class="col-md-3">
+            <select
+              class="form-select"
+              name="zona"
+              
+            >
+              <option value="">Todas las zonas</option>
+              <option value="ESTE" th:selected="${zona == 'ESTE'}">ESTE</option>
+              <option value="OESTE" th:selected="${zona == 'OESTE'}">OESTE</option>
+              <option value="NORTE" th:selected="${zona == 'NORTE'}">NORTE</option>
+              <option value="SUR" th:selected="${zona == 'SUR'}">SUR</option>
+              <option value="CENTRO" th:selected="${zona == 'CENTRO'}">CENTRO</option>
+            </select>
+          </div>
+
+          <!-- Filtro por precio -->
+          <div class="col-md-3">
+            <select
+              class="form-select"
+              name="precio"
+            
+            >
+              <option value="">Todos los precios</option>
+              <option value="1000.00" th:selected="${precio == '1000.00'}">
+                $0 - $1000
+              </option>
+              <option value="5000.00" th:selected="${precio == '5000.00'}">
+                $1000 - $5000
+              </option>
+              <option value="5001.00" th:selected="${precio == '5001.00'}">
+                Más de $5000
+              </option>
+            </select>
+          </div>
+        </div>
+      </form>
       <hr class="colorgraph" />
 
       <!-- Contenedor scrollable para las tarjetas -->
@@ -82,6 +136,9 @@
                       >
                     </li>
                   </ul>
+                </div>
+                <div class="card-footer card-footer-chips">
+                  <span class="chip chip-zona" th:text="${cancha.zona}">Zona</span>
                 </div>
               </div>
             </a>

@@ -19,6 +19,7 @@ import com.tallerwebi.dominio.ServicioCancha;
 import com.tallerwebi.dominio.ServicioHorario;
 import com.tallerwebi.dominio.ServicioLogin;
 import com.tallerwebi.dominio.Usuario;
+import com.tallerwebi.dominio.Zona;
 
 @Controller
 public class ControladorCancha {
@@ -35,9 +36,20 @@ public class ControladorCancha {
     }
 
     @GetMapping("/canchas-disponibles")
-    public String listarCanchas(ModelMap model) {
+    public String listarCanchas(ModelMap model,HttpServletRequest request) {
+        String busqueda = request.getParameter("busqueda");
+        String zonaParam = request.getParameter("zona");
+        String precioParam = request.getParameter("precio");
+        Zona zona = null;
+        if (zonaParam != null && !zonaParam.isEmpty()) {
+            zona = Zona.valueOf(zonaParam);
+        }
+        Double precio = 0.0;
         try {
-            List<Cancha> canchas = servicioCancha.obtenerCanchasDisponibles();
+            if (precioParam != null && !precioParam.isEmpty()) {
+                precio = Double.parseDouble(precioParam);
+            }
+            List<Cancha> canchas = servicioCancha.obtenerCanchasDisponibles(busqueda, zona, precio);
             model.put("canchas", canchas);
             model.put("currentPage", "canchas-disponibles");
         } catch (Exception e) {
@@ -69,3 +81,4 @@ public class ControladorCancha {
     }
 
 }
+
