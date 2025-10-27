@@ -7,6 +7,7 @@ import com.tallerwebi.dominio.Equipo;
 import com.tallerwebi.dominio.PartidoParticipante;
 
 public class DetalleParticipante {
+    private Long id;
     private Long idUsuario;
     private String nombreCompleto;
     private String posicionFavorita;
@@ -14,11 +15,16 @@ public class DetalleParticipante {
     private LocalDateTime fechaUnion;
 
     public DetalleParticipante(PartidoParticipante partidoParticipante) {
+        this.id = partidoParticipante.getId();
         this.idUsuario = partidoParticipante.getUsuario().getId();
         this.nombreCompleto = partidoParticipante.getUsuario().getNombreCompleto();
         this.posicionFavorita = partidoParticipante.getUsuario().getPosicionFavorita();
         this.equipo = partidoParticipante.getEquipo().toString();
         this.fechaUnion = partidoParticipante.getFechaUnion();
+    }
+
+    public Long getId() {
+        return id;
     }
 
     public Long getIdUsuario() {

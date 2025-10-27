@@ -55,7 +55,7 @@
             id="loginbox"
             class="mainbox width-100"
           >
-            <div class="d-flex flex-column">
+            <div class="card-header">
               <h1 class="mb-2" th:text="${partido.titulo}"></h1>
               <div
                 class="w-100 d-flex flex-row justify-content-between align-items-center"
@@ -82,7 +82,7 @@
           </div>
           <div
             id="contendor-mapa-detalle"
-            class="d-flex flex-row flex-wrap align-items-center justify-content-center"
+            class="d-flex flex-row flex-wrap align-items-center justify-content-center mt-2 card-body"
           >
             <iframe
               id="map-iframe"
@@ -181,19 +181,23 @@
           class="card"
           th:if="${partido != null}"
         >
-          <h2 class="participantes-titulo">&iexcl;Conoce a los Jugadores!</h2>
-          <!-- Equipo 1 -->
-          <div
-            th:replace="~{fragments/participantes-partido :: participantes-partido (participantes=${partido.participantes}, equipoAMostrar='EQUIPO_1')}"
-          ></div>
-          <!-- Equipo 2 -->
-          <div
-            th:replace="~{fragments/participantes-partido :: participantes-partido (participantes=${partido.participantes}, equipoAMostrar='EQUIPO_2')}"
-          ></div>
-          <!-- Sin Equipo -->
-          <div
-            th:replace="~{fragments/participantes-partido :: participantes-partido (participantes=${partido.participantes}, equipoAMostrar='SIN_EQUIPO')}"
-          ></div>
+          <div class="card-header">
+            <h2>&iexcl;Conoce a los Jugadores!</h2>
+          </div>
+          <div class="card-body">
+            <!-- Equipo 1 -->
+            <div
+              th:replace="~{fragments/participantes-partido :: participantes-partido (participantes=${partido.participantes}, equipoAMostrar='EQUIPO_1', showDropdown=${partido.esCreador})}"
+            ></div>
+            <!-- Equipo 2 -->
+            <div
+              th:replace="~{fragments/participantes-partido :: participantes-partido (participantes=${partido.participantes}, equipoAMostrar='EQUIPO_2', showDropdown=${partido.esCreador})}"
+            ></div>
+            <!-- Sin Equipo -->
+            <div
+              th:replace="~{fragments/participantes-partido :: participantes-partido (participantes=${partido.participantes}, equipoAMostrar='SIN_EQUIPO', showDropdown=${partido.esCreador})}"
+            ></div>
+          </div>
         </div>
       </div>
     </main>
@@ -202,5 +206,6 @@
       th:src="@{/webjars/bootstrap/5.2.0/js/bootstrap.bundle.min.js}"
     ></script>
     <script type="module" th:src="@{/js/common.js}"></script>
+    <script type="module" th:src="@{/js/participantes-partido.js}"></script>
   </body>
 </html>

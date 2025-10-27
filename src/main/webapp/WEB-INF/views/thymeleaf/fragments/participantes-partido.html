@@ -4,11 +4,50 @@
   <body>
     <ul
       id="listado-participantes"
-      th:fragment="participantes-partido (participantes,equipoAMostrar)"
+      th:fragment="participantes-partido (participantes,equipoAMostrar,showDropdown)"
       class="list-group"
     >
+      <!-- Modal -->
+      <div
+        class="modal fade"
+        id="actualizarEquipo"
+        data-bs-backdrop="static"
+        data-bs-keyboard="false"
+        tabindex="-1"
+        aria-labelledby="actualizarEquipoLabel"
+        aria-hidden="true"
+      >
+        <div class="modal-dialog modal-dialog-centered">
+          <div class="modal-content">
+            <form>
+              <div class="modal-header">
+                <h1 class="modal-title fs-5" id="actualizarEquipoLabel">
+                  Asignar Equipo
+                </h1>
+              </div>
+              <div class="modal-body">
+                <select class="form-select" aria-label="Selecciona un equipo">
+                  <option value="EQUIPO_1">Equipo 1</option>
+                  <option value="EQUIPO_2">Equipo 2</option>
+                  <option value="SIN_EQUIPO">Sin asignar</option>
+                </select>
+              </div>
+              <div class="modal-footer">
+                <button
+                  type="button"
+                  class="btn btn-secondary"
+                  data-bs-dismiss="modal"
+                >
+                  Cerrar
+                </button>
+                <button type="button" class="btn btn-primary">Asignar</button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
       <h4
-        class="w-100"
+        class="w-100 mt-2"
         th:text="${equipoAMostrar == 'EQUIPO_1'} ? 'Equipo 1' : (${equipoAMostrar == 'EQUIPO_2'} ? 'Equipo 2' : 'Sin Equipo')"
       ></h4>
       <li
@@ -25,7 +64,8 @@
           <span class="w-100" th:text="${participante.posicionFavorita}"></span>
           <span class="w-100" th:text="${participante.fechaUnion}"></span>
         </div>
-        <div class="dropdown">
+        <!-- Dropdown -->
+        <div class="dropdown" th:if="${showDropdown}">
           <button
             class="btn btn-light dropdown-toggle"
             type="button"
@@ -34,7 +74,17 @@
             aria-expanded="false"
           ></button>
           <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
-            <li><a class="dropdown-item" href="#">Asignar Equipo</a></li>
+            <li>
+              <a
+                class="dropdown-item"
+                data-bs-toggle="modal"
+                data-bs-target="#actualizarEquipo"
+                th:data-bs-nombre="${participante.nombreCompleto}"
+                th:data-bs-equipo="${participante.equipo}"
+                th:data-bs-id="${participante.id}"
+                >Asignar Equipo</a
+              >
+            </li>
           </ul>
         </div>
       </li>
