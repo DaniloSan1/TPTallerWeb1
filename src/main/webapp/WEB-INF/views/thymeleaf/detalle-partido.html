@@ -16,6 +16,7 @@
 
     <link rel="stylesheet" th:href="@{/css/main.css}" />
     <link rel="stylesheet" th:href="@{/css/detalle-partido.css}" />
+    <link rel="stylesheet" th:href="@{/css/participantes-partido.css}" />
     <link
       rel="stylesheet"
       href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&icon_names=calendar_month,groups"
@@ -182,101 +183,17 @@
         >
           <h2 class="participantes-titulo">&iexcl;Conoce a los Jugadores!</h2>
           <!-- Equipo 1 -->
-          <ul
-            id="listado-participantes"
-            class="list-group"
-            th:if="${partido.participantes != null and !partido.participantes.isEmpty()}"
-          >
-            <h4 class="w-100">Equipo 1</h4>
-            <li
-              class="participante-item"
-              th:each="participante : ${partido.participantes}"
-              th:if="${participante.equipo == 'EQUIPO_1'}"
-            >
-              <span class="profile-avatar"></span>
-              <div class="d-flex flex-column">
-                <strong
-                  class="w-100"
-                  th:text="${participante.nombreCompleto}"
-                ></strong>
-                <span
-                  class="w-100"
-                  th:text="${participante.posicionFavorita}"
-                ></span>
-                <span class="w-100" th:text="${participante.fechaUnion}"></span>
-              </div>
-            </li>
-          </ul>
+          <div
+            th:replace="~{fragments/participantes-partido :: participantes-partido (participantes=${partido.participantes}, equipoAMostrar='EQUIPO_1')}"
+          ></div>
           <!-- Equipo 2 -->
-          <ul
-            id="listado-participantes"
-            class="list-group"
-            th:if="${partido.participantes != null and !partido.participantes.isEmpty()}"
-          >
-            <h4 class="w-100">Equipo 2</h4>
-            <li
-              class="participante-item"
-              th:each="participante : ${partido.participantes}"
-              th:if="${participante.equipo == 'EQUIPO_2'}"
-            >
-              <span class="profile-avatar"></span>
-              <div class="d-flex flex-column">
-                <strong
-                  class="w-100"
-                  th:text="${participante.nombreCompleto}"
-                ></strong>
-                <span
-                  class="w-100"
-                  th:text="${participante.posicionFavorita}"
-                ></span>
-                <span class="w-100" th:text="${participante.fechaUnion}"></span>
-              </div>
-
-              <div class="dropdown">
-                <button
-                  class="btn btn-light dropdown-toggle"
-                  type="button"
-                  id="dropdownMenuButton1"
-                  data-bs-toggle="dropdown"
-                  aria-expanded="false"
-                ></button>
-                <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
-                  <li><a class="dropdown-item" href="#">Asignar Equipo</a></li>
-                </ul>
-              </div>
-            </li>
-          </ul>
+          <div
+            th:replace="~{fragments/participantes-partido :: participantes-partido (participantes=${partido.participantes}, equipoAMostrar='EQUIPO_2')}"
+          ></div>
           <!-- Sin Equipo -->
-          <ul
-            id="listado-participantes"
-            class="list-group"
-            th:if="${partido.participantes != null and !partido.participantes.isEmpty()}"
-          >
-            <h4 class="w-100">Sin Equipo</h4>
-            <li
-              class="participante-item"
-              th:each="participante : ${partido.participantes}"
-              th:if="${participante.equipo == 'SIN_EQUIPO'}"
-            >
-              <span class="profile-avatar"></span>
-              <div class="d-flex flex-column">
-                <strong
-                  class="w-100"
-                  th:text="${participante.nombreCompleto}"
-                ></strong>
-                <span
-                  class="w-100"
-                  th:text="${participante.posicionFavorita}"
-                ></span>
-                <span class="w-100" th:text="${participante.fechaUnion}"></span>
-              </div>
-            </li>
-          </ul>
-          <p
-            th:if="${partido.participantes == null or partido.participantes.isEmpty()}"
-          >
-            No hay participantes aún.
-          </p>
+          <div
+            th:replace="~{fragments/participantes-partido :: participantes-partido (participantes=${partido.participantes}, equipoAMostrar='SIN_EQUIPO')}"
+          ></div>
         </div>
       </div>
     </main>

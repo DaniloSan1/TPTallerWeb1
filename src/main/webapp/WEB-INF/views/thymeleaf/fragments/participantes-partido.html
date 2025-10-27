@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+  <head th:fragment="head"> </head>
+  <body>
+    <ul
+      id="listado-participantes"
+      th:fragment="participantes-partido (participantes,equipoAMostrar)"
+      class="list-group"
+    >
+      <h4
+        class="w-100"
+        th:text="${equipoAMostrar == 'EQUIPO_1'} ? 'Equipo 1' : (${equipoAMostrar == 'EQUIPO_2'} ? 'Equipo 2' : 'Sin Equipo')"
+      ></h4>
+      <li
+        class="participante-item"
+        th:each="participante : ${participantes}"
+        th:if="${participante.equipo == equipoAMostrar}"
+      >
+        <span class="profile-avatar"></span>
+        <div class="d-flex flex-column">
+          <strong
+            class="w-100"
+            th:text="${participante.nombreCompleto}"
+          ></strong>
+          <span class="w-100" th:text="${participante.posicionFavorita}"></span>
+          <span class="w-100" th:text="${participante.fechaUnion}"></span>
+        </div>
+        <div class="dropdown">
+          <button
+            class="btn btn-light dropdown-toggle"
+            type="button"
+            id="dropdownMenuButton1"
+            data-bs-toggle="dropdown"
+            aria-expanded="false"
+          ></button>
+          <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+            <li><a class="dropdown-item" href="#">Asignar Equipo</a></li>
+          </ul>
+        </div>
+      </li>
+      <p
+        th:if="${partido.participantes == null or partido.participantes.isEmpty()}"
+        th:text="${equipoAMostrar == 'SIN_EQUIPO'} ? 'Aqui veras los jugadores sin un equipo asignado.' : 'No hay jugadores en este equipo a&uacute;n.'"
+      ></p>
+    </ul>
+  </body>
+</html>
