@@ -42,19 +42,20 @@ INSERT INTO Reserva(id, horario_id, usuario_id, fechaReserva, fechaCreacion, act
 
 -- Insert matches
 INSERT INTO Partido(id, titulo, descripcion, nivel, cupoMaximo, reserva_id, creador_id) VALUES
-(NULL, 'Partido para principiantes', 'Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.', 'PRINCIPIANTE', 12, (SELECT r.id FROM Reserva r WHERE r.horario_id = 3 AND r.usuario_id = 1 ORDER BY r.id DESC LIMIT 1), 2),
+(NULL, 'Partido para principiantes', 'Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.', 'PRINCIPIANTE', 12, (SELECT r.id FROM Reserva r WHERE r.horario_id = 3 AND r.usuario_id = 1 ORDER BY r.id DESC LIMIT 1), 1),
 (NULL, 'Partido mixto', 'Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.', 'AVANZADO', 10, (SELECT r.id FROM Reserva r WHERE r.horario_id = 4 AND r.usuario_id = 1 ORDER BY r.id DESC LIMIT 1), 3),
 (NULL, 'Partido nocturno', 'Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.', 'INTERMEDIO', 6, (SELECT r.id FROM Reserva r WHERE r.horario_id = 5 AND r.usuario_id = 1 ORDER BY r.id DESC LIMIT 1), 4);
 
 -- Insert participants for the first partido
-INSERT INTO PartidoParticipante(partido_id, usuario_id, fecha_union) VALUES
-(1, 1, NOW()),
-(1, 3, NOW()),
-(1, 4, NOW()),
-(1, 5, NOW()),
-(1, 6, NOW()),
-(1, 7, NOW()),
-(1, 8, NOW()),
-(1, 9, NOW()),
-(1, 10, NOW());
+INSERT INTO PartidoParticipante(partido_id, usuario_id, fecha_union, equipo) VALUES
+(1, 1, NOW(), "EQUIPO_1"),
+(1, 2, NOW(), "EQUIPO_1"),
+(1, 3, NOW(), "EQUIPO_1"),
+(1, 4, NOW(), "EQUIPO_1"),
+(1, 5, NOW(), "EQUIPO_2"),
+(1, 6, NOW(), "EQUIPO_2"),
+(1, 7, NOW(), "EQUIPO_2"),
+(1, 8, NOW(), "EQUIPO_2"),
+(1, 9, NOW(), "SIN_EQUIPO"),
+(1, 10, NOW(), "SIN_EQUIPO");
 

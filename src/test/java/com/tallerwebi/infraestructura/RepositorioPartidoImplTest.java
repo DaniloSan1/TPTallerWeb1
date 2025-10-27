@@ -6,6 +6,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import com.tallerwebi.dominio.Cancha;
+import com.tallerwebi.dominio.Equipo;
 import com.tallerwebi.dominio.Horario;
 import com.tallerwebi.dominio.Nivel;
 import com.tallerwebi.dominio.Partido;
@@ -68,7 +69,7 @@ public class RepositorioPartidoImplTest {
         Usuario participante = new Usuario("usuario2", "password2", "email2@example.com");
         this.sessionFactory.getCurrentSession().save(participante);
 
-        PartidoParticipante partidoParticipante = new PartidoParticipante(nuevoPartido, participante);
+        PartidoParticipante partidoParticipante = new PartidoParticipante(nuevoPartido, participante, Equipo.EQUIPO_1);
         this.sessionFactory.getCurrentSession().save(partidoParticipante);
 
         // Implementar el test para obtener un partido por ID.

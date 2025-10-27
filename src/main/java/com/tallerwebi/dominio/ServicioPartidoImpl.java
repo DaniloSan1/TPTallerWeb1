@@ -92,7 +92,7 @@ public class ServicioPartidoImpl implements ServicioPartido {
             throw new YaExisteElParticipante();
         }
 
-        PartidoParticipante partidoParticipante = new PartidoParticipante(partido, usuario);
+        PartidoParticipante partidoParticipante = new PartidoParticipante(partido, usuario, Equipo.SIN_EQUIPO);
         repoPartidoParticipante.guardar(partidoParticipante);
 
         partido.getParticipantes().add(partidoParticipante);

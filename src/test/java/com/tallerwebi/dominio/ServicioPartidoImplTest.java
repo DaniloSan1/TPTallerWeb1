@@ -181,7 +181,7 @@ public class ServicioPartidoImplTest {
                 usuario.setId(1L);
                 Partido partido = new Partido();
                 partido.setId(1L);
-                PartidoParticipante participante = new PartidoParticipante(partido, usuario);
+                PartidoParticipante participante = new PartidoParticipante(partido, usuario, Equipo.EQUIPO_1);
                 partido.getParticipantes().add(participante);
 
                 Mockito.when(repositorioPartidoMock.porId(1L)).thenReturn(partido);
@@ -239,8 +239,8 @@ public class ServicioPartidoImplTest {
 
                 Partido partido = new Partido();
                 partido.setId(1L);
-                partido.getParticipantes().add(new PartidoParticipante(partido, usuario1));
-                partido.getParticipantes().add(new PartidoParticipante(partido, usuario2));
+                partido.getParticipantes().add(new PartidoParticipante(partido, usuario1, Equipo.EQUIPO_1));
+                partido.getParticipantes().add(new PartidoParticipante(partido, usuario2, Equipo.EQUIPO_2));
 
                 Mockito.when(repositorioPartidoMock.porId(1L)).thenReturn(partido);
 

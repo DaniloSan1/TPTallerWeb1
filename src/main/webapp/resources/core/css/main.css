@@ -4,6 +4,7 @@
   --tertiary-color:  #03984d;
 }
 
+
 .starter-template {
   padding: 3rem 1.5rem;
   text-align: center;
@@ -94,6 +95,7 @@ h2{
     border-color: var(--primary-color) !important;
     opacity: 0.6;
 }
+
 
 /* Chip styles for cards */
 .chip {
