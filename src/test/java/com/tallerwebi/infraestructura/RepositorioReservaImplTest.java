@@ -38,6 +38,7 @@ public class RepositorioReservaImplTest {
 
         usuario = new Usuario();
         usuario.setNombre("Juan");
+        usuario.setUsername("juan");
 
         Cancha cancha = new Cancha();
         cancha.setNombre("Cancha 1");

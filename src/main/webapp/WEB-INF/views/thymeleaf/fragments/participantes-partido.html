@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+  <head th:fragment="head"> </head>
+  <body>
+    <ul
+      id="listado-participantes"
+      th:fragment="participantes-partido (participantes,equipoAMostrar,showDropdown)"
+      class="list-group"
+    >
+      <!-- Modal -->
+      <div
+        class="modal fade"
+        id="actualizarEquipo"
+        data-bs-backdrop="static"
+        data-bs-keyboard="false"
+        tabindex="-1"
+        aria-labelledby="actualizarEquipoLabel"
+        aria-hidden="true"
+      >
+        <div class="modal-dialog modal-dialog-centered">
+          <div class="modal-content">
+            <form id="form-asignar-equipo" method="post">
+              <input type="hidden" id="participante-id" name="participanteId" />
+              <div class="modal-header">
+                <h1 class="modal-title fs-5" id="actualizarEquipoLabel">
+                  Asignar Equipo
+                </h1>
+              </div>
+              <div class="modal-body">
+                <select
+                  class="form-select"
+                  id="equipo-select"
+                  name="equipo"
+                  aria-label="Selecciona un equipo"
+                >
+                  <option value="EQUIPO_1">Equipo 1</option>
+                  <option value="EQUIPO_2">Equipo 2</option>
+                  <option value="SIN_EQUIPO">Sin asignar</option>
+                </select>
+              </div>
+              <div class="modal-footer">
+                <button
+                  type="button"
+                  class="btn btn-secondary"
+                  data-bs-dismiss="modal"
+                >
+                  Cerrar
+                </button>
+                <button type="submit" class="btn btn-primary" id="btn-asignar">
+                  Asignar
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+      <h4
+        class="w-100 mt-2"
+        th:text="${equipoAMostrar == 'EQUIPO_1'} ? 'Equipo 1' : (${equipoAMostrar == 'EQUIPO_2'} ? 'Equipo 2' : 'Sin Equipo')"
+      ></h4>
+      <li
+        class="participante-item"
+        th:each="participante : ${participantes}"
+        th:if="${participante.equipo == equipoAMostrar}"
+      >
+        <span class="profile-avatar"></span>
+        <div class="d-flex flex-column">
+          <strong
+            class="w-100"
+            th:text="${participante.nombreCompleto}"
+          ></strong>
+          <span class="w-100" th:text="${participante.posicionFavorita}"></span>
+          <span class="w-100" th:text="${participante.fechaUnion}"></span>
+        </div>
+        <!-- Dropdown -->
+        <div class="dropdown" th:if="${showDropdown}">
+          <button
+            class="btn btn-light dropdown-toggle"
+            type="button"
+            id="dropdownMenuButton1"
+            data-bs-toggle="dropdown"
+            aria-expanded="false"
+          ></button>
+          <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+            <li>
+              <a
+                class="dropdown-item"
+                data-bs-toggle="modal"
+                data-bs-target="#actualizarEquipo"
+                th:data-bs-nombre="${participante.nombreCompleto}"
+                th:data-bs-equipo="${participante.equipo}"
+                th:data-bs-id="${participante.id}"
+                >Asignar Equipo</a
+              >
+            </li>
+          </ul>
+        </div>
+      </li>
+      <p
+        th:if="${partido.participantes == null or partido.participantes.isEmpty()}"
+        th:text="${equipoAMostrar == 'SIN_EQUIPO'} ? 'Aqui veras los jugadores sin un equipo asignado.' : 'No hay jugadores en este equipo a&uacute;n.'"
+      ></p>
+    </ul>
+  </body>
+</html>

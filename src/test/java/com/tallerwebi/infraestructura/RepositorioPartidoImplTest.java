@@ -6,6 +6,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import com.tallerwebi.dominio.Cancha;
+import com.tallerwebi.dominio.Equipo;
 import com.tallerwebi.dominio.Horario;
 import com.tallerwebi.dominio.Nivel;
 import com.tallerwebi.dominio.Partido;
@@ -53,7 +54,7 @@ public class RepositorioPartidoImplTest {
         Horario horario = new Horario(cancha, DayOfWeek.MONDAY, LocalTime.now(), LocalTime.now().plusHours(1));
         this.sessionFactory.getCurrentSession().save(horario);
 
-        Usuario creador = new Usuario("usuario1", "password", "email@example.com");
+        Usuario creador = new Usuario("usuario1", "password", "email@example.com","usernameCreador");
         this.sessionFactory.getCurrentSession().save(creador);
 
         Reserva reserva = new Reserva(horario, creador, LocalDateTime.now().plusDays(1));
@@ -65,10 +66,10 @@ public class RepositorioPartidoImplTest {
                 reserva, creador);
         this.sessionFactory.getCurrentSession().save(nuevoPartido);
 
-        Usuario participante = new Usuario("usuario2", "password2", "email2@example.com");
+        Usuario participante = new Usuario("usuario2", "password2", "email2@example.com","username");
         this.sessionFactory.getCurrentSession().save(participante);
 
-        PartidoParticipante partidoParticipante = new PartidoParticipante(nuevoPartido, participante);
+        PartidoParticipante partidoParticipante = new PartidoParticipante(nuevoPartido, participante, Equipo.EQUIPO_1);
         this.sessionFactory.getCurrentSession().save(partidoParticipante);
 
         // Implementar el test para obtener un partido por ID.

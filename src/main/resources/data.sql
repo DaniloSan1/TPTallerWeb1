@@ -1,17 +1,17 @@
 -- Fixed SQL syntax issues while keeping the full Lorem Ipsum text intact
 
 -- Insert additional users
-INSERT INTO Usuario(id, nombre, apellido, email, password, rol, activo, posicionFavorita) VALUES
-(NULL, 'John', 'Doe', 'test@unlam.edu.ar', 'test', 'ADMIN', TRUE, 'DELANTERO'), 
-(NULL, 'Jane', 'Doe', 'jane.doe@example.com', 'password', 'ROLE_USER', TRUE, 'DEFENSOR'),
-(NULL, 'Ricardo', 'Tapia', 'participante1@example.com', 'password', 'ROLE_USER', TRUE, 'MEDIOCAMPISTA'),
-(NULL, 'Bruno', 'Diaz', 'email@example.com', 'password', 'ROLE_USER', TRUE, 'PORTERO'),
-(NULL, 'Carlos', 'Garcia', 'carlos.garcia@example.com', 'password', 'ROLE_USER', TRUE, 'DELANTERO'),
-(NULL, 'Maria', 'Lopez', 'maria.lopez@example.com', 'password', 'ROLE_USER', TRUE, 'DEFENSOR'),
-(NULL, 'Pedro', 'Martinez', 'pedro.martinez@example.com', 'password', 'ROLE_USER', TRUE, 'MEDIOCAMPISTA'),
-(NULL, 'Ana', 'Rodriguez', 'ana.rodriguez@example.com', 'password', 'ROLE_USER', TRUE, 'PORTERO'),
-(NULL, 'Luis', 'Hernandez', 'luis.hernandez@example.com', 'password', 'ROLE_USER', TRUE, 'DELANTERO'),
-(NULL, 'Sofia', 'Fernandez', 'sofia.fernandez@example.com', 'password', 'ROLE_USER', TRUE, 'DEFENSOR');
+INSERT INTO Usuario(id, nombre, apellido, email, username, password, rol, activo, posicionFavorita) VALUES
+(NULL, 'John', 'Doe', 'test@unlam.edu.ar', 'john', 'test', 'ADMIN', TRUE, 'DELANTERO'),
+(NULL, 'Jane', 'Doe', 'jane.doe@example.com', 'jane', 'password', 'ROLE_USER', TRUE, 'DEFENSOR'),
+(NULL, 'Ricardo', 'Tapia', 'participante1@example.com', 'ricardo', 'password', 'ROLE_USER', TRUE, 'MEDIOCAMPISTA'),
+(NULL, 'Bruno', 'Diaz', 'email@example.com', 'bruno', 'password', 'ROLE_USER', TRUE, 'PORTERO'),
+(NULL, 'Carlos', 'Garcia', 'carlos.garcia@example.com', 'carlos', 'password', 'ROLE_USER', TRUE, 'DELANTERO'),
+(NULL, 'Maria', 'Lopez', 'maria.lopez@example.com', 'maria', 'password', 'ROLE_USER', TRUE, 'DEFENSOR'),
+(NULL, 'Pedro', 'Martinez', 'pedro.martinez@example.com', 'pedro', 'password', 'ROLE_USER', TRUE, 'MEDIOCAMPISTA'),
+(NULL, 'Ana', 'Rodriguez', 'ana.rodriguez@example.com', 'ana', 'password', 'ROLE_USER', TRUE, 'PORTERO'),
+(NULL, 'Luis', 'Hernandez', 'luis.hernandez@example.com', 'luis', 'password', 'ROLE_USER', TRUE, 'DELANTERO'),
+(NULL, 'Sofia', 'Fernandez', 'sofia.fernandez@example.com', 'sofia', 'password', 'ROLE_USER', TRUE, 'DEFENSOR');
 
 -- Insert fields
 INSERT INTO Cancha(id, nombre, capacidad, direccion, zona, precio, tipoSuelo) VALUES
@@ -42,19 +42,20 @@ INSERT INTO Reserva(id, horario_id, usuario_id, fechaReserva, fechaCreacion, act
 
 -- Insert matches
 INSERT INTO Partido(id, titulo, descripcion, nivel, cupoMaximo, reserva_id, creador_id) VALUES
-(NULL, 'Partido para principiantes', 'Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.', 'PRINCIPIANTE', 12, (SELECT r.id FROM Reserva r WHERE r.horario_id = 3 AND r.usuario_id = 1 ORDER BY r.id DESC LIMIT 1), 2),
+(NULL, 'Partido para principiantes', 'Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.', 'PRINCIPIANTE', 12, (SELECT r.id FROM Reserva r WHERE r.horario_id = 3 AND r.usuario_id = 1 ORDER BY r.id DESC LIMIT 1), 1),
 (NULL, 'Partido mixto', 'Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.', 'AVANZADO', 10, (SELECT r.id FROM Reserva r WHERE r.horario_id = 4 AND r.usuario_id = 1 ORDER BY r.id DESC LIMIT 1), 3),
 (NULL, 'Partido nocturno', 'Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.', 'INTERMEDIO', 6, (SELECT r.id FROM Reserva r WHERE r.horario_id = 5 AND r.usuario_id = 1 ORDER BY r.id DESC LIMIT 1), 4);
 
 -- Insert participants for the first partido
-INSERT INTO PartidoParticipante(partido_id, usuario_id, fecha_union) VALUES
-(1, 1, NOW()),
-(1, 3, NOW()),
-(1, 4, NOW()),
-(1, 5, NOW()),
-(1, 6, NOW()),
-(1, 7, NOW()),
-(1, 8, NOW()),
-(1, 9, NOW()),
-(1, 10, NOW());
+INSERT INTO PartidoParticipante(partido_id, usuario_id, fecha_union, equipo) VALUES
+(1, 1, NOW(), "EQUIPO_1"),
+(1, 2, NOW(), "EQUIPO_1"),
+(1, 3, NOW(), "EQUIPO_1"),
+(1, 4, NOW(), "EQUIPO_1"),
+(1, 5, NOW(), "EQUIPO_2"),
+(1, 6, NOW(), "EQUIPO_2"),
+(1, 7, NOW(), "EQUIPO_2"),
+(1, 8, NOW(), "EQUIPO_2"),
+(1, 9, NOW(), "SIN_EQUIPO"),
+(1, 10, NOW(), "SIN_EQUIPO");
 

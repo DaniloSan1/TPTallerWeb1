@@ -37,6 +37,7 @@ public class RepositorioUsuarioImplTest {
     usuarioAGuardar.setNombre("nombre");
     usuarioAGuardar.setApellido("apellido");
     usuarioAGuardar.setEmail("email");
+    usuarioAGuardar.setUsername("username");
 
     repositorioUsuario.guardar(usuarioAGuardar);
     sessionFactory.getCurrentSession().flush();
@@ -53,7 +54,7 @@ public class RepositorioUsuarioImplTest {
     @Transactional
     @Rollback
     public void debeDevolverElUsuarioBuscadoAlBuscarPorEmail(){
-        Usuario usuarioGuardado = new Usuario("nombre", "apellido", "email");
+        Usuario usuarioGuardado = new Usuario("nombre", "apellido", "email","username");
         repositorioUsuario.guardar(usuarioGuardado);
         sessionFactory.getCurrentSession().flush();
 
@@ -68,6 +69,7 @@ public class RepositorioUsuarioImplTest {
         Usuario usuarioGuardado = new Usuario();
         usuarioGuardado.setEmail("email");
         usuarioGuardado.setPassword("password");
+        usuarioGuardado.setUsername("username");
         repositorioUsuario.guardar(usuarioGuardado);
         sessionFactory.getCurrentSession().flush();
         Usuario usuarioBuscado = repositorioUsuario.buscarUsuario("email","password");
@@ -78,7 +80,7 @@ public class RepositorioUsuarioImplTest {
     @Transactional
     @Rollback
     public void debeDevolverElUsuarioBuscadoAlBuscarPorId(){
-        Usuario usuarioGuardado = new Usuario("nombre", "apellido", "email");
+        Usuario usuarioGuardado = new Usuario("nombre", "apellido", "email","username");
         repositorioUsuario.guardar(usuarioGuardado);
         Long idUsuario = usuarioGuardado.getId();
         sessionFactory.getCurrentSession().flush();
