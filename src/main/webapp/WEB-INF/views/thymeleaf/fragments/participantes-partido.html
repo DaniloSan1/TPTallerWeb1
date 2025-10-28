@@ -1,63 +1,14 @@
 <!DOCTYPE html>
 <html lang="es" xmlns:th="http://www.thymeleaf.org">
-  <head th:fragment="head"> </head>
-  <body>
-    <ul
-      id="listado-participantes"
-      th:fragment="participantes-partido (participantes,equipoAMostrar,showDropdown)"
-      class="list-group"
-    >
-      <!-- Modal -->
-      <div
-        class="modal fade"
-        id="actualizarEquipo"
-        data-bs-backdrop="static"
-        data-bs-keyboard="false"
-        tabindex="-1"
-        aria-labelledby="actualizarEquipoLabel"
-        aria-hidden="true"
-      >
-        <div class="modal-dialog modal-dialog-centered">
-          <div class="modal-content">
-            <form id="form-asignar-equipo" method="post">
-              <input type="hidden" id="participante-id" name="participanteId" />
-              <div class="modal-header">
-                <h1 class="modal-title fs-5" id="actualizarEquipoLabel">
-                  Asignar Equipo
-                </h1>
-              </div>
-              <div class="modal-body">
-                <select
-                  class="form-select"
-                  id="equipo-select"
-                  name="equipo"
-                  aria-label="Selecciona un equipo"
-                >
-                  <option value="EQUIPO_1">Equipo 1</option>
-                  <option value="EQUIPO_2">Equipo 2</option>
-                  <option value="SIN_EQUIPO">Sin asignar</option>
-                </select>
-              </div>
-              <div class="modal-footer">
-                <button
-                  type="button"
-                  class="btn btn-secondary"
-                  data-bs-dismiss="modal"
-                >
-                  Cerrar
-                </button>
-                <button type="submit" class="btn btn-primary" id="btn-asignar">
-                  Asignar
-                </button>
-              </div>
-            </form>
-          </div>
-        </div>
-      </div>
-      <h4
-        class="w-100 mt-2"
-        th:text="${equipoAMostrar == 'EQUIPO_1'} ? 'Equipo 1' : (${equipoAMostrar == 'EQUIPO_2'} ? 'Equipo 2' : 'Sin Equipo')"
-      ></h4>
+  <head> </head>
+  <body
+    th:fragment="participantes-partido (participantes,equipoAMostrar,showDropdown)"
+  >
+    <h4
+      class="w-100 mt-2"
+      th:text="${equipoAMostrar == 'EQUIPO_1'} ? 'Equipo 1' : (${equipoAMostrar == 'EQUIPO_2'} ? 'Equipo 2' : 'Sin Equipo')"
+    ></h4>
+    <ul id="listado-participantes" class="list-group">
       <li
         class="participante-item"
         th:each="participante : ${participantes}"
@@ -73,7 +24,7 @@
           <span class="w-100" th:text="${participante.fechaUnion}"></span>
         </div>
         <!-- Dropdown -->
-        <div class="dropdown" th:if="${showDropdown}">
+        <div class="dropdown">
           <button
             class="btn btn-light dropdown-toggle"
             type="button"
@@ -85,12 +36,33 @@
             <li>
               <a
                 class="dropdown-item"
+                id="ver-perfil"
+                th:href="@{/perfil/ver/username/} + ${participante.username}"
+                >Ver Perfil</a
+              >
+            </li>
+            <li>
+              <a
+                class="dropdown-item"
                 data-bs-toggle="modal"
+                th:if="${showDropdown}"
                 data-bs-target="#actualizarEquipo"
                 th:data-bs-nombre="${participante.nombreCompleto}"
                 th:data-bs-equipo="${participante.equipo}"
                 th:data-bs-id="${participante.id}"
                 >Asignar Equipo</a
+              >
+            </li>
+            <div class="dropdown-divider"></div>
+            <li>
+              <a
+                class="dropdown-item text-danger"
+                data-bs-toggle="modal"
+                th:if="${showDropdown}"
+                data-bs-target="#eliminarParticipante"
+                th:data-bs-nombre="${participante.nombreCompleto}"
+                th:data-bs-id="${participante.id}"
+                >Eliminar</a
               >
             </li>
           </ul>
@@ -101,5 +73,100 @@
         th:text="${equipoAMostrar == 'SIN_EQUIPO'} ? 'Aqui veras los jugadores sin un equipo asignado.' : 'No hay jugadores en este equipo a&uacute;n.'"
       ></p>
     </ul>
+    <!-- Modal Asignar Equipo -->
+    <div
+      class="modal fade"
+      id="actualizarEquipo"
+      data-bs-backdrop="static"
+      data-bs-keyboard="false"
+      tabindex="-1"
+      aria-labelledby="actualizarEquipoLabel"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+          <form id="form-asignar-equipo" method="post">
+            <input type="hidden" id="participante-id" name="participanteId" />
+            <div class="modal-header">
+              <h1 class="modal-title fs-5" id="actualizarEquipoLabel">
+                Asignar Equipo
+              </h1>
+            </div>
+            <div class="modal-body">
+              <select
+                class="form-select"
+                id="equipo-select"
+                name="equipo"
+                aria-label="Selecciona un equipo"
+              >
+                <option value="EQUIPO_1">Equipo 1</option>
+                <option value="EQUIPO_2">Equipo 2</option>
+                <option value="SIN_EQUIPO">Sin asignar</option>
+              </select>
+            </div>
+            <div class="modal-footer">
+              <button
+                type="button"
+                class="btn btn-secondary"
+                data-bs-dismiss="modal"
+              >
+                Cerrar
+              </button>
+              <button type="submit" class="btn btn-primary" id="btn-asignar">
+                Asignar
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <!-- Modal Eliminar Participante -->
+    <div
+      class="modal fade"
+      id="eliminarParticipante"
+      data-bs-keyboard="false"
+      tabindex="-1"
+      aria-labelledby="eliminarParticipanteLabel"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+          <form id="form-eliminar-participante" method="POST">
+            <input
+              type="hidden"
+              id="participante-a-eliminar-id"
+              name="participanteAEliminarId"
+            />
+            <div class="modal-header">
+              <h1
+                class="modal-title fs-5 text-danger"
+                id="eliminarParticipanteLabel"
+              >
+                Eliminar Participante
+              </h1>
+            </div>
+            <div class="modal-body">
+              <p id="mensaje-eliminar-participante">
+                &iquest;Est&aacute;s seguro que deseas eliminar a este
+                participante del partido?
+              </p>
+            </div>
+            <div class="modal-footer">
+              <button
+                type="button"
+                class="btn btn-secondary"
+                data-bs-dismiss="modal"
+              >
+                Cancelar
+              </button>
+              <button type="submit" class="btn btn-danger" id="btn-eliminar">
+                Aceptar
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
   </body>
 </html>

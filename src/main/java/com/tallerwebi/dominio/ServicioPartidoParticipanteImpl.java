@@ -27,4 +27,13 @@ public class ServicioPartidoParticipanteImpl implements ServicioPartidoParticipa
         participante.setEquipo(Equipo.valueOf(nuevoEquipo));
         return participante;
     }
+
+    @Override
+    public void eliminar(long partidoParticipanteId) throws ParticipanteNoEncontrado {
+        PartidoParticipante participante = repositorioPartidoParticipante.buscarPorId(partidoParticipanteId);
+        if (participante == null) {
+            throw new ParticipanteNoEncontrado();
+        }
+        repositorioPartidoParticipante.eliminar(participante);
+    }
 }

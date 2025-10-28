@@ -54,4 +54,35 @@ public class ControladorParticipantes {
             return "redirect:/home";
         }
     }
+
+    @RequestMapping(path = "/{id}", method = RequestMethod.POST)
+    public String eliminarParticipante(@PathVariable long id, RedirectAttributes redirectAttributes,
+            HttpServletRequest request) throws Exception {
+        try {
+
+            System.out.println("Eliminando participante con ID: " + id);
+            String email = (String) request.getSession().getAttribute("EMAIL");
+            if (email == null) {
+                return "redirect:/login";
+            }
+
+            servicioPartidoParticipante.eliminar(id);
+
+            redirectAttributes.addFlashAttribute("listaParticipantesSuccess", "Participante eliminado correctamente");
+
+        } catch (ParticipanteNoEncontrado e) {
+            System.out.println(e);
+            redirectAttributes.addFlashAttribute("listaParticipantesError", e.getMessage());
+        } catch (Exception e) {
+            System.out.println(e);
+            redirectAttributes.addFlashAttribute("listaParticipantesError", "Error al eliminar el participante");
+        }
+
+        String referrer = request.getHeader("referer");
+        if (referrer != null) {
+            return "redirect:" + referrer;
+        } else {
+            return "redirect:/home";
+        }
+    }
 }
