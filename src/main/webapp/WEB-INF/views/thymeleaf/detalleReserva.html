@@ -63,6 +63,7 @@
             class="btn btn-secondary"
             >Hacer otra reserva</a
           >
+        <div id="walletBrick_container" class="mt-4"></div>
 
           <form
             th:action="@{/reserva/cancelar/{id}(id=${reserva.id})}"
@@ -85,5 +86,21 @@
     <script
       th:src="@{/webjars/bootstrap/5.2.0/js/bootstrap.bundle.min.js}"
     ></script>
+    <script src="https://sdk.mercadopago.com/js/v2"></script>
+  <script th:inline="javascript">
+    const publicKey = "APP_USR-c00c6970-f5c9-49a2-8a8a-27dcee364f92";
+    const preferenceId = /*[[${preferenceId}]]*/ "";
+    console.log("preferenceId: " + preferenceId);
+    const mp = new MercadoPago(publicKey);
+    const bricksBuilder = mp.bricks();
+
+    const renderWalletBrick = async (bricksBuilder) => {
+      await bricksBuilder.create("wallet", "walletBrick_container", {
+        initialization: { preferenceId: preferenceId }
+      });
+    };
+
+    renderWalletBrick(bricksBuilder);
+  </script>
   </body>
 </html>

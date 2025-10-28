@@ -17,22 +17,23 @@ import com.mercadopago.resources.preference.Preference;
 @Service
 @Transactional
 public class ServicioPagoImpl implements ServicioPago {
-    
+
     private final RepositorioPago repositorioPago;
-    
+
     @Autowired
     public ServicioPagoImpl(RepositorioPago repositorioPago) {
         this.repositorioPago = repositorioPago;
     }
-    
+
     @Override
     public String crearPago(String titulo, String descripcion, BigDecimal monto) throws Exception {
         if (titulo == null || titulo.isEmpty()) {
-            throw new Exception("El titulo es obligatorio");
+            throw new IllegalArgumentException("El título es obligatorio");
         }
         if (monto == null || monto.compareTo(BigDecimal.ZERO) <= 0) {
-            throw new Exception("El monto debe ser mayor a cero");
+            throw new IllegalArgumentException("El monto debe ser mayor a cero");
         }
+
         PreferenceItemRequest itemRequest = PreferenceItemRequest.builder()
                 .title(titulo)
                 .description(descripcion != null ? descripcion : "Pago de reserva de cancha")
@@ -40,14 +41,17 @@ public class ServicioPagoImpl implements ServicioPago {
                 .unitPrice(monto)
                 .quantity(1)
                 .build();
+
         PreferenceRequest preferenceRequest = PreferenceRequest.builder()
                 .items(List.of(itemRequest))
                 .build();
+
         PreferenceClient client = new PreferenceClient();
         Preference preference = client.create(preferenceRequest);
-        return preference.getInitPoint();
+
+        return preference.getId();
     }
-    
+
     @Override
     public void guardarPago(Reserva reserva, Usuario usuario, String preferenciaId, Double monto) {
         Pago pago = new Pago();
