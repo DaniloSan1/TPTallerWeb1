@@ -19,7 +19,7 @@ public class RepositorioPagoImpl implements RepositorioPago {
 
     @Override
     public void guardarPago(Pago pago) {
-        sessionFactory.getCurrentSession().save(pago);
+        sessionFactory.getCurrentSession().saveOrUpdate(pago);
     }
     
     @Override

@@ -1,6 +1,4 @@
 package com.tallerwebi.dominio;
-
-import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 import javax.persistence.Entity;
