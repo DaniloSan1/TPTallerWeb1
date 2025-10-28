@@ -3,6 +3,6 @@ package com.tallerwebi.dominio;
 import java.util.List;
 
 public interface ServicioCancha {
-    List <Cancha> obtenerCanchasDisponibles();
     Cancha obtenerCanchaPorId(Long id);
+    List<Cancha> obtenerCanchasDisponibles(String busqueda, Zona zona, Double precio);   
 } 

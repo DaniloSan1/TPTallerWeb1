@@ -86,7 +86,7 @@ public class RepositorioCanchaImplTest {
         
         
         //Ejecucion
-        List<Cancha> canchasDisponibles = repositorioCancha.MostrarCanchasConHorariosDisponibles();
+        List<Cancha> canchasDisponibles = repositorioCancha.MostrarCanchasConHorariosDisponibles(null, null, null, null);
 
        //Verificacion
         assertEquals(2, canchasDisponibles.size());
