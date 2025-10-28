@@ -32,65 +32,70 @@
       <div class="d-flex align-items-center justify-content-between mb-3">
         <h1 class="h3 m-0">Canchas Disponibles</h1>
       </div>
-       <form
-        class="mb-4"
+
+      
+      <form
+        class="mb-4 mx-auto"
         th:action="@{/canchas-disponibles}"
         method="get"
-        style="max-width: 400px"
+        style="width: 80%;"
       >
-        <div class="input-group">
+        <div class="input-group mb-3 shadow-sm rounded-pill overflow-hidden">
           <input
             type="text"
             name="busqueda"
-            class="form-control"
+            class="form-control border-0"
             placeholder="Buscar por nombre o dirección..."
+            th:value="${busqueda}"
             aria-label="Buscar cancha"
           />
-          <button class="btn btn-primary" type="submit">
+          <button class="btn btn-primary px-4" type="submit">
             <i class="bi bi-search"></i> Buscar
           </button>
         </div>
-         <div class="col-md-3">
-            <select
-              class="form-select"
-              name="zona"
-              
-            >
-              <option value="">Todas las zonas</option>
-              <option value="ESTE" th:selected="${zona == 'ESTE'}">ESTE</option>
-              <option value="OESTE" th:selected="${zona == 'OESTE'}">OESTE</option>
-              <option value="NORTE" th:selected="${zona == 'NORTE'}">NORTE</option>
-              <option value="SUR" th:selected="${zona == 'SUR'}">SUR</option>
-              <option value="CENTRO" th:selected="${zona == 'CENTRO'}">CENTRO</option>
-            </select>
-          </div>
+
+        <div
+          class="d-flex flex-wrap justify-content-center gap-3 fw-semibold text-secondary"
+        >
+          <!-- Filtro por zona -->
+          <select
+            class="form-select bg-light border-0 rounded-pill"
+            name="zona"
+            style="max-width: 220px;"
+          >
+            <option value="">Todas las zonas</option>
+            <option value="ESTE" th:selected="${zona == 'ESTE'}">ESTE</option>
+            <option value="OESTE" th:selected="${zona == 'OESTE'}">OESTE</option>
+            <option value="NORTE" th:selected="${zona == 'NORTE'}">NORTE</option>
+            <option value="SUR" th:selected="${zona == 'SUR'}">SUR</option>
+            <option value="CENTRO" th:selected="${zona == 'CENTRO'}">CENTRO</option>
+          </select>
 
           <!-- Filtro por precio -->
-          <div class="col-md-3">
-            <select
-              class="form-select"
-              name="precio"
-            
-            >
-              <option value="">Todos los precios</option>
-              <option value="1000.00" th:selected="${precio == '1000.00'}">
-                $0 - $1000
-              </option>
-              <option value="5000.00" th:selected="${precio == '5000.00'}">
-                $1000 - $5000
-              </option>
-              <option value="5001.00" th:selected="${precio == '5001.00'}">
-                Más de $5000
-              </option>
-            </select>
-          </div>
+          <select
+            class="form-select bg-light border-0 rounded-pill"
+            name="precio"
+            style="max-width: 220px;"
+          >
+            <option value="">Todos los precios</option>
+            <option value="1000.00" th:selected="${precio == '1000.00'}">
+              $0 - $1000
+            </option>
+            <option value="5000.00" th:selected="${precio == '5000.00'}">
+              $1000 - $5000
+            </option>
+            <option value="5001.00" th:selected="${precio == '5001.00'}">
+              Más de $5000
+            </option>
+          </select>
         </div>
       </form>
+      
+
       <hr class="colorgraph" />
 
-      <!-- Contenedor scrollable para las tarjetas -->
+      
       <div style="flex: 1; overflow-y: auto; padding: 1rem">
-        <!-- Estado vacío -->
         <div
           class="alert alert-info"
           role="alert"
@@ -98,7 +103,6 @@
         >
           No hay canchas disponibles por el momento.
         </div>
-        <!-- Grilla de tarjetas -->
         <div class="row g-3" th:if="${!#lists.isEmpty(canchas)}">
           <div class="col-12 col-sm-6 col-lg-3" th:each="cancha : ${canchas}">
             <a

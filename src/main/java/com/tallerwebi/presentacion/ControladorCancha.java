@@ -40,6 +40,9 @@ public class ControladorCancha {
         String busqueda = request.getParameter("busqueda");
         String zonaParam = request.getParameter("zona");
         String precioParam = request.getParameter("precio");
+        model.put("zona", zonaParam);
+        model.put("precio", precioParam);
+        model.put("busqueda", busqueda);
         Zona zona = null;
         if (zonaParam != null && !zonaParam.isEmpty()) {
             zona = Zona.valueOf(zonaParam);
