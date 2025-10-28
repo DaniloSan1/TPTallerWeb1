@@ -33,11 +33,11 @@ public class ServicioCanchaImplTest {
     @Test
     public void CuandoHayCanchasDisponiblesDeberiaTraerLaListaDeLasMismas() {
         
-        Mockito.when(repositorioCanchaMock.MostrarCanchasConHorariosDisponibles()).thenReturn(List.of(cancha1Mock, cancha2Mock));
+        Mockito.when(repositorioCanchaMock.MostrarCanchasConHorariosDisponibles(null, null, null, null)).thenReturn(List.of(cancha1Mock, cancha2Mock));
         ServicioCanchaImpl servicio = new ServicioCanchaImpl(repositorioCanchaMock);
 
         
-        List<Cancha> canchasDisponibles = servicio.obtenerCanchasDisponibles();
+        List<Cancha> canchasDisponibles = servicio.obtenerCanchasDisponibles(null, null, 0.0);
 
         
         assertNotNull(canchasDisponibles);
@@ -73,12 +73,12 @@ public class ServicioCanchaImplTest {
     @Test
     public void CuandoNoHayCanchasDisponiblesDeberiaTirarErrorNoHayCanchasDisponibles() {
         
-        Mockito.when(repositorioCanchaMock.MostrarCanchasConHorariosDisponibles()).thenReturn(List.of());
+        Mockito.when(repositorioCanchaMock.MostrarCanchasConHorariosDisponibles(null, null, null, null)).thenReturn(List.of());
         ServicioCanchaImpl servicio = new ServicioCanchaImpl(repositorioCanchaMock);
 
         
         assertThrows(NoHayCanchasDisponibles.class, () -> {
-            servicio.obtenerCanchasDisponibles();
+            servicio.obtenerCanchasDisponibles(null, null, 0.0);
         });
     }
 }
