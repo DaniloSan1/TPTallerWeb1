@@ -26,6 +26,12 @@ public class RepositorioPartidoParticipanteImpl implements RepositorioPartidoPar
     }
 
     @Override
+    public PartidoParticipante buscarPorId(Long id) {
+        Session session = sessionFactory.getCurrentSession();
+        return session.get(PartidoParticipante.class, id);
+    }
+
+    @Override
     public void guardar(PartidoParticipante partidoParticipante) {
         this.sessionFactory.getCurrentSession().save(partidoParticipante);
     }

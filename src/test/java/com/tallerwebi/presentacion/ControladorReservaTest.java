@@ -81,8 +81,7 @@ public class ControladorReservaTest {
                 "Título",
                 "Descripción",
                 Nivel.PRINCIPIANTE,
-                model
-        );
+                model);
 
         assertTrue(vista.startsWith("redirect:/reserva/"));
         verify(servicioReserva).crearReserva(any(Reserva.class));
@@ -103,8 +102,7 @@ public class ControladorReservaTest {
                 "Título",
                 "Descripción",
                 Nivel.PRINCIPIANTE,
-                model
-        );
+                model);
 
         assertEquals("reservaForm", vista);
         assertEquals("Error al crear", model.get("error"));

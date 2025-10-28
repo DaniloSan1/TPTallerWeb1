@@ -21,6 +21,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import com.tallerwebi.dominio.Cancha;
+import com.tallerwebi.dominio.Equipo;
 import com.tallerwebi.dominio.Horario;
 import com.tallerwebi.dominio.Nivel;
 import com.tallerwebi.dominio.Partido;
@@ -69,7 +70,7 @@ public class RepositorioPartidoParticipanteImplTest {
         this.sessionFactory.getCurrentSession().save(participante);
         this.sessionFactory.getCurrentSession().flush();
 
-        PartidoParticipante partidoParticipante = new PartidoParticipante(nuevoPartido, participante);
+        PartidoParticipante partidoParticipante = new PartidoParticipante(nuevoPartido, participante, Equipo.EQUIPO_1);
         this.repositorioPartidoParticipante.guardar(partidoParticipante);
         PartidoParticipante partidoParticipanteObtenido = (PartidoParticipante) this.sessionFactory.getCurrentSession()
                 .createCriteria(PartidoParticipante.class)
@@ -77,5 +78,40 @@ public class RepositorioPartidoParticipanteImplTest {
                 .add(Restrictions.eq("usuario.id", participante.getId()))
                 .uniqueResult();
         assertThat(partidoParticipanteObtenido, is(equalTo(partidoParticipante)));
+    }
+
+    @Test
+    @Transactional
+    @Rollback
+    public void deberiaBuscarUnParticipantePartidoPorId() {
+        Cancha cancha = new Cancha("Cancha 1", null, null, "Direccion 1", Zona.NORTE);
+        this.sessionFactory.getCurrentSession().save(cancha);
+
+        Horario horario = new Horario(cancha, DayOfWeek.MONDAY, LocalTime.now(), LocalTime.now().plusHours(1));
+        this.sessionFactory.getCurrentSession().save(horario);
+
+        Usuario creador = new Usuario("usuario1", "password", "email@example.com");
+        this.sessionFactory.getCurrentSession().save(creador);
+
+        Reserva reserva = new Reserva(horario, creador, LocalDateTime.now().plusDays(1));
+        this.sessionFactory.getCurrentSession().save(reserva);
+
+        Partido nuevoPartido = new Partido(null, "Partido de prueba", "Descripción del partido",
+                Nivel.INTERMEDIO,
+                10,
+                reserva, creador);
+        this.sessionFactory.getCurrentSession().save(nuevoPartido);
+
+        Usuario participante = new Usuario("participante1", "password", "participante1@example.com");
+        this.sessionFactory.getCurrentSession().save(participante);
+
+        PartidoParticipante partidoParticipante = new PartidoParticipante(nuevoPartido, participante, Equipo.EQUIPO_1);
+        this.repositorioPartidoParticipante.guardar(partidoParticipante);
+        this.sessionFactory.getCurrentSession().flush();
+
+        PartidoParticipante partidoParticipanteEncontrado = this.repositorioPartidoParticipante
+                .buscarPorId(partidoParticipante.getId());
+
+        assertThat(partidoParticipanteEncontrado, is(equalTo(partidoParticipante)));
     }
 }

@@ -31,6 +31,7 @@ import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.tallerwebi.dominio.Cancha;
+import com.tallerwebi.dominio.Equipo;
 import com.tallerwebi.dominio.Horario;
 import com.tallerwebi.dominio.Nivel;
 import com.tallerwebi.dominio.Partido;
@@ -112,10 +113,10 @@ public class ControladorPartidoTest {
 		this.sessionFactory.getCurrentSession().save(participante3);
 		this.sessionFactory.getCurrentSession().save(participante4);
 
-		PartidoParticipante pp1 = new PartidoParticipante(nuevoPartido, participante1);
-		PartidoParticipante pp2 = new PartidoParticipante(nuevoPartido, participante2);
-		PartidoParticipante pp3 = new PartidoParticipante(nuevoPartido, participante3);
-		PartidoParticipante pp4 = new PartidoParticipante(nuevoPartido, participante4);
+		PartidoParticipante pp1 = new PartidoParticipante(nuevoPartido, participante1, Equipo.EQUIPO_1);
+		PartidoParticipante pp2 = new PartidoParticipante(nuevoPartido, participante2, Equipo.EQUIPO_2);
+		PartidoParticipante pp3 = new PartidoParticipante(nuevoPartido, participante3, Equipo.EQUIPO_2);
+		PartidoParticipante pp4 = new PartidoParticipante(nuevoPartido, participante4, Equipo.SIN_EQUIPO);
 
 		nuevoPartido.getParticipantes().add(pp1);
 		nuevoPartido.getParticipantes().add(pp2);
