@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8" />
+    <meta
+            name="viewport"
+            content="width=device-width, initial-scale=1, shrink-to-fit=no"
+    />
+    <title>Perfil de usuario a ver</title>
+
+    <!-- Bootstrap core CSS -->
+    <link
+            rel="stylesheet"
+            th:href="@{/webjars/bootstrap/5.2.0/css/bootstrap.min.css}"
+    />
+    <link rel="stylesheet" th:href="@{/css/main.css}" />
+    <link rel="stylesheet" th:href="@{/css/perfil.css}" />
+
+</head>
+
+<body>
+
+<div th:replace="~{fragments/navbar :: navbar}"></div>
+
+
+<div class="profile-header">
+    <div class="profile-avatar"></div>
+</div>
+
+
+<main role="main" class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card shadow profile-card">
+                <div class="card-header">
+                    <h4 class="mb-0" th:text="${usuarioAVer.nombre + ' ' + usuarioAVer.apellido}">Nombre Apellido</h4>
+                    <small th:text="${usuarioAVer.email}">email@ejemplo.com</small>
+                </div>
+                <div class="card-body">
+                    <p>
+                        <strong>Nombre:</strong>
+                        <span th:text="${usuarioAVer.nombre}"></span>
+                    </p>
+                    <p>
+                        <strong>Apellido:</strong>
+                        <span th:text="${usuarioAVer.apellido}"></span>
+                    </p>
+                    <p>
+                        <strong>Email:</strong>
+                        <span th:text="${usuarioAVer.email}"></span>
+                    </p>
+                    <p>
+                        <strong>Posición favorita:</strong>
+                        <span th:text="${usuarioAVer.posicionFavorita}"></span>
+                    </p>
+                </div>
+                <div class="card-footer text-end">
+                    <a class="btn btn-success btn-lg">
+                        Añadir amigo
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+<script
+        type="text/javascript"
+        th:src="@{/webjars/bootstrap/5.2.0/js/bootstrap.bundle.min.js}"
+></script>
+</body>
+</html>
