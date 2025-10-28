@@ -67,7 +67,7 @@ public class ControladorParticipantesTest {
         Horario horario = new Horario(cancha, DayOfWeek.MONDAY, LocalTime.now(), LocalTime.now().plusHours(1));
         this.sessionFactory.getCurrentSession().save(horario);
 
-        Usuario creador = new Usuario("usuario1", "password", "email@example.com");
+        Usuario creador = new Usuario("usuario1", "password", "email@example.com","usernameCreador");
         creador.setApellido("apellido");
         this.sessionFactory.getCurrentSession().save(creador);
 
@@ -82,7 +82,7 @@ public class ControladorParticipantesTest {
 
         this.sessionFactory.getCurrentSession().save(nuevoPartido);
 
-        Usuario participante = new Usuario("usuario2", "password2", "email2@example.com");
+        Usuario participante = new Usuario("usuario2", "password2", "email2@example.com","username2");
         participante.setNombre("participante1");
         participante.setApellido("apellido1");
         this.sessionFactory.getCurrentSession().save(participante);

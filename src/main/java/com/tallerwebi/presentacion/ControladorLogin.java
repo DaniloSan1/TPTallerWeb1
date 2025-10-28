@@ -45,6 +45,7 @@ public class ControladorLogin {
             request.getSession().setAttribute("EMAIL", usuarioBuscado.getEmail());
             request.getSession().setAttribute("NOMBRE", usuarioBuscado.getNombre());
             request.getSession().setAttribute("APELLIDO", usuarioBuscado.getApellido());
+            request.getSession().setAttribute("USERNAME",usuarioBuscado.getUsername());
             request.getSession().setAttribute("PASSWORD", usuarioBuscado.getPassword());
             request.getSession().setAttribute("POSICION_FAVORITA", usuarioBuscado.getPosicionFavorita());
             request.getSession().setAttribute("USUARIO", usuarioBuscado);

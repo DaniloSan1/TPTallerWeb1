@@ -77,7 +77,7 @@ public class ControladorPartidoTest {
 		this.sessionFactory.getCurrentSession().save(horario);
 		this.sessionFactory.getCurrentSession().flush();
 
-		Usuario creador = new Usuario("usuario1", "password", "email@example.com");
+		Usuario creador = new Usuario("usuario1", "password", "email@example.com","username1");
 		creador.setApellido("apellido");
 		this.sessionFactory.getCurrentSession().save(creador);
 		this.sessionFactory.getCurrentSession().flush();
@@ -96,16 +96,16 @@ public class ControladorPartidoTest {
 		this.sessionFactory.getCurrentSession().flush();
 
 		// agrega participantes
-		Usuario participante1 = new Usuario("usuario2", "password2", "email2@example.com");
+		Usuario participante1 = new Usuario("usuario2", "password2", "email2@example.com","username2");
 		participante1.setNombre("participante1");
 		participante1.setApellido("apellido1");
-		Usuario participante2 = new Usuario("usuario3", "password3", "email3@example.com");
+		Usuario participante2 = new Usuario("usuario3", "password3", "email3@example.com","username3");
 		participante2.setNombre("participante2");
 		participante2.setApellido("apellido2");
-		Usuario participante3 = new Usuario("usuario4", "password4", "email4@example.com");
+		Usuario participante3 = new Usuario("usuario4", "password4", "email4@example.com","username4");
 		participante3.setNombre("participante3");
 		participante3.setApellido("apellido3");
-		Usuario participante4 = new Usuario("usuario5", "password5", "email5@example.com");
+		Usuario participante4 = new Usuario("usuario5", "password5", "email5@example.com","username5");
 		participante4.setNombre("participante4");
 		participante4.setApellido("apellido4");
 		this.sessionFactory.getCurrentSession().save(participante1);
