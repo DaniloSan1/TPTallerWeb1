@@ -26,7 +26,7 @@ public class ServicioPartidoParticipanteImplTest {
     }
 
     @Test
-    public void DeberiaObtenerUnPartidoParticipanteExistente() throws ParticipanteNoEncontrado {
+    public void deberiaActualizarElEquipoDeUnParticipanteExistente() throws ParticipanteNoEncontrado {
         PartidoParticipante partidoParticipanteMock = new PartidoParticipante(partidoMock, usuarioMock,
                 Equipo.EQUIPO_1);
         partidoParticipanteMock.setId(1L);
@@ -39,12 +39,32 @@ public class ServicioPartidoParticipanteImplTest {
     }
 
     @Test
-    public void DeberiaLanzarExcepcionCuandoNoExisteElParticipante() throws ParticipanteNoEncontrado {
+    public void deberiaDarErrorSiSeIntentaActualizarElEquipoDeUnParticipanteInexistente()
+            throws ParticipanteNoEncontrado {
         when(repositorioMock.buscarPorId(Mockito.anyLong()))
                 .thenReturn(null);
         assertThrows(ParticipanteNoEncontrado.class, () -> {
             servicioPartidoParticipanteImpl.actualizarEquipo(Mockito.anyLong(),
                     Equipo.EQUIPO_2.toString());
+        });
+    }
+
+    @Test
+    public void deberiaEliminarUnParticipanteExistente() throws ParticipanteNoEncontrado {
+        PartidoParticipante partidoParticipanteMock = new PartidoParticipante(partidoMock, usuarioMock,
+                Equipo.EQUIPO_1);
+        partidoParticipanteMock.setId(1L);
+        when(repositorioMock.buscarPorId(Mockito.anyLong()))
+                .thenReturn(partidoParticipanteMock);
+        servicioPartidoParticipanteImpl.eliminar(Mockito.anyLong());
+    }
+
+    @Test
+    public void deberiaDarErrorSiSeIntentaEliminarUnParticipanteInexistente() throws ParticipanteNoEncontrado {
+        when(repositorioMock.buscarPorId(Mockito.anyLong()))
+                .thenReturn(null);
+        assertThrows(ParticipanteNoEncontrado.class, () -> {
+            servicioPartidoParticipanteImpl.eliminar(Mockito.anyLong());
         });
     }
 }

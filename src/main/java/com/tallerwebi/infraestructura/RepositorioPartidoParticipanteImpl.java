@@ -1,18 +1,13 @@
 package com.tallerwebi.infraestructura;
 
-import com.tallerwebi.dominio.Partido;
-import com.tallerwebi.dominio.PartidoParticipante;
-import com.tallerwebi.dominio.RepositorioPartido;
-import com.tallerwebi.dominio.RepositorioPartidoParticipante;
-import com.tallerwebi.dominio.Usuario;
-
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
+import com.tallerwebi.dominio.PartidoParticipante;
+import com.tallerwebi.dominio.RepositorioPartidoParticipante;
 
 @Repository // podés dejar el nombre por defecto, no hace falta ("repositorioPartido")
 @Transactional
@@ -34,5 +29,10 @@ public class RepositorioPartidoParticipanteImpl implements RepositorioPartidoPar
     @Override
     public void guardar(PartidoParticipante partidoParticipante) {
         this.sessionFactory.getCurrentSession().save(partidoParticipante);
+    }
+
+    @Override
+    public void eliminar(PartidoParticipante partidoParticipante) {
+        this.sessionFactory.getCurrentSession().delete(partidoParticipante);
     }
 }

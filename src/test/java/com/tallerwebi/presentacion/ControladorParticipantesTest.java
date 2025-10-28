@@ -74,4 +74,50 @@ public class ControladorParticipantesTest {
         assertEquals("redirect:http://localhost/partido/1", result);
         verify(redirectAttributesMock).addFlashAttribute("listaParticipantesError", "Error al asignar el equipo");
     }
+
+    @Test
+    public void eliminarParticipanteDeberiaRedirigirALoginSiNoHayEmailEnSesion() throws Exception {
+        when(sessionMock.getAttribute("EMAIL")).thenReturn(null);
+
+        String result = controladorParticipantes.eliminarParticipante(1L, redirectAttributesMock, requestMock);
+
+        assertEquals("redirect:/login", result);
+    }
+
+    @Test
+    public void eliminarParticipanteDeberiaRedirigirConExitoSiEliminacionCorrecta() throws Exception {
+        when(sessionMock.getAttribute("EMAIL")).thenReturn("usuario@email.com");
+        when(requestMock.getHeader("referer")).thenReturn("http://localhost/spring/partido/1");
+        String result = controladorParticipantes.eliminarParticipante(1L, redirectAttributesMock, requestMock);
+        assertEquals("redirect:http://localhost/spring/partido/1", result);
+        verify(servicioPartidoParticipanteMock).eliminar(1L);
+        verify(redirectAttributesMock).addFlashAttribute("listaParticipantesSuccess",
+                "Participante eliminado correctamente");
+    }
+
+    @Test
+    public void eliminarParticipanteDeberiaRedirigirAHomeSiNoHayReferrer() throws Exception {
+        when(sessionMock.getAttribute("EMAIL")).thenReturn("usuario@email.com");
+        when(requestMock.getHeader("referer")).thenReturn(null);
+
+        String result = controladorParticipantes.eliminarParticipante(1L, redirectAttributesMock, requestMock);
+
+        assertEquals("redirect:/home", result);
+        verify(servicioPartidoParticipanteMock).eliminar(1L);
+        verify(redirectAttributesMock).addFlashAttribute("listaParticipantesSuccess",
+                "Participante eliminado correctamente");
+    }
+
+    @Test
+    public void eliminarParticipanteDeberiaRedirigirConErrorSiOcurreExcepcion() throws Exception {
+        when(sessionMock.getAttribute("EMAIL")).thenReturn("usuario@email.com");
+        when(requestMock.getHeader("referer")).thenReturn("http://localhost/partido/1");
+        doThrow(new RuntimeException("Error")).when(servicioPartidoParticipanteMock).eliminar(1L);
+
+        String result = controladorParticipantes.eliminarParticipante(1L, redirectAttributesMock, requestMock);
+
+        assertEquals("redirect:http://localhost/partido/1", result);
+        verify(redirectAttributesMock).addFlashAttribute("listaParticipantesError",
+                "Error al eliminar el participante");
+    }
 }

@@ -54,7 +54,7 @@ public class RepositorioPartidoParticipanteImplTest {
         Horario horario = new Horario(cancha, DayOfWeek.MONDAY, LocalTime.now(), LocalTime.now().plusHours(1));
         this.sessionFactory.getCurrentSession().save(horario);
 
-        Usuario creador = new Usuario("usuario1", "password", "email@example.com","usernameCreador");
+        Usuario creador = new Usuario("usuario1", "password", "email@example.com", "usernameCreador");
         this.sessionFactory.getCurrentSession().save(creador);
 
         Reserva reserva = new Reserva(horario, creador, LocalDateTime.now().plusDays(1));
@@ -66,7 +66,8 @@ public class RepositorioPartidoParticipanteImplTest {
                 reserva, creador);
         this.sessionFactory.getCurrentSession().save(nuevoPartido);
 
-        Usuario participante = new Usuario("participante1", "password", "participante1@example.com","participanteUsername1");
+        Usuario participante = new Usuario("participante1", "password", "participante1@example.com",
+                "participanteUsername1");
         this.sessionFactory.getCurrentSession().save(participante);
         this.sessionFactory.getCurrentSession().flush();
 
@@ -90,7 +91,7 @@ public class RepositorioPartidoParticipanteImplTest {
         Horario horario = new Horario(cancha, DayOfWeek.MONDAY, LocalTime.now(), LocalTime.now().plusHours(1));
         this.sessionFactory.getCurrentSession().save(horario);
 
-        Usuario creador = new Usuario("usuario1", "password", "email@example.com","usernameCreador");
+        Usuario creador = new Usuario("usuario1", "password", "email@example.com", "usernameCreador");
         this.sessionFactory.getCurrentSession().save(creador);
 
         Reserva reserva = new Reserva(horario, creador, LocalDateTime.now().plusDays(1));
@@ -102,7 +103,8 @@ public class RepositorioPartidoParticipanteImplTest {
                 reserva, creador);
         this.sessionFactory.getCurrentSession().save(nuevoPartido);
 
-        Usuario participante = new Usuario("participante1", "password", "participante1@example.com","username");
+        Usuario participante = new Usuario("participante1", "password", "participante1@example.com",
+                "participanteUsername1");
         this.sessionFactory.getCurrentSession().save(participante);
 
         PartidoParticipante partidoParticipante = new PartidoParticipante(nuevoPartido, participante, Equipo.EQUIPO_1);
@@ -113,5 +115,45 @@ public class RepositorioPartidoParticipanteImplTest {
                 .buscarPorId(partidoParticipante.getId());
 
         assertThat(partidoParticipanteEncontrado, is(equalTo(partidoParticipante)));
+    }
+
+    @Test
+    @Transactional
+    @Rollback
+    public void deberiaEliminarUnParticipantePartido() {
+        Cancha cancha = new Cancha("Cancha 1", null, null, "Direccion 1", Zona.NORTE);
+        this.sessionFactory.getCurrentSession().save(cancha);
+
+        Horario horario = new Horario(cancha, DayOfWeek.MONDAY, LocalTime.now(), LocalTime.now().plusHours(1));
+        this.sessionFactory.getCurrentSession().save(horario);
+
+        Usuario creador = new Usuario("usuario1", "password", "email@example.com", "usernameCreador");
+        this.sessionFactory.getCurrentSession().save(creador);
+
+        Reserva reserva = new Reserva(horario, creador, LocalDateTime.now().plusDays(1));
+        this.sessionFactory.getCurrentSession().save(reserva);
+
+        Partido nuevoPartido = new Partido(null, "Partido de prueba", "Descripción del partido",
+                Nivel.INTERMEDIO,
+                10,
+                reserva, creador);
+        this.sessionFactory.getCurrentSession().save(nuevoPartido);
+
+        Usuario participante = new Usuario("participante1", "password", "participante1@example.com",
+                "participanteUsername1");
+        this.sessionFactory.getCurrentSession().save(participante);
+
+        PartidoParticipante partidoParticipante = new PartidoParticipante(nuevoPartido, participante, Equipo.EQUIPO_1);
+        this.repositorioPartidoParticipante.guardar(partidoParticipante);
+        this.sessionFactory.getCurrentSession().flush();
+
+        PartidoParticipante existente = this.repositorioPartidoParticipante.buscarPorId(partidoParticipante.getId());
+        assertThat(existente, is(equalTo(partidoParticipante)));
+
+        this.repositorioPartidoParticipante.eliminar(partidoParticipante);
+        this.sessionFactory.getCurrentSession().flush();
+
+        PartidoParticipante eliminado = this.repositorioPartidoParticipante.buscarPorId(partidoParticipante.getId());
+        assertThat(eliminado, is(equalTo(null)));
     }
 }

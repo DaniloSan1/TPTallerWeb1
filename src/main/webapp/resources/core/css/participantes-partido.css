@@ -25,7 +25,7 @@
 }
 
 #listado-participantes {
-    overflow-y: auto;
+    overflow-y: scroll;
     max-height: 400px;
     display: flex;
     flex-direction: row;
@@ -37,13 +37,21 @@
 }
 
 @media (min-width: 768px) {
-       .participante-item {
+    .participante-item {
         width: calc(50% - 0.5rem);
+    }
+    
+    #listado-participantes {
+        overflow-y: visible;
     }
 }
 
 @media (min-width: 992px) {
     .participante-item {
         width: calc(25% - 0.5rem);
+    }
+
+    #listado-participantes {
+        overflow-y: visible;
     }
 }
