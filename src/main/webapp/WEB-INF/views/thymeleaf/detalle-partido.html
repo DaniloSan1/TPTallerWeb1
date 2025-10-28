@@ -28,20 +28,6 @@
     <div th:replace="~{fragments/navbar :: navbar}"></div>
 
     <main role="main" class="container" style="padding-top: 135px">
-      <!-- Mensajes -->
-      <div
-        th:if="${error != null && partido == null}"
-        class="error"
-        th:text="${error}"
-        id="alertError"
-      ></div>
-      <div
-        th:if="${success != null}"
-        id="alertSuccess"
-        class="alert alert-success"
-        th:text="${success}"
-      ></div>
-
       <div th:unless="${partido}" class="no-match"></div>
 
       <div
@@ -57,29 +43,33 @@
           >
             <div class="card-header">
               <h1 class="mb-2" th:text="${partido.titulo}"></h1>
-              <div
-                class="w-100 d-flex flex-row justify-content-between align-items-center"
-              >
-                <h3
-                  id="fecha-partido"
-                  class="w-100 d-flex align-items-center gap-2"
-                >
+              <div id="partido-header-data">
+                <h4 id="fecha-partido" class="d-flex align-items-center gap-2">
                   <span class="material-symbols-outlined">calendar_month</span>
                   <span th:text="${partido.fecha}"></span>
-                </h3>
-                <h3 id="fecha-partido" class="d-flex align-items-center gap-2">
-                  <span
-                    style="font-size: 32px !important"
-                    class="material-symbols-outlined"
-                    >groups</span
-                  >
+                </h4>
+                <h4 class="d-flex align-items-center gap-2">
+                  <span class="material-symbols-outlined">groups</span>
                   <span
                     th:text="${ (partido.cupoMaximo - partido.cuposDisponibles) + '/' + partido.cupoMaximo }"
                   ></span>
-                </h3>
+                </h4>
               </div>
             </div>
           </div>
+          <!-- Mensajes -->
+          <div
+            th:if="${error != null && partido == null}"
+            class="error w-100 mt-2"
+            th:text="${error}"
+            id="alertError"
+          ></div>
+          <div
+            th:if="${success != null}"
+            id="alertSuccess"
+            class="alert alert-success w-100 mt-2"
+            th:text="${success}"
+          ></div>
           <div
             id="contendor-mapa-detalle"
             class="d-flex flex-row flex-wrap align-items-center justify-content-center mt-2 card-body"
@@ -185,6 +175,16 @@
             <h2>&iexcl;Conoce a los Jugadores!</h2>
           </div>
           <div class="card-body">
+            <div
+              th:if="${listadoParticipantesError != null}"
+              class="error w-100"
+              th:text="${listadoParticipantesError}"
+            ></div>
+            <div
+              th:if="${listaParticipantesSuccess != null}"
+              class="alert alert-success w-100"
+              th:text="${listaParticipantesSuccess}"
+            ></div>
             <!-- Equipo 1 -->
             <div
               th:replace="~{fragments/participantes-partido :: participantes-partido (participantes=${partido.participantes}, equipoAMostrar='EQUIPO_1', showDropdown=${partido.esCreador})}"

@@ -67,6 +67,20 @@ body {
     gap: 0.5rem;
 }
 
+#partido-header-data{
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 0;
+    width: 100%;
+    align-items: center;
+}
+
+#partido-header-data h4{
+    margin: 0 !important;
+    width: 100%;
+}
+
 #contenedor-detalle-acciones {
  width: 100%;
  margin-top: 2rem;
@@ -74,6 +88,13 @@ body {
 
 
 @media (min-width: 992px) {
+    #partido-header-data{
+        gap: 1rem;
+    }
+    #partido-header-data h4{
+        margin: 0 !important;
+        width: auto;
+    }
 
     #contendor-mapa-detalle {
         height: 600px;

@@ -19,14 +19,20 @@
       >
         <div class="modal-dialog modal-dialog-centered">
           <div class="modal-content">
-            <form>
+            <form id="form-asignar-equipo" method="post">
+              <input type="hidden" id="participante-id" name="participanteId" />
               <div class="modal-header">
                 <h1 class="modal-title fs-5" id="actualizarEquipoLabel">
                   Asignar Equipo
                 </h1>
               </div>
               <div class="modal-body">
-                <select class="form-select" aria-label="Selecciona un equipo">
+                <select
+                  class="form-select"
+                  id="equipo-select"
+                  name="equipo"
+                  aria-label="Selecciona un equipo"
+                >
                   <option value="EQUIPO_1">Equipo 1</option>
                   <option value="EQUIPO_2">Equipo 2</option>
                   <option value="SIN_EQUIPO">Sin asignar</option>
@@ -40,7 +46,9 @@
                 >
                   Cerrar
                 </button>
-                <button type="button" class="btn btn-primary">Asignar</button>
+                <button type="submit" class="btn btn-primary" id="btn-asignar">
+                  Asignar
+                </button>
               </div>
             </form>
           </div>
