@@ -62,6 +62,7 @@
             class="form-select bg-light border-0 rounded-pill"
             name="zona"
             style="max-width: 220px;"
+            onchange="this.form.submit()"
           >
             <option value="">Todas las zonas</option>
             <option value="ESTE" th:selected="${zona == 'ESTE'}">ESTE</option>
@@ -76,6 +77,7 @@
             class="form-select bg-light border-0 rounded-pill"
             name="precio"
             style="max-width: 220px;"
+            onchange="this.form.submit()"
           >
             <option value="">Todos los precios</option>
             <option value="1000.00" th:selected="${precio == '1000.00'}">
