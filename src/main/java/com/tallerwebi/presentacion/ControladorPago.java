@@ -1,7 +1,9 @@
 package com.tallerwebi.presentacion;
 
 import com.tallerwebi.dominio.Cancha;
+import com.tallerwebi.dominio.Horario;
 import com.tallerwebi.dominio.Reserva;
+import com.tallerwebi.dominio.ServicioHorario;
 import com.tallerwebi.dominio.ServicioPago;
 import com.tallerwebi.dominio.ServicioReserva;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,11 +19,13 @@ public class ControladorPago {
 
     private final ServicioReserva servicioReserva;
     private final ServicioPago servicioPago;
+    private final ServicioHorario servicioHorario;
 
     @Autowired
-    public ControladorPago(ServicioReserva servicioReserva, ServicioPago servicioPago) {
+    public ControladorPago(ServicioReserva servicioReserva, ServicioPago servicioPago, ServicioHorario servicioHorario) {
         this.servicioReserva = servicioReserva;
         this.servicioPago = servicioPago;
+        this.servicioHorario = servicioHorario;
     }
 
     @GetMapping("/iniciar/{reservaId}")
@@ -29,8 +33,8 @@ public class ControladorPago {
         try {
             Reserva reserva = servicioReserva.obtenerReservaPorId(reservaId);
             if (reserva == null) throw new RuntimeException("Reserva no encontrada");
-
-            Cancha cancha = reserva.getHorario().getCancha();
+            Horario horario = servicioHorario.obtenerPorId(reserva.getHorario().getId());
+            Cancha cancha = horario.getCancha();
             BigDecimal monto = BigDecimal.valueOf(cancha.getPrecio());
 
             String preferenceId = servicioPago.crearPago(
