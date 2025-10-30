@@ -9,5 +9,6 @@ public interface RepositorioPartido {
     void guardar(Partido partido);
 
     List<Partido> listar(String busqueda, Zona filtroZona, Nivel filtroNivel);
-    
+
+    void actualizar(Partido partido);
 }
