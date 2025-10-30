@@ -26,6 +26,8 @@ class ControladorCanchaTest {
 
     @Mock
     private ServicioLogin servicioLoginMock;
+    @Mock
+    private ServicioFotoCancha servicioFotoCanchaMock;
 
     @Mock
     private HttpServletRequest request;
