@@ -20,7 +20,7 @@ public class ControladorPago {
         this.servicioReserva = servicioReserva;
     }
 
-    // ✅ MercadoPago redirige acá cuando el pago fue exitoso
+    // MercadoPago redirige acá cuando el pago fue exitoso
     @GetMapping("/exito")
     public String pagoExitoso(
             @RequestParam(name = "preference_id") String preferenceId,
@@ -56,7 +56,7 @@ public class ControladorPago {
         }
     }
 
-    // 🚧 En caso de fallo de pago
+    // En caso de fallo de pago
     @GetMapping("/error")
     public String pagoFallido(
             @RequestParam(name = "preference_id", required = false) String preferenceId,
@@ -74,7 +74,7 @@ public class ControladorPago {
         return "redirect:/home";
     }
 
-    // 🕓 En caso de pago pendiente
+    // En caso de pago pendiente
     @GetMapping("/pendiente")
     public String pagoPendiente(
             @RequestParam(name = "preference_id", required = false) String preferenceId,

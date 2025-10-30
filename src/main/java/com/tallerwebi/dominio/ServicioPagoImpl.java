@@ -69,11 +69,11 @@ public class ServicioPagoImpl implements ServicioPago {
                 throw new Exception("No se pudo generar la preferencia de pago");
             }
 
-            System.out.println("✅ Preferencia creada con ID: " + preference.getId());
+            System.out.println(" Preferencia creada con ID: " + preference.getId());
             return preference.getId();
 
         } catch (MPApiException e) {
-            System.err.println("❌ Error de API MercadoPago:");
+            System.err.println(" Error de API MercadoPago:");
             System.err.println("Status: " + e.getStatusCode());
             System.err.println("Response: " + e.getApiResponse().getContent());
             throw new Exception("Error API MercadoPago: " + e.getMessage(), e);

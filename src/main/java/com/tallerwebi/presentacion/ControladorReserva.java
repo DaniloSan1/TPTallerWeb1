@@ -106,7 +106,7 @@ public class ControladorReserva {
             mav.addObject("preferenceId", preferenceId);
             mav.addObject("mensajeExito", "Reserva creada. Completá el pago para activarla.");
 
-            System.out.println("✅ Preferencia creada: " + preferenceId);
+            System.out.println(" Preferencia creada: " + preferenceId);
 
         } catch (Exception e) {
             e.printStackTrace();
