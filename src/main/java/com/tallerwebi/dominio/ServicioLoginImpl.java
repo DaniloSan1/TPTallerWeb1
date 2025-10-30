@@ -37,4 +37,16 @@ public class ServicioLoginImpl implements ServicioLogin {
         return usuarioEncontrado;
     }
 
+    @Override
+    public Usuario buscarPorId(Long id) {
+        Usuario usuario = repositorioUsuario.buscarPorId(id);
+        return usuario;
+    }
+
+    @Override
+    public Usuario buscarPorUsername(String username) {
+        Usuario usuarioABuscar = repositorioUsuario.buscarPorUsername(username);
+        return usuarioABuscar;
+    }
+
 }

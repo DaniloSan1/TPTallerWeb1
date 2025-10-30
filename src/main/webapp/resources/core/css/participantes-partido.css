@@ -1,0 +1,57 @@
+
+.participante-item {
+    border: 1px solid #c7c8c9;
+    padding: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    border-radius: 16px;
+    width: 100%;
+}
+
+.profile-avatar {
+    background-color: #f7f7f7 !important;
+    width: 3rem;
+    height: 3rem;
+    border-radius: 50%;
+    border: 2px solid var(--primary-color);
+    background: url("../assets/avatar.png")
+    center/cover no-repeat;
+}
+
+#contenedor-participantes {
+    margin-top: 2rem;
+    margin-bottom: 2rem;
+}
+
+#listado-participantes {
+    overflow-y: scroll;
+    max-height: 400px;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    padding: 0.5rem;
+    border-top: none !important;
+    border-bottom: none !important;
+}
+
+@media (min-width: 768px) {
+    .participante-item {
+        width: calc(50% - 0.5rem);
+    }
+    
+    #listado-participantes {
+        overflow-y: visible;
+    }
+}
+
+@media (min-width: 992px) {
+    .participante-item {
+        width: calc(25% - 0.5rem);
+    }
+
+    #listado-participantes {
+        overflow-y: visible;
+    }
+}

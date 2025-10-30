@@ -5,6 +5,7 @@ import java.util.stream.Collectors;
 
 import javax.transaction.Transactional;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.tallerwebi.dominio.excepcion.NoExisteElUsuario;
@@ -19,6 +20,7 @@ public class ServicioPartidoImpl implements ServicioPartido {
     private final RepositorioUsuario repoUsuario;
     private final RepositorioPartidoParticipante repoPartidoParticipante;
 
+    @Autowired
     public ServicioPartidoImpl(RepositorioPartido repoPartido, RepositorioReserva repoReserva,
             RepositorioUsuario repoUsuario, RepositorioPartidoParticipante repoPartidoParticipante) {
         this.repoPartido = repoPartido;
@@ -92,7 +94,7 @@ public class ServicioPartidoImpl implements ServicioPartido {
             throw new YaExisteElParticipante();
         }
 
-        PartidoParticipante partidoParticipante = new PartidoParticipante(partido, usuario);
+        PartidoParticipante partidoParticipante = new PartidoParticipante(partido, usuario, Equipo.SIN_EQUIPO);
         repoPartidoParticipante.guardar(partidoParticipante);
 
         partido.getParticipantes().add(partidoParticipante);

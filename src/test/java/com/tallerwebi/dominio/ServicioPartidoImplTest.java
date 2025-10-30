@@ -177,11 +177,11 @@ public class ServicioPartidoImplTest {
 
         @Test
         public void abandonarPartidoDeberiaEliminarAlUsuarioDeLaListaDeParticipantes() {
-                Usuario usuario = new Usuario("usuario", "123", "email@mail.com");
+                Usuario usuario = new Usuario("usuario", "123", "email@mail.com","username");
                 usuario.setId(1L);
                 Partido partido = new Partido();
                 partido.setId(1L);
-                PartidoParticipante participante = new PartidoParticipante(partido, usuario);
+                PartidoParticipante participante = new PartidoParticipante(partido, usuario, Equipo.EQUIPO_1);
                 partido.getParticipantes().add(participante);
 
                 Mockito.when(repositorioPartidoMock.porId(1L)).thenReturn(partido);
@@ -231,16 +231,16 @@ public class ServicioPartidoImplTest {
 
         @Test
         public void deberiaEliminarSoloAlUsuarioCorrecto() {
-                Usuario usuario1 = new Usuario("user1", "123", "email1@email.com");
+                Usuario usuario1 = new Usuario("user1", "123", "email1@email.com","username2");
                 usuario1.setId(1L);
 
-                Usuario usuario2 = new Usuario("user2", "123", "email2@email.com");
+                Usuario usuario2 = new Usuario("user2", "123", "email2@email.com","username2");
                 usuario2.setId(2L);
 
                 Partido partido = new Partido();
                 partido.setId(1L);
-                partido.getParticipantes().add(new PartidoParticipante(partido, usuario1));
-                partido.getParticipantes().add(new PartidoParticipante(partido, usuario2));
+                partido.getParticipantes().add(new PartidoParticipante(partido, usuario1, Equipo.EQUIPO_1));
+                partido.getParticipantes().add(new PartidoParticipante(partido, usuario2, Equipo.EQUIPO_2));
 
                 Mockito.when(repositorioPartidoMock.porId(1L)).thenReturn(partido);
 
@@ -274,13 +274,13 @@ public class ServicioPartidoImplTest {
                 cancha.setCapacidad(12);
 
                 Horario horario = new Horario(cancha, DayOfWeek.MONDAY, LocalTime.of(18, 0), LocalTime.of(19, 0));
-                Usuario creadorReserva = new Usuario("creador", "123", "c@c.com");
+                Usuario creadorReserva = new Usuario("creador", "123", "c@c.com","usernameCreadorReserva");
 
                 Reserva reserva = new Reserva(horario, creadorReserva, LocalDateTime.now().plusDays(1));
                 reserva.setId(1L);
                 reserva.setActiva(true);
 
-                Usuario usuarioCreadorPartido = new Usuario("mora", "123", "mora@unlam.edu.ar");
+                Usuario usuarioCreadorPartido = new Usuario("mora", "123", "mora@unlam.edu.ar","usernameMora");
 
                 Partido partidoCreado = servicioPartido.crearDesdeReserva(
                                 reserva,
