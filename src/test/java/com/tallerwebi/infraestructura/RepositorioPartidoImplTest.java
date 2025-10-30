@@ -6,6 +6,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import com.tallerwebi.dominio.Cancha;
+import com.tallerwebi.dominio.Equipo;
 import com.tallerwebi.dominio.Horario;
 import com.tallerwebi.dominio.Nivel;
 import com.tallerwebi.dominio.Partido;
@@ -49,24 +50,28 @@ public class RepositorioPartidoImplTest {
     public void deberiaObtenerUnPartidoPorId() {
         Cancha cancha = new Cancha("Cancha 1", null, null, "Direccion 1", Zona.NORTE);
         this.sessionFactory.getCurrentSession().save(cancha);
-        this.sessionFactory.getCurrentSession().flush();
 
         Horario horario = new Horario(cancha, DayOfWeek.MONDAY, LocalTime.now(), LocalTime.now().plusHours(1));
         this.sessionFactory.getCurrentSession().save(horario);
-        this.sessionFactory.getCurrentSession().flush();
 
-        Usuario creador = new Usuario("usuario1", "password", "email@example.com");
+        Usuario creador = new Usuario("usuario1", "password", "email@example.com","usernameCreador");
         this.sessionFactory.getCurrentSession().save(creador);
-        this.sessionFactory.getCurrentSession().flush();
 
         Reserva reserva = new Reserva(horario, creador, LocalDateTime.now().plusDays(1));
+        this.sessionFactory.getCurrentSession().save(reserva);
 
         Partido nuevoPartido = new Partido(null, "Partido de prueba", "Descripción del partido",
                 Nivel.INTERMEDIO,
                 10,
                 reserva, creador);
-
         this.sessionFactory.getCurrentSession().save(nuevoPartido);
+
+        Usuario participante = new Usuario("usuario2", "password2", "email2@example.com","username");
+        this.sessionFactory.getCurrentSession().save(participante);
+
+        PartidoParticipante partidoParticipante = new PartidoParticipante(nuevoPartido, participante, Equipo.EQUIPO_1);
+        this.sessionFactory.getCurrentSession().save(partidoParticipante);
+
         // Implementar el test para obtener un partido por ID.
         Partido partido = this.repositorioPartido.porId(nuevoPartido.getId());
 

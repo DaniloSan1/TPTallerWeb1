@@ -11,8 +11,6 @@ import javax.servlet.http.HttpSession;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
-import org.springframework.http.RequestEntity;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.tallerwebi.dominio.Cancha;
@@ -121,7 +119,7 @@ public class ControladorPartidoTest {
         assertEquals(partidoMock.getZona(), partidoEnModelo.getZona());
         assertEquals(partidoMock.getNivel(), partidoEnModelo.getNivel());
         assertEquals(partidoMock.getCupoMaximo(), partidoEnModelo.getCupoMaximo());
-        assertEquals(partidoMock.getCreador().getNombre(), partidoEnModelo.getCreador());
+        assertEquals(partidoMock.getCreador().getNombreCompleto(), partidoEnModelo.getCreador());
         assertEquals(partidoMock.getReserva().getCancha().getNombre(), partidoEnModelo.getCancha());
         assertEquals(partidoMock.getFecha(), partidoEnModelo.getFecha());
         assertEquals(partidoMock.tieneCupo(), partidoEnModelo.getHayCupo());
@@ -149,49 +147,58 @@ public class ControladorPartidoTest {
     public void inscripcionDeberiaDarErrorSiNoExisteElPartido() throws Exception {
         Long partidoId = 1L;
         Mockito.when(sessionMock.getAttribute("EMAIL")).thenReturn("usuario1@email.com");
+        Mockito.when(servicioLoginMock.buscarPorEmail("usuario1@email.com")).thenReturn(usuarioMock);
         Mockito.doThrow(new PartidoNoEncontrado())
-                .when(servicioPartidoMock).anotarParticipante(Mockito.anyLong(), Mockito.anyString());
+                .when(servicioPartidoMock).anotarParticipante(Mockito.anyLong(), Mockito.any(Usuario.class));
 
-        ResponseEntity<?> respuesta = controladorPartido.inscripcion(partidoId, requestMock);
-        assertEquals(404, respuesta.getStatusCodeValue());
+        ModelAndView respuesta = controladorPartido.inscripcion(partidoId, requestMock);
+        assertEquals("detalle-partido", respuesta.getViewName());
+        assertNotNull(respuesta.getModel().get("error"));
 
-        Mockito.verify(servicioPartidoMock, Mockito.times(1)).anotarParticipante(partidoId, "usuario1@email.com");
+        Mockito.verify(servicioPartidoMock, Mockito.times(1)).anotarParticipante(partidoId, usuarioMock);
     }
 
     @Test
     public void inscripcionDeberiaDarErrorSiNoHayCupoEnElPartido() throws Exception {
         Long partidoId = 1L;
         Mockito.when(sessionMock.getAttribute("EMAIL")).thenReturn("usuario1@email.com");
+        Mockito.when(servicioLoginMock.buscarPorEmail("usuario1@email.com")).thenReturn(usuarioMock);
         Mockito.doThrow(new NoHayCupoEnPartido())
-                .when(servicioPartidoMock).anotarParticipante(Mockito.anyLong(), Mockito.anyString());
+                .when(servicioPartidoMock).anotarParticipante(Mockito.anyLong(), Mockito.any(Usuario.class));
 
-        ResponseEntity<?> respuesta = controladorPartido.inscripcion(partidoId, requestMock);
-        assertEquals(422, respuesta.getStatusCodeValue());
+        ModelAndView respuesta = controladorPartido.inscripcion(partidoId, requestMock);
+        assertEquals("detalle-partido", respuesta.getViewName());
+        assertNotNull(respuesta.getModel().get("error"));
 
-        Mockito.verify(servicioPartidoMock, Mockito.times(1)).anotarParticipante(partidoId, "usuario1@email.com");
+        Mockito.verify(servicioPartidoMock, Mockito.times(1)).anotarParticipante(partidoId, usuarioMock);
     }
 
     @Test
     public void inscripcionDeberiaDarErrorSiYaEstaInscriptoElParticipante() throws Exception {
         Long partidoId = 1L;
         Mockito.when(sessionMock.getAttribute("EMAIL")).thenReturn("usuario1@email.com");
+        Mockito.when(servicioLoginMock.buscarPorEmail("usuario1@email.com")).thenReturn(usuarioMock);
         Mockito.doThrow(new YaExisteElParticipante())
-                .when(servicioPartidoMock).anotarParticipante(Mockito.anyLong(), Mockito.anyString());
+                .when(servicioPartidoMock).anotarParticipante(Mockito.anyLong(), Mockito.any(Usuario.class));
 
-        ResponseEntity<?> respuesta = controladorPartido.inscripcion(partidoId, requestMock);
-        assertEquals(422, respuesta.getStatusCodeValue());
+        ModelAndView respuesta = controladorPartido.inscripcion(partidoId, requestMock);
+        assertEquals("detalle-partido", respuesta.getViewName());
+        assertNotNull(respuesta.getModel().get("error"));
 
-        Mockito.verify(servicioPartidoMock, Mockito.times(1)).anotarParticipante(partidoId, "usuario1@email.com");
+        Mockito.verify(servicioPartidoMock, Mockito.times(1)).anotarParticipante(partidoId, usuarioMock);
     }
 
     @Test
     public void inscripcionDeberiaLlamarAlServicioParaAnotarParticipante() throws Exception {
         Long partidoId = 1L;
         Mockito.when(sessionMock.getAttribute("EMAIL")).thenReturn("usuario1@email.com");
+        Mockito.when(servicioLoginMock.buscarPorEmail("usuario1@email.com")).thenReturn(usuarioMock);
+        Mockito.when(servicioPartidoMock.anotarParticipante(partidoId, usuarioMock)).thenReturn(partidoMock);
 
-        ResponseEntity<?> respuesta = controladorPartido.inscripcion(partidoId, requestMock);
-        assertEquals(200, respuesta.getStatusCodeValue());
+        ModelAndView respuesta = controladorPartido.inscripcion(partidoId, requestMock);
+        assertEquals("detalle-partido", respuesta.getViewName());
+        assertNotNull(respuesta.getModel().get("success"));
 
-        Mockito.verify(servicioPartidoMock, Mockito.times(1)).anotarParticipante(partidoId, "usuario1@email.com");
+        Mockito.verify(servicioPartidoMock, Mockito.times(1)).anotarParticipante(partidoId, usuarioMock);
     }
 }

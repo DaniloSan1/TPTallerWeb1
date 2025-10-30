@@ -9,5 +9,7 @@ public interface ServicioLogin {
     Usuario consultarUsuario(String email, String password);
     void registrar(Usuario usuario) throws UsuarioNoEncontradoException;
     Usuario buscarPorEmail(String email);
+    Usuario buscarPorId(Long id);
+    Usuario buscarPorUsername(String username);
 
 }

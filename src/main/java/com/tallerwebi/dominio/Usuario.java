@@ -14,6 +14,9 @@ public class Usuario {
     @Column(unique = true)
     private String email;
 
+    @Column(unique = true, nullable = false)
+    private String username;
+
     private String password;
     private String rol;
     private String posicionFavorita;
@@ -24,12 +27,21 @@ public class Usuario {
     public Usuario() {
     }
 
-    public Usuario(String nombre, String password, String email) {
+    public Usuario(String nombre, String password, String email, String username) {
         this.nombre = nombre;
         this.password = password;
         this.email = email;
         this.rol = "ROLE_USER";
         this.activo = true;
+        this.username = username;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
     }
 
     public String getPosicionFavorita() {
@@ -50,6 +62,10 @@ public class Usuario {
 
     public String getApellido() {
         return apellido;
+    }
+
+    public String getNombreCompleto() {
+        return this.nombre.trim() + " " + this.apellido.trim();
     }
 
     public void setApellido(String apellido) {

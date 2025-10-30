@@ -26,13 +26,13 @@ public class ControladorLoginTest {
 
 	@BeforeEach
 	public void init(){
-		datosLoginMock = new DatosLogin("dami@unlam.com", "123");
+		datosLoginMock = new DatosLogin("dami@unlam.com", "123", "username");
 		usuarioMock = mock(Usuario.class);
 		when(usuarioMock.getEmail()).thenReturn("dami@unlam.com");
 		requestMock = mock(HttpServletRequest.class);
 		sessionMock = mock(HttpSession.class);
 		servicioLoginMock = mock(ServicioLogin.class);
-		controladorLogin = new ControladorLogin(servicioLoginMock, null);
+		controladorLogin = new ControladorLogin(servicioLoginMock, null, null);
 	}
 
 	@Test

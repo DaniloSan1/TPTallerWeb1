@@ -11,6 +11,7 @@ import com.tallerwebi.dominio.Cancha;
 import com.tallerwebi.dominio.Horario;
 import com.tallerwebi.infraestructura.config.HibernateTestInfraestructuraConfig;
 import com.tallerwebi.dominio.RepositorioCancha;
+import com.tallerwebi.dominio.Zona;
 import com.tallerwebi.infraestructura.RepositorioCanchaIpl;
 
 import org.hibernate.SessionFactory;
@@ -32,61 +33,68 @@ public class RepositorioCanchaImplTest {
     @Autowired
     private SessionFactory sessionFactory;
     private RepositorioCancha repositorioCancha;
+    private Cancha cancha1;
+    private Cancha cancha2;
+    private Cancha cancha3;
+    private Horario horario1;
+    private Horario horario2;
 
     @BeforeEach
     public void init() {
     this.repositorioCancha = new RepositorioCanchaIpl(this.sessionFactory);
-    }
-
-    @Test
-    @Transactional
-    @Rollback
-    public void MostrarSoloDisponibles() {
-        //Preparacion
-        Cancha cancha1 = new Cancha();
+        cancha1 = new Cancha();
+        cancha2 = new Cancha();
+        cancha3 = new Cancha();
+        horario1 = new Horario();
+        horario2 = new Horario();
         cancha1.setId(1L);
         cancha1.setNombre("Cancha 1");
         cancha1.setDireccion("Direccion 1");
         cancha1.setCapacidad(10);
+        cancha1.setPrecio(800.0);
+        cancha1.setZona(Zona.NORTE);
 
-        Cancha cancha2 = new Cancha();
+        
         cancha2.setId(2L);
         cancha2.setNombre("Cancha 2");
         cancha2.setDireccion("Direccion 2");
         cancha2.setCapacidad(20);
+        cancha2.setPrecio(3000.00);
+        cancha2.setZona(Zona.SUR);
 
-        Cancha cancha3 = new Cancha();
         cancha3.setId(3L);
         cancha3.setNombre("Cancha 3");
         cancha3.setDireccion("Direccion 3");
         cancha3.setCapacidad(30);
+
         
-        Horario horario1 = new Horario();
         horario1.setId(1L);
         horario1.setCancha(cancha1);
         horario1.setDiaSemana(DayOfWeek.MONDAY);
         horario1.setHoraInicio(LocalTime.now());
         horario1.setHoraFin(LocalTime.now().plusHours(1));
 
-
-        Horario horario2 = new Horario();
+       
         horario2.setId(2L);
         horario2.setCancha(cancha3);
         horario2.setDiaSemana(DayOfWeek.MONDAY);
         horario2.setHoraInicio(LocalTime.now());
         horario2.setHoraFin(LocalTime.now().plusHours(1));
 
-        
-        
+
         this.sessionFactory.getCurrentSession().save(cancha1);
         this.sessionFactory.getCurrentSession().save(cancha2);
         this.sessionFactory.getCurrentSession().save(cancha3);
         this.sessionFactory.getCurrentSession().save(horario1);
         this.sessionFactory.getCurrentSession().save(horario2);
-        
-        
-        //Ejecucion
-        List<Cancha> canchasDisponibles = repositorioCancha.MostrarCanchasConHorariosDisponibles();
+    }
+
+    @Test
+    @Transactional
+    @Rollback
+    public void MostrarSoloDisponibles() {
+       //Ejecucion
+        List<Cancha> canchasDisponibles = repositorioCancha.MostrarCanchasConHorariosDisponibles(null, null, null, null);
 
        //Verificacion
         assertEquals(2, canchasDisponibles.size());
@@ -111,5 +119,120 @@ public class RepositorioCanchaImplTest {
         assertEquals(cancha.getId(), canchaEncontrada.getId());
         assertEquals(cancha.getNombre(), canchaEncontrada.getNombre());
         assertEquals(cancha.getDireccion(), canchaEncontrada.getDireccion());
+    }
+
+    @Test
+    @Transactional
+    @Rollback
+    public void MostrarSoloDisponiblesConFiltroNombre() {
+        //Ejecucion
+        List<Cancha> canchasDisponibles = repositorioCancha.MostrarCanchasConHorariosDisponibles("Cancha 1", null, null, null);
+
+        //Verificacion
+        assertEquals(1, canchasDisponibles.size());
+        assertTrue(canchasDisponibles.contains(cancha1));
+        assertFalse(canchasDisponibles.contains(cancha2));
+    }
+
+    @Test
+    @Transactional
+    @Rollback
+    public void MostrarSoloDisponiblesConFiltroPrecio() {
+        //Ejecucion
+        List<Cancha> canchasDisponibles = repositorioCancha.MostrarCanchasConHorariosDisponibles(null, null, 0.0, 1000.0);
+
+        //Verificacion
+        assertEquals(1, canchasDisponibles.size());
+        assertTrue(canchasDisponibles.contains(cancha1));
+        assertFalse(canchasDisponibles.contains(cancha2));
+    }
+
+    @Test
+    @Transactional
+    @Rollback
+    public void MostrarSoloDisponiblesConFiltroZona() {
+        //Ejecucion
+        List<Cancha> canchasDisponibles = repositorioCancha.MostrarCanchasConHorariosDisponibles(null, Zona.NORTE, null, null);
+
+        //Verificacion
+        assertEquals(1, canchasDisponibles.size());
+        assertTrue(canchasDisponibles.contains(cancha1));
+        assertFalse(canchasDisponibles.contains(cancha2));
+    }
+
+    @Test
+    @Transactional
+    @Rollback
+    public void MostrarSoloDisponiblesConTodosLosFiltrosCombinados() {
+        //Ejecucion
+        List<Cancha> canchasDisponibles = repositorioCancha.MostrarCanchasConHorariosDisponibles("Cancha 1", Zona.NORTE, 0.0, 1000.0);
+
+        //Verificacion
+        assertEquals(1, canchasDisponibles.size());
+        assertTrue(canchasDisponibles.contains(cancha1));
+        assertFalse(canchasDisponibles.contains(cancha2));
+    }
+
+    @Test
+    @Transactional
+    @Rollback
+    public void NoDeberiaEncontrarCanchasDisponiblesConFiltrosQueNoCoinciden() {
+        //Ejecucion
+        List<Cancha> canchasDisponibles = repositorioCancha.MostrarCanchasConHorariosDisponibles("Cancha Inexistente", Zona.SUR, 0.0, 1000.0);
+
+        //Verificacion
+        assertEquals(0, canchasDisponibles.size());
+        assertFalse(canchasDisponibles.contains(cancha1));
+        assertFalse(canchasDisponibles.contains(cancha2));
+    }
+
+    @Test
+    @Transactional
+    @Rollback
+    public void dadoQueNoHayCanchasGuardadasBuscarUnaPorIdDeberiaRetornarNull() {
+        // Ejecución
+        Cancha canchaEncontrada = this.repositorioCancha.BuscarCanchaPorId(999L);
+
+        // Verificación
+        assertEquals(null, canchaEncontrada);
+    }
+
+    @Test
+    @Transactional
+    @Rollback
+    public void MostrarSoloDisponiblesConFiltroDePrecioYZona() {
+        //Ejecucion
+        List<Cancha> canchasDisponibles = repositorioCancha.MostrarCanchasConHorariosDisponibles(null, Zona.NORTE, 0.0, 1000.0);
+
+        //Verificacion
+        assertEquals(1, canchasDisponibles.size());
+        assertTrue(canchasDisponibles.contains(cancha1));
+        assertFalse(canchasDisponibles.contains(cancha2));
+    }
+
+    @Test
+    @Transactional
+    @Rollback
+    public void MostrarSoloDisponiblesConFiltroDeNombreYPrecio() {
+        //Ejecucion
+        List<Cancha> canchasDisponibles = repositorioCancha.MostrarCanchasConHorariosDisponibles("Cancha 1", null, 0.0, 1000.0);
+
+        //Verificacion
+        assertEquals(1, canchasDisponibles.size());
+        assertTrue(canchasDisponibles.contains(cancha1));
+        assertFalse(canchasDisponibles.contains(cancha2));  
+    }
+
+    @Test
+    @Transactional
+    @Rollback
+    public void MostrarSoloDisponiblesConFiltroDeNombreYZona() {
+        //Ejecucion
+        List<Cancha> canchasDisponibles = repositorioCancha.MostrarCanchasConHorariosDisponibles("Cancha 1", Zona.NORTE, null, null);
+
+        //Verificacion
+        assertEquals(1, canchasDisponibles.size());
+        assertTrue(canchasDisponibles.contains(cancha1));
+        assertFalse(canchasDisponibles.contains(cancha2));  
     }
 }

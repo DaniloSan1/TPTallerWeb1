@@ -1,6 +1,7 @@
 package com.tallerwebi.integracion;
 
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.*;
 import static org.hamcrest.text.IsEqualIgnoringCase.equalToIgnoringCase;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.Mockito.mock;
@@ -30,9 +31,11 @@ import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.tallerwebi.dominio.Cancha;
+import com.tallerwebi.dominio.Equipo;
 import com.tallerwebi.dominio.Horario;
 import com.tallerwebi.dominio.Nivel;
 import com.tallerwebi.dominio.Partido;
+import com.tallerwebi.dominio.PartidoParticipante;
 import com.tallerwebi.dominio.Reserva;
 import com.tallerwebi.dominio.Usuario;
 import com.tallerwebi.dominio.Zona;
@@ -66,17 +69,22 @@ public class ControladorPartidoTest {
 	@Rollback
 	public void debeRetornarDetallePartidoCuandoSeNavegaADetallePartidoConUnIdExistente() throws Exception {
 
-		Cancha cancha = new Cancha("Cancha 1", null, null, "Direccion 1", Zona.NORTE);
+		Cancha cancha = new Cancha("Cancha 1", "Direccion 1", 20, "CESPED", Zona.NORTE);
 		this.sessionFactory.getCurrentSession().save(cancha);
+		this.sessionFactory.getCurrentSession().flush();
 
 		Horario horario = new Horario(cancha, DayOfWeek.MONDAY, LocalTime.now(), LocalTime.now().plusHours(1));
 		this.sessionFactory.getCurrentSession().save(horario);
+		this.sessionFactory.getCurrentSession().flush();
 
-		Usuario creador = new Usuario("usuario1", "password", "email@example.com");
+		Usuario creador = new Usuario("usuario1", "password", "email@example.com","username1");
+		creador.setApellido("apellido");
 		this.sessionFactory.getCurrentSession().save(creador);
+		this.sessionFactory.getCurrentSession().flush();
 
 		Reserva reserva = new Reserva(horario, creador, LocalDateTime.now().plusDays(1));
 		this.sessionFactory.getCurrentSession().save(reserva);
+		this.sessionFactory.getCurrentSession().flush();
 
 		Partido nuevoPartido = new Partido(null, "Partido de prueba", "Descripción del partido",
 				Nivel.INTERMEDIO,
@@ -85,8 +93,43 @@ public class ControladorPartidoTest {
 				creador);
 
 		this.sessionFactory.getCurrentSession().save(nuevoPartido);
+		this.sessionFactory.getCurrentSession().flush();
 
-		MvcResult result = this.mockMvc.perform(get("/detalle-partido/{id}", nuevoPartido.getId())
+		// agrega participantes
+		Usuario participante1 = new Usuario("usuario2", "password2", "email2@example.com","username2");
+		participante1.setNombre("participante1");
+		participante1.setApellido("apellido1");
+		Usuario participante2 = new Usuario("usuario3", "password3", "email3@example.com","username3");
+		participante2.setNombre("participante2");
+		participante2.setApellido("apellido2");
+		Usuario participante3 = new Usuario("usuario4", "password4", "email4@example.com","username4");
+		participante3.setNombre("participante3");
+		participante3.setApellido("apellido3");
+		Usuario participante4 = new Usuario("usuario5", "password5", "email5@example.com","username5");
+		participante4.setNombre("participante4");
+		participante4.setApellido("apellido4");
+		this.sessionFactory.getCurrentSession().save(participante1);
+		this.sessionFactory.getCurrentSession().save(participante2);
+		this.sessionFactory.getCurrentSession().save(participante3);
+		this.sessionFactory.getCurrentSession().save(participante4);
+
+		PartidoParticipante pp1 = new PartidoParticipante(nuevoPartido, participante1, Equipo.EQUIPO_1);
+		PartidoParticipante pp2 = new PartidoParticipante(nuevoPartido, participante2, Equipo.EQUIPO_2);
+		PartidoParticipante pp3 = new PartidoParticipante(nuevoPartido, participante3, Equipo.EQUIPO_2);
+		PartidoParticipante pp4 = new PartidoParticipante(nuevoPartido, participante4, Equipo.SIN_EQUIPO);
+
+		nuevoPartido.getParticipantes().add(pp1);
+		nuevoPartido.getParticipantes().add(pp2);
+		nuevoPartido.getParticipantes().add(pp3);
+		nuevoPartido.getParticipantes().add(pp4);
+
+		this.sessionFactory.getCurrentSession().save(pp1);
+		this.sessionFactory.getCurrentSession().save(pp2);
+		this.sessionFactory.getCurrentSession().save(pp3);
+		this.sessionFactory.getCurrentSession().save(pp4);
+
+		Long partidoId = nuevoPartido.getId();
+		MvcResult result = this.mockMvc.perform(get("/partidos/{id}", partidoId)
 				.sessionAttr("EMAIL", "email@example.com"))
 				.andExpect(status().isOk())
 				.andReturn();
@@ -115,7 +158,12 @@ public class ControladorPartidoTest {
 			assertThat("La cancha del partido debe coincidir", detallePartido.getCancha(),
 					equalToIgnoringCase("Cancha 1"));
 			assertThat("El creador del partido debe coincidir", detallePartido.getCreador(),
-					equalToIgnoringCase("usuario1"));
+					equalToIgnoringCase("usuario1 apellido"));
+			assertThat("El cupo máximo del partido debe coincidir", detallePartido.getCupoMaximo(),
+					equalTo(10));
+			assertThat("El número de participantes del partido debe coincidir",
+					detallePartido.getParticipantes().size(),
+					equalTo(4));
 		}
 	}
 
@@ -123,7 +171,7 @@ public class ControladorPartidoTest {
 	@Transactional
 	@Rollback
 	public void debeRetornarLaPaginaDetallePartidoConErrorCuandoElPartidoNoExiste() throws Exception {
-		MvcResult result = this.mockMvc.perform(get("/detalle-partido/{id}", 999L)
+		MvcResult result = this.mockMvc.perform(get("/partidos/{id}", 999L)
 				.sessionAttr("EMAIL", "email@example.com"))
 				.andExpect(status().isOk())
 				.andReturn();

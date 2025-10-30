@@ -26,6 +26,8 @@ class ControladorCanchaTest {
 
     @Mock
     private ServicioLogin servicioLoginMock;
+    @Mock
+    private ServicioFotoCancha servicioFotoCanchaMock;
 
     @Mock
     private HttpServletRequest request;
@@ -44,30 +46,30 @@ class ControladorCanchaTest {
   
 
     @Test
-    void listarCanchas_deberiaRetornarVistaCanchasConLista() {
+    void listarCanchasDeberiaRetornarVistaCanchasConLista() {
        
         List<Cancha> canchas = Arrays.asList(new Cancha(), new Cancha());
-        when(servicioCanchaMock.obtenerCanchasDisponibles()).thenReturn(canchas);
+        when(servicioCanchaMock.obtenerCanchasDisponibles(null, null, 0.0)).thenReturn(canchas);
         ModelMap model = new ModelMap();
 
         
-        String vista = controladorCancha.listarCanchas(model);
+        String vista = controladorCancha.listarCanchas(model, request);
 
         
         assertThat(vista, is("canchas"));
         assertThat(model, hasEntry("canchas", canchas));
         assertThat(model, hasEntry("currentPage", "canchas-disponibles"));
-        verify(servicioCanchaMock, times(1)).obtenerCanchasDisponibles();
+        verify(servicioCanchaMock, times(1)).obtenerCanchasDisponibles(null, null, 0.0);
     }
 
     @Test
-    void listarCanchas_deberiaManejarExcepcionYAgregarErrorAlModel() {
+    void listarCanchasDeberiaManejarExcepcionYAgregarErrorAlModel() {
         // given
-        when(servicioCanchaMock.obtenerCanchasDisponibles()).thenThrow(new RuntimeException("Error inesperado"));
+        when(servicioCanchaMock.obtenerCanchasDisponibles(null, null, 0.0)).thenThrow(new RuntimeException("Error inesperado"));
         ModelMap model = new ModelMap();
 
         // when
-        String vista = controladorCancha.listarCanchas(model);
+        String vista = controladorCancha.listarCanchas(model, request);
 
         // then
         assertThat(vista, is("canchas"));
@@ -75,7 +77,7 @@ class ControladorCanchaTest {
     }
 
     @Test
-    void verCancha_conUsuarioLogueadoDeberiaMostrarVistaCancha() {
+    void verCanchaConUnUsuarioLogueadoDeberiaMostrarVistaCancha() {
         // given
         Long canchaId = 1L;
         String email = "test@correo.com";
@@ -109,7 +111,7 @@ class ControladorCanchaTest {
     }
 
     @Test
-    void verCancha_sinUsuarioEnSesionDebeRedirigirALogin() {
+    void verCanchaSinUsuarioEnSesionDebeRedirigirALogin() {
         // given
         when(request.getSession()).thenReturn(session);
         when(session.getAttribute("EMAIL")).thenReturn(null);
@@ -124,7 +126,7 @@ class ControladorCanchaTest {
     }
 
     @Test
-    void verCancha_deberiaManejarExcepcionYAgregarError() {
+    void verCanchaDeberiaManejarExcepcionYAgregarError() {
         // given
         when(request.getSession()).thenReturn(session);
         when(session.getAttribute("EMAIL")).thenReturn("usuario@correo.com");

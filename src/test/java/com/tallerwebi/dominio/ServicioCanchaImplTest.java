@@ -33,11 +33,11 @@ public class ServicioCanchaImplTest {
     @Test
     public void CuandoHayCanchasDisponiblesDeberiaTraerLaListaDeLasMismas() {
         
-        Mockito.when(repositorioCanchaMock.MostrarCanchasConHorariosDisponibles()).thenReturn(List.of(cancha1Mock, cancha2Mock));
+        Mockito.when(repositorioCanchaMock.MostrarCanchasConHorariosDisponibles(null, null, null, null)).thenReturn(List.of(cancha1Mock, cancha2Mock));
         ServicioCanchaImpl servicio = new ServicioCanchaImpl(repositorioCanchaMock);
 
         
-        List<Cancha> canchasDisponibles = servicio.obtenerCanchasDisponibles();
+        List<Cancha> canchasDisponibles = servicio.obtenerCanchasDisponibles(null, null, 0.0);
 
         
         assertNotNull(canchasDisponibles);
@@ -73,12 +73,99 @@ public class ServicioCanchaImplTest {
     @Test
     public void CuandoNoHayCanchasDisponiblesDeberiaTirarErrorNoHayCanchasDisponibles() {
         
-        Mockito.when(repositorioCanchaMock.MostrarCanchasConHorariosDisponibles()).thenReturn(List.of());
+        Mockito.when(repositorioCanchaMock.MostrarCanchasConHorariosDisponibles(null, null, null, null)).thenReturn(List.of());
         ServicioCanchaImpl servicio = new ServicioCanchaImpl(repositorioCanchaMock);
 
         
         assertThrows(NoHayCanchasDisponibles.class, () -> {
-            servicio.obtenerCanchasDisponibles();
+            servicio.obtenerCanchasDisponibles(null, null, 0.0);
         });
+    }
+    @Test
+    public void CuandoSeBuscaUnaCanchaPorNombreDeberiaRetornarLaCanchaCorrespondiente() {
+
+        Mockito.when(repositorioCanchaMock.MostrarCanchasConHorariosDisponibles("Cancha1",null ,null, null)).thenReturn(List.of(cancha1Mock));
+        ServicioCanchaImpl servicio = new ServicioCanchaImpl(repositorioCanchaMock);
+
+
+        Cancha cancha = servicio.obtenerCanchasDisponibles("Cancha1", null, 0.0).get(0);
+
+        assertNotNull(cancha);
+        assertEquals(cancha1Mock, cancha);
+    }
+    
+    @Test
+    public void CuandoSeBuscaUnaCanchaPorZonaDeberiaRetornarLaCanchaCorrespondiente() {
+
+        Zona zonaMock = Mockito.mock(Zona.class);
+        Mockito.when(repositorioCanchaMock.MostrarCanchasConHorariosDisponibles(null, zonaMock ,null, null)).thenReturn(List.of(cancha2Mock));
+        ServicioCanchaImpl servicio = new ServicioCanchaImpl(repositorioCanchaMock);
+
+        Cancha cancha = servicio.obtenerCanchasDisponibles(null, zonaMock, 0.0).get(0);
+
+        assertNotNull(cancha);
+        assertEquals(cancha2Mock, cancha);
+    }
+    
+    
+    @Test
+    public void CuandoSeBuscaUnaCanchaPorNombreYZonaDeberiaRetornarLaCanchaCorrespondiente() {
+
+        Zona zonaMock = Mockito.mock(Zona.class);
+        Mockito.when(repositorioCanchaMock.MostrarCanchasConHorariosDisponibles("Cancha1", zonaMock ,null, null)).thenReturn(List.of(cancha1Mock));
+        ServicioCanchaImpl servicio = new ServicioCanchaImpl(repositorioCanchaMock);
+
+        Cancha cancha = servicio.obtenerCanchasDisponibles("Cancha1", zonaMock, 0.0).get(0);
+
+        assertNotNull(cancha);
+        assertEquals(cancha1Mock, cancha);
+    }
+
+    @Test
+    public void CuandoSeBuscaUnaCanchaPorRangoDePrecioDeberiaRetornarLaCanchaCorrespondiente() {
+
+        Mockito.when(repositorioCanchaMock.MostrarCanchasConHorariosDisponibles(null, null ,0.0, 1000.0)).thenReturn(List.of(cancha1Mock));
+        ServicioCanchaImpl servicio = new ServicioCanchaImpl(repositorioCanchaMock);
+
+        Cancha cancha = servicio.obtenerCanchasDisponibles(null, null, 1000.00).get(0);
+
+        assertNotNull(cancha);
+        assertEquals(cancha1Mock, cancha);
+    }
+
+    @Test
+    public void CuandoSeBuscaUnaCanchaPorNombreZonaYRangoDePrecioDeberiaRetornarLaCanchaCorrespondiente() {
+
+        Zona zonaMock = Mockito.mock(Zona.class);
+        Mockito.when(repositorioCanchaMock.MostrarCanchasConHorariosDisponibles("Cancha1", zonaMock ,0.0, 1000.0)).thenReturn(List.of(cancha1Mock));
+        ServicioCanchaImpl servicio = new ServicioCanchaImpl(repositorioCanchaMock);
+
+        Cancha cancha = servicio.obtenerCanchasDisponibles("Cancha1", zonaMock, 1000.00).get(0);
+
+        assertNotNull(cancha);
+        assertEquals(cancha1Mock, cancha);
+    }
+    @Test
+    public void CuandoSeBscaUnaCanchaPorNombreYRangoDePrecioDeberiaRetoenarLaCanchaCorrespondiente() {
+
+        Mockito.when(repositorioCanchaMock.MostrarCanchasConHorariosDisponibles("Cancha1", null ,0.0, 1000.0)).thenReturn(List.of(cancha1Mock));
+        ServicioCanchaImpl servicio = new ServicioCanchaImpl(repositorioCanchaMock);
+
+        Cancha cancha = servicio.obtenerCanchasDisponibles("Cancha1", null, 1000.00).get(0);
+
+        assertNotNull(cancha);
+        assertEquals(cancha1Mock, cancha);
+    }
+    @Test
+    public void CuandoSeBuscaUnaCanchaPorZonaYRangoDePrecioDeberiaRetoenarLaCanchaCorrespondiente() {
+
+        Zona zonaMock = Mockito.mock(Zona.class);
+        Mockito.when(repositorioCanchaMock.MostrarCanchasConHorariosDisponibles(null, zonaMock ,0.0, 1000.0)).thenReturn(List.of(cancha1Mock));
+        ServicioCanchaImpl servicio = new ServicioCanchaImpl(repositorioCanchaMock);
+
+        Cancha cancha = servicio.obtenerCanchasDisponibles(null, zonaMock, 1000.00).get(0);
+
+        assertNotNull(cancha);
+        assertEquals(cancha1Mock, cancha);
     }
 }

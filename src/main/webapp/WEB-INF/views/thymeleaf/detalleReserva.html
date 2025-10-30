@@ -42,7 +42,16 @@
 
         <div class="mb-3">
           <label class="form-label fw-bold">Horario:</label>
-          <span th:text="${horario.diaSemana}"></span>
+          <strong th:switch="${horario.diaSemana}">
+            <span th:case="${T(java.time.DayOfWeek).MONDAY}">Lunes</span>
+            <span th:case="${T(java.time.DayOfWeek).TUESDAY}">Martes</span>
+            <span th:case="${T(java.time.DayOfWeek).WEDNESDAY}">Miércoles</span>
+            <span th:case="${T(java.time.DayOfWeek).THURSDAY}">Jueves</span>
+            <span th:case="${T(java.time.DayOfWeek).FRIDAY}">Viernes</span>
+            <span th:case="${T(java.time.DayOfWeek).SATURDAY}">Sábado</span>
+            <span th:case="${T(java.time.DayOfWeek).SUNDAY}">Domingo</span>
+            <span th:case="*">Desconocido</span>
+          </strong>
           <span th:text="${horario.horaInicio}"></span> -
           <span th:text="${horario.horaFin}"></span>
         </div>
@@ -63,6 +72,7 @@
             class="btn btn-secondary"
             >Hacer otra reserva</a
           >
+          <div id="walletBrick_container" class="mt-4"></div>
 
           <form
             th:action="@{/reserva/cancelar/{id}(id=${reserva.id})}"
@@ -85,5 +95,22 @@
     <script
       th:src="@{/webjars/bootstrap/5.2.0/js/bootstrap.bundle.min.js}"
     ></script>
+    <script src="https://sdk.mercadopago.com/js/v2"></script>
+    <script th:inline="javascript">
+      const publicKey = /*[[${publicKey}]]*/ "";
+      const preferenceId = /*[[${preferenceId}]]*/ "";
+      console.log("Public Key from model: " + publicKey);
+      console.log("Preference ID: " + preferenceId);
+      const mp = new MercadoPago(publicKey);
+      const bricksBuilder = mp.bricks();
+
+      const renderWalletBrick = async (bricksBuilder) => {
+        await bricksBuilder.create("wallet", "walletBrick_container", {
+          initialization: { preferenceId: preferenceId },
+        });
+      };
+
+      renderWalletBrick(bricksBuilder);
+    </script>
   </body>
 </html>

@@ -1,7 +1,10 @@
 package com.tallerwebi.presentacion;
 
 import java.time.LocalDateTime;
+import java.util.List;
+import java.util.stream.Collectors;
 
+import com.tallerwebi.dominio.Equipo;
 import com.tallerwebi.dominio.Nivel;
 import com.tallerwebi.dominio.Partido;
 import com.tallerwebi.dominio.Usuario;
@@ -25,6 +28,8 @@ public class DetallePartido {
     private Long reservaId;
     private Long horarioId;
     private int cuposDisponibles;
+    private String direccion;
+    private List<DetalleParticipante> participantes;
 
     public DetallePartido(Partido partido, Usuario usuario) {
         this.id = partido.getId();
@@ -37,13 +42,19 @@ public class DetallePartido {
         this.canchaId = partido.getReserva().getCancha().getId();
         this.creadorId = partido.getCreador().getId();
         this.cancha = partido.getReserva().getCancha().getNombre();
-        this.creador = partido.getCreador().getNombre();
+        this.creador = partido.getCreador().getNombreCompleto();
         this.hayCupo = partido.tieneCupo();
         this.yaParticipa = partido.validarParticipanteExistente(usuario.getId());
         this.esCreador = partido.esCreador(usuario.getEmail());
         this.reservaId = partido.getReserva().getId();
         this.horarioId = partido.getReserva().getHorario().getId();
         this.cuposDisponibles = partido.cuposDisponibles();
+        this.direccion = partido.getReserva().getCancha().getDireccion();
+
+        this.participantes = partido.getParticipantes().stream()
+                .map(DetalleParticipante::new)
+                .collect(Collectors.toList());
+
     }
 
     public Long getId() {
@@ -112,5 +123,13 @@ public class DetallePartido {
 
     public int getCuposDisponibles() {
         return cuposDisponibles;
+    }
+
+    public String getDireccion() {
+        return direccion;
+    }
+
+    public List<DetalleParticipante> getParticipantes() {
+        return participantes;
     }
 }

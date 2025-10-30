@@ -1,5 +1,6 @@
 package com.tallerwebi.presentacion;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -14,30 +15,51 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.tallerwebi.dominio.Cancha;
+import com.tallerwebi.dominio.FotoCancha;
 import com.tallerwebi.dominio.Horario;
 import com.tallerwebi.dominio.ServicioCancha;
+import com.tallerwebi.dominio.ServicioFotoCancha;
 import com.tallerwebi.dominio.ServicioHorario;
 import com.tallerwebi.dominio.ServicioLogin;
 import com.tallerwebi.dominio.Usuario;
+import com.tallerwebi.dominio.Zona;
 
 @Controller
 public class ControladorCancha {
     private final ServicioCancha servicioCancha;
     private final ServicioHorario servicioHorario;
     private final ServicioLogin servicioLogin;
+    private final ServicioFotoCancha servicioFotoCancha;
 
     @Autowired
     public ControladorCancha(ServicioCancha servicioCancha, ServicioHorario servicioHorario,
-            ServicioLogin servicioLogin) {
+            ServicioLogin servicioLogin, ServicioFotoCancha servicioFotoCancha) {
         this.servicioCancha = servicioCancha;
         this.servicioHorario = servicioHorario;
         this.servicioLogin = servicioLogin;
+        this.servicioFotoCancha = servicioFotoCancha;
     }
 
     @GetMapping("/canchas-disponibles")
-    public String listarCanchas(ModelMap model) {
+    public String listarCanchas(ModelMap model,HttpServletRequest request) {
+        String busqueda = request.getParameter("busqueda");
+        String zonaParam = request.getParameter("zona");
+        String precioParam = request.getParameter("precio");
+        model.put("zona", zonaParam);
+        model.put("precio", precioParam);
+        model.put("busqueda", busqueda);
+        Zona zona = null;
+        if (zonaParam != null && !zonaParam.isEmpty()) {
+            zona = Zona.valueOf(zonaParam);
+        }
+        Double precio = 0.0;
         try {
-            List<Cancha> canchas = servicioCancha.obtenerCanchasDisponibles();
+            if (precioParam != null && !precioParam.isEmpty()) {
+                precio = Double.parseDouble(precioParam);
+            }
+            List<Cancha> canchas = servicioCancha.obtenerCanchasDisponibles(busqueda, zona, precio);
+            List<FotoCancha> fotosCancha = servicioFotoCancha.insertarFotosAModelCanchas(canchas);  
+            model.put("fotosCanchas", fotosCancha);
             model.put("canchas", canchas);
             model.put("currentPage", "canchas-disponibles");
         } catch (Exception e) {
@@ -69,3 +91,4 @@ public class ControladorCancha {
     }
 
 }
+

@@ -1,8 +1,12 @@
 package com.tallerwebi.presentacion;
 
+import com.tallerwebi.dominio.FotoCancha;
+import com.tallerwebi.dominio.Nivel;
 import com.tallerwebi.dominio.Partido;
+import com.tallerwebi.dominio.ServicioFotoCancha;
 import com.tallerwebi.dominio.ServicioLogin;
 import com.tallerwebi.dominio.Usuario;
+import com.tallerwebi.dominio.Zona;
 import com.tallerwebi.dominio.excepcion.UsuarioExistenteException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -12,6 +16,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 import com.tallerwebi.dominio.ServicioPartido;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -21,11 +26,13 @@ public class ControladorLogin {
 
     private ServicioLogin servicioLogin;
     private ServicioPartido servicioPartido;
+    private ServicioFotoCancha servicioFotoCancha;
 
     @Autowired
-    public ControladorLogin(ServicioLogin servicioLogin, ServicioPartido servicioPartido) {
+    public ControladorLogin(ServicioLogin servicioLogin, ServicioPartido servicioPartido, ServicioFotoCancha servicioFotoCancha) {
         this.servicioLogin = servicioLogin;
         this.servicioPartido = servicioPartido;
+        this.servicioFotoCancha = servicioFotoCancha;
     }
 
     @RequestMapping("/login")
@@ -45,6 +52,7 @@ public class ControladorLogin {
             request.getSession().setAttribute("EMAIL", usuarioBuscado.getEmail());
             request.getSession().setAttribute("NOMBRE", usuarioBuscado.getNombre());
             request.getSession().setAttribute("APELLIDO", usuarioBuscado.getApellido());
+            request.getSession().setAttribute("USERNAME",usuarioBuscado.getUsername());
             request.getSession().setAttribute("PASSWORD", usuarioBuscado.getPassword());
             request.getSession().setAttribute("POSICION_FAVORITA", usuarioBuscado.getPosicionFavorita());
             request.getSession().setAttribute("USUARIO", usuarioBuscado);
@@ -82,8 +90,24 @@ public class ControladorLogin {
         }
 
         ModelMap model = new ModelMap();
-        List<Partido> partidos = servicioPartido.listarTodos();
+        String busqueda = request.getParameter("busqueda");
+        String zonaParam = request.getParameter("zona");
+        String nivelParam = request.getParameter("nivel");
+        model.put("nivel",nivelParam);
+        model.put("zona",zonaParam);
+        model.put("busqueda",busqueda);
+          Zona zona = null;
+        if (zonaParam != null && !zonaParam.isEmpty()) {
+            zona = Zona.valueOf(zonaParam);
+        }
+        Nivel nivel = null;
+        if (nivelParam != null && !nivelParam.isEmpty()) {
+            nivel = Nivel.valueOf(nivelParam);
+        }
+        List<Partido> partidos = servicioPartido.listarTodos(busqueda, zona, nivel);
+        List<FotoCancha> fotosCancha = servicioFotoCancha.insertarFotosAModelPartidos(partidos);
         System.out.println(partidos);
+        model.put("fotosCanchas", fotosCancha);
         model.put("partidos", partidos);
         model.put("currentPage", "home");
         return new ModelAndView("home", model);
