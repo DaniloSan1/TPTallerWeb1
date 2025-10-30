@@ -8,20 +8,36 @@ public class VistaNuevoUsuario extends VistaWeb {
         super(page);
     }
 
-    public void escribirEMAIL(String email){
+    public void escribirNombre(String nombre) {
+        this.escribirEnElElemento("#nombre", nombre);
+    }
+
+    public void escribirApellido(String apellido) {
+        this.escribirEnElElemento("#apellido", apellido);
+    }
+
+    public void escribirUsername(String username) {
+        this.escribirEnElElemento("#username", username);
+    }
+
+    public void escribirEMAIL(String email) {
         this.escribirEnElElemento("#email", email);
     }
 
-    public void escribirClave(String clave){
+    public void escribirClave(String clave) {
         this.escribirEnElElemento("#password", clave);
     }
 
-    public void darClickEnRegistrarme(){
+    public void seleccionarPosicionFavorita(String posicion) {
+        page.locator("#posicion_favorita").selectOption(posicion);
+    }
+
+    public void darClickEnRegistrarme() {
         this.darClickEnElElemento("#btn-registrarme");
     }
 
-    public String obtenerMensajeDeError(){
+    public String obtenerMensajeDeError() {
         return this.obtenerTextoDelElemento("p.alert.alert-danger");
     }
-    
+
 }
