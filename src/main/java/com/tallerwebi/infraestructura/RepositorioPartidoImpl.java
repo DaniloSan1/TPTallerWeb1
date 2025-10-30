@@ -9,8 +9,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.tallerwebi.dominio.Nivel;
 import com.tallerwebi.dominio.Partido;
 import com.tallerwebi.dominio.RepositorioPartido;
+import com.tallerwebi.dominio.Zona;
 
 @Repository 
 @Transactional
@@ -30,11 +32,34 @@ public class RepositorioPartidoImpl implements RepositorioPartido {
     }
 
     @Override
-    public List<Partido> todos() {
+    public List<Partido> listar(String busqueda, Zona filtroZona, Nivel filtroNivel) {
         final Session session = sessionFactory.getCurrentSession();
-        String hql = "FROM Partido p " +
-                     "WHERE p.reserva.activa = true";
-        return session.createQuery(hql, Partido.class).list();
+        String hql =  "SELECT DISTINCT p " +
+        "FROM Partido p " +
+        "JOIN p.reserva r " +
+        "JOIN r.horario h " +   
+        "JOIN h.cancha c " +    
+        "WHERE r.activa = true";
+        if (filtroZona != null) {
+            hql += " AND c.zona = :zona";
+        }
+        if (filtroNivel != null ) {
+            hql += " AND p.nivel = :nivel";
+        }
+        if (busqueda != null && !busqueda.isEmpty()) {
+            hql += " AND p.titulo LIKE :busqueda ";
+        }
+        var query = session.createQuery(hql, Partido.class);
+        if (filtroZona != null) {
+            query.setParameter("zona", filtroZona);       
+        }
+        if (filtroNivel != null) {
+            query.setParameter("nivel", filtroNivel);
+        } 
+        if (busqueda != null && !busqueda.isEmpty()) {
+            query.setParameter("busqueda", "%" + busqueda + "%");
+        }
+        return query.list();
     }
 
     @Override
@@ -42,4 +67,6 @@ public class RepositorioPartidoImpl implements RepositorioPartido {
         final Session session = sessionFactory.getCurrentSession();
         session.save(p);
     }
+
 }
+

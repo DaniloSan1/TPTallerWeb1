@@ -30,17 +30,8 @@ public class ServicioPartidoImpl implements ServicioPartido {
     }
 
     @Override
-    public List<Partido> listarTodos() {
-        return repoPartido.todos();
-    }
-
-    @Override
-    public List<Partido> buscar(Zona zona, Nivel nivel, boolean soloConCupo) {
-        return repoPartido.todos().stream()
-                .filter(p -> (zona == null || p.getZona() == zona) &&
-                        (nivel == null || p.getNivel() == nivel) &&
-                        (!soloConCupo || p.tieneCupo()))
-                .collect(Collectors.toList());
+    public List<Partido> listarTodos(String busqueda, Zona filtroZona, Nivel filtroNivel) {
+        return repoPartido.listar(busqueda, filtroZona,filtroNivel);
     }
 
     @Override
