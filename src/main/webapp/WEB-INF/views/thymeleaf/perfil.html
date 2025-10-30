@@ -58,7 +58,13 @@
                         <span th:text="${usuario.posicionFavorita}"></span>
                     </p>
                 </div>
-                <div class="card-footer text-end">
+                <div class="card-footer text-end d-flex justify-content-between">
+                    <form th:action="@{/perfil/editar}" method="get" class="d-inline">
+                        <button type="submit" class="btn btn-primary btn-lg">
+                            Editar perfil
+                        </button>
+                    </form>
+
                     <a th:href="@{/login}" class="btn btn-logout btn-lg text-white">
                         Cerrar sesión
                     </a>

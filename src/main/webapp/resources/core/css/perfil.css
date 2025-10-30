@@ -10,6 +10,10 @@
     position: relative;
 }
 
+.profile-header.edicion {
+   display: none;
+}
+
 .profile-avatar {
     background-color: #f7f7f7 !important;
     width: 130px;

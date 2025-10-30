@@ -89,4 +89,51 @@ public class RepositorioUsuarioImplTest {
         assertThat(usuarioBuscado, equalTo(usuarioGuardado));
     }
 
+    @Test
+    @Transactional
+    @Rollback
+    public void debeDevolverElUsuarioBuscadoAlBuscarPorUsername(){
+        Usuario usuarioGuardado = new Usuario("nombre", "apellido", "email","username");
+        repositorioUsuario.guardar(usuarioGuardado);
+        sessionFactory.getCurrentSession().flush();
+
+        Usuario usuarioBuscado = repositorioUsuario.buscarPorUsername("username");
+        assertThat(usuarioBuscado, equalTo(usuarioGuardado));
+    }
+
+    @Test
+    @Transactional
+    @Rollback
+    public void debeModificarUnUsuarioExistente() {
+        Usuario usuarioOriginal = new Usuario("Nombre", "Apellido", "email@test.com", "usernameOriginal");
+        usuarioOriginal.setPassword("password123");
+        usuarioOriginal.setPosicionFavorita("Defensa");
+
+        repositorioUsuario.guardar(usuarioOriginal);
+        sessionFactory.getCurrentSession().flush();
+        sessionFactory.getCurrentSession().clear();
+
+
+        Usuario usuarioBuscado = repositorioUsuario.buscar("email@test.com");
+
+        usuarioBuscado.setNombre("NuevoNombre");
+        usuarioBuscado.setApellido("NuevoApellido");
+        usuarioBuscado.setUsername("nuevoUsername");
+        usuarioBuscado.setPassword("nuevaPassword");
+        usuarioBuscado.setPosicionFavorita("Delantero");
+
+        repositorioUsuario.modificar(usuarioBuscado);
+        sessionFactory.getCurrentSession().flush();
+        sessionFactory.getCurrentSession().clear();
+
+        Usuario usuarioActualizado = repositorioUsuario.buscar("email@test.com");
+
+        assertThat(usuarioActualizado.getId(), equalTo(usuarioOriginal.getId()));
+        assertThat(usuarioActualizado.getNombre(), equalTo("NuevoNombre"));
+        assertThat(usuarioActualizado.getApellido(), equalTo("NuevoApellido"));
+        assertThat(usuarioActualizado.getUsername(), equalTo("nuevoUsername"));
+        assertThat(usuarioActualizado.getPassword(), equalTo("nuevaPassword"));
+        assertThat(usuarioActualizado.getPosicionFavorita(), equalTo("Delantero"));
+        assertThat(usuarioActualizado.getEmail(), equalTo("email@test.com"));
+    }
 }
