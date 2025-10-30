@@ -41,4 +41,12 @@ public class RepositorioHorarioImpl implements RepositorioHorario {
                 .setParameter("cancha", cancha)
                 .getResultList();
     }
+    @Override
+    public void cambiarDisponibilidad(Long id, Boolean disponible) {
+        Horario horario = obtenerPorId(id);
+        if (horario != null) {
+            horario.setDisponible(disponible);
+            sessionFactory.getCurrentSession().update(horario);
+        }
+    }
 }
