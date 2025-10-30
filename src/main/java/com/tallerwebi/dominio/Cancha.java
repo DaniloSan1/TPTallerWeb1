@@ -19,7 +19,9 @@ public class Cancha {
     private Zona zona;
     @OneToMany(mappedBy = "cancha", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private List<Horario> horarios = new ArrayList<>();
-  
+    @OneToMany(mappedBy = "cancha", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    private List<FotoCancha> fotos = new ArrayList<>();
+
     public Cancha() {
     }
 

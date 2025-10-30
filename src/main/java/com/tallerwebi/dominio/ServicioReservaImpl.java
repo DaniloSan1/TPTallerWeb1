@@ -3,6 +3,8 @@ package com.tallerwebi.dominio;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import com.tallerwebi.dominio.RepositorioReserva;
+import com.tallerwebi.dominio.RepositorioHorario;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -12,10 +14,12 @@ import java.util.List;
 public class ServicioReservaImpl implements ServicioReserva {
 
     private final RepositorioReserva repositorioReserva;
+    private final RepositorioHorario repositorioHorario;
 
     @Autowired
-    public ServicioReservaImpl(RepositorioReserva repositorioReserva) {
+    public ServicioReservaImpl(RepositorioReserva repositorioReserva, RepositorioHorario repositorioHorario) {
         this.repositorioReserva = repositorioReserva;
+        this.repositorioHorario = repositorioHorario;
     }
 
     @Override
@@ -48,9 +52,10 @@ public class ServicioReservaImpl implements ServicioReserva {
             throw new RuntimeException("La fecha elegida " + diaSemanaDow +
                     " no coincide con el día del horario " + diaHorario + ".");
         }
-
+        Horario horario = reserva.getHorario();
         reserva.setFechaCreacion(LocalDateTime.now());
         reserva.setActiva(true);
+        this.repositorioHorario.cambiarDisponibilidad(horario.getId(), false);
         this.repositorioReserva.guardar(reserva);
 
         return reserva;
@@ -70,6 +75,7 @@ public class ServicioReservaImpl implements ServicioReserva {
             throw new RuntimeException("La reserva ya está cancelada");
         }
 
+        this.repositorioHorario.cambiarDisponibilidad(reserva.getHorario().getId(), true);
         reserva.cancelar();
         this.repositorioReserva.guardar(reserva);
         return reserva;
