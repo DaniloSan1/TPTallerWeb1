@@ -1,7 +1,9 @@
 package com.tallerwebi.presentacion;
 
+import com.tallerwebi.dominio.FotoCancha;
 import com.tallerwebi.dominio.Nivel;
 import com.tallerwebi.dominio.Partido;
+import com.tallerwebi.dominio.ServicioFotoCancha;
 import com.tallerwebi.dominio.ServicioLogin;
 import com.tallerwebi.dominio.Usuario;
 import com.tallerwebi.dominio.Zona;
@@ -14,6 +16,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 import com.tallerwebi.dominio.ServicioPartido;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -23,11 +26,13 @@ public class ControladorLogin {
 
     private ServicioLogin servicioLogin;
     private ServicioPartido servicioPartido;
+    private ServicioFotoCancha servicioFotoCancha;
 
     @Autowired
-    public ControladorLogin(ServicioLogin servicioLogin, ServicioPartido servicioPartido) {
+    public ControladorLogin(ServicioLogin servicioLogin, ServicioPartido servicioPartido, ServicioFotoCancha servicioFotoCancha) {
         this.servicioLogin = servicioLogin;
         this.servicioPartido = servicioPartido;
+        this.servicioFotoCancha = servicioFotoCancha;
     }
 
     @RequestMapping("/login")
@@ -100,7 +105,9 @@ public class ControladorLogin {
             nivel = Nivel.valueOf(nivelParam);
         }
         List<Partido> partidos = servicioPartido.listarTodos(busqueda, zona, nivel);
+        List<FotoCancha> fotosCancha = servicioFotoCancha.insertarFotosAModelPartidos(partidos);
         System.out.println(partidos);
+        model.put("fotosCanchas", fotosCancha);
         model.put("partidos", partidos);
         model.put("currentPage", "home");
         return new ModelAndView("home", model);

@@ -1,5 +1,6 @@
 package com.tallerwebi.presentacion;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -14,8 +15,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.tallerwebi.dominio.Cancha;
+import com.tallerwebi.dominio.FotoCancha;
 import com.tallerwebi.dominio.Horario;
 import com.tallerwebi.dominio.ServicioCancha;
+import com.tallerwebi.dominio.ServicioFotoCancha;
 import com.tallerwebi.dominio.ServicioHorario;
 import com.tallerwebi.dominio.ServicioLogin;
 import com.tallerwebi.dominio.Usuario;
@@ -26,13 +29,15 @@ public class ControladorCancha {
     private final ServicioCancha servicioCancha;
     private final ServicioHorario servicioHorario;
     private final ServicioLogin servicioLogin;
+    private final ServicioFotoCancha servicioFotoCancha;
 
     @Autowired
     public ControladorCancha(ServicioCancha servicioCancha, ServicioHorario servicioHorario,
-            ServicioLogin servicioLogin) {
+            ServicioLogin servicioLogin, ServicioFotoCancha servicioFotoCancha) {
         this.servicioCancha = servicioCancha;
         this.servicioHorario = servicioHorario;
         this.servicioLogin = servicioLogin;
+        this.servicioFotoCancha = servicioFotoCancha;
     }
 
     @GetMapping("/canchas-disponibles")
@@ -53,6 +58,8 @@ public class ControladorCancha {
                 precio = Double.parseDouble(precioParam);
             }
             List<Cancha> canchas = servicioCancha.obtenerCanchasDisponibles(busqueda, zona, precio);
+            List<FotoCancha> fotosCancha = servicioFotoCancha.insertarFotosAModelCanchas(canchas);  
+            model.put("fotosCanchas", fotosCancha);
             model.put("canchas", canchas);
             model.put("currentPage", "canchas-disponibles");
         } catch (Exception e) {

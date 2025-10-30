@@ -47,7 +47,7 @@
         th:text="${mensajeError}"
       ></div>
       <div class="d-flex align-items-center justify-content-between mb-3">
-        <h1 class="h3 m-0">Partidos disponibles</h1>
+        <h1 class="h3 m-0">Partidos disponibles</h1>      
       </div>
       <hr class="colorgraph" />
 
@@ -62,7 +62,7 @@
             type="text"
             name="busqueda"
             class="form-control border-0"
-            placeholder="Buscar por nombre o dirección..."
+            placeholder="Buscar por nombre..."
             th:value="${busqueda}"
             aria-label="Buscar partido"
           />
@@ -115,7 +115,7 @@
         </div>
         <!-- Grilla de tarjetas -->
         <div class="row g-3" th:if="${!#lists.isEmpty(partidos)}">
-          <div class="col-12 col-sm-6 col-lg-3" th:each="p : ${partidos}">
+          <div class="col-12 col-sm-6 col-lg-3" th:each="p, iterStat : ${partidos}">
             <a
               th:href="@{|/partidos/${p.id}|}"
               class="text-decoration-none"
@@ -148,7 +148,7 @@
                   >person</span
                 >
                 <img
-                  th:src="@{/assets/cancha.webp}"
+                  th:src="${fotosCanchas[iterStat.index].url}"
                   alt="cancha"
                   style="height: 180px"
                 />
