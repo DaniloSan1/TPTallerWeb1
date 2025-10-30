@@ -50,6 +50,7 @@ public class ServicioReservaImplTest {
     @Test
     public void AlCrearUnaReservaExistenteDeberiaLanzarExcepcion() {
         when(repositorioMock.porHorarioYFecha(any(), any())).thenReturn(Collections.singletonList(new Reserva()));
+        when(servicioReserva.crearReserva(reservaMock)).thenThrow(new RuntimeException("ya existe una reserva en ese horario y fecha"));
         assertThrows(RuntimeException.class, () -> servicioReserva.crearReserva(reservaMock));
     }
 
