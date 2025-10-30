@@ -14,7 +14,7 @@ import com.tallerwebi.dominio.Partido;
 import com.tallerwebi.dominio.RepositorioPartido;
 import com.tallerwebi.dominio.Zona;
 
-@Repository 
+@Repository
 @Transactional
 public class RepositorioPartidoImpl implements RepositorioPartido {
 
@@ -34,16 +34,16 @@ public class RepositorioPartidoImpl implements RepositorioPartido {
     @Override
     public List<Partido> listar(String busqueda, Zona filtroZona, Nivel filtroNivel) {
         final Session session = sessionFactory.getCurrentSession();
-        String hql =  "SELECT DISTINCT p " +
-        "FROM Partido p " +
-        "JOIN p.reserva r " +
-        "JOIN r.horario h " +   
-        "JOIN h.cancha c " +    
-        "WHERE r.activa = true";
+        String hql = "SELECT DISTINCT p " +
+                "FROM Partido p " +
+                "JOIN p.reserva r " +
+                "JOIN r.horario h " +
+                "JOIN h.cancha c " +
+                "WHERE r.activa = true";
         if (filtroZona != null) {
             hql += " AND c.zona = :zona";
         }
-        if (filtroNivel != null ) {
+        if (filtroNivel != null) {
             hql += " AND p.nivel = :nivel";
         }
         if (busqueda != null && !busqueda.isEmpty()) {
@@ -51,11 +51,11 @@ public class RepositorioPartidoImpl implements RepositorioPartido {
         }
         var query = session.createQuery(hql, Partido.class);
         if (filtroZona != null) {
-            query.setParameter("zona", filtroZona);       
+            query.setParameter("zona", filtroZona);
         }
         if (filtroNivel != null) {
             query.setParameter("nivel", filtroNivel);
-        } 
+        }
         if (busqueda != null && !busqueda.isEmpty()) {
             query.setParameter("busqueda", "%" + busqueda + "%");
         }
@@ -68,5 +68,9 @@ public class RepositorioPartidoImpl implements RepositorioPartido {
         session.save(p);
     }
 
+    @Override
+    public void actualizar(Partido p) {
+        final Session session = sessionFactory.getCurrentSession();
+        session.update(p);
+    }
 }
-

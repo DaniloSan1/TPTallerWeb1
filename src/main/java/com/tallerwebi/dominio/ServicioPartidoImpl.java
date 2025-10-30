@@ -31,7 +31,7 @@ public class ServicioPartidoImpl implements ServicioPartido {
 
     @Override
     public List<Partido> listarTodos(String busqueda, Zona filtroZona, Nivel filtroNivel) {
-        return repoPartido.listar(busqueda, filtroZona,filtroNivel);
+        return repoPartido.listar(busqueda, filtroZona, filtroNivel);
     }
 
     @Override
@@ -109,5 +109,16 @@ public class ServicioPartidoImpl implements ServicioPartido {
         boolean removed = partido.getParticipantes().remove(partidoParticipante);
         // El @Transactional se encarga del guardado automático
 
+    }
+
+    @Override
+    public void actualizarPartido(Long id, String titulo, String descripcion, Usuario usuario) {
+        Partido partido = obtenerPorId(id);
+        if (!partido.esCreador(usuario.getEmail())) {
+            throw new RuntimeException("No tienes permiso para editar este partido.");
+        }
+        partido.setTitulo(titulo);
+        partido.setDescripcion(descripcion);
+        repoPartido.actualizar(partido);
     }
 }
