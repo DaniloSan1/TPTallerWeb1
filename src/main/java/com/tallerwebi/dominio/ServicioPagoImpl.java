@@ -2,13 +2,12 @@ package com.tallerwebi.dominio;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
+import java.util.ArrayList;
+import javax.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import javax.transaction.Transactional;
 
 import com.mercadopago.client.preference.PreferenceBackUrlsRequest;
 import com.mercadopago.client.preference.PreferenceClient;
@@ -29,7 +28,7 @@ public class ServicioPagoImpl implements ServicioPago {
     }
 
     @Override
-    public String crearPago(String titulo, String descripcion, BigDecimal monto) throws Exception {
+    public String crearPago(String titulo, String descripcion, BigDecimal monto, Long reservaId) throws Exception {
         try {
             if (titulo == null || titulo.isEmpty()) {
                 throw new IllegalArgumentException("El título es obligatorio");
@@ -43,41 +42,42 @@ public class ServicioPagoImpl implements ServicioPago {
                     .description(descripcion != null ? descripcion : "Pago de reserva de cancha")
                     .unitPrice(monto)
                     .quantity(1)
+                    .currencyId("ARS")
                     .build();
+
             List<PreferenceItemRequest> items = new ArrayList<>();
             items.add(itemRequest);
+
             PreferenceBackUrlsRequest backUrlsRequest = PreferenceBackUrlsRequest.builder()
-                    .success("http://localhost:8080/spring/pago/exito")
-                    .failure("http://localhost:8080/spring/pago/error")
-                    .pending("http://localhost:8080/spring/pago/pendiente")
+                    .success("http://localhost:8080/spring/pago/exito/" + reservaId)
+                    .failure("http://localhost:8080/spring/pago/error/" + reservaId)
+                    .pending("http://localhost:8080/spring/pago/pendiente/" + reservaId)
                     .build();
+
             PreferenceRequest preferenceRequest = PreferenceRequest.builder()
                     .items(items)
                     .backUrls(backUrlsRequest)
+                    //.autoReturn("all")
                     .build();
 
-            System.err.println("About to create MercadoPago preference with title: " + titulo + ", amount: " + monto);
+            System.out.println("Creando preferencia MercadoPago: " + titulo + " | Monto: " + monto);
 
             PreferenceClient client = new PreferenceClient();
             Preference preference = client.create(preferenceRequest);
 
-            System.err.println("Preferencia de pago creada con ID: " + preference.getId());
-            System.err.println(preference);
             if (preference == null || preference.getId() == null) {
                 throw new Exception("No se pudo generar la preferencia de pago");
             }
+
+            System.out.println("✅ Preferencia creada con ID: " + preference.getId());
             return preference.getId();
 
         } catch (MPApiException e) {
-            System.err.println("Error de API de MercadoPago: " + e.getMessage());
-            System.err.println("Status Code: " + e.getStatusCode());
-            System.err.println("API Response: " + e.getApiResponse());
-            System.err.println("API Response Content: " + e.getApiResponse().getContent());
-            e.printStackTrace();
-            throw new Exception("Error de API de MercadoPago: " + e.getMessage(), e);
+            System.err.println("❌ Error de API MercadoPago:");
+            System.err.println("Status: " + e.getStatusCode());
+            System.err.println("Response: " + e.getApiResponse().getContent());
+            throw new Exception("Error API MercadoPago: " + e.getMessage(), e);
         } catch (Exception e) {
-            System.err.println("Error al crear el pago");
-            System.err.println(e.getMessage());
             e.printStackTrace();
             throw new Exception("Error al crear el pago: " + e.getMessage(), e);
         }
@@ -93,5 +93,15 @@ public class ServicioPagoImpl implements ServicioPago {
         pago.setEstado("Pendiente");
         pago.setFechaCreacion(LocalDateTime.now());
         repositorioPago.guardarPago(pago);
+    }
+
+    @Override
+    public Pago obtenerPorPreferencia(String preferenceId) {
+        return repositorioPago.obtenerPorPreferencia(preferenceId);
+    }
+
+    @Override
+    public void actualizarPago(Pago pago) {
+        repositorioPago.actualizarPago(pago);
     }
 }

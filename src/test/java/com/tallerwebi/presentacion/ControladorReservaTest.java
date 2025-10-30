@@ -3,10 +3,11 @@ package com.tallerwebi.presentacion;
 import com.tallerwebi.dominio.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.ArgumentCaptor;
 import org.springframework.ui.ModelMap;
+import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -35,8 +36,7 @@ public class ControladorReservaTest {
         servicioPartido = mock(ServicioPartido.class);
         servicioPago = mock(ServicioPago.class);
 
-        controlador = new ControladorReserva(servicioReserva, servicioHorario, servicioUsuario, servicioPartido,
-                servicioPago);
+        controlador = new ControladorReserva(servicioReserva, servicioHorario, servicioUsuario, servicioPartido, servicioPago);
 
         cancha = new Cancha();
         cancha.setId(1L);
@@ -53,102 +53,94 @@ public class ControladorReservaTest {
     }
 
     @Test
-    public void AlMostrarUnFormularioDeReservaDeberiaCargarDatosEnElModelo() {
-        when(servicioHorario.obtenerPorId(10L)).thenReturn(horario);
-
-        ModelMap model = new ModelMap();
-        String vista = controlador.mostrarFormularioReserva(5L, 10L, model);
-
-        assertEquals("reservaForm", vista);
-        assertEquals(5L, model.get("usuarioId"));
-        assertEquals(10L, model.get("horarioId"));
-        assertEquals(cancha, model.get("cancha"));
-        assertEquals(horario, model.get("horario"));
-    }
-
-    @Test
-    public void AlCrearUnaReservaConExitoDeberiaRedirigirADetalle() {
+    public void AlCrearReservaConExito_DeberiaMostrarDetalleYCrearPago() throws Exception {
+        // Arrange
         when(servicioHorario.obtenerPorId(10L)).thenReturn(horario);
         when(servicioUsuario.buscarPorId(5L)).thenReturn(usuario);
 
-        Reserva reserva = new Reserva(horario, usuario,
-                LocalDate.now().atTime(horario.getHoraInicio()));
+        Reserva reserva = new Reserva(horario, usuario, LocalDate.now().atTime(horario.getHoraInicio()));
         reserva.setId(99L);
 
         when(servicioReserva.crearReserva(any())).thenReturn(reserva);
+        when(servicioPago.crearPago(anyString(), anyString(), any(BigDecimal.class), eq(99L)))
+                .thenReturn("pref-12345");
 
-        ModelMap model = new ModelMap();
-        String vista = controlador.crearReserva(
+        // Act
+        ModelAndView mav = controlador.crearReserva(
                 10L,
                 LocalDate.now().toString(),
                 5L,
                 "Título",
                 "Descripción",
-                Nivel.PRINCIPIANTE,
-                model);
+                Nivel.PRINCIPIANTE
+        );
 
-        assertTrue(vista.startsWith("redirect:/reserva/"));
+        // Assert
+        assertEquals("detalleReserva", mav.getViewName());
+        assertEquals(reserva, mav.getModel().get("reserva"));
+        assertEquals(cancha, mav.getModel().get("cancha"));
+        assertEquals(horario, mav.getModel().get("horario"));
+        assertEquals("pref-12345", mav.getModel().get("preferenceId"));
+        assertTrue(((String) mav.getModel().get("mensajeExito")).contains("Completá el pago"));
+
         verify(servicioReserva).crearReserva(any(Reserva.class));
         verify(servicioPartido).crearDesdeReserva(eq(reserva), anyString(), anyString(), any(), anyInt(), eq(usuario));
+        verify(servicioPago).guardarPago(eq(reserva), eq(usuario), eq("pref-12345"), eq(100.0));
     }
 
     @Test
-    public void AlCrearUnaReservaConErrorDeberiaVolverAlFormulario() {
+    public void AlFallarLaCreacionDeReserva_DeberiaVolverAlFormularioConError() throws Exception {
         when(servicioHorario.obtenerPorId(10L)).thenReturn(horario);
         when(servicioUsuario.buscarPorId(5L)).thenReturn(usuario);
-        when(servicioReserva.crearReserva(any())).thenThrow(new RuntimeException("Error al crear"));
+        when(servicioReserva.crearReserva(any())).thenThrow(new RuntimeException("Fallo interno"));
 
-        ModelMap model = new ModelMap();
-        String vista = controlador.crearReserva(
+        ModelAndView mav = controlador.crearReserva(
                 10L,
                 LocalDate.now().toString(),
                 5L,
                 "Título",
                 "Descripción",
-                Nivel.PRINCIPIANTE,
-                model);
+                Nivel.INTERMEDIO
+        );
 
-        assertEquals("reservaForm", vista);
-        assertEquals("Error al crear", model.get("error"));
-        assertEquals(horario, model.get("horario"));
-        assertEquals(cancha, model.get("cancha"));
+        assertEquals("reservaForm", mav.getViewName());
+        assertTrue(((String) mav.getModel().get("error")).contains("Fallo interno"));
     }
 
     @Test
-    public void AlCancelarUnaReservaConExitoDeberiaRedirigirHomeConMensajeExito() {
+    public void AlVerDetalleReserva_DeberiaMostrarInformacionCorrecta() {
+        Reserva reserva = new Reserva(horario, usuario, LocalDateTime.now());
+        reserva.setId(42L);
+        when(servicioReserva.obtenerReservaPorId(42L)).thenReturn(reserva);
+
+        ModelMap model = new ModelMap();
+        String vista = controlador.verDetalleReserva(42L, model);
+
+        assertEquals("detalleReserva", vista);
+        assertEquals(reserva, model.get("reserva"));
+        assertEquals(cancha, model.get("cancha"));
+        assertEquals(horario, model.get("horario"));
+    }
+
+    @Test
+    public void AlCancelarReservaConExito_DeberiaRedirigirHomeConMensaje() {
         RedirectAttributes redirectAttributes = mock(RedirectAttributes.class);
 
-        String vista = controlador.cancelarReserva(99L, 5L, 10L, redirectAttributes, new ModelMap());
+        String vista = controlador.cancelarReserva(88L, 5L, 10L, redirectAttributes);
 
         assertEquals("redirect:/home", vista);
-        verify(servicioReserva).cancelarReserva(99L);
+        verify(servicioReserva).cancelarReserva(88L);
         verify(redirectAttributes).addFlashAttribute(eq("mensajeExito"), anyString());
     }
 
     @Test
-    public void AlCancelarUnaReservaConErrorDeberiaRedirigirHomeConMensajeError() {
+    public void AlCancelarReservaConError_DeberiaMostrarMensajeDeError() {
         RedirectAttributes redirectAttributes = mock(RedirectAttributes.class);
-        doThrow(new RuntimeException("No se pudo cancelar")).when(servicioReserva).cancelarReserva(99L);
+        doThrow(new RuntimeException("No se pudo cancelar")).when(servicioReserva).cancelarReserva(88L);
 
-        String vista = controlador.cancelarReserva(99L, 5L, 10L, redirectAttributes, new ModelMap());
+        String vista = controlador.cancelarReserva(88L, 5L, 10L, redirectAttributes);
 
         assertEquals("redirect:/home", vista);
         verify(redirectAttributes).addFlashAttribute("mensajeError", "No se pudo cancelar");
-    }
-
-    @Test
-    public void AlVerUnDetalleDeReservaDeberiaCargarReservaEnElModelo() {
-        Reserva reserva = new Reserva(horario, usuario, LocalDateTime.now());
-        reserva.setId(77L);
-
-        when(servicioReserva.obtenerReservaPorId(77L)).thenReturn(reserva);
-
-        ModelMap model = new ModelMap();
-        String vista = controlador.verDetalleReserva(77L, model);
-
-        assertEquals("detalleReserva", vista);
-        assertEquals(reserva, model.get("reserva"));
-        assertEquals(horario, model.get("horario"));
-        assertEquals(cancha, model.get("cancha"));
     }
 }
