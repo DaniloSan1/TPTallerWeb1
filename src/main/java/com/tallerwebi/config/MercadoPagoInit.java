@@ -1,13 +1,22 @@
 package com.tallerwebi.config;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import com.mercadopago.MercadoPagoConfig; 
+import org.springframework.context.annotation.PropertySource;
+import com.mercadopago.MercadoPagoConfig;
+
 @Configuration
+@PropertySource("classpath:application.properties")
 public class MercadoPagoInit {
+
+    @Value("${mercadopago.access.token}")
+    private String accessToken;
+
     @Bean
     public String init() {
-        MercadoPagoConfig.setAccessToken("APP_USR-5362114551262779-102708-db1b598d857e89576dceb45d55c82cc4-2948293150");
+        MercadoPagoConfig.setAccessToken(accessToken);
+        System.out.println("MercadoPago initialized with access token: " + accessToken);
         return "MercadoPago_Init";
     }
 }
