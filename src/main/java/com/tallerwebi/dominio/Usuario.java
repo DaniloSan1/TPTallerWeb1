@@ -26,6 +26,7 @@ public class Usuario {
 
     @Column(nullable = true)
     private String fotoPerfil;
+
     public Usuario() {
     }
 

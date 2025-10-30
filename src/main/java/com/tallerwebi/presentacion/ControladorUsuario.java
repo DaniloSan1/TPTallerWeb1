@@ -53,7 +53,6 @@ public class ControladorUsuario {
         return "perfilDeOtroJugador";
     }
 
-
     @GetMapping
     public String perfil(ModelMap modelo, HttpServletRequest request) {
         String email = (String) request.getSession().getAttribute("EMAIL");
@@ -85,7 +84,8 @@ public class ControladorUsuario {
     }
 
     @PostMapping("/editar")
-    public String guardarCambios(@ModelAttribute("usuario") Usuario usuarioEditado, HttpServletRequest request, ModelMap modelo) {
+    public String guardarCambios(@ModelAttribute("usuario") Usuario usuarioEditado, HttpServletRequest request,
+            ModelMap modelo) {
         String email = (String) request.getSession().getAttribute("EMAIL");
         if (email != null) {
             try {
@@ -111,6 +111,6 @@ public class ControladorUsuario {
             }
 
         }
-            return "redirect:/login";
-        }
+        return "redirect:/login";
+    }
 }
