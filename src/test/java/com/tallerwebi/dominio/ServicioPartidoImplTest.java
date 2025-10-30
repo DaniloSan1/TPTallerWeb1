@@ -136,7 +136,7 @@ public class ServicioPartidoImplTest {
                 Mockito.when(partidoNorte.getZona()).thenReturn(Zona.NORTE);
                 Mockito.when(partidoSur.getZona()).thenReturn(Zona.SUR);
 
-                Mockito.when(repositorioPartidoMock.todos()).thenReturn(java.util.List.of(partidoNorte, partidoSur));
+                Mockito.when(repositorioPartidoMock.listar(null, Zona.NORTE, null)).thenReturn(java.util.List.of(partidoNorte));
 
                 ServicioPartido servicioPartido = new ServicioPartidoImpl(
                                 repositorioPartidoMock,
@@ -144,11 +144,11 @@ public class ServicioPartidoImplTest {
                                 repositorioUsuarioMock,
                                 repositorioPartidoParticipanteMock);
 
-                var partidosFiltrados = servicioPartido.buscar(Zona.NORTE, null, false);
+                var partidosFiltrados = servicioPartido.listarTodos(null,Zona.NORTE, null);
 
                 assertEquals(1, partidosFiltrados.size());
                 assertEquals(Zona.NORTE, partidosFiltrados.get(0).getZona());
-                Mockito.verify(repositorioPartidoMock, Mockito.times(1)).todos();
+                Mockito.verify(repositorioPartidoMock, Mockito.times(1)).listar(null, Zona.NORTE, null);
         }
 
         @Test
@@ -159,8 +159,8 @@ public class ServicioPartidoImplTest {
                 Mockito.when(partidoAvanzado.getNivel()).thenReturn(Nivel.AVANZADO);
                 Mockito.when(partidoPrincipiante.getNivel()).thenReturn(Nivel.PRINCIPIANTE);
 
-                Mockito.when(repositorioPartidoMock.todos())
-                                .thenReturn(java.util.List.of(partidoAvanzado, partidoPrincipiante));
+                Mockito.when(repositorioPartidoMock.listar(null, null, Nivel.PRINCIPIANTE))
+                                .thenReturn(java.util.List.of(partidoPrincipiante));
 
                 ServicioPartido servicioPartido = new ServicioPartidoImpl(
                                 repositorioPartidoMock,
@@ -168,11 +168,11 @@ public class ServicioPartidoImplTest {
                                 repositorioUsuarioMock,
                                 repositorioPartidoParticipanteMock);
 
-                var partidosFiltrados = servicioPartido.buscar(null, Nivel.AVANZADO, false);
+                var partidosFiltrados = servicioPartido.listarTodos(null, null,Nivel.PRINCIPIANTE);
 
                 assertEquals(1, partidosFiltrados.size());
-                assertEquals(Nivel.AVANZADO, partidosFiltrados.get(0).getNivel());
-                Mockito.verify(repositorioPartidoMock, Mockito.times(1)).todos();
+                assertEquals(Nivel.PRINCIPIANTE, partidosFiltrados.get(0).getNivel());
+                Mockito.verify(repositorioPartidoMock, Mockito.times(1)).listar(null, null, Nivel.PRINCIPIANTE);
         }
 
         @Test
@@ -286,7 +286,7 @@ public class ServicioPartidoImplTest {
                                 reserva,
                                 "Título X",
                                 "Descripción X",
-                                Nivel.AVANZADO,
+                                Nivel.PRINCIPIANTE,
                                 8,
                                 usuarioCreadorPartido);
 

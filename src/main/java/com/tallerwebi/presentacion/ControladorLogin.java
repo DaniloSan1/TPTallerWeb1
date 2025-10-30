@@ -1,8 +1,10 @@
 package com.tallerwebi.presentacion;
 
+import com.tallerwebi.dominio.Nivel;
 import com.tallerwebi.dominio.Partido;
 import com.tallerwebi.dominio.ServicioLogin;
 import com.tallerwebi.dominio.Usuario;
+import com.tallerwebi.dominio.Zona;
 import com.tallerwebi.dominio.excepcion.UsuarioExistenteException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -83,7 +85,21 @@ public class ControladorLogin {
         }
 
         ModelMap model = new ModelMap();
-        List<Partido> partidos = servicioPartido.listarTodos();
+        String busqueda = request.getParameter("busqueda");
+        String zonaParam = request.getParameter("zona");
+        String nivelParam = request.getParameter("nivel");
+        model.put("nivel",nivelParam);
+        model.put("zona",zonaParam);
+        model.put("busqueda",busqueda);
+          Zona zona = null;
+        if (zonaParam != null && !zonaParam.isEmpty()) {
+            zona = Zona.valueOf(zonaParam);
+        }
+        Nivel nivel = null;
+        if (nivelParam != null && !nivelParam.isEmpty()) {
+            nivel = Nivel.valueOf(nivelParam);
+        }
+        List<Partido> partidos = servicioPartido.listarTodos(busqueda, zona, nivel);
         System.out.println(partidos);
         model.put("partidos", partidos);
         model.put("currentPage", "home");
