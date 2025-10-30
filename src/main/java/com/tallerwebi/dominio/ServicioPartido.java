@@ -8,9 +8,6 @@ import com.tallerwebi.dominio.excepcion.PartidoNoEncontrado;
 import com.tallerwebi.dominio.excepcion.YaExisteElParticipante;
 
 public interface ServicioPartido {
-        List<Partido> listarTodos();
-
-        List<Partido> buscar(Zona zona, Nivel nivel, boolean soloConCupo);
 
         Partido obtenerPorId(Long id);
 
@@ -21,4 +18,6 @@ public interface ServicioPartido {
 
         Partido crearDesdeReserva(Reserva nuevaReserva, String titulo, String descripcion, Nivel nivel,
                         int cupoMaximo, Usuario usuario);
+
+    List<Partido> listarTodos(String busqueda, Zona filtroZona, Nivel filtroNivel);
 }
