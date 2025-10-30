@@ -12,6 +12,7 @@ public class ReiniciarDB {
             String dbPassword = System.getenv("DB_PASSWORD") != null ? System.getenv("DB_PASSWORD") : "user";
 
             String sqlCommands = "DELETE FROM Usuario;\n" +
+                    "DELETE FROM PartidoParticipante WHERE partido_id = 2;\n" +
                     "ALTER TABLE Usuario AUTO_INCREMENT = 1;\n" +
                     "INSERT INTO Usuario(id, nombre, apellido, email, username, password, rol, posicionFavorita, activo, calificacionPromedio, totalCalificaciones) VALUES(null, 'Test', 'User', 'test@unlam.edu.ar', 'testuser', 'test', 'ADMIN', 'Delantero', true, 0.0, 0);";
 
