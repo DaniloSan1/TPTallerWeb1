@@ -1,8 +1,11 @@
 package com.tallerwebi.presentacion;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.*;
@@ -12,23 +15,30 @@ import com.tallerwebi.dominio.*;
 
 @Controller
 @RequestMapping("/reserva")
+@PropertySource("classpath:application.properties")
 public class ControladorReserva {
 
     private final ServicioReserva servicioReserva;
     private final ServicioHorario servicioHorario;
     private final ServicioUsuario servicioUsuario;
     private final ServicioPartido servicioPartido;
+    private final ServicioPago servicioPago;
     private Horario guardada;
+
+    @Value("${mercadopago.public.key}")
+    private String publicKey;
 
     @Autowired
     public ControladorReserva(ServicioReserva servicioReserva,
             ServicioHorario servicioHorario,
             ServicioUsuario servicioUsuario,
-            ServicioPartido servicioPartido) {
+            ServicioPartido servicioPartido,
+            ServicioPago servicioPago) {
         this.servicioReserva = servicioReserva;
         this.servicioHorario = servicioHorario;
         this.servicioUsuario = servicioUsuario;
         this.servicioPartido = servicioPartido;
+        this.servicioPago = servicioPago;
     }
 
     @GetMapping("/nueva")
@@ -81,7 +91,14 @@ public class ControladorReserva {
                     0, // que venga de la cancha
                     usuario);
 
+            String preferenceId = servicioPago.crearPago(titulo, descripcion,
+                    BigDecimal.valueOf(horario.getCancha().getPrecio()));
+
             model.put("mensajeExito", "Reserva creada con éxito para el " + fecha);
+            model.put("preferenceId", preferenceId);
+            model.put("publicKey", publicKey);
+            System.out.println("Preference ID generated: " + preferenceId);
+            System.out.println("MP Public Key: " + publicKey);
             return "redirect:/reserva/" + reservaCreada.getId();
 
         } catch (Exception e) {
