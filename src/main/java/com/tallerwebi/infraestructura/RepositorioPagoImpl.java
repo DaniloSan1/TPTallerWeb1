@@ -26,4 +26,17 @@ public class RepositorioPagoImpl implements RepositorioPago {
     public Pago buscarPagoPorId(Long id) {
         return sessionFactory.getCurrentSession().get(Pago.class, id);
     }
+    @Override
+public Pago obtenerPorPreferencia(String preferenceId) {
+    return (Pago) sessionFactory.getCurrentSession()
+        .createQuery("from Pago where preferenciaId = :pref")
+        .setParameter("pref", preferenceId)
+        .uniqueResult();
+}
+
+@Override
+public void actualizarPago(Pago pago) {
+    sessionFactory.getCurrentSession().update(pago);
+}
+
 }
