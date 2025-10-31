@@ -141,4 +141,30 @@ class ControladorCanchaTest {
         assertThat(mav.getViewName(), is("cancha"));
         assertThat(mav.getModel(), hasEntry("error", "Falla al obtener usuario"));
     }
+
+    @Test
+    void listarCanchasDeberiaAgregarFotosAlModelo() {
+        // given
+        Cancha cancha1 = new Cancha();
+        cancha1.setId(1L);
+        Cancha cancha2 = new Cancha();
+        cancha2.setId(2L);
+        List<Cancha> canchas = Arrays.asList(cancha1, cancha2);
+
+        FotoCancha foto1 = new FotoCancha();
+        FotoCancha foto2 = new FotoCancha();
+        List<FotoCancha> fotos = Arrays.asList(foto1, foto2);
+
+        when(servicioFotoCanchaMock.insertarFotosAModelCanchas(canchas)).thenReturn(fotos);
+
+        ModelMap model = new ModelMap();
+
+        // when
+        String vista = controladorCancha.listarCanchas(model, request);
+
+        // then
+        assertThat(vista, is("canchas"));
+        assertThat(model, hasEntry("fotosCanchas", fotos));
+        verify(servicioFotoCanchaMock, times(1)).insertarFotosAModelCanchas(canchas);
+    }
 }
