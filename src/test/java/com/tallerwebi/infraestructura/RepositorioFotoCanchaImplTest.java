@@ -23,9 +23,10 @@ import com.tallerwebi.infraestructura.config.HibernateTestInfraestructuraConfig;
 @ExtendWith(SpringExtension.class)
 @ContextConfiguration(classes = {HibernateTestInfraestructuraConfig.class})
 public class RepositorioFotoCanchaImplTest {
-    private RepositorioFotoCanchaImpl repositorioFotoCancha;
+    
     @Autowired
     private SessionFactory sessionFactory;
+    private RepositorioFotoCanchaImpl repositorioFotoCancha;
     private FotoCancha fotoCancha1;
     private FotoCancha fotoCancha2;
     private FotoCancha fotoCancha3;
@@ -70,17 +71,17 @@ public class RepositorioFotoCanchaImplTest {
     @Transactional
     @Rollback
     public void queCuandoQuieroObtenerFotosdeUnaCanchaMeDevuelveLasFotosCorrespondientes() {
-        List<FotoCancha> resultados = repositorioFotoCancha.obtenerFotosCancha(1L);
+        List<FotoCancha> resultados = repositorioFotoCancha.obtenerFotosCancha(cancha2.getId());
         assert(resultados.size() >= 2);
-        assert(resultados.contains(fotoCancha1));
-        assert(resultados.contains(fotoCancha2));
+        assert(resultados.contains(fotoCancha3));
+        assert(resultados.contains(fotoCancha4));
     }
 
     @Test
     @Transactional
     @Rollback
     public void queCuandoQuieroObtenerLaPrimeraFotoDeUnaCanchaMeDevuelveSoloLaFotoCorrespondiente() {
-        FotoCancha resultado = repositorioFotoCancha.obtenerPrimeraFotoCancha(2L);
+        FotoCancha resultado = repositorioFotoCancha.obtenerPrimeraFotoCancha(cancha2.getId());
         assert(resultado != null);
         assert(resultado.getId().equals(fotoCancha3.getId()));
     }

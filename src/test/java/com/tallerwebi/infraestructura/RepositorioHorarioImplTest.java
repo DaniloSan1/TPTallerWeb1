@@ -61,15 +61,15 @@ public class RepositorioHorarioImplTest {
     @Transactional
     @Rollback
     public void testObtenerPorId() {
-        Horario resultado = repositorioHorario.obtenerPorId(1L);
+        Horario resultado = repositorioHorario.obtenerPorId(horario1.getId());
         assertNotNull(resultado);
-        assertEquals(1L, resultado.getId());
+        assertEquals(horario1.getId(), resultado.getId());
     }
 
     @Test
     @Transactional
     @Rollback
-    public void t() {
+    public void testObtenerPorCancha() {
         List<Horario> resultados = repositorioHorario.obtenerPorCancha(cancha1);
         assertNotNull(resultados);
         assertEquals(3, resultados.size());
@@ -90,8 +90,8 @@ public class RepositorioHorarioImplTest {
     @Transactional
     @Rollback
     public void testCambiarDisponibilidad() {
-        repositorioHorario.cambiarDisponibilidad(2L, true);
-        Horario resultado = repositorioHorario.obtenerPorId(2L);
+        repositorioHorario.cambiarDisponibilidad(horario2.getId(), true);
+        Horario resultado = repositorioHorario.obtenerPorId(horario2.getId());
         assertNotNull(resultado);
         assertTrue(resultado.getDisponible());
     }
