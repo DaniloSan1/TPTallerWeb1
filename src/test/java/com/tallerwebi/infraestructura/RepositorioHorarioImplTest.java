@@ -6,13 +6,17 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.List;
 
+import javax.transaction.Transactional;
+
 import org.hibernate.SessionFactory;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
+
 
 import com.tallerwebi.dominio.Cancha;
 import com.tallerwebi.dominio.Horario;
@@ -20,9 +24,9 @@ import com.tallerwebi.infraestructura.config.HibernateTestInfraestructuraConfig;
 
 @ExtendWith(SpringExtension.class)
 @ContextConfiguration(classes = {HibernateTestInfraestructuraConfig.class})
-public class ReposirorioHorarioImplTest {
-    @Autowired
+public class RepositorioHorarioImplTest {
     private RepositorioHorarioImpl repositorioHorario;
+    @Autowired
     private SessionFactory sessionFactory;
     private Horario horario1;
     private Horario horario2;
@@ -46,9 +50,16 @@ public class ReposirorioHorarioImplTest {
         horario3.setId(3L);
         horario3.setDisponible(true);
         horario3.setCancha(cancha1);
+
+        this.sessionFactory.getCurrentSession().save(cancha1);
+        this.sessionFactory.getCurrentSession().save(horario1);
+        this.sessionFactory.getCurrentSession().save(horario2);
+        this.sessionFactory.getCurrentSession().save(horario3);
     }
 
     @Test
+    @Transactional
+    @Rollback
     public void testObtenerPorId() {
         Horario resultado = repositorioHorario.obtenerPorId(1L);
         assertNotNull(resultado);
@@ -56,13 +67,17 @@ public class ReposirorioHorarioImplTest {
     }
 
     @Test
-    public void testObtenerPorCancha() {
+    @Transactional
+    @Rollback
+    public void t() {
         List<Horario> resultados = repositorioHorario.obtenerPorCancha(cancha1);
         assertNotNull(resultados);
         assertEquals(3, resultados.size());
     }
 
     @Test
+    @Transactional
+    @Rollback
     public void testObtenerDisponiblesPorCancha() {
         List<Horario> resultados = repositorioHorario.obtenerDisponiblesPorCancha(cancha1);
         assertNotNull(resultados);
@@ -72,6 +87,8 @@ public class ReposirorioHorarioImplTest {
     }
 
     @Test
+    @Transactional
+    @Rollback
     public void testCambiarDisponibilidad() {
         repositorioHorario.cambiarDisponibilidad(2L, true);
         Horario resultado = repositorioHorario.obtenerPorId(2L);

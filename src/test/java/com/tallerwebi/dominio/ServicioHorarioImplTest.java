@@ -31,14 +31,14 @@ public class ServicioHorarioImplTest {
     }
 
     @Test
-    public void queCuandoObtengoUnHorarioPorIdNoExistenteMeRetornaNull() {
+    public void queCuandoObtengoUnHorarioPorIdNoExistentelanzaExcepcion() throws Exception {
         Long idBuscado = 2L;
         Mockito.when(repositorioHorarioMock.obtenerPorId(idBuscado)).thenReturn(null);
 
         ServicioHorario servicioHorario = new ServicioHorarioImpl(repositorioHorarioMock);
-        Horario resultado = servicioHorario.obtenerPorId(idBuscado);
-
-        Assertions.assertNull(resultado);
+        Assertions.assertThrows(RuntimeException.class, () -> {
+            servicioHorario.obtenerPorId(idBuscado);
+        });
     }
 
     @Test

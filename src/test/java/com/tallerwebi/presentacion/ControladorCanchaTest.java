@@ -26,6 +26,7 @@ class ControladorCanchaTest {
 
     @Mock
     private ServicioLogin servicioLoginMock;
+    
     @Mock
     private ServicioFotoCancha servicioFotoCanchaMock;
 
@@ -145,17 +146,13 @@ class ControladorCanchaTest {
     @Test
     void listarCanchasDeberiaAgregarFotosAlModelo() {
         // given
-        Cancha cancha1 = new Cancha();
-        cancha1.setId(1L);
-        Cancha cancha2 = new Cancha();
-        cancha2.setId(2L);
-        List<Cancha> canchas = Arrays.asList(cancha1, cancha2);
+        List<Cancha> canchas = Arrays.asList(new Cancha(), new Cancha());
+        List<FotoCancha> fotos = Arrays.asList(new FotoCancha(), new FotoCancha());
 
-        FotoCancha foto1 = new FotoCancha();
-        FotoCancha foto2 = new FotoCancha();
-        List<FotoCancha> fotos = Arrays.asList(foto1, foto2);
+        when(servicioCanchaMock.obtenerCanchasDisponibles(null, null, 0.0)).thenReturn(canchas);
 
         when(servicioFotoCanchaMock.insertarFotosAModelCanchas(canchas)).thenReturn(fotos);
+
 
         ModelMap model = new ModelMap();
 
