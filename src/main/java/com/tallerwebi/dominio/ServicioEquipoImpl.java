@@ -1,5 +1,6 @@
 package com.tallerwebi.dominio;
 
+import com.tallerwebi.dominio.excepcion.EquipoNoEncontrado;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -15,14 +16,24 @@ public class ServicioEquipoImpl implements ServicioEquipo {
     }
 
     @Override
-    public Equipo crearEquipo(String name, Usuario creador) {
-        Equipo equipo = new Equipo(name, creador, LocalDateTime.now());
+    public Equipo crearEquipo(String nombre, Usuario creador) {
+        Equipo equipo = new Equipo(nombre, creador, LocalDateTime.now());
         repositorioEquipo.guardar(equipo);
         return equipo;
     }
 
     @Override
-    public Equipo buscarPorId(Long id) {
-        return repositorioEquipo.buscarPorId(id);
+    public Equipo buscarPorId(Long id) throws EquipoNoEncontrado {
+        Equipo equipo = repositorioEquipo.buscarPorId(id);
+        if (equipo == null) {
+            throw new EquipoNoEncontrado();
+        }
+        return equipo;
+    }
+
+    @Override
+    public void actualizarNombre(Equipo equipo, String nuevoNombre) {
+        equipo.setNombre(nuevoNombre);
+        repositorioEquipo.modificar(equipo);
     }
 }

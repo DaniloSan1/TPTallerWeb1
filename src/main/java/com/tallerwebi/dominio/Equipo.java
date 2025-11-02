@@ -10,7 +10,7 @@ public class Equipo {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private String name;
+    private String nombre;
 
     @ManyToOne
     @JoinColumn(name = "creado_por_id")
@@ -28,8 +28,8 @@ public class Equipo {
     public Equipo() {
     }
 
-    public Equipo(String name, Usuario creadoPor, LocalDateTime fechaCreacion) {
-        this.name = name;
+    public Equipo(String nombre, Usuario creadoPor, LocalDateTime fechaCreacion) {
+        this.nombre = nombre;
         this.creadoPor = creadoPor;
         this.fechaCreacion = fechaCreacion;
     }
@@ -43,12 +43,12 @@ public class Equipo {
         this.id = id;
     }
 
-    public String getName() {
-        return name;
+    public String getNombre() {
+        return nombre;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setNombre(String nombre) {
+        this.nombre = nombre;
     }
 
     public Usuario getCreadoPor() {

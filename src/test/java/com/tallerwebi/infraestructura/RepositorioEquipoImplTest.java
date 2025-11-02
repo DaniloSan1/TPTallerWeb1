@@ -42,9 +42,9 @@ public class RepositorioEquipoImplTest {
         repositorioEquipo.guardar(equipoAGuardar);
         sessionFactory.getCurrentSession().flush();
 
-        String hql = "FROM Equipo e WHERE e.name = :name";
+        String hql = "FROM Equipo e WHERE e.nombre = :nombre";
         Query<Equipo> query = sessionFactory.getCurrentSession().createQuery(hql, Equipo.class);
-        query.setParameter("name", "Equipo Test");
+        query.setParameter("nombre", "Equipo Test");
         Equipo equipo = (Equipo) query.getSingleResult();
 
         assertThat(equipo, equalTo(equipoAGuardar));
@@ -77,12 +77,12 @@ public class RepositorioEquipoImplTest {
         sessionFactory.getCurrentSession().save(equipoAGuardar);
         sessionFactory.getCurrentSession().flush();
 
-        equipoAGuardar.setName("Equipo Modificado");
+        equipoAGuardar.setNombre("Equipo Modificado");
         repositorioEquipo.modificar(equipoAGuardar);
         sessionFactory.getCurrentSession().flush();
 
         Equipo equipoModificado = repositorioEquipo.buscarPorId(equipoAGuardar.getId());
 
-        assertThat(equipoModificado.getName(), equalTo("Equipo Modificado"));
+        assertThat(equipoModificado.getNombre(), equalTo("Equipo Modificado"));
     }
 }
