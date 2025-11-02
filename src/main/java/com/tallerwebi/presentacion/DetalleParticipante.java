@@ -3,7 +3,7 @@ package com.tallerwebi.presentacion;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
-import com.tallerwebi.dominio.Equipo;
+import com.tallerwebi.dominio.EquipoEnum;
 import com.tallerwebi.dominio.PartidoParticipante;
 
 public class DetalleParticipante {

@@ -27,6 +27,9 @@ public class Partido {
     @OneToMany(mappedBy = "partido", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
     private Set<PartidoParticipante> participantes = new HashSet<>();
 
+    @OneToMany(mappedBy = "partido", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<PartidoEquipo> equipos = new HashSet<>();
+
     // Constructor por defecto para JPA
     public Partido() {
     }
@@ -156,5 +159,13 @@ public class Partido {
 
     public int cuposDisponibles() {
         return this.cupoMaximo - this.participantes.size();
+    }
+
+    public Set<PartidoEquipo> getEquipos() {
+        return equipos;
+    }
+
+    public void setEquipos(Set<PartidoEquipo> equipos) {
+        this.equipos = equipos;
     }
 }

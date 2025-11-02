@@ -19,28 +19,28 @@ public class PartidoParticipante {
     private Usuario usuario;
 
     @Enumerated(EnumType.STRING)
-    private Equipo equipo;
+    private EquipoEnum equipo;
 
     @Column(name = "fecha_union")
     private LocalDateTime fechaUnion;
 
     // Constructor por defecto para JPA
     public PartidoParticipante() {
-        this.equipo = Equipo.SIN_EQUIPO;
+        this.equipo = EquipoEnum.SIN_EQUIPO;
     }
 
-    public PartidoParticipante(Partido partido, Usuario usuario, Equipo equipo) {
+    public PartidoParticipante(Partido partido, Usuario usuario, EquipoEnum equipo) {
         this.partido = partido;
         this.usuario = usuario;
-        this.equipo = equipo == null ? Equipo.SIN_EQUIPO : equipo;
+        this.equipo = equipo == null ? EquipoEnum.SIN_EQUIPO : equipo;
         this.fechaUnion = LocalDateTime.now();
     }
 
-    public PartidoParticipante(Partido partido, Usuario usuario, LocalDateTime fechaUnion, Equipo equipo) {
+    public PartidoParticipante(Partido partido, Usuario usuario, LocalDateTime fechaUnion, EquipoEnum equipo) {
         this.partido = partido;
         this.usuario = usuario;
         this.fechaUnion = fechaUnion;
-        this.equipo = equipo == null ? Equipo.SIN_EQUIPO : equipo;
+        this.equipo = equipo == null ? EquipoEnum.SIN_EQUIPO : equipo;
     }
 
     // Getters and setters
@@ -76,11 +76,11 @@ public class PartidoParticipante {
         this.fechaUnion = fechaUnion;
     }
 
-    public Equipo getEquipo() {
+    public EquipoEnum getEquipo() {
         return equipo;
     }
 
-    public void setEquipo(Equipo equipo) {
+    public void setEquipo(EquipoEnum equipo) {
         this.equipo = equipo;
     }
 

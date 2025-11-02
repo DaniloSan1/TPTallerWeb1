@@ -31,7 +31,7 @@ import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.tallerwebi.dominio.Cancha;
-import com.tallerwebi.dominio.Equipo;
+import com.tallerwebi.dominio.EquipoEnum;
 import com.tallerwebi.dominio.Horario;
 import com.tallerwebi.dominio.Nivel;
 import com.tallerwebi.dominio.Partido;
@@ -77,7 +77,7 @@ public class ControladorPartidoTest {
 		this.sessionFactory.getCurrentSession().save(horario);
 		this.sessionFactory.getCurrentSession().flush();
 
-		Usuario creador = new Usuario("usuario1", "password", "email@example.com","username1");
+		Usuario creador = new Usuario("usuario1", "password", "email@example.com", "username1");
 		creador.setApellido("apellido");
 		this.sessionFactory.getCurrentSession().save(creador);
 		this.sessionFactory.getCurrentSession().flush();
@@ -96,16 +96,16 @@ public class ControladorPartidoTest {
 		this.sessionFactory.getCurrentSession().flush();
 
 		// agrega participantes
-		Usuario participante1 = new Usuario("usuario2", "password2", "email2@example.com","username2");
+		Usuario participante1 = new Usuario("usuario2", "password2", "email2@example.com", "username2");
 		participante1.setNombre("participante1");
 		participante1.setApellido("apellido1");
-		Usuario participante2 = new Usuario("usuario3", "password3", "email3@example.com","username3");
+		Usuario participante2 = new Usuario("usuario3", "password3", "email3@example.com", "username3");
 		participante2.setNombre("participante2");
 		participante2.setApellido("apellido2");
-		Usuario participante3 = new Usuario("usuario4", "password4", "email4@example.com","username4");
+		Usuario participante3 = new Usuario("usuario4", "password4", "email4@example.com", "username4");
 		participante3.setNombre("participante3");
 		participante3.setApellido("apellido3");
-		Usuario participante4 = new Usuario("usuario5", "password5", "email5@example.com","username5");
+		Usuario participante4 = new Usuario("usuario5", "password5", "email5@example.com", "username5");
 		participante4.setNombre("participante4");
 		participante4.setApellido("apellido4");
 		this.sessionFactory.getCurrentSession().save(participante1);
@@ -113,10 +113,10 @@ public class ControladorPartidoTest {
 		this.sessionFactory.getCurrentSession().save(participante3);
 		this.sessionFactory.getCurrentSession().save(participante4);
 
-		PartidoParticipante pp1 = new PartidoParticipante(nuevoPartido, participante1, Equipo.EQUIPO_1);
-		PartidoParticipante pp2 = new PartidoParticipante(nuevoPartido, participante2, Equipo.EQUIPO_2);
-		PartidoParticipante pp3 = new PartidoParticipante(nuevoPartido, participante3, Equipo.EQUIPO_2);
-		PartidoParticipante pp4 = new PartidoParticipante(nuevoPartido, participante4, Equipo.SIN_EQUIPO);
+		PartidoParticipante pp1 = new PartidoParticipante(nuevoPartido, participante1, EquipoEnum.EQUIPO_1);
+		PartidoParticipante pp2 = new PartidoParticipante(nuevoPartido, participante2, EquipoEnum.EQUIPO_2);
+		PartidoParticipante pp3 = new PartidoParticipante(nuevoPartido, participante3, EquipoEnum.EQUIPO_2);
+		PartidoParticipante pp4 = new PartidoParticipante(nuevoPartido, participante4, EquipoEnum.SIN_EQUIPO);
 
 		nuevoPartido.getParticipantes().add(pp1);
 		nuevoPartido.getParticipantes().add(pp2);

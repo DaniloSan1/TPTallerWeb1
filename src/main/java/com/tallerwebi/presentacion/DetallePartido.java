@@ -4,7 +4,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import com.tallerwebi.dominio.Equipo;
+import com.tallerwebi.dominio.EquipoEnum;
 import com.tallerwebi.dominio.Nivel;
 import com.tallerwebi.dominio.Partido;
 import com.tallerwebi.dominio.Usuario;

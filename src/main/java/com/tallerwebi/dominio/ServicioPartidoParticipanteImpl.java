@@ -24,7 +24,7 @@ public class ServicioPartidoParticipanteImpl implements ServicioPartidoParticipa
         if (participante == null) {
             throw new ParticipanteNoEncontrado();
         }
-        participante.setEquipo(Equipo.valueOf(nuevoEquipo));
+        participante.setEquipo(EquipoEnum.valueOf(nuevoEquipo));
         return participante;
     }
 

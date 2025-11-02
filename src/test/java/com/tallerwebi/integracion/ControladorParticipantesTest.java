@@ -29,7 +29,7 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
 import com.tallerwebi.dominio.Cancha;
-import com.tallerwebi.dominio.Equipo;
+import com.tallerwebi.dominio.EquipoEnum;
 import com.tallerwebi.dominio.Horario;
 import com.tallerwebi.dominio.Nivel;
 import com.tallerwebi.dominio.Partido;
@@ -88,7 +88,7 @@ public class ControladorParticipantesTest {
                 this.sessionFactory.getCurrentSession().save(participante);
 
                 PartidoParticipante partidoParticipante = new PartidoParticipante(nuevoPartido, participante,
-                                Equipo.SIN_EQUIPO);
+                                EquipoEnum.SIN_EQUIPO);
                 this.sessionFactory.getCurrentSession().save(partidoParticipante);
                 this.sessionFactory.getCurrentSession().flush();
 
@@ -109,7 +109,7 @@ public class ControladorParticipantesTest {
                 PartidoParticipante partidoParticipanteActualizado = sessionFactory.getCurrentSession()
                                 .get(PartidoParticipante.class, partidoParticipante.getId());
                 assertNotNull(partidoParticipanteActualizado);
-                assertThat(partidoParticipanteActualizado.getEquipo(), is(Equipo.EQUIPO_1));
+                assertThat(partidoParticipanteActualizado.getEquipo(), is(EquipoEnum.EQUIPO_1));
         }
 
         @Test
