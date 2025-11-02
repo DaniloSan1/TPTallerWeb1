@@ -1,17 +1,17 @@
 -- Fixed SQL syntax issues while keeping the full Lorem Ipsum text intact
 
 -- Insert additional users
-INSERT INTO Usuario(id, nombre, apellido, email, username, password, rol, activo, posicionFavorita) VALUES
-(NULL, 'John', 'Doe', 'test@unlam.edu.ar', 'john', 'test', 'ADMIN', TRUE, 'DELANTERO'),
-(NULL, 'Jane', 'Doe', 'jane.doe@example.com', 'jane', 'password', 'ROLE_USER', TRUE, 'DEFENSOR'),
-(NULL, 'Ricardo', 'Tapia', 'participante1@example.com', 'ricardo', 'password', 'ROLE_USER', TRUE, 'MEDIOCAMPISTA'),
-(NULL, 'Bruno', 'Diaz', 'email@example.com', 'bruno', 'password', 'ROLE_USER', TRUE, 'PORTERO'),
-(NULL, 'Carlos', 'Garcia', 'carlos.garcia@example.com', 'carlos', 'password', 'ROLE_USER', TRUE, 'DELANTERO'),
-(NULL, 'Maria', 'Lopez', 'maria.lopez@example.com', 'maria', 'password', 'ROLE_USER', TRUE, 'DEFENSOR'),
-(NULL, 'Pedro', 'Martinez', 'pedro.martinez@example.com', 'pedro', 'password', 'ROLE_USER', TRUE, 'MEDIOCAMPISTA'),
-(NULL, 'Ana', 'Rodriguez', 'ana.rodriguez@example.com', 'ana', 'password', 'ROLE_USER', TRUE, 'PORTERO'),
-(NULL, 'Luis', 'Hernandez', 'luis.hernandez@example.com', 'luis', 'password', 'ROLE_USER', TRUE, 'DELANTERO'),
-(NULL, 'Sofia', 'Fernandez', 'sofia.fernandez@example.com', 'sofia', 'password', 'ROLE_USER', TRUE, 'DEFENSOR');
+INSERT INTO Usuario(id, nombre, apellido, email, username, password, rol, activo, posicionFavorita, fotoPerfil) VALUES
+(NULL, 'John', 'Doe', 'test@unlam.edu.ar', 'john', 'test', 'ADMIN', TRUE, 'DELANTERO', NULL),
+(NULL, 'Jane', 'Doe', 'jane.doe@example.com', 'jane', 'password', 'ROLE_USER', TRUE, 'DEFENSOR', NULL),
+(NULL, 'Ricardo', 'Tapia', 'participante1@example.com', 'ricardo', 'password', 'ROLE_USER', TRUE, 'MEDIOCAMPISTA', NULL),
+(NULL, 'Bruno', 'Diaz', 'email@example.com', 'bruno', 'password', 'ROLE_USER', TRUE, 'PORTERO', NULL),
+(NULL, 'Carlos', 'Garcia', 'carlos.garcia@example.com', 'carlos', 'password', 'ROLE_USER', TRUE, 'DELANTERO', NULL),
+(NULL, 'Maria', 'Lopez', 'maria.lopez@example.com', 'maria', 'password', 'ROLE_USER', TRUE, 'DEFENSOR', NULL),
+(NULL, 'Pedro', 'Martinez', 'pedro.martinez@example.com', 'pedro', 'password', 'ROLE_USER', TRUE, 'MEDIOCAMPISTA', NULL),
+(NULL, 'Ana', 'Rodriguez', 'ana.rodriguez@example.com', 'ana', 'password', 'ROLE_USER', TRUE, 'PORTERO', NULL),
+(NULL, 'Luis', 'Hernandez', 'luis.hernandez@example.com', 'luis', 'password', 'ROLE_USER', TRUE, 'DELANTERO', NULL),
+(NULL, 'Sofia', 'Fernandez', 'sofia.fernandez@example.com', 'sofia', 'password', 'ROLE_USER', TRUE, 'DEFENSOR', NULL);
 
 -- Insert fields
 INSERT INTO Cancha(id, nombre, capacidad, direccion, zona, precio, tipoSuelo) VALUES

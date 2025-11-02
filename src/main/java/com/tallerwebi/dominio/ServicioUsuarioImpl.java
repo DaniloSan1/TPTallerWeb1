@@ -43,4 +43,9 @@ public class ServicioUsuarioImpl implements ServicioUsuario {
     public Usuario buscarPorId(Long id) {
         return repositorioUsuario.buscarPorId(id);
     }
+
+    @Override
+    public Usuario buscarPorUsername(String username) {
+        return repositorioUsuario.buscarPorUsername(username);
+    }
 }
