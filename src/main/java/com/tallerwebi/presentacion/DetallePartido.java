@@ -4,7 +4,6 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import com.tallerwebi.dominio.EquipoEnum;
 import com.tallerwebi.dominio.Nivel;
 import com.tallerwebi.dominio.Partido;
 import com.tallerwebi.dominio.Usuario;
@@ -51,7 +50,8 @@ public class DetallePartido {
         this.cuposDisponibles = partido.cuposDisponibles();
         this.direccion = partido.getReserva().getCancha().getDireccion();
 
-        this.participantes = partido.getParticipantes().stream()
+        this.participantes = partido.getEquipos().stream()
+                .flatMap(pe -> pe.getJugadores().stream())
                 .map(DetalleParticipante::new)
                 .collect(Collectors.toList());
 

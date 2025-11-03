@@ -18,7 +18,7 @@ public class Equipo {
 
     private LocalDateTime fechaCreacion;
 
-    @OneToMany(mappedBy = "equipo", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "equipo", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
     private Set<EquipoJugador> jugadores = new HashSet<>();
 
     @OneToMany(mappedBy = "equipo", cascade = CascadeType.ALL, orphanRemoval = true)

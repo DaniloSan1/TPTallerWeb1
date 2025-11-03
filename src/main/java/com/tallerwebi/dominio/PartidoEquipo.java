@@ -1,9 +1,10 @@
 package com.tallerwebi.dominio;
 
+import java.util.Set;
+
 import javax.persistence.*;
 
 @Entity
-@Table(name = "partido_equipo")
 public class PartidoEquipo {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -57,6 +58,10 @@ public class PartidoEquipo {
 
     public Integer getPoints() {
         return points;
+    }
+
+    public Set<EquipoJugador> getJugadores() {
+        return equipo != null ? equipo.getJugadores() : java.util.Collections.emptySet();
     }
 
     public void setPoints(Integer points) {

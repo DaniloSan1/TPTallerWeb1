@@ -27,7 +27,7 @@ public class Partido {
     @OneToMany(mappedBy = "partido", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
     private Set<PartidoParticipante> participantes = new HashSet<>();
 
-    @OneToMany(mappedBy = "partido", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "partido", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
     private Set<PartidoEquipo> equipos = new HashSet<>();
 
     // Constructor por defecto para JPA

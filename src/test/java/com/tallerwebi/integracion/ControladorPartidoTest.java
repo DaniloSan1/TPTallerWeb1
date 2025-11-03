@@ -31,11 +31,12 @@ import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.tallerwebi.dominio.Cancha;
-import com.tallerwebi.dominio.EquipoEnum;
+import com.tallerwebi.dominio.Equipo;
+import com.tallerwebi.dominio.EquipoJugador;
 import com.tallerwebi.dominio.Horario;
 import com.tallerwebi.dominio.Nivel;
 import com.tallerwebi.dominio.Partido;
-import com.tallerwebi.dominio.PartidoParticipante;
+import com.tallerwebi.dominio.PartidoEquipo;
 import com.tallerwebi.dominio.Reserva;
 import com.tallerwebi.dominio.Usuario;
 import com.tallerwebi.dominio.Zona;
@@ -113,20 +114,36 @@ public class ControladorPartidoTest {
 		this.sessionFactory.getCurrentSession().save(participante3);
 		this.sessionFactory.getCurrentSession().save(participante4);
 
-		PartidoParticipante pp1 = new PartidoParticipante(nuevoPartido, participante1, EquipoEnum.EQUIPO_1);
-		PartidoParticipante pp2 = new PartidoParticipante(nuevoPartido, participante2, EquipoEnum.EQUIPO_2);
-		PartidoParticipante pp3 = new PartidoParticipante(nuevoPartido, participante3, EquipoEnum.EQUIPO_2);
-		PartidoParticipante pp4 = new PartidoParticipante(nuevoPartido, participante4, EquipoEnum.SIN_EQUIPO);
+		// crea equipos
+		Equipo equipo1 = new Equipo("Equipo 1", creador, LocalDateTime.now());
+		Equipo equipo2 = new Equipo("Equipo 2", creador, LocalDateTime.now());
+		this.sessionFactory.getCurrentSession().save(equipo1);
+		this.sessionFactory.getCurrentSession().save(equipo2);
+		this.sessionFactory.getCurrentSession().flush();
 
-		nuevoPartido.getParticipantes().add(pp1);
-		nuevoPartido.getParticipantes().add(pp2);
-		nuevoPartido.getParticipantes().add(pp3);
-		nuevoPartido.getParticipantes().add(pp4);
+		// agrega EquipoJugador
+		EquipoJugador ej1 = new EquipoJugador(equipo1, participante1);
+		EquipoJugador ej2 = new EquipoJugador(equipo2, participante2);
+		EquipoJugador ej3 = new EquipoJugador(equipo2, participante3);
+		EquipoJugador ej4 = new EquipoJugador(equipo1, participante4);
+		equipo1.getJugadores().add(ej1);
+		equipo2.getJugadores().add(ej2);
+		equipo2.getJugadores().add(ej3);
+		equipo1.getJugadores().add(ej4);
+		this.sessionFactory.getCurrentSession().save(ej1);
+		this.sessionFactory.getCurrentSession().save(ej2);
+		this.sessionFactory.getCurrentSession().save(ej3);
+		this.sessionFactory.getCurrentSession().save(ej4);
+		this.sessionFactory.getCurrentSession().flush();
 
-		this.sessionFactory.getCurrentSession().save(pp1);
-		this.sessionFactory.getCurrentSession().save(pp2);
-		this.sessionFactory.getCurrentSession().save(pp3);
-		this.sessionFactory.getCurrentSession().save(pp4);
+		// agrega PartidoEquipo
+		PartidoEquipo pe1 = new PartidoEquipo(nuevoPartido, equipo1, 0);
+		PartidoEquipo pe2 = new PartidoEquipo(nuevoPartido, equipo2, 0);
+		nuevoPartido.getEquipos().add(pe1);
+		nuevoPartido.getEquipos().add(pe2);
+		this.sessionFactory.getCurrentSession().save(pe1);
+		this.sessionFactory.getCurrentSession().save(pe2);
+		this.sessionFactory.getCurrentSession().flush();
 
 		Long partidoId = nuevoPartido.getId();
 		MvcResult result = this.mockMvc.perform(get("/partidos/{id}", partidoId)
