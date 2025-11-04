@@ -81,11 +81,11 @@ public class Partido {
     }
 
     public int getCupoMaximo() {
-        return cupoMaximo;
+        return reserva.getCancha().getCapacidad();
     }
 
     public int getCupoDisponible() {
-        return Math.max(0, cupoMaximo - participantes.size());
+        return Math.max(0, getCupoMaximo() - participantes.size());
     }
 
     public boolean tieneCupo() {
@@ -133,12 +133,17 @@ public class Partido {
     }
 
     public boolean validarCupo() {
-        return participantes.size() < cupoMaximo;
+        return participantes.size() < this.getCupoMaximo();
     }
 
     public boolean validarParticipanteExistente(Long usuarioId) {
         return participantes.stream()
                 .anyMatch(pp -> pp.getUsuario().getId().equals(usuarioId));
+    }
+
+    public boolean validarEquipoExistente(Long equipoId) {
+        return equipos.stream()
+                .anyMatch(pe -> pe.getEquipo().getId().equals(equipoId));
     }
 
     public void setReserva(Reserva reserva) {
@@ -158,7 +163,10 @@ public class Partido {
     }
 
     public int cuposDisponibles() {
-        return this.cupoMaximo - this.participantes.size();
+        int cantidadJugadores = this.equipos.stream()
+                .mapToInt(pe -> pe.getJugadores().size())
+                .sum();
+        return this.cupoMaximo - cantidadJugadores;
     }
 
     public Set<PartidoEquipo> getEquipos() {

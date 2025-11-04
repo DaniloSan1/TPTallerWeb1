@@ -82,4 +82,14 @@ public class Equipo {
     public void setPartidos(Set<PartidoEquipo> partidos) {
         this.partidos = partidos;
     }
+
+    public boolean yaExisteJugador(Long usuarioId) {
+        return jugadores.stream()
+                .anyMatch(ej -> ej.getUsuario().getId().equals(usuarioId));
+    }
+
+    public void agregarJugador(EquipoJugador equipoJugador) {
+        jugadores.add(equipoJugador);
+        equipoJugador.setEquipo(this);
+    }
 }

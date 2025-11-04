@@ -70,7 +70,7 @@ public class ControladorPartidoTest {
 	@Rollback
 	public void debeRetornarDetallePartidoCuandoSeNavegaADetallePartidoConUnIdExistente() throws Exception {
 
-		Cancha cancha = new Cancha("Cancha 1", "Direccion 1", 20, "CESPED", Zona.NORTE);
+		Cancha cancha = new Cancha("Cancha 1", "Direccion 1", 10, "CESPED", Zona.NORTE);
 		this.sessionFactory.getCurrentSession().save(cancha);
 		this.sessionFactory.getCurrentSession().flush();
 

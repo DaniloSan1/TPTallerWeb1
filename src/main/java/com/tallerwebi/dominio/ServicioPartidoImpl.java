@@ -1,7 +1,6 @@
 package com.tallerwebi.dominio;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 import javax.transaction.Transactional;
 
@@ -11,6 +10,7 @@ import org.springframework.stereotype.Service;
 import com.tallerwebi.dominio.excepcion.NoExisteElUsuario;
 import com.tallerwebi.dominio.excepcion.NoHayCupoEnPartido;
 import com.tallerwebi.dominio.excepcion.PartidoNoEncontrado;
+import com.tallerwebi.dominio.excepcion.PermisosInsufficientes;
 import com.tallerwebi.dominio.excepcion.YaExisteElParticipante;
 
 @Service
@@ -18,15 +18,18 @@ public class ServicioPartidoImpl implements ServicioPartido {
     private final RepositorioPartido repoPartido;
     private final RepositorioReserva repoReserva;
     private final RepositorioUsuario repoUsuario;
+    private final ServicioEquipoJugador servicioEquipoJugador;
     private final RepositorioPartidoParticipante repoPartidoParticipante;
 
     @Autowired
     public ServicioPartidoImpl(RepositorioPartido repoPartido, RepositorioReserva repoReserva,
-            RepositorioUsuario repoUsuario, RepositorioPartidoParticipante repoPartidoParticipante) {
+            RepositorioUsuario repoUsuario, ServicioEquipoJugador servicioEquipoJugador,
+            RepositorioPartidoParticipante repoPartidoParticipante) {
         this.repoPartido = repoPartido;
         this.repoReserva = repoReserva;
         this.repoPartidoParticipante = repoPartidoParticipante;
         this.repoUsuario = repoUsuario;
+        this.servicioEquipoJugador = servicioEquipoJugador;
     }
 
     @Override
@@ -67,9 +70,8 @@ public class ServicioPartidoImpl implements ServicioPartido {
         return partido;
     }
 
-    @Override
     @Transactional
-    public Partido anotarParticipante(Long partidoId, Usuario usuario)
+    public Partido anotarParticipanteOld(Long partidoId, Usuario usuario)
             throws NoExisteElUsuario, NoHayCupoEnPartido, PartidoNoEncontrado, YaExisteElParticipante {
         Partido partido = repoPartido.porId(partidoId);
 
@@ -95,6 +97,21 @@ public class ServicioPartidoImpl implements ServicioPartido {
 
     @Override
     @Transactional
+    public Partido anotarParticipante(Partido partido, Equipo equipo, Usuario usuario)
+            throws YaExisteElParticipante, NoHayCupoEnPartido {
+
+        if (!partido.validarCupo()) {
+            throw new NoHayCupoEnPartido();
+        }
+
+        EquipoJugador equipoJugador = servicioEquipoJugador.crearEquipoJugador(equipo, usuario);
+        equipo.agregarJugador(equipoJugador);
+
+        return partido;
+    }
+
+    @Override
+    @Transactional
     public void abandonarPartido(Long partidoId, Long usuarioId) {
         Partido partido = repoPartido.porId(partidoId);
         if (partido == null) {
@@ -112,10 +129,11 @@ public class ServicioPartidoImpl implements ServicioPartido {
     }
 
     @Override
-    public void actualizarPartido(Long id, String titulo, String descripcion, Usuario usuario) {
+    public void actualizarPartido(Long id, String titulo, String descripcion, Usuario usuario)
+            throws PermisosInsufficientes {
         Partido partido = obtenerPorId(id);
         if (!partido.esCreador(usuario.getEmail())) {
-            throw new RuntimeException("No tienes permiso para editar este partido.");
+            throw new PermisosInsufficientes();
         }
         partido.setTitulo(titulo);
         partido.setDescripcion(descripcion);
