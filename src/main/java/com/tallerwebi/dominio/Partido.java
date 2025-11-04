@@ -29,9 +29,6 @@ public class Partido {
     private Usuario creador;
 
     @OneToMany(mappedBy = "partido", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
-    private Set<PartidoParticipante> participantes = new HashSet<>();
-
-    @OneToMany(mappedBy = "partido", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
     private Set<PartidoEquipo> equipos = new HashSet<>();
 
     // Constructor por defecto para JPA
@@ -54,12 +51,6 @@ public class Partido {
         return this.equipos.stream()
                 .flatMap(pe -> pe.getJugadores().stream())
                 .collect(Collectors.toSet());
-    }
-
-    public Set<Long> getParticipantesIds() {
-        return participantes.stream()
-                .map(pp -> pp.getUsuario().getId())
-                .collect(java.util.stream.Collectors.toSet());
     }
 
     public Reserva getReserva() {
@@ -91,7 +82,7 @@ public class Partido {
     }
 
     public int getCupoDisponible() {
-        return Math.max(0, getCupoMaximo() - participantes.size());
+        return Math.max(0, getCupoMaximo() - getParticipantes().size());
     }
 
     public boolean tieneCupo() {
@@ -139,7 +130,7 @@ public class Partido {
     }
 
     public boolean validarCupo() {
-        return participantes.size() < this.getCupoMaximo();
+        return getParticipantes().size() < this.getCupoMaximo();
     }
 
     public boolean validarParticipanteExistente(Long usuarioId) {
@@ -167,13 +158,6 @@ public class Partido {
 
     public boolean partidoActivo() {
         return this.reserva != null && this.reserva.getActiva();
-    }
-
-    public int cuposDisponibles() {
-        int cantidadJugadores = this.equipos.stream()
-                .mapToInt(pe -> pe.getJugadores().size())
-                .sum();
-        return this.cupoMaximo - cantidadJugadores;
     }
 
     public Set<PartidoEquipo> getEquipos() {

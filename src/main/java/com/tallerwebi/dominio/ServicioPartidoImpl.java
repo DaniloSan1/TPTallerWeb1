@@ -12,26 +12,21 @@ import com.tallerwebi.dominio.excepcion.PartidoNoEncontrado;
 import com.tallerwebi.dominio.excepcion.PermisosInsufficientes;
 import com.tallerwebi.dominio.excepcion.YaExisteElParticipante;
 
-import com.tallerwebi.dominio.RepositorioPartidoEquipo;
-
 @Service
 public class ServicioPartidoImpl implements ServicioPartido {
     private final RepositorioPartido repoPartido;
     private final RepositorioReserva repoReserva;
     private final RepositorioUsuario repoUsuario;
     private final ServicioEquipoJugador servicioEquipoJugador;
-    private final RepositorioPartidoParticipante repoPartidoParticipante;
     private final ServicioEquipo servicioEquipo;
     private final RepositorioPartidoEquipo repoPartidoEquipo;
 
     @Autowired
     public ServicioPartidoImpl(RepositorioPartido repoPartido, RepositorioReserva repoReserva,
-            RepositorioUsuario repoUsuario, ServicioEquipoJugador servicioEquipoJugador,
-            RepositorioPartidoParticipante repoPartidoParticipante, ServicioEquipo servicioEquipo,
+            RepositorioUsuario repoUsuario, ServicioEquipoJugador servicioEquipoJugador, ServicioEquipo servicioEquipo,
             RepositorioPartidoEquipo repoPartidoEquipo) {
         this.repoPartido = repoPartido;
         this.repoReserva = repoReserva;
-        this.repoPartidoParticipante = repoPartidoParticipante;
         this.repoUsuario = repoUsuario;
         this.servicioEquipoJugador = servicioEquipoJugador;
         this.servicioEquipo = servicioEquipo;

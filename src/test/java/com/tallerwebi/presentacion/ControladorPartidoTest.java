@@ -95,7 +95,7 @@ public class ControladorPartidoTest {
         // Set up the partido mock with all required relationships
         when(partidoMock.getReserva()).thenReturn(reservaMock);
         when(partidoMock.getCreador()).thenReturn(creadorMock);
-        when(partidoMock.cuposDisponibles()).thenReturn(5);
+        when(partidoMock.getCupoDisponible()).thenReturn(5);
 
         // Create mock for Equipo
         equipoMock = Mockito.mock(Equipo.class);

@@ -36,7 +36,6 @@ import com.tallerwebi.dominio.Horario;
 import com.tallerwebi.dominio.Nivel;
 import com.tallerwebi.dominio.Partido;
 import com.tallerwebi.dominio.PartidoEquipo;
-import com.tallerwebi.dominio.PartidoParticipante;
 import com.tallerwebi.dominio.Reserva;
 import com.tallerwebi.dominio.Usuario;
 import com.tallerwebi.dominio.Zona;
@@ -105,16 +104,12 @@ public class ControladorParticipantesTest {
                 this.sessionFactory.getCurrentSession().save(participante);
 
                 // Crear EquipoJugador para el participante en equipo1
-                EquipoJugador ej = new EquipoJugador(equipo1, participante, LocalDateTime.now());
-                this.sessionFactory.getCurrentSession().save(ej);
-
-                PartidoParticipante partidoParticipante = new PartidoParticipante(nuevoPartido, participante,
-                                EquipoEnum.SIN_EQUIPO);
-                this.sessionFactory.getCurrentSession().save(partidoParticipante);
+                EquipoJugador equipoJugador = new EquipoJugador(equipo1, participante, LocalDateTime.now());
+                this.sessionFactory.getCurrentSession().save(equipoJugador);
                 this.sessionFactory.getCurrentSession().flush();
 
                 ResultActions result = mockMvc
-                                .perform(post("/participantes/" + ej.getId() + "/asignacion-equipo")
+                                .perform(post("/participantes/" + equipoJugador.getId() + "/asignacion-equipo")
                                                 .param("equipo", String.valueOf(equipo2.getId()))
                                                 .sessionAttr("EMAIL", "test@example.com")
                                                 .header("referer", "/partido/1"))
@@ -126,10 +121,6 @@ public class ControladorParticipantesTest {
 
                 String flashSuccessMessage = (String) result.andReturn().getFlashMap().get("listaParticipantesSuccess");
                 assertThat(flashSuccessMessage, is("Equipo asignado correctamente"));
-
-                PartidoParticipante partidoParticipanteActualizado = sessionFactory.getCurrentSession()
-                                .get(PartidoParticipante.class, partidoParticipante.getId());
-                assertNotNull(partidoParticipanteActualizado);
         }
 
         @Test
