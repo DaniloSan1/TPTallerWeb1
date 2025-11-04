@@ -5,10 +5,9 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
-import javax.transaction.Transactional;
 
-@Service
-@Transactional
+
+@Service("servicioHorario")
 public class ServicioHorarioImpl implements ServicioHorario {
 
     private final RepositorioHorario repositorioHorario;

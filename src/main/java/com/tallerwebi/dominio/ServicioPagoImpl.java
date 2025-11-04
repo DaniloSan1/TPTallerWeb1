@@ -49,9 +49,9 @@ public class ServicioPagoImpl implements ServicioPago {
             items.add(itemRequest);
 
             PreferenceBackUrlsRequest backUrlsRequest = PreferenceBackUrlsRequest.builder()
-                    .success("http://localhost:8080/spring/pago/exito/" + reservaId)
-                    .failure("http://localhost:8080/spring/pago/error/" + reservaId)
-                    .pending("http://localhost:8080/spring/pago/pendiente/" + reservaId)
+                    .success("https://noninternationally-variolitic-diedra.ngrok-free.dev/spring/pago/exito/")
+                    .failure("https://noninternationally-variolitic-diedra.ngrok-free.dev/spring/pago/error/")
+                    .pending("https://noninternationally-variolitic-diedra.ngrok-free.dev/spring/pago/pendiente/")
                     .build();
 
             PreferenceRequest preferenceRequest = PreferenceRequest.builder()
