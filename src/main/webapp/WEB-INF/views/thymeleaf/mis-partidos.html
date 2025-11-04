@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>Mis partidos — Partidazo</title>
+
+  <link rel="stylesheet" th:href="@{/webjars/bootstrap/5.2.0/css/bootstrap.min.css}"/>
+  <link rel="stylesheet" th:href="@{/css/main.css}"/>
+</head>
+<body>
+  <!-- Navbar compartida -->
+  <div th:replace="~{fragments/navbar :: navbar}"></div>
+
+  <main class="container" style="padding-top:135px; min-height:70vh;">
+    <div class="d-flex align-items-center justify-content-between mb-4">
+      <h2 class="mb-0">Mis partidos</h2>
+    </div>
+
+    <!-- Vacío -->
+    <section th:if="${#lists.isEmpty(partidos)}" class="text-center text-muted py-5">
+      <p class="mb-2">Todavía no creaste ningún partido.</p>
+      <a class="btn btn-primary" th:href="@{/canchas-disponibles}">Crear mi primer partido</a>
+    </section>
+
+    <!-- Grid -->
+    <section class="row g-4" th:if="${!#lists.isEmpty(partidos)}">
+      <div class="col-12 col-sm-6 col-lg-4" th:each="p : ${partidos}">
+        <div class="card h-100 shadow-sm">
+          <!-- Imagen (placeholder si no hay) -->
+          <img class="card-img-top"
+               th:if="${p.reserva != null && p.reserva.cancha != null && p.reserva.cancha.foto != null}"
+               th:src="${p.reserva.cancha.foto.url}"
+               alt="Foto de la cancha"/>
+          <img class="card-img-top"
+               th:if="${p.reserva == null || p.reserva.cancha == null || p.reserva.cancha.foto == null}"
+               th:src="@{/assets/cancha-placeholder.jpg}"
+               alt="Foto de la cancha"/>
+
+          <div class="card-body d-flex flex-column">
+            <h5 class="card-title mb-2" th:text="${p.titulo}">Título del partido</h5>
+            <p class="card-text text-muted mb-2" th:text="${p.descripcion}">Descripción…</p>
+
+            <ul class="list-unstyled small mb-3">
+              <li>
+                <strong>Fecha:</strong>
+                <span
+                  th:text="${p.reserva != null && p.reserva.fechaHoraInicio != null
+                            ? p.reserva.fechaHoraInicio
+                            : (p.reserva != null && p.reserva.fechaReserva != null
+                                ? p.reserva.fechaReserva
+                                : 'Sin fecha')}">
+                  --/--/----
+                </span>
+              </li>
+              <li>
+                <strong>Cupos:</strong> <span th:text="${p.cupoMaximo}">0</span>
+              </li>
+              <li th:if="${p.reserva != null && p.reserva.cancha != null}">
+                <strong>Cancha:</strong> <span th:text="${p.reserva.cancha.nombre}">Cancha</span>
+              </li>
+            </ul>
+
+            <div class="mt-auto d-flex gap-2">
+              <a class="btn btn-outline-primary btn-sm" th:href="@{'/partidos/' + ${p.id}}">Ver detalle</a>
+              <a class="btn btn-outline-secondary btn-sm" th:href="@{'/partidos/' + ${p.id} + '/editar'}">Editar</a>
+            </div>
+          </div>
+
+          <div class="card-footer d-flex gap-2">
+            <span class="badge bg-success" th:text="${p.zona}">Zona</span>
+            <span class="badge bg-info text-dark" th:text="${p.nivel}">Nivel</span>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script th:src="@{/webjars/bootstrap/5.2.0/js/bootstrap.min.js}"></script>
+</body>
+</html>

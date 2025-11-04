@@ -68,5 +68,17 @@ public class RepositorioPartidoImpl implements RepositorioPartido {
         session.save(p);
     }
 
+   @Override
+   public List<Partido> listarPorCreador (Long idCreador) {
+       final Session session = sessionFactory.getCurrentSession();
+       String hql =  "SELECT p " +
+       "FROM Partido p " +
+       "WHERE p.creador.id = :idCreador";
+       var query = session.createQuery(hql, Partido.class);
+       query.setParameter("idCreador", idCreador);       
+       return query.list();
+   }
+
+
 }
 

@@ -107,4 +107,18 @@ public class ControladorPartido {
         servicio.abandonarPartido(id, usuario.getId());
         return "redirect:/home";
     }
+    @GetMapping("/mios")
+public ModelAndView misPartidos(HttpServletRequest request, ModelMap model) {
+    String email = (String) request.getSession().getAttribute("EMAIL");
+    if (email == null) {
+        return new ModelAndView("redirect:/login");
+    }
+    Usuario usuario = servicioLogin.buscarPorEmail(email);
+    var partidos = servicio.listarPorCreador(usuario);
+
+    model.put("partidos", partidos);
+    model.put("currentPage", "mis-partidos");
+    return new ModelAndView("mis-partidos", model);
+}
+
 }

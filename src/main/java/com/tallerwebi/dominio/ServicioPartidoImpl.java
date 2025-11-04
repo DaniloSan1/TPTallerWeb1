@@ -110,4 +110,12 @@ public class ServicioPartidoImpl implements ServicioPartido {
         // El @Transactional se encarga del guardado automático
 
     }
+
+    @Override
+    public List<Partido> listarPorCreador(Usuario usuario) {
+        if (usuario == null || usuario.getId() == null) {
+        return java.util.Collections.emptyList();
+    }
+    return repoPartido.listarPorCreador(usuario.getId());
+    }
 }
