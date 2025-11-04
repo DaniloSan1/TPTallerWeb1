@@ -4,34 +4,32 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import com.tallerwebi.dominio.Equipo;
 import com.tallerwebi.dominio.ServicioEquipo;
 import com.tallerwebi.dominio.ServicioEquipoJugador;
-import com.tallerwebi.dominio.ServicioPartidoParticipante;
+import com.tallerwebi.dominio.excepcion.EquipoNoEncontrado;
 import com.tallerwebi.dominio.excepcion.ParticipanteNoEncontrado;
 
 @Controller
 @RequestMapping("/participantes")
 public class ControladorParticipantes {
-    private ServicioPartidoParticipante servicioPartidoParticipante;
+    private ServicioEquipo servicioEquipo;
     private ServicioEquipoJugador servicioEquipoJugador;
 
     @Autowired
-    public ControladorParticipantes(ServicioPartidoParticipante servicioPartidoParticipante,
-            ServicioEquipoJugador servicioEquipoJugador) {
-
-        this.servicioPartidoParticipante = servicioPartidoParticipante;
+    public ControladorParticipantes(ServicioEquipo servicioEquipo, ServicioEquipoJugador servicioEquipoJugador) {
+        this.servicioEquipo = servicioEquipo;
         this.servicioEquipoJugador = servicioEquipoJugador;
     }
 
     @RequestMapping(path = "/{id}/asignacion-equipo", method = RequestMethod.POST)
-    public String asignarEquipo(@PathVariable long id, @RequestParam("equipo") String equipo,
+    public String asignarEquipo(@PathVariable long id, @RequestParam("equipo") long equipoId,
             RedirectAttributes redirectAttributes, HttpServletRequest request)
             throws Exception {
         try {
@@ -40,10 +38,14 @@ public class ControladorParticipantes {
                 return "redirect:/login";
             }
 
-            servicioPartidoParticipante.actualizarEquipo(id, equipo);
+            Equipo equipo = servicioEquipo.buscarPorId(equipoId);
+            servicioEquipoJugador.actualizarEquipo(id, equipo);
 
             redirectAttributes.addFlashAttribute("listaParticipantesSuccess", "Equipo asignado correctamente");
 
+        } catch (EquipoNoEncontrado e) {
+            System.out.println(e);
+            redirectAttributes.addFlashAttribute("listaParticipantesError", e.getMessage());
         } catch (ParticipanteNoEncontrado e) {
             System.out.println(e);
             redirectAttributes.addFlashAttribute("listaParticipantesError", e.getMessage());

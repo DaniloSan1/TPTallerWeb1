@@ -125,25 +125,21 @@ INSERT INTO FotoCancha(id, cancha_id, url) VALUES
 
 -- Insert equipos for partidos
 INSERT INTO Equipo(id, nombre, creado_por_id, fechaCreacion) VALUES
-(NULL, 'EQUIPO_1', (SELECT creador_id FROM Partido WHERE id = 1), NOW()),
-(NULL, 'EQUIPO_2', (SELECT creador_id FROM Partido WHERE id = 1), NOW()),
+(NULL, 'Equipo 1', (SELECT creador_id FROM Partido WHERE id = 1), NOW()),
+(NULL, 'Equipo 2', (SELECT creador_id FROM Partido WHERE id = 1), NOW()),
 (NULL, 'SIN_EQUIPO', (SELECT creador_id FROM Partido WHERE id = 1), NOW());
 
 -- Insert partido_equipo
 INSERT INTO PartidoEquipo(id, partido_id, equipo_id, points) VALUES
-(NULL, 1, (SELECT id FROM Equipo WHERE nombre = 'EQUIPO_1' AND creado_por_id = (SELECT creador_id FROM Partido WHERE id = 1)), 0),
-(NULL, 1, (SELECT id FROM Equipo WHERE nombre = 'EQUIPO_2' AND creado_por_id = (SELECT creador_id FROM Partido WHERE id = 1)), 0),
-(NULL, 1, (SELECT id FROM Equipo WHERE nombre = 'SIN_EQUIPO' AND creado_por_id = (SELECT creador_id FROM Partido WHERE id = 1)), 0);
-
+(NULL, 1, (SELECT id FROM Equipo WHERE nombre = 'Equipo 1' AND creado_por_id = (SELECT creador_id FROM Partido WHERE id = 1)), 0),
+(NULL, 1, (SELECT id FROM Equipo WHERE nombre = 'Equipo 2' AND creado_por_id = (SELECT creador_id FROM Partido WHERE id = 1)), 0);
 -- Insert equipo_jugador
 INSERT INTO EquipoJugador(id, equipo_id, usuario_id, fecha_union) VALUES
-(NULL, (SELECT id FROM Equipo WHERE nombre = 'EQUIPO_1' AND creado_por_id = (SELECT creador_id FROM Partido WHERE id = 1)), 2, NOW()),
-(NULL, (SELECT id FROM Equipo WHERE nombre = 'EQUIPO_1' AND creado_por_id = (SELECT creador_id FROM Partido WHERE id = 1)), 3, NOW()),
-(NULL, (SELECT id FROM Equipo WHERE nombre = 'EQUIPO_1' AND creado_por_id = (SELECT creador_id FROM Partido WHERE id = 1)), 4, NOW()),
-(NULL, (SELECT id FROM Equipo WHERE nombre = 'EQUIPO_2' AND creado_por_id = (SELECT creador_id FROM Partido WHERE id = 1)), 5, NOW()),
-(NULL, (SELECT id FROM Equipo WHERE nombre = 'EQUIPO_2' AND creado_por_id = (SELECT creador_id FROM Partido WHERE id = 1)), 6, NOW()),
-(NULL, (SELECT id FROM Equipo WHERE nombre = 'EQUIPO_2' AND creado_por_id = (SELECT creador_id FROM Partido WHERE id = 1)), 7, NOW()),
-(NULL, (SELECT id FROM Equipo WHERE nombre = 'EQUIPO_2' AND creado_por_id = (SELECT creador_id FROM Partido WHERE id = 1)), 8, NOW()),
-(NULL, (SELECT id FROM Equipo WHERE nombre = 'SIN_EQUIPO' AND creado_por_id = (SELECT creador_id FROM Partido WHERE id = 1)), 9, NOW()),
-(NULL, (SELECT id FROM Equipo WHERE nombre = 'SIN_EQUIPO' AND creado_por_id = (SELECT creador_id FROM Partido WHERE id = 1)), 10, NOW());
+(NULL, (SELECT id FROM Equipo WHERE nombre = 'Equipo 1' AND creado_por_id = (SELECT creador_id FROM Partido WHERE id = 1)), 2, NOW()),
+(NULL, (SELECT id FROM Equipo WHERE nombre = 'Equipo 1' AND creado_por_id = (SELECT creador_id FROM Partido WHERE id = 1)), 3, NOW()),
+(NULL, (SELECT id FROM Equipo WHERE nombre = 'Equipo 1' AND creado_por_id = (SELECT creador_id FROM Partido WHERE id = 1)), 4, NOW()),
+(NULL, (SELECT id FROM Equipo WHERE nombre = 'Equipo 2' AND creado_por_id = (SELECT creador_id FROM Partido WHERE id = 1)), 5, NOW()),
+(NULL, (SELECT id FROM Equipo WHERE nombre = 'Equipo 2' AND creado_por_id = (SELECT creador_id FROM Partido WHERE id = 1)), 6, NOW()),
+(NULL, (SELECT id FROM Equipo WHERE nombre = 'Equipo 2' AND creado_por_id = (SELECT creador_id FROM Partido WHERE id = 1)), 7, NOW()),
+(NULL, (SELECT id FROM Equipo WHERE nombre = 'Equipo 2' AND creado_por_id = (SELECT creador_id FROM Partido WHERE id = 1)), 8, NOW());
 

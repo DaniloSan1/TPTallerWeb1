@@ -11,22 +11,25 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import com.tallerwebi.dominio.Equipo;
+import com.tallerwebi.dominio.ServicioEquipo;
 import com.tallerwebi.dominio.ServicioEquipoJugador;
-import com.tallerwebi.dominio.ServicioPartidoParticipante;
 
 public class ControladorParticipantesTest {
-    private ServicioPartidoParticipante servicioPartidoParticipanteMock;
-    private ServicioEquipoJugador servicioEquipoJugador;
+    private ServicioEquipoJugador servicioEquipoJugadorMock;
     private ControladorParticipantes controladorParticipantes;
     private HttpServletRequest requestMock;
     private HttpSession sessionMock;
     private RedirectAttributes redirectAttributesMock;
+    private ServicioEquipo servicioEquipoMock;
+    private Equipo equipoMock;
 
     @BeforeEach
     public void init() {
-        servicioPartidoParticipanteMock = Mockito.mock(ServicioPartidoParticipante.class);
-        servicioEquipoJugador = Mockito.mock(ServicioEquipoJugador.class);
-        controladorParticipantes = new ControladorParticipantes(servicioPartidoParticipanteMock, servicioEquipoJugador);
+        servicioEquipoJugadorMock = Mockito.mock(ServicioEquipoJugador.class);
+        servicioEquipoMock = Mockito.mock(ServicioEquipo.class);
+        equipoMock = Mockito.mock(Equipo.class);
+        controladorParticipantes = new ControladorParticipantes(servicioEquipoMock, servicioEquipoJugadorMock);
         requestMock = Mockito.mock(HttpServletRequest.class);
         sessionMock = Mockito.mock(HttpSession.class);
         redirectAttributesMock = Mockito.mock(RedirectAttributes.class);
@@ -37,7 +40,8 @@ public class ControladorParticipantesTest {
     public void asignarEquipoDeberiaRedirigirALoginSiNoHayEmailEnSesion() throws Exception {
         when(sessionMock.getAttribute("EMAIL")).thenReturn(null);
 
-        String result = controladorParticipantes.asignarEquipo(1L, "EQUIPO_1", redirectAttributesMock, requestMock);
+        String result = controladorParticipantes.asignarEquipo(1L, 1L, redirectAttributesMock,
+                requestMock);
 
         assertEquals("redirect:/login", result);
     }
@@ -46,11 +50,13 @@ public class ControladorParticipantesTest {
     public void asignarEquipoDeberiaRedirigirConExitoSiAsignacionCorrecta() throws Exception {
         when(sessionMock.getAttribute("EMAIL")).thenReturn("usuario@email.com");
         when(requestMock.getHeader("referer")).thenReturn("http://localhost/spring/partido/1");
+        when(servicioEquipoMock.buscarPorId(1L)).thenReturn(equipoMock);
 
-        String result = controladorParticipantes.asignarEquipo(1L, "EQUIPO_1", redirectAttributesMock, requestMock);
+        String result = controladorParticipantes.asignarEquipo(1L, 1L, redirectAttributesMock,
+                requestMock);
 
         assertEquals("redirect:http://localhost/spring/partido/1", result);
-        verify(servicioPartidoParticipanteMock).actualizarEquipo(1L, "EQUIPO_1");
+        verify(servicioEquipoJugadorMock).actualizarEquipo(1L, equipoMock);
         verify(redirectAttributesMock).addFlashAttribute("listaParticipantesSuccess", "Equipo asignado correctamente");
     }
 
@@ -58,11 +64,13 @@ public class ControladorParticipantesTest {
     public void asignarEquipoDeberiaRedirigirAHomeSiNoHayReferrer() throws Exception {
         when(sessionMock.getAttribute("EMAIL")).thenReturn("usuario@email.com");
         when(requestMock.getHeader("referer")).thenReturn(null);
+        when(servicioEquipoMock.buscarPorId(1L)).thenReturn(equipoMock);
 
-        String result = controladorParticipantes.asignarEquipo(1L, "EQUIPO_1", redirectAttributesMock, requestMock);
+        String result = controladorParticipantes.asignarEquipo(1L, 1L, redirectAttributesMock,
+                requestMock);
 
         assertEquals("redirect:/home", result);
-        verify(servicioPartidoParticipanteMock).actualizarEquipo(1L, "EQUIPO_1");
+        verify(servicioEquipoJugadorMock).actualizarEquipo(1L, equipoMock);
         verify(redirectAttributesMock).addFlashAttribute("listaParticipantesSuccess", "Equipo asignado correctamente");
     }
 
@@ -70,9 +78,11 @@ public class ControladorParticipantesTest {
     public void asignarEquipoDeberiaRedirigirConErrorSiOcurreExcepcion() throws Exception {
         when(sessionMock.getAttribute("EMAIL")).thenReturn("usuario@email.com");
         when(requestMock.getHeader("referer")).thenReturn("http://localhost/partido/1");
-        doThrow(new RuntimeException("Error")).when(servicioPartidoParticipanteMock).actualizarEquipo(1L, "EQUIPO_1");
+        when(servicioEquipoMock.buscarPorId(1L)).thenReturn(equipoMock);
+        doThrow(new RuntimeException("Error")).when(servicioEquipoJugadorMock).actualizarEquipo(1L, equipoMock);
 
-        String result = controladorParticipantes.asignarEquipo(1L, "EQUIPO_1", redirectAttributesMock, requestMock);
+        String result = controladorParticipantes.asignarEquipo(1L, 1L, redirectAttributesMock,
+                requestMock);
 
         assertEquals("redirect:http://localhost/partido/1", result);
         verify(redirectAttributesMock).addFlashAttribute("listaParticipantesError", "Error al asignar el equipo");
@@ -93,7 +103,7 @@ public class ControladorParticipantesTest {
         when(requestMock.getHeader("referer")).thenReturn("http://localhost/spring/partido/1");
         String result = controladorParticipantes.eliminarParticipante(1L, redirectAttributesMock, requestMock);
         assertEquals("redirect:http://localhost/spring/partido/1", result);
-        verify(servicioPartidoParticipanteMock).eliminar(1L);
+        verify(servicioEquipoJugadorMock).eliminarPorId(1L);
         verify(redirectAttributesMock).addFlashAttribute("listaParticipantesSuccess",
                 "Participante eliminado correctamente");
     }
@@ -106,7 +116,7 @@ public class ControladorParticipantesTest {
         String result = controladorParticipantes.eliminarParticipante(1L, redirectAttributesMock, requestMock);
 
         assertEquals("redirect:/home", result);
-        verify(servicioPartidoParticipanteMock).eliminar(1L);
+        verify(servicioEquipoJugadorMock).eliminarPorId(1L);
         verify(redirectAttributesMock).addFlashAttribute("listaParticipantesSuccess",
                 "Participante eliminado correctamente");
     }
@@ -115,7 +125,7 @@ public class ControladorParticipantesTest {
     public void eliminarParticipanteDeberiaRedirigirConErrorSiOcurreExcepcion() throws Exception {
         when(sessionMock.getAttribute("EMAIL")).thenReturn("usuario@email.com");
         when(requestMock.getHeader("referer")).thenReturn("http://localhost/partido/1");
-        doThrow(new RuntimeException("Error")).when(servicioPartidoParticipanteMock).eliminar(1L);
+        doThrow(new RuntimeException("Error")).when(servicioEquipoJugadorMock).eliminarPorId(1L);
 
         String result = controladorParticipantes.eliminarParticipante(1L, redirectAttributesMock, requestMock);
 

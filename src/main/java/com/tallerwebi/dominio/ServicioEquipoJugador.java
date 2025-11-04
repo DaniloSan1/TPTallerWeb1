@@ -2,6 +2,7 @@ package com.tallerwebi.dominio;
 
 import org.springframework.stereotype.Service;
 
+import com.tallerwebi.dominio.excepcion.ParticipanteNoEncontrado;
 import com.tallerwebi.dominio.excepcion.YaExisteElParticipante;
 
 @Service
@@ -11,4 +12,6 @@ public interface ServicioEquipoJugador {
     EquipoJugador buscarPorEquipoYUsuario(Equipo equipo, Usuario usuario);
 
     void eliminarPorId(Long id);
+
+    EquipoJugador actualizarEquipo(long partidoParticipanteId, Equipo nuevoEquipo) throws ParticipanteNoEncontrado;
 }

@@ -10,6 +10,7 @@ public class DetalleParticipante {
     private String username;
     private String nombreCompleto;
     private String posicionFavorita;
+    private Long idEquipo;
     private String equipo;
     private LocalDateTime fechaUnion;
 
@@ -19,6 +20,7 @@ public class DetalleParticipante {
         this.nombreCompleto = equipoJugador.getUsuario().getNombreCompleto();
         this.posicionFavorita = equipoJugador.getUsuario().getPosicionFavorita();
         this.equipo = equipoJugador.getEquipo().getNombre();
+        this.idEquipo = equipoJugador.getEquipo().getId();
         this.fechaUnion = equipoJugador.getFechaUnion();
         this.username = equipoJugador.getUsuario().getUsername();
     }
@@ -29,6 +31,10 @@ public class DetalleParticipante {
 
     public Long getIdUsuario() {
         return idUsuario;
+    }
+
+    public Long getIdEquipo() {
+        return idEquipo;
     }
 
     public String getNombreCompleto() {
