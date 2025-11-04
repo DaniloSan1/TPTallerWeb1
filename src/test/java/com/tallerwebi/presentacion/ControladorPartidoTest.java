@@ -12,6 +12,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.tallerwebi.dominio.Cancha;
 import com.tallerwebi.dominio.Equipo;
@@ -39,6 +40,7 @@ public class ControladorPartidoTest {
     private Usuario usuarioMock;
     private Equipo equipoMock;
     private ServicioEquipo servicioEquipoMock;
+    private RedirectAttributes redirectAttributesMock;
 
     @BeforeEach
     public void init() {
@@ -49,8 +51,10 @@ public class ControladorPartidoTest {
         servicioEquipoMock = Mockito.mock(ServicioEquipo.class);
         partidoMock = Mockito.mock(Partido.class);
         usuarioMock = Mockito.mock(Usuario.class);
+        redirectAttributesMock = Mockito.mock(RedirectAttributes.class);
         equipoMock = Mockito.mock(Equipo.class);
         when(requestMock.getSession()).thenReturn(sessionMock);
+        when(requestMock.getHeader("referer")).thenReturn("/partidos/1");
 
         // Mock the necessary methods that will be called by DetallePartido constructor
         when(partidoMock.getId()).thenReturn(1L);
@@ -169,10 +173,10 @@ public class ControladorPartidoTest {
                 .when(servicioPartidoMock)
                 .anotarParticipante(Mockito.any(Partido.class), Mockito.any(Equipo.class), Mockito.any(Usuario.class));
 
-        ModelAndView respuesta = controladorPartido.inscripcion(partidoId, 1L, requestMock);
-        assertEquals("detalle-partido", respuesta.getViewName());
-        assertNotNull(respuesta.getModel().get("error"));
+        ModelAndView respuesta = controladorPartido.inscripcion(partidoId, 1L, requestMock, redirectAttributesMock);
+        assertEquals("redirect:/partidos/1", respuesta.getViewName());
 
+        Mockito.verify(redirectAttributesMock).addFlashAttribute("error", "Error al asignar el equipo");
         Mockito.verify(servicioPartidoMock, Mockito.times(1)).anotarParticipante(Mockito.any(Partido.class),
                 Mockito.any(Equipo.class), Mockito.any(Usuario.class));
     }
@@ -187,10 +191,10 @@ public class ControladorPartidoTest {
                 .when(servicioPartidoMock)
                 .anotarParticipante(Mockito.any(Partido.class), Mockito.any(Equipo.class), Mockito.any(Usuario.class));
 
-        ModelAndView respuesta = controladorPartido.inscripcion(partidoId, 1L, requestMock);
-        assertEquals("detalle-partido", respuesta.getViewName());
-        assertNotNull(respuesta.getModel().get("error"));
+        ModelAndView respuesta = controladorPartido.inscripcion(partidoId, 1L, requestMock, redirectAttributesMock);
+        assertEquals("redirect:/partidos/1", respuesta.getViewName());
 
+        Mockito.verify(redirectAttributesMock).addFlashAttribute("error", "Error al asignar el equipo");
         Mockito.verify(servicioPartidoMock, Mockito.times(1)).anotarParticipante(Mockito.any(Partido.class),
                 Mockito.any(Equipo.class), Mockito.any(Usuario.class));
     }
@@ -205,10 +209,10 @@ public class ControladorPartidoTest {
                 .when(servicioPartidoMock)
                 .anotarParticipante(Mockito.any(Partido.class), Mockito.any(Equipo.class), Mockito.any(Usuario.class));
 
-        ModelAndView respuesta = controladorPartido.inscripcion(partidoId, 1L, requestMock);
-        assertEquals("detalle-partido", respuesta.getViewName());
-        assertNotNull(respuesta.getModel().get("error"));
+        ModelAndView respuesta = controladorPartido.inscripcion(partidoId, 1L, requestMock, redirectAttributesMock);
+        assertEquals("redirect:/partidos/1", respuesta.getViewName());
 
+        Mockito.verify(redirectAttributesMock).addFlashAttribute("error", "Error al asignar el equipo");
         Mockito.verify(servicioPartidoMock, Mockito.times(1)).anotarParticipante(Mockito.any(Partido.class),
                 Mockito.any(Equipo.class), Mockito.any(Usuario.class));
     }
@@ -222,10 +226,10 @@ public class ControladorPartidoTest {
         Mockito.when(servicioPartidoMock.anotarParticipante(Mockito.any(Partido.class), Mockito.any(Equipo.class),
                 Mockito.any(Usuario.class))).thenReturn(partidoMock);
 
-        ModelAndView respuesta = controladorPartido.inscripcion(partidoId, 1L, requestMock);
-        assertEquals("detalle-partido", respuesta.getViewName());
-        assertNotNull(respuesta.getModel().get("success"));
+        ModelAndView respuesta = controladorPartido.inscripcion(partidoId, 1L, requestMock, redirectAttributesMock);
+        assertEquals("redirect:/partidos/1", respuesta.getViewName());
 
+        Mockito.verify(redirectAttributesMock).addFlashAttribute("success", "Equipo asignado correctamente");
         Mockito.verify(servicioPartidoMock, Mockito.times(1)).anotarParticipante(Mockito.any(Partido.class),
                 Mockito.any(Equipo.class), Mockito.any(Usuario.class));
     }
