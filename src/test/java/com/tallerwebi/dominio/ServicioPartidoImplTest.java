@@ -21,6 +21,8 @@ public class ServicioPartidoImplTest {
         private RepositorioUsuario repositorioUsuarioMock;
         private RepositorioPartidoParticipante repositorioPartidoParticipanteMock;
         private ServicioEquipoJugador servicioEquipoJugadorMock;
+        private ServicioEquipo servicioEquipoMock;
+        private RepositorioPartidoEquipo repositorioPartidoEquipoMock;
         private Partido partidoMock;
         private Usuario usuarioMock;
         private Equipo equipoMock;
@@ -32,6 +34,8 @@ public class ServicioPartidoImplTest {
                 repositorioUsuarioMock = Mockito.mock(RepositorioUsuario.class);
                 repositorioPartidoParticipanteMock = Mockito.mock(RepositorioPartidoParticipante.class);
                 servicioEquipoJugadorMock = Mockito.mock(ServicioEquipoJugador.class);
+                servicioEquipoMock = Mockito.mock(ServicioEquipo.class);
+                repositorioPartidoEquipoMock = Mockito.mock(RepositorioPartidoEquipo.class);
                 partidoMock = Mockito.mock(Partido.class);
                 usuarioMock = Mockito.mock(Usuario.class);
                 equipoMock = Mockito.mock(Equipo.class);
@@ -43,7 +47,8 @@ public class ServicioPartidoImplTest {
                 ServicioPartido servicioPartido = new ServicioPartidoImpl(repositorioPartidoMock,
                                 repositorioReservaMock,
                                 repositorioUsuarioMock, servicioEquipoJugadorMock,
-                                repositorioPartidoParticipanteMock);
+                                repositorioPartidoParticipanteMock, servicioEquipoMock,
+                                repositorioPartidoEquipoMock);
                 assertThrows(PartidoNoEncontrado.class, () -> servicioPartido.obtenerPorId(1L));
                 Mockito.verify(repositorioPartidoMock, Mockito.times(1)).porId(Mockito.anyLong());
         }
@@ -56,7 +61,8 @@ public class ServicioPartidoImplTest {
                 ServicioPartido servicioPartido = new ServicioPartidoImpl(repositorioPartidoMock,
                                 repositorioReservaMock,
                                 repositorioUsuarioMock, servicioEquipoJugadorMock,
-                                repositorioPartidoParticipanteMock);
+                                repositorioPartidoParticipanteMock, servicioEquipoMock,
+                                repositorioPartidoEquipoMock);
 
                 Partido partidoObtenido = servicioPartido.obtenerPorId(id);
                 assertEquals(partidoMock, partidoObtenido);
@@ -70,7 +76,8 @@ public class ServicioPartidoImplTest {
                 ServicioPartido servicioPartido = new ServicioPartidoImpl(repositorioPartidoMock,
                                 repositorioReservaMock,
                                 repositorioUsuarioMock, servicioEquipoJugadorMock,
-                                repositorioPartidoParticipanteMock);
+                                repositorioPartidoParticipanteMock, servicioEquipoMock,
+                                repositorioPartidoEquipoMock);
 
                 assertThrows(NoHayCupoEnPartido.class,
                                 () -> servicioPartido.anotarParticipante(partidoMock, equipoMock, usuarioMock));
@@ -83,7 +90,7 @@ public class ServicioPartidoImplTest {
                 ServicioPartido servicioPartido = new ServicioPartidoImpl(repositorioPartidoMock,
                                 repositorioReservaMock,
                                 repositorioUsuarioMock, servicioEquipoJugadorMock,
-                                repositorioPartidoParticipanteMock);
+                                repositorioPartidoParticipanteMock, servicioEquipoMock, repositorioPartidoEquipoMock);
 
                 assertThrows(NullPointerException.class,
                                 () -> servicioPartido.anotarParticipante(null, equipoMock, usuarioMock));
@@ -99,7 +106,7 @@ public class ServicioPartidoImplTest {
                 ServicioPartido servicioPartido = new ServicioPartidoImpl(repositorioPartidoMock,
                                 repositorioReservaMock,
                                 repositorioUsuarioMock, servicioEquipoJugadorMock,
-                                repositorioPartidoParticipanteMock);
+                                repositorioPartidoParticipanteMock, servicioEquipoMock, repositorioPartidoEquipoMock);
 
                 assertThrows(YaExisteElParticipante.class,
                                 () -> servicioPartido.anotarParticipante(partidoMock, equipoMock, usuarioMock));
@@ -116,7 +123,7 @@ public class ServicioPartidoImplTest {
                 ServicioPartido servicioPartido = new ServicioPartidoImpl(repositorioPartidoMock,
                                 repositorioReservaMock,
                                 repositorioUsuarioMock, servicioEquipoJugadorMock,
-                                repositorioPartidoParticipanteMock);
+                                repositorioPartidoParticipanteMock, servicioEquipoMock, repositorioPartidoEquipoMock);
 
                 servicioPartido.anotarParticipante(partidoMock, equipoMock, usuarioMock);
 
@@ -139,7 +146,7 @@ public class ServicioPartidoImplTest {
                                 repositorioPartidoMock,
                                 repositorioReservaMock,
                                 repositorioUsuarioMock, servicioEquipoJugadorMock,
-                                repositorioPartidoParticipanteMock);
+                                repositorioPartidoParticipanteMock, servicioEquipoMock, repositorioPartidoEquipoMock);
 
                 var partidosFiltrados = servicioPartido.listarTodos(null, Zona.NORTE, null);
 
@@ -163,7 +170,7 @@ public class ServicioPartidoImplTest {
                                 repositorioPartidoMock,
                                 repositorioReservaMock,
                                 repositorioUsuarioMock, servicioEquipoJugadorMock,
-                                repositorioPartidoParticipanteMock);
+                                repositorioPartidoParticipanteMock, servicioEquipoMock, repositorioPartidoEquipoMock);
 
                 var partidosFiltrados = servicioPartido.listarTodos(null, null, Nivel.PRINCIPIANTE);
 
@@ -188,7 +195,7 @@ public class ServicioPartidoImplTest {
                                 repositorioPartidoMock,
                                 repositorioReservaMock,
                                 repositorioUsuarioMock, servicioEquipoJugadorMock,
-                                repositorioPartidoParticipanteMock);
+                                repositorioPartidoParticipanteMock, servicioEquipoMock, repositorioPartidoEquipoMock);
 
                 servicioPartido.abandonarPartido(1L, usuario);
 
@@ -205,7 +212,7 @@ public class ServicioPartidoImplTest {
                                 repositorioPartidoMock,
                                 repositorioReservaMock,
                                 repositorioUsuarioMock, servicioEquipoJugadorMock,
-                                repositorioPartidoParticipanteMock);
+                                repositorioPartidoParticipanteMock, servicioEquipoMock, repositorioPartidoEquipoMock);
 
                 assertThrows(PartidoNoEncontrado.class, () -> servicioPartido.abandonarPartido(1L, usuario));
                 Mockito.verify(repositorioPartidoMock, Mockito.times(1)).porId(1L);
@@ -224,7 +231,7 @@ public class ServicioPartidoImplTest {
                                 repositorioPartidoMock,
                                 repositorioReservaMock,
                                 repositorioUsuarioMock, servicioEquipoJugadorMock,
-                                repositorioPartidoParticipanteMock);
+                                repositorioPartidoParticipanteMock, servicioEquipoMock, repositorioPartidoEquipoMock);
 
                 assertThrows(RuntimeException.class, () -> servicioPartido.abandonarPartido(1L, usuario));
                 Mockito.verify(repositorioPartidoMock, Mockito.times(1)).porId(1L);
@@ -253,7 +260,7 @@ public class ServicioPartidoImplTest {
                                 repositorioPartidoMock,
                                 repositorioReservaMock,
                                 repositorioUsuarioMock, servicioEquipoJugadorMock,
-                                repositorioPartidoParticipanteMock);
+                                repositorioPartidoParticipanteMock, servicioEquipoMock, repositorioPartidoEquipoMock);
 
                 servicioPartido.abandonarPartido(1L, usuario1);
 
@@ -274,7 +281,7 @@ public class ServicioPartidoImplTest {
                                 repositorioPartidoMock,
                                 repositorioReservaMock,
                                 repositorioUsuarioMock, servicioEquipoJugadorMock,
-                                repositorioPartidoParticipanteMock);
+                                repositorioPartidoParticipanteMock, servicioEquipoMock, repositorioPartidoEquipoMock);
 
                 Cancha cancha = new Cancha("Cancha 1", null, null, "Dirección 1", Zona.NORTE);
                 cancha.setCapacidad(12);

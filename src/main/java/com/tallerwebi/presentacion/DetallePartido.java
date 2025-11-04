@@ -1,7 +1,10 @@
 package com.tallerwebi.presentacion;
 
 import java.time.LocalDateTime;
+import java.util.Comparator;
 import java.util.List;
+import java.util.Set;
+import java.util.TreeSet;
 import java.util.stream.Collectors;
 
 import com.tallerwebi.dominio.Equipo;
@@ -30,7 +33,7 @@ public class DetallePartido {
     private Long horarioId;
     private int cuposDisponibles;
     private String direccion;
-    private List<DetalleEquipoPartido> equipos;
+    private Set<DetalleEquipoPartido> equipos;
 
     public DetallePartido(Partido partido, Usuario usuario) {
         this.id = partido.getId();
@@ -54,7 +57,8 @@ public class DetallePartido {
 
         this.equipos = partido.getEquipos().stream()
                 .map(DetalleEquipoPartido::new)
-                .collect(Collectors.toList());
+                .collect(Collectors
+                        .toCollection(() -> new TreeSet<>(Comparator.comparing(DetalleEquipoPartido::getNombre))));
     }
 
     public Long getId() {
@@ -129,7 +133,7 @@ public class DetallePartido {
         return direccion;
     }
 
-    public List<DetalleEquipoPartido> getEquipos() {
+    public Set<DetalleEquipoPartido> getEquipos() {
         return equipos;
     }
 

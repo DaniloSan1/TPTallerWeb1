@@ -12,6 +12,8 @@ import com.tallerwebi.dominio.excepcion.PartidoNoEncontrado;
 import com.tallerwebi.dominio.excepcion.PermisosInsufficientes;
 import com.tallerwebi.dominio.excepcion.YaExisteElParticipante;
 
+import com.tallerwebi.dominio.RepositorioPartidoEquipo;
+
 @Service
 public class ServicioPartidoImpl implements ServicioPartido {
     private final RepositorioPartido repoPartido;
@@ -19,16 +21,21 @@ public class ServicioPartidoImpl implements ServicioPartido {
     private final RepositorioUsuario repoUsuario;
     private final ServicioEquipoJugador servicioEquipoJugador;
     private final RepositorioPartidoParticipante repoPartidoParticipante;
+    private final ServicioEquipo servicioEquipo;
+    private final RepositorioPartidoEquipo repoPartidoEquipo;
 
     @Autowired
     public ServicioPartidoImpl(RepositorioPartido repoPartido, RepositorioReserva repoReserva,
             RepositorioUsuario repoUsuario, ServicioEquipoJugador servicioEquipoJugador,
-            RepositorioPartidoParticipante repoPartidoParticipante) {
+            RepositorioPartidoParticipante repoPartidoParticipante, ServicioEquipo servicioEquipo,
+            RepositorioPartidoEquipo repoPartidoEquipo) {
         this.repoPartido = repoPartido;
         this.repoReserva = repoReserva;
         this.repoPartidoParticipante = repoPartidoParticipante;
         this.repoUsuario = repoUsuario;
         this.servicioEquipoJugador = servicioEquipoJugador;
+        this.servicioEquipo = servicioEquipo;
+        this.repoPartidoEquipo = repoPartidoEquipo;
     }
 
     @Override
@@ -56,6 +63,18 @@ public class ServicioPartidoImpl implements ServicioPartido {
         partido.setCupoMaximo(cupoMaximo > 0 ? cupoMaximo : capacidadCancha);
 
         repoPartido.guardar(partido);
+
+        // Crear dos equipos por defecto
+        Equipo equipo1 = servicioEquipo.crearEquipo("Equipo 1", usuario);
+        Equipo equipo2 = servicioEquipo.crearEquipo("Equipo 2", usuario);
+
+        // Crear las relaciones PartidoEquipo
+        PartidoEquipo partidoEquipo1 = new PartidoEquipo(partido, equipo1, 0);
+        PartidoEquipo partidoEquipo2 = new PartidoEquipo(partido, equipo2, 0);
+
+        repoPartidoEquipo.guardar(partidoEquipo1);
+        repoPartidoEquipo.guardar(partidoEquipo2);
+
         return partido;
 
     }
