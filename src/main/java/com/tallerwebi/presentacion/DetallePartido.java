@@ -52,7 +52,7 @@ public class DetallePartido {
         this.esCreador = partido.esCreador(usuario.getEmail());
         this.reservaId = partido.getReserva().getId();
         this.horarioId = partido.getReserva().getHorario().getId();
-        this.cuposDisponibles = partido.cuposDisponibles();
+        this.cuposDisponibles = partido.getCupoDisponible();
         this.direccion = partido.getReserva().getCancha().getDireccion();
 
         this.equipos = partido.getEquipos().stream()

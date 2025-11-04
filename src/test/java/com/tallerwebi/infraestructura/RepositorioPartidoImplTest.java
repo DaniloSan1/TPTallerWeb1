@@ -10,7 +10,6 @@ import com.tallerwebi.dominio.EquipoEnum;
 import com.tallerwebi.dominio.Horario;
 import com.tallerwebi.dominio.Nivel;
 import com.tallerwebi.dominio.Partido;
-import com.tallerwebi.dominio.PartidoParticipante;
 import com.tallerwebi.dominio.RepositorioPartido;
 import com.tallerwebi.dominio.Reserva;
 import com.tallerwebi.dominio.Usuario;
@@ -65,13 +64,6 @@ public class RepositorioPartidoImplTest {
                 10,
                 reserva, creador);
         this.sessionFactory.getCurrentSession().save(nuevoPartido);
-
-        Usuario participante = new Usuario("usuario2", "password2", "email2@example.com", "username");
-        this.sessionFactory.getCurrentSession().save(participante);
-
-        PartidoParticipante partidoParticipante = new PartidoParticipante(nuevoPartido, participante,
-                EquipoEnum.EQUIPO_1);
-        this.sessionFactory.getCurrentSession().save(partidoParticipante);
 
         // Implementar el test para obtener un partido por ID.
         Partido partido = this.repositorioPartido.porId(nuevoPartido.getId());

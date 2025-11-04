@@ -95,7 +95,16 @@ public class ControladorPartidoTest {
         // Set up the partido mock with all required relationships
         when(partidoMock.getReserva()).thenReturn(reservaMock);
         when(partidoMock.getCreador()).thenReturn(creadorMock);
-        when(partidoMock.cuposDisponibles()).thenReturn(5);
+        when(partidoMock.getCupoDisponible()).thenReturn(5);
+
+        // Create mock for Equipo
+        equipoMock = Mockito.mock(Equipo.class);
+        when(equipoMock.getId()).thenReturn(1L);
+        try {
+            Mockito.when(servicioEquipoMock.buscarPorId(1L)).thenReturn(equipoMock);
+        } catch (EquipoNoEncontrado e) {
+            // Should not happen in mock
+        }
 
         // Create mock for Equipo
         equipoMock = Mockito.mock(Equipo.class);
