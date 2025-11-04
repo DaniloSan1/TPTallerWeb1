@@ -12,5 +12,5 @@ public interface RepositorioPartido {
 
     List<Partido> listarPorCreador(Long idCreador);
 
-    
+    void actualizar(Partido partido);
 }

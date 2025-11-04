@@ -1,36 +1,50 @@
 <!DOCTYPE html>
 <html lang="es" xmlns:th="http://www.thymeleaf.org">
-<head>
-  <meta charset="UTF-8">
-  <title>Pago de Reserva</title>
-  <link rel="stylesheet" th:href="@{/webjars/bootstrap/5.2.0/css/bootstrap.min.css}">
-</head>
-<body class="bg-light">
-  <div class="container text-center mt-5">
-    <h2>Pago de la Reserva</h2>
-    <p><strong>Cancha:</strong> <span th:text="${reserva.horario.cancha.nombre}"></span></p>
-    <p><strong>Monto:</strong> $<span th:text="${reserva.horario.cancha.precio}"></span></p>
+  <head>
+    <meta charset="UTF-8" />
+    <title>Pago de Reserva</title>
+    <link
+      rel="stylesheet"
+      th:href="@{/webjars/bootstrap/5.2.0/css/bootstrap.min.css}"
+    />
+  </head>
+  <body class="bg-light">
+    <div class="container text-center mt-5">
+      <h2>Pago de la Reserva</h2>
+      <p>
+        <strong>Cancha:</strong>
+        <span th:text="${reserva.horario.cancha.nombre}"></span>
+      </p>
+      <p>
+        <strong>Monto:</strong> $<span
+          th:text="${reserva.horario.cancha.precio}"
+        ></span>
+      </p>
 
-    <div id="walletBrick_container" class="mt-4"></div>
+      <div id="walletBrick_container" class="mt-4"></div>
 
-    <a th:href="@{/reserva/{id}(id=${reserva.id})}" class="btn btn-secondary mt-3">Volver</a>
-  </div>
+      <a
+        th:href="@{/reserva/{id}(id=${reserva.id})}"
+        class="btn btn-secondary mt-3"
+        >Volver</a
+      >
+    </div>
 
-  <script src="https://sdk.mercadopago.com/js/v2"></script>
-  <script th:inline="javascript">
-    const publicKey = "APP_USR-c00c6970-f5c9-49a2-8a8a-27dcee364f92";
-    const preferenceId = /*[[${preferenceId}]]*/ "";
+    <script src="https://sdk.mercadopago.com/js/v2"></script>
+    <script th:inline="javascript">
+      const publicKey = "TEST-de2741a8-e472-4a3b-8d47-c1991e4690fb";
+      const preferenceId = /*[[${preferenceId}]]*/ "";
 
-    const mp = new MercadoPago(publicKey);
-    const bricksBuilder = mp.bricks();
+      const mp = new MercadoPago(publicKey);
+      const bricksBuilder = mp.bricks();
 
-    const renderWalletBrick = async (bricksBuilder) => {
-      await bricksBuilder.create("wallet", "walletBrick_container", {
-        initialization: { preferenceId: preferenceId }
-      });
-    };
+      const renderWalletBrick = async (bricksBuilder) => {
+        await bricksBuilder.create("wallet", "walletBrick_container", {
+          initialization: { preferenceId: preferenceId },
+        });
+      };
 
-    renderWalletBrick(bricksBuilder);
-  </script>
-</body>
+      renderWalletBrick(bricksBuilder);
+    </script>
+  </body>
 </html>

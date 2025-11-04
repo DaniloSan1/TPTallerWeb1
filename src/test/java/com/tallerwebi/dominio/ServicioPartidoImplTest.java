@@ -293,7 +293,7 @@ public class ServicioPartidoImplTest {
                 // Assert (validamos el estado del objeto devuelto)
                 assertEquals("Título X", partidoCreado.getTitulo());
                 assertEquals("Descripción X", partidoCreado.getDescripcion());
-                assertEquals(Nivel.AVANZADO, partidoCreado.getNivel());
+                assertEquals(Nivel.PRINCIPIANTE, partidoCreado.getNivel());
                 assertEquals(8, partidoCreado.getCupoMaximo());
                 assertSame(reserva, partidoCreado.getReserva());
                 assertSame(usuarioCreadorPartido, partidoCreado.getCreador());

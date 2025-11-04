@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+    <head>
+        <meta charset="utf-8" />
+        <meta
+            name="viewport"
+            content="width=device-width, initial-scale=1, shrink-to-fit=no"
+        />
+
+        <title>Editar Partido</title>
+
+        <link
+            rel="stylesheet"
+            th:href="@{/webjars/bootstrap/5.2.0/css/bootstrap.min.css}"
+        />
+
+        <link rel="stylesheet" th:href="@{/css/main.css}" />
+        <link rel="stylesheet" th:href="@{/css/detalle-partido.css}" />
+        <link
+            rel="stylesheet"
+            href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&icon_names=calendar_month,groups"
+        />
+    </head>
+
+    <body>
+        <!-- Include the navbar fragment -->
+        <div th:replace="~{fragments/navbar :: navbar}"></div>
+
+        <main role="main" class="container" style="padding-top: 135px">
+            <div th:unless="${partido}" class="no-match"></div>
+
+            <div
+                class="container d-flex flex-column justify-content-center width-100"
+            >
+                <div
+                    class="container d-flex flex-column justify-content-center width-100 card"
+                >
+                    <div
+                        th:if="${partido != null}"
+                        id="loginbox"
+                        class="mainbox width-100"
+                    >
+                        <div class="card-header">
+                            <h1>Editar Partido</h1>
+                        </div>
+                        <!-- Mensajes -->
+                        <div
+                            th:if="${error != null}"
+                            class="error w-100 mt-2"
+                            th:text="${error}"
+                            id="alertError"
+                        ></div>
+                        <div
+                            th:if="${success != null}"
+                            id="alertSuccess"
+                            class="alert alert-success w-100 mt-2"
+                            th:text="${success}"
+                        ></div>
+                        <div class="card-body">
+                            <form
+                                th:action="@{/partidos/{id}/editar(id=${partido.id})}"
+                                method="post"
+                                class="w-100"
+                                accept-charset="UTF-8"
+                            >
+                                <div class="mb-3">
+                                    <label for="titulo" class="form-label"
+                                        >Título</label
+                                    >
+                                    <input
+                                        type="text"
+                                        class="form-control"
+                                        id="titulo"
+                                        name="titulo"
+                                        th:value="${partido.titulo}"
+                                        placeholder="Ingrese un título"
+                                        required
+                                    />
+                                </div>
+                                <div class="mb-3">
+                                    <label for="descripcion" class="form-label"
+                                        >Descripción</label
+                                    >
+                                    <textarea
+                                        class="form-control"
+                                        id="descripcion"
+                                        name="descripcion"
+                                        rows="3"
+                                        th:text="${partido.descripcion}"
+                                        placeholder="Ingrese una descripción"
+                                        required
+                                    ></textarea>
+                                </div>
+                                <button type="submit" class="btn btn-primary">
+                                    Guardar Cambios
+                                </button>
+                                <a
+                                    th:href="@{/partidos/{id}(id=${partido.id})}"
+                                    class="btn btn-secondary"
+                                    >Cancelar</a
+                                >
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+        <script
+            type="text/javascript"
+            th:src="@{/webjars/bootstrap/5.2.0/js/bootstrap.bundle.min.js}"
+        ></script>
+        <script type="module" th:src="@{/js/common.js}"></script>
+    </body>
+</html>

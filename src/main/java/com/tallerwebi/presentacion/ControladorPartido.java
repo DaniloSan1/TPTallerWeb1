@@ -55,7 +55,7 @@ public class ControladorPartido {
         this.servicioPartido = servicioPartido;
         this.servicioUsuario = servicioUsuario;
     }
-    
+
     @GetMapping("/{id}")
     public ModelAndView detalle(@PathVariable long id, HttpServletRequest request) {
         ModelMap modelo = new ModelMap();
@@ -74,6 +74,47 @@ public class ControladorPartido {
         }
 
         return new ModelAndView("detalle-partido", modelo);
+    }
+
+    @GetMapping("/{id}/editar-partido")
+    public ModelAndView editar(@PathVariable long id, HttpServletRequest request) {
+        ModelMap modelo = new ModelMap();
+        try {
+            String email = (String) request.getSession().getAttribute("EMAIL");
+            if (email == null) {
+                return new ModelAndView("redirect:/login");
+            }
+
+            Partido partido = servicio.obtenerPorId(id);
+
+            if (!partido.esCreador(email)) {
+                modelo.put("error", "No tienes permiso para editar este partido.");
+                return new ModelAndView("redirect:/partidos/" + id);
+            }
+
+            modelo.put("partido", partido);
+        } catch (Exception e) {
+            modelo.put("error", e.getMessage());
+        }
+
+        return new ModelAndView("editar-partido", modelo);
+    }
+
+    @PostMapping("/{id}/editar")
+    public String update(@PathVariable long id, @RequestParam String titulo, @RequestParam String descripcion,
+            HttpServletRequest request) {
+        try {
+            String email = (String) request.getSession().getAttribute("EMAIL");
+            if (email == null) {
+                return "redirect:/login";
+            }
+
+            Usuario usuario = servicioLogin.buscarPorEmail(email);
+            servicio.actualizarPartido(id, titulo, descripcion, usuario);
+        } catch (Exception e) {
+            // For now, ignore, or could add flash attribute
+        }
+        return "redirect:/partidos/" + id;
     }
 
     @RequestMapping(params = "join", path = "/{id}", method = RequestMethod.POST)

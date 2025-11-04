@@ -24,6 +24,9 @@ public class Usuario {
     private Double calificacionPromedio = 0.0;
     private Integer totalCalificaciones = 0;
 
+    @Column(nullable = true)
+    private String fotoPerfil;
+
     public Usuario() {
     }
 
@@ -34,6 +37,14 @@ public class Usuario {
         this.rol = "ROLE_USER";
         this.activo = true;
         this.username = username;
+    }
+
+    public String getFotoPerfil() {
+        return fotoPerfil;
+    }
+
+    public void setFotoPerfil(String fotoPerfil) {
+        this.fotoPerfil = fotoPerfil;
     }
 
     public String getUsername() {

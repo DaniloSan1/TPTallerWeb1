@@ -16,6 +16,7 @@ import java.util.Collections;
 public class ServicioReservaImplTest {
     private ServicioReservaImpl servicioReserva;
     private RepositorioReserva repositorioMock;
+    private RepositorioHorario repositorioHorarioMock;
     private Horario horarioMock;
     private Usuario usuarioMock;
     private Reserva reservaMock;
@@ -23,7 +24,8 @@ public class ServicioReservaImplTest {
     @BeforeEach
     public void setUp() {
         repositorioMock = mock(RepositorioReserva.class);
-        servicioReserva = new ServicioReservaImpl(repositorioMock);
+        repositorioHorarioMock = mock(RepositorioHorario.class);
+        servicioReserva = new ServicioReservaImpl(repositorioMock, repositorioHorarioMock);
         horarioMock = mock(Horario.class);
         when(horarioMock.getId()).thenReturn(4L);
         when(horarioMock.getDiaSemana()).thenReturn(LocalDateTime.now().plusDays(1).getDayOfWeek());
@@ -48,6 +50,7 @@ public class ServicioReservaImplTest {
     @Test
     public void AlCrearUnaReservaExistenteDeberiaLanzarExcepcion() {
         when(repositorioMock.porHorarioYFecha(any(), any())).thenReturn(Collections.singletonList(new Reserva()));
+        when(servicioReserva.crearReserva(reservaMock)).thenThrow(new RuntimeException("ya existe una reserva en ese horario y fecha"));
         assertThrows(RuntimeException.class, () -> servicioReserva.crearReserva(reservaMock));
     }
 

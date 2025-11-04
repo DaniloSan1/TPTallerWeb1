@@ -11,7 +11,7 @@ import com.tallerwebi.dominio.Cancha;
 import com.tallerwebi.dominio.RepositorioCancha;
 import com.tallerwebi.dominio.Zona;
 
-@Repository("repositorioCancha")
+@Repository
 @Transactional
 public class RepositorioCanchaIpl implements RepositorioCancha {
     private SessionFactory sessionFactory;

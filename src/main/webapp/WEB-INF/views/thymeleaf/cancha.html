@@ -135,7 +135,16 @@
               th:each="horario : ${horarios}"
             >
               <div>
-                <strong th:text="${horario.diaSemana}"></strong>:
+                <strong th:switch="${horario.diaSemana}">
+                <span th:case="${T(java.time.DayOfWeek).MONDAY}">Lunes</span>
+                <span th:case="${T(java.time.DayOfWeek).TUESDAY}">Martes</span>
+                <span th:case="${T(java.time.DayOfWeek).WEDNESDAY}">Miércoles</span>
+                <span th:case="${T(java.time.DayOfWeek).THURSDAY}">Jueves</span>
+                <span th:case="${T(java.time.DayOfWeek).FRIDAY}">Viernes</span>
+                <span th:case="${T(java.time.DayOfWeek).SATURDAY}">Sábado</span>
+                <span th:case="${T(java.time.DayOfWeek).SUNDAY}">Domingo</span>
+                <span th:case="*">Desconocido</span>
+              </strong>
                 <span th:text="${horario.horaInicio}"></span> -
                 <span th:text="${horario.horaFin}"></span>
               </div>

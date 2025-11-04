@@ -6,10 +6,12 @@ import com.tallerwebi.dominio.RepositorioHorario;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
 @Repository
+@Transactional
 public class RepositorioHorarioImpl implements RepositorioHorario {
 
     private final SessionFactory sessionFactory;
@@ -40,5 +42,13 @@ public class RepositorioHorarioImpl implements RepositorioHorario {
                 .createQuery(hql, Horario.class)
                 .setParameter("cancha", cancha)
                 .getResultList();
+    }
+    @Override
+    public void cambiarDisponibilidad(Long id, Boolean disponible) {
+        Horario horario = obtenerPorId(id);
+        if (horario != null) {
+            horario.setDisponible(disponible);
+            sessionFactory.getCurrentSession().update(horario);
+        }
     }
 }

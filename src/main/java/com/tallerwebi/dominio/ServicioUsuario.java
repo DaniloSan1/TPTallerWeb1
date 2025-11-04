@@ -11,4 +11,5 @@ void registrarUsuario(Usuario usuario) throws UsuarioNoEncontradoException, Usua
 Usuario buscarPorEmail(String email);
 void modificarUsuario(Usuario usuario);
 Usuario buscarPorId(Long id);
+Usuario buscarPorUsername(String username);
 }
