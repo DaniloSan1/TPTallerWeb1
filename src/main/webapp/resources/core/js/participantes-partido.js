@@ -46,6 +46,30 @@ if (eliminarParticipanteModal) {
     });
 }
 
+const promoverCapitanModal = document.getElementById("promoverCapitanModal");
+if (promoverCapitanModal) {
+    promoverCapitanModal.addEventListener("show.bs.modal", (event) => {
+        console.log("promoverCapitanModal show event triggered");
+        const button = event.relatedTarget;
+        const nombreJugador = button.getAttribute("data-bs-nombre");
+        const participanteId = button.getAttribute("data-bs-id");
+        console.log("participanteId from button:", participanteId);
+        const modalMessage = promoverCapitanModal.querySelector(
+            "#mensaje-promover-capitan"
+        );
+        const participanteIdInput = promoverCapitanModal.querySelector(
+            "#participante-a-promover-id"
+        );
+
+        modalMessage.textContent = `¿Estás seguro que deseas promover a ${nombreJugador} a capitán? Esto removerá al capitán actual si existe.`;
+        participanteIdInput.value = participanteId;
+        console.log(
+            "participanteIdInput.value set to:",
+            participanteIdInput.value
+        );
+    });
+}
+
 const btnAsignar = document.getElementById("btn-asignar");
 if (btnAsignar) {
     btnAsignar.addEventListener("click", () => {
@@ -64,6 +88,19 @@ if (btnEliminar) {
         ).value;
         const form = document.getElementById("form-eliminar-participante");
         form.action = `/spring/participantes/${participanteId}`;
+        form.method = "POST";
+        form.submit();
+    });
+}
+
+const btnPromoverCapitan = document.getElementById("btn-promover-capitan");
+if (btnPromoverCapitan) {
+    btnPromoverCapitan.addEventListener("click", () => {
+        const participanteId = document.getElementById(
+            "participante-a-promover-id"
+        ).value;
+        const form = document.getElementById("form-promover-capitan");
+        form.action = `/spring/participantes/${participanteId}/promover-capitan`;
         form.method = "POST";
         form.submit();
     });

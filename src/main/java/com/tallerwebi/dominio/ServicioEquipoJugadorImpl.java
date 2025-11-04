@@ -8,6 +8,8 @@ import org.springframework.stereotype.Service;
 import com.tallerwebi.dominio.excepcion.ParticipanteNoEncontrado;
 import com.tallerwebi.dominio.excepcion.YaExisteElParticipante;
 
+import java.util.List;
+
 @Service
 public class ServicioEquipoJugadorImpl implements ServicioEquipoJugador {
     private final RepositorioEquipoJugador repositorioEquipoJugador;
@@ -50,5 +52,30 @@ public class ServicioEquipoJugadorImpl implements ServicioEquipoJugador {
         }
         participante.setEquipo(nuevoEquipo);
         return participante;
+    }
+
+    @Override
+    @Transactional
+    public void promoverCapitan(Long equipoJugadorId) throws ParticipanteNoEncontrado {
+        EquipoJugador nuevoCapitan = repositorioEquipoJugador.buscarPorId(equipoJugadorId);
+        if (nuevoCapitan == null) {
+            throw new ParticipanteNoEncontrado();
+        }
+
+        Equipo equipo = nuevoCapitan.getEquipo();
+        List<EquipoJugador> jugadores = repositorioEquipoJugador.buscarPorEquipo(equipo);
+
+        // Unset all captains in the equipo
+        for (EquipoJugador jugador : jugadores) {
+            if (jugador.isEsCapitan()) {
+                jugador.setEsCapitan(false);
+                repositorioEquipoJugador.guardar(jugador); // Use guardar instead of actualizar, assuming it handles
+                                                           // updates
+            }
+        }
+
+        // Set the new captain
+        nuevoCapitan.setEsCapitan(true);
+        repositorioEquipoJugador.guardar(nuevoCapitan);
     }
 }

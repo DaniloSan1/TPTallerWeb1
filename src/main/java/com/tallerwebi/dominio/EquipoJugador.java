@@ -21,6 +21,9 @@ public class EquipoJugador {
     @Column(name = "fecha_union")
     private LocalDateTime fechaUnion;
 
+    @Column(name = "es_capitan")
+    private boolean esCapitan = false;
+
     @PrePersist
     public void setFechaUnionDefault() {
         if (fechaUnion == null) {
@@ -36,12 +39,14 @@ public class EquipoJugador {
         this.equipo = equipo;
         this.usuario = usuario;
         this.fechaUnion = LocalDateTime.now();
+        this.esCapitan = false;
     }
 
     public EquipoJugador(Equipo equipo, Usuario usuario, LocalDateTime fechaUnion) {
         this.equipo = equipo;
         this.usuario = usuario;
         this.fechaUnion = fechaUnion;
+        this.esCapitan = false;
     }
 
     // Getters and setters
@@ -75,5 +80,13 @@ public class EquipoJugador {
 
     public void setFechaUnion(LocalDateTime fechaUnion) {
         this.fechaUnion = fechaUnion;
+    }
+
+    public boolean isEsCapitan() {
+        return esCapitan;
+    }
+
+    public void setEsCapitan(boolean esCapitan) {
+        this.esCapitan = esCapitan;
     }
 }

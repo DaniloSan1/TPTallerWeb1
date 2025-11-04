@@ -141,12 +141,12 @@ INSERT INTO PartidoEquipo(id, partido_id, equipo_id, points) VALUES
 (NULL, 3, (SELECT id FROM Equipo WHERE nombre = 'Equipo 1' AND creado_por_id = (SELECT creador_id FROM Partido WHERE id = 3)), 0),
 (NULL, 3, (SELECT id FROM Equipo WHERE nombre = 'Equipo 2' AND creado_por_id = (SELECT creador_id FROM Partido WHERE id = 3)), 0);
 -- Insert equipo_jugador
-INSERT INTO EquipoJugador(id, equipo_id, usuario_id, fecha_union) VALUES
-(NULL, (SELECT id FROM Equipo WHERE nombre = 'Equipo 1' AND creado_por_id = (SELECT creador_id FROM Partido WHERE id = 1)), 2, NOW()),
-(NULL, (SELECT id FROM Equipo WHERE nombre = 'Equipo 1' AND creado_por_id = (SELECT creador_id FROM Partido WHERE id = 1)), 3, NOW()),
-(NULL, (SELECT id FROM Equipo WHERE nombre = 'Equipo 1' AND creado_por_id = (SELECT creador_id FROM Partido WHERE id = 1)), 4, NOW()),
-(NULL, (SELECT id FROM Equipo WHERE nombre = 'Equipo 2' AND creado_por_id = (SELECT creador_id FROM Partido WHERE id = 1)), 5, NOW()),
-(NULL, (SELECT id FROM Equipo WHERE nombre = 'Equipo 2' AND creado_por_id = (SELECT creador_id FROM Partido WHERE id = 1)), 6, NOW()),
-(NULL, (SELECT id FROM Equipo WHERE nombre = 'Equipo 2' AND creado_por_id = (SELECT creador_id FROM Partido WHERE id = 1)), 7, NOW()),
-(NULL, (SELECT id FROM Equipo WHERE nombre = 'Equipo 2' AND creado_por_id = (SELECT creador_id FROM Partido WHERE id = 1)), 8, NOW());
+INSERT INTO EquipoJugador(id, equipo_id, usuario_id, fecha_union, es_capitan) VALUES
+(NULL, (SELECT id FROM Equipo WHERE nombre = 'Equipo 1' AND creado_por_id = (SELECT creador_id FROM Partido WHERE id = 1)), 2, NOW(), false),
+(NULL, (SELECT id FROM Equipo WHERE nombre = 'Equipo 1' AND creado_por_id = (SELECT creador_id FROM Partido WHERE id = 1)), 3, NOW(), false),
+(NULL, (SELECT id FROM Equipo WHERE nombre = 'Equipo 1' AND creado_por_id = (SELECT creador_id FROM Partido WHERE id = 1)), 4, NOW(), false),
+(NULL, (SELECT id FROM Equipo WHERE nombre = 'Equipo 2' AND creado_por_id = (SELECT creador_id FROM Partido WHERE id = 1)), 5, NOW(), false),
+(NULL, (SELECT id FROM Equipo WHERE nombre = 'Equipo 2' AND creado_por_id = (SELECT creador_id FROM Partido WHERE id = 1)), 6, NOW(), false),
+(NULL, (SELECT id FROM Equipo WHERE nombre = 'Equipo 2' AND creado_por_id = (SELECT creador_id FROM Partido WHERE id = 1)), 7, NOW(), false),
+(NULL, (SELECT id FROM Equipo WHERE nombre = 'Equipo 2' AND creado_por_id = (SELECT creador_id FROM Partido WHERE id = 1)), 8, NOW(), false);
 

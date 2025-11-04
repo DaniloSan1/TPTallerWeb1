@@ -8,6 +8,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 @Repository("repositorioEquipoJugador")
 @Transactional
 public class RepositorioEquipoJugadorImpl implements RepositorioEquipoJugador {
@@ -46,5 +48,14 @@ public class RepositorioEquipoJugadorImpl implements RepositorioEquipoJugador {
     public void eliminar(EquipoJugador equipoJugador) {
         final Session session = sessionFactory.getCurrentSession();
         session.delete(equipoJugador);
+    }
+
+    @Override
+    public List<EquipoJugador> buscarPorEquipo(com.tallerwebi.dominio.Equipo equipo) {
+        final Session session = sessionFactory.getCurrentSession();
+        return session
+                .createQuery("FROM EquipoJugador ej WHERE ej.equipo = :equipo", EquipoJugador.class)
+                .setParameter("equipo", equipo)
+                .list();
     }
 }
