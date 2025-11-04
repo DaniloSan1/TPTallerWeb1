@@ -176,7 +176,7 @@ public class ControladorPartidoTest {
         ModelAndView respuesta = controladorPartido.inscripcion(partidoId, 1L, requestMock, redirectAttributesMock);
         assertEquals("redirect:/partidos/1", respuesta.getViewName());
 
-        Mockito.verify(redirectAttributesMock).addFlashAttribute("error", "Error al asignar el equipo");
+        Mockito.verify(redirectAttributesMock).addFlashAttribute("error", "Ocurrió un error al intentar inscribirte.");
         Mockito.verify(servicioPartidoMock, Mockito.times(1)).anotarParticipante(Mockito.any(Partido.class),
                 Mockito.any(Equipo.class), Mockito.any(Usuario.class));
     }
@@ -194,7 +194,7 @@ public class ControladorPartidoTest {
         ModelAndView respuesta = controladorPartido.inscripcion(partidoId, 1L, requestMock, redirectAttributesMock);
         assertEquals("redirect:/partidos/1", respuesta.getViewName());
 
-        Mockito.verify(redirectAttributesMock).addFlashAttribute("error", "Error al asignar el equipo");
+        Mockito.verify(redirectAttributesMock).addFlashAttribute("error", "Ocurrió un error al intentar inscribirte.");
         Mockito.verify(servicioPartidoMock, Mockito.times(1)).anotarParticipante(Mockito.any(Partido.class),
                 Mockito.any(Equipo.class), Mockito.any(Usuario.class));
     }
@@ -212,7 +212,7 @@ public class ControladorPartidoTest {
         ModelAndView respuesta = controladorPartido.inscripcion(partidoId, 1L, requestMock, redirectAttributesMock);
         assertEquals("redirect:/partidos/1", respuesta.getViewName());
 
-        Mockito.verify(redirectAttributesMock).addFlashAttribute("error", "Error al asignar el equipo");
+        Mockito.verify(redirectAttributesMock).addFlashAttribute("error", "Ocurrió un error al intentar inscribirte.");
         Mockito.verify(servicioPartidoMock, Mockito.times(1)).anotarParticipante(Mockito.any(Partido.class),
                 Mockito.any(Equipo.class), Mockito.any(Usuario.class));
     }
@@ -229,7 +229,7 @@ public class ControladorPartidoTest {
         ModelAndView respuesta = controladorPartido.inscripcion(partidoId, 1L, requestMock, redirectAttributesMock);
         assertEquals("redirect:/partidos/1", respuesta.getViewName());
 
-        Mockito.verify(redirectAttributesMock).addFlashAttribute("success", "Equipo asignado correctamente");
+        Mockito.verify(redirectAttributesMock).addFlashAttribute("success", "Te has unido al partido correctamente.");
         Mockito.verify(servicioPartidoMock, Mockito.times(1)).anotarParticipante(Mockito.any(Partido.class),
                 Mockito.any(Equipo.class), Mockito.any(Usuario.class));
     }

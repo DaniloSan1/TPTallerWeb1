@@ -121,10 +121,10 @@ public class ControladorPartido {
             Partido partido = servicio.obtenerPorId(id);
             partido = servicio.anotarParticipante(partido, equipo, usuario);
 
-            redirectAttributes.addFlashAttribute("success", "Equipo asignado correctamente");
+            redirectAttributes.addFlashAttribute("success", "Te has unido al partido correctamente.");
         } catch (Exception e) {
             System.out.println(e);
-            redirectAttributes.addFlashAttribute("error", "Error al asignar el equipo");
+            redirectAttributes.addFlashAttribute("error", "Ocurrió un error al intentar inscribirte.");
         }
 
         String referrer = request.getHeader("referer");
