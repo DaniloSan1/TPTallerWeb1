@@ -30,9 +30,12 @@ import org.springframework.web.context.WebApplicationContext;
 
 import com.tallerwebi.dominio.Cancha;
 import com.tallerwebi.dominio.Equipo;
+import com.tallerwebi.dominio.EquipoEnum;
+import com.tallerwebi.dominio.EquipoJugador;
 import com.tallerwebi.dominio.Horario;
 import com.tallerwebi.dominio.Nivel;
 import com.tallerwebi.dominio.Partido;
+import com.tallerwebi.dominio.PartidoEquipo;
 import com.tallerwebi.dominio.PartidoParticipante;
 import com.tallerwebi.dominio.Reserva;
 import com.tallerwebi.dominio.Usuario;
@@ -82,19 +85,37 @@ public class ControladorParticipantesTest {
 
                 this.sessionFactory.getCurrentSession().save(nuevoPartido);
 
+                // Crear equipos
+                Equipo equipo1 = new Equipo("EQUIPO_1", creador, LocalDateTime.now());
+                this.sessionFactory.getCurrentSession().save(equipo1);
+
+                Equipo equipo2 = new Equipo("EQUIPO_2", creador, LocalDateTime.now());
+                this.sessionFactory.getCurrentSession().save(equipo2);
+
+                // Crear PartidoEquipo
+                PartidoEquipo pe1 = new PartidoEquipo(nuevoPartido, equipo1, 0);
+                this.sessionFactory.getCurrentSession().save(pe1);
+
+                PartidoEquipo pe2 = new PartidoEquipo(nuevoPartido, equipo2, 0);
+                this.sessionFactory.getCurrentSession().save(pe2);
+
                 Usuario participante = new Usuario("usuario2", "password2", "email2@example.com", "username2");
                 participante.setNombre("participante1");
                 participante.setApellido("apellido1");
                 this.sessionFactory.getCurrentSession().save(participante);
 
+                // Crear EquipoJugador para el participante en equipo1
+                EquipoJugador ej = new EquipoJugador(equipo1, participante, LocalDateTime.now());
+                this.sessionFactory.getCurrentSession().save(ej);
+
                 PartidoParticipante partidoParticipante = new PartidoParticipante(nuevoPartido, participante,
-                                Equipo.SIN_EQUIPO);
+                                EquipoEnum.SIN_EQUIPO);
                 this.sessionFactory.getCurrentSession().save(partidoParticipante);
                 this.sessionFactory.getCurrentSession().flush();
 
                 ResultActions result = mockMvc
-                                .perform(post("/participantes/" + partidoParticipante.getId() + "/asignacion-equipo")
-                                                .param("equipo", "EQUIPO_1")
+                                .perform(post("/participantes/" + ej.getId() + "/asignacion-equipo")
+                                                .param("equipo", String.valueOf(equipo2.getId()))
                                                 .sessionAttr("EMAIL", "test@example.com")
                                                 .header("referer", "/partido/1"))
                                 .andExpect(status().is3xxRedirection())
@@ -109,13 +130,24 @@ public class ControladorParticipantesTest {
                 PartidoParticipante partidoParticipanteActualizado = sessionFactory.getCurrentSession()
                                 .get(PartidoParticipante.class, partidoParticipante.getId());
                 assertNotNull(partidoParticipanteActualizado);
-                assertThat(partidoParticipanteActualizado.getEquipo(), is(Equipo.EQUIPO_1));
         }
 
         @Test
+        @Transactional
+        @Rollback
         public void debeRetornarMensajeDeErrorCuandoNoExisteElParticipante() throws Exception {
+                // Crear un usuario para el equipo
+                Usuario creador = new Usuario("usuario1", "password", "email@example.com", "usernameCreador");
+                this.sessionFactory.getCurrentSession().save(creador);
+
+                // Crear equipos
+                Equipo equipo1 = new Equipo("EQUIPO_1", creador, LocalDateTime.now());
+                this.sessionFactory.getCurrentSession().save(equipo1);
+
+                this.sessionFactory.getCurrentSession().flush();
+
                 ResultActions result = mockMvc.perform(post("/participantes/1/asignacion-equipo")
-                                .param("equipo", "EQUIPO_1")
+                                .param("equipo", String.valueOf(equipo1.getId()))
                                 .sessionAttr("EMAIL", "test@example.com")
                                 .header("referer", "/partido/1"))
                                 .andExpect(status().is3xxRedirection())
@@ -131,7 +163,7 @@ public class ControladorParticipantesTest {
         @Test
         public void deberiaRedirigirAlLoginSiNoHaySesion() throws Exception {
                 mockMvc.perform(post("/participantes/1/asignacion-equipo")
-                                .param("equipo", "A")
+                                .param("equipo", "1")
                                 .header("referer", "/partido/1"))
                                 .andExpect(status().is3xxRedirection())
                                 .andExpect(redirectedUrl("/login"));

@@ -1,12 +1,16 @@
 package com.tallerwebi.presentacion;
 
 import java.time.LocalDateTime;
+import java.util.Comparator;
 import java.util.List;
+import java.util.Set;
+import java.util.TreeSet;
 import java.util.stream.Collectors;
 
 import com.tallerwebi.dominio.Equipo;
 import com.tallerwebi.dominio.Nivel;
 import com.tallerwebi.dominio.Partido;
+import com.tallerwebi.dominio.PartidoEquipo;
 import com.tallerwebi.dominio.Usuario;
 import com.tallerwebi.dominio.Zona;
 
@@ -29,7 +33,7 @@ public class DetallePartido {
     private Long horarioId;
     private int cuposDisponibles;
     private String direccion;
-    private List<DetalleParticipante> participantes;
+    private Set<DetalleEquipoPartido> equipos;
 
     public DetallePartido(Partido partido, Usuario usuario) {
         this.id = partido.getId();
@@ -51,10 +55,10 @@ public class DetallePartido {
         this.cuposDisponibles = partido.cuposDisponibles();
         this.direccion = partido.getReserva().getCancha().getDireccion();
 
-        this.participantes = partido.getParticipantes().stream()
-                .map(DetalleParticipante::new)
-                .collect(Collectors.toList());
-
+        this.equipos = partido.getEquipos().stream()
+                .map(DetalleEquipoPartido::new)
+                .collect(Collectors
+                        .toCollection(() -> new TreeSet<>(Comparator.comparing(DetalleEquipoPartido::getNombre))));
     }
 
     public Long getId() {
@@ -129,7 +133,13 @@ public class DetallePartido {
         return direccion;
     }
 
+    public Set<DetalleEquipoPartido> getEquipos() {
+        return equipos;
+    }
+
     public List<DetalleParticipante> getParticipantes() {
-        return participantes;
+        return equipos.stream()
+                .flatMap(equipo -> equipo.getParticipantes().stream())
+                .collect(Collectors.toList());
     }
 }

@@ -1,10 +1,8 @@
 package com.tallerwebi.presentacion;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 
-import com.tallerwebi.dominio.Equipo;
-import com.tallerwebi.dominio.PartidoParticipante;
+import com.tallerwebi.dominio.EquipoJugador;
 
 public class DetalleParticipante {
     private Long id;
@@ -12,17 +10,19 @@ public class DetalleParticipante {
     private String username;
     private String nombreCompleto;
     private String posicionFavorita;
+    private Long idEquipo;
     private String equipo;
     private LocalDateTime fechaUnion;
 
-    public DetalleParticipante(PartidoParticipante partidoParticipante) {
-        this.id = partidoParticipante.getId();
-        this.idUsuario = partidoParticipante.getUsuario().getId();
-        this.nombreCompleto = partidoParticipante.getUsuario().getNombreCompleto();
-        this.posicionFavorita = partidoParticipante.getUsuario().getPosicionFavorita();
-        this.equipo = partidoParticipante.getEquipo().toString();
-        this.fechaUnion = partidoParticipante.getFechaUnion();
-        this.username = partidoParticipante.getUsuario().getUsername();
+    public DetalleParticipante(EquipoJugador equipoJugador) {
+        this.id = equipoJugador.getId();
+        this.idUsuario = equipoJugador.getUsuario().getId();
+        this.nombreCompleto = equipoJugador.getUsuario().getNombreCompleto();
+        this.posicionFavorita = equipoJugador.getUsuario().getPosicionFavorita();
+        this.equipo = equipoJugador.getEquipo().getNombre();
+        this.idEquipo = equipoJugador.getEquipo().getId();
+        this.fechaUnion = equipoJugador.getFechaUnion();
+        this.username = equipoJugador.getUsuario().getUsername();
     }
 
     public Long getId() {
@@ -31,6 +31,10 @@ public class DetalleParticipante {
 
     public Long getIdUsuario() {
         return idUsuario;
+    }
+
+    public Long getIdEquipo() {
+        return idEquipo;
     }
 
     public String getNombreCompleto() {
