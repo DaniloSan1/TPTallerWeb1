@@ -12,6 +12,8 @@ import com.tallerwebi.dominio.excepcion.PartidoNoEncontrado;
 import com.tallerwebi.dominio.excepcion.PermisosInsufficientes;
 import com.tallerwebi.dominio.excepcion.YaExisteElParticipante;
 
+import com.tallerwebi.dominio.RepositorioPartidoEquipo;
+
 @Service
 public class ServicioPartidoImpl implements ServicioPartido {
     private final RepositorioPartido repoPartido;

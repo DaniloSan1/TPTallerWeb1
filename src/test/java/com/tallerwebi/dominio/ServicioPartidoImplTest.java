@@ -48,7 +48,6 @@ public class ServicioPartidoImplTest {
         @Test
         public void deberiaDevolverExcepcionCuandoNoSeEncuentraElPartido() throws PartidoNoEncontrado {
                 Mockito.when(repositorioPartidoMock.porId(Mockito.anyLong())).thenReturn(null);
-
                 assertThrows(PartidoNoEncontrado.class, () -> servicioPartido.obtenerPorId(1L));
                 Mockito.verify(repositorioPartidoMock, Mockito.times(1)).porId(Mockito.anyLong());
         }

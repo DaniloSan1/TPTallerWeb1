@@ -106,6 +106,15 @@ public class ControladorPartidoTest {
             // Should not happen in mock
         }
 
+        // Create mock for Equipo
+        equipoMock = Mockito.mock(Equipo.class);
+        when(equipoMock.getId()).thenReturn(1L);
+        try {
+            Mockito.when(servicioEquipoMock.buscarPorId(1L)).thenReturn(equipoMock);
+        } catch (EquipoNoEncontrado e) {
+            // Should not happen in mock
+        }
+
         controladorPartido = new ControladorPartido(servicioPartidoMock, servicioLoginMock, null, null,
                 servicioPartidoMock, null, servicioEquipoMock);
     }
