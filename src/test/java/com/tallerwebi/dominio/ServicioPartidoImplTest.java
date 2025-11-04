@@ -50,21 +50,8 @@ public class ServicioPartidoImplTest {
 
         @Test
         public void deberiaDevolverUnPartidoExistente() throws PartidoNoEncontrado {
-                Long id = Mockito.anyLong();
+                Long id = 1L;
                 Mockito.when(repositorioPartidoMock.porId(id)).thenReturn(partidoMock);
-                Mockito.when(partidoMock.getId()).thenReturn(id);
-                Mockito.when(partidoMock.getFecha()).thenReturn(LocalDateTime.now());
-                Mockito.when(partidoMock.getCupoMaximo()).thenReturn(10);
-                Mockito.when(partidoMock.getZona()).thenReturn(Zona.NORTE);
-                Mockito.when(partidoMock.getNivel()).thenReturn(Nivel.INTERMEDIO);
-                Mockito.when(partidoMock.getTitulo()).thenReturn("Partido de prueba");
-                Mockito.when(partidoMock.getDescripcion()).thenReturn("Descripción del partido");
-                PartidoParticipante participanteMock1 = Mockito.mock(PartidoParticipante.class);
-                PartidoParticipante participanteMock2 = Mockito.mock(PartidoParticipante.class);
-                PartidoParticipante participanteMock3 = Mockito.mock(PartidoParticipante.class);
-                PartidoParticipante participanteMock4 = Mockito.mock(PartidoParticipante.class);
-                Mockito.when(partidoMock.getParticipantes()).thenReturn(java.util.Set.of(participanteMock1,
-                                participanteMock2, participanteMock3, participanteMock4));
 
                 ServicioPartido servicioPartido = new ServicioPartidoImpl(repositorioPartidoMock,
                                 repositorioReservaMock,
@@ -73,7 +60,7 @@ public class ServicioPartidoImplTest {
 
                 Partido partidoObtenido = servicioPartido.obtenerPorId(id);
                 assertEquals(partidoMock, partidoObtenido);
-                Mockito.verify(repositorioPartidoMock, Mockito.times(1)).porId(Mockito.anyLong());
+                Mockito.verify(repositorioPartidoMock, Mockito.times(1)).porId(id);
         }
 
         @Test
@@ -134,7 +121,7 @@ public class ServicioPartidoImplTest {
                 servicioPartido.anotarParticipante(partidoMock, equipoMock, usuarioMock);
 
                 Mockito.verify(servicioEquipoJugadorMock, Mockito.times(1)).crearEquipoJugador(equipoMock, usuarioMock);
-                Mockito.verify(equipoMock, Mockito.times(1)).agregarJugador(equipoJugadorMock);
+                Mockito.verify(partidoMock, Mockito.times(1)).agregarParticipante(equipoJugadorMock);
         }
 
         @Test
@@ -189,10 +176,11 @@ public class ServicioPartidoImplTest {
         public void abandonarPartidoDeberiaEliminarAlUsuarioDeLaListaDeParticipantes() {
                 Usuario usuario = new Usuario("usuario", "123", "email@mail.com", "username");
                 usuario.setId(1L);
-                Partido partido = new Partido();
+                Partido partido = Mockito.mock(Partido.class);
                 partido.setId(1L);
-                PartidoParticipante participante = new PartidoParticipante(partido, usuario, EquipoEnum.EQUIPO_1);
-                partido.getParticipantes().add(participante);
+                EquipoJugador equipoJugador = Mockito.mock(EquipoJugador.class);
+                Mockito.when(equipoJugador.getId()).thenReturn(1L);
+                Mockito.when(partido.buscarJugador(1L)).thenReturn(equipoJugador);
 
                 Mockito.when(repositorioPartidoMock.porId(1L)).thenReturn(partido);
 
@@ -202,14 +190,16 @@ public class ServicioPartidoImplTest {
                                 repositorioUsuarioMock, servicioEquipoJugadorMock,
                                 repositorioPartidoParticipanteMock);
 
-                servicioPartido.abandonarPartido(1L, 1L);
+                servicioPartido.abandonarPartido(1L, usuario);
 
-                assertEquals(0, partido.getParticipantes().size());
+                Mockito.verify(servicioEquipoJugadorMock, Mockito.times(1)).eliminarPorId(1L);
                 Mockito.verify(repositorioPartidoMock, Mockito.times(1)).porId(1L);
         }
 
         @Test
         public void deberiaLanzarExcepcionAlAbandonarPartidoYElPartidoNoExiste() {
+                Usuario usuario = new Usuario("usuario", "123", "email@mail.com", "username");
+                usuario.setId(1L);
                 Mockito.when(repositorioPartidoMock.porId(1L)).thenReturn(null);
                 ServicioPartido servicioPartido = new ServicioPartidoImpl(
                                 repositorioPartidoMock,
@@ -217,12 +207,14 @@ public class ServicioPartidoImplTest {
                                 repositorioUsuarioMock, servicioEquipoJugadorMock,
                                 repositorioPartidoParticipanteMock);
 
-                assertThrows(PartidoNoEncontrado.class, () -> servicioPartido.abandonarPartido(1L, 1L));
+                assertThrows(PartidoNoEncontrado.class, () -> servicioPartido.abandonarPartido(1L, usuario));
                 Mockito.verify(repositorioPartidoMock, Mockito.times(1)).porId(1L);
         }
 
         @Test
         public void deberiaLanzarExcepcionAlAbandonarPartidoSiElUsuarioNoEstaAnotado() {
+                Usuario usuario = new Usuario("usuario", "123", "email@mail.com", "username");
+                usuario.setId(1L);
                 Partido partido = new Partido();
                 partido.setId(1L);
 
@@ -234,7 +226,7 @@ public class ServicioPartidoImplTest {
                                 repositorioUsuarioMock, servicioEquipoJugadorMock,
                                 repositorioPartidoParticipanteMock);
 
-                assertThrows(RuntimeException.class, () -> servicioPartido.abandonarPartido(1L, 1L));
+                assertThrows(RuntimeException.class, () -> servicioPartido.abandonarPartido(1L, usuario));
                 Mockito.verify(repositorioPartidoMock, Mockito.times(1)).porId(1L);
                 Mockito.verify(repositorioPartidoMock, Mockito.never()).guardar(Mockito.any());
         }
@@ -247,10 +239,13 @@ public class ServicioPartidoImplTest {
                 Usuario usuario2 = new Usuario("user2", "123", "email2@email.com", "username2");
                 usuario2.setId(2L);
 
-                Partido partido = new Partido();
-                partido.setId(1L);
-                partido.getParticipantes().add(new PartidoParticipante(partido, usuario1, EquipoEnum.EQUIPO_1));
-                partido.getParticipantes().add(new PartidoParticipante(partido, usuario2, EquipoEnum.EQUIPO_2));
+                Partido partido = Mockito.mock(Partido.class);
+                EquipoJugador equipoJugador1 = Mockito.mock(EquipoJugador.class);
+                Mockito.when(equipoJugador1.getId()).thenReturn(1L);
+                EquipoJugador equipoJugador2 = Mockito.mock(EquipoJugador.class);
+                Mockito.when(equipoJugador2.getId()).thenReturn(2L);
+                Mockito.when(partido.buscarJugador(1L)).thenReturn(equipoJugador1);
+                Mockito.when(partido.buscarJugador(2L)).thenReturn(equipoJugador2);
 
                 Mockito.when(repositorioPartidoMock.porId(1L)).thenReturn(partido);
 
@@ -260,10 +255,10 @@ public class ServicioPartidoImplTest {
                                 repositorioUsuarioMock, servicioEquipoJugadorMock,
                                 repositorioPartidoParticipanteMock);
 
-                servicioPartido.abandonarPartido(1L, 1L);
+                servicioPartido.abandonarPartido(1L, usuario1);
 
-                assertEquals(1, partido.getParticipantes().size());
-                assertEquals(2L, partido.getParticipantes().iterator().next().getUsuario().getId());
+                Mockito.verify(servicioEquipoJugadorMock, Mockito.times(1)).eliminarPorId(1L);
+                Mockito.verify(servicioEquipoJugadorMock, Mockito.never()).eliminarPorId(2L);
         }
 
         @Test

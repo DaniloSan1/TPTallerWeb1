@@ -134,22 +134,35 @@
                                 th:if="${partido != null}"
                             >
                                 <form
-                                    th:action="@{/partidos/{id}(id=${partido.id})}"
+                                    th:action="@{/partidos/{id}/join(id=${partido.id})}"
+                                    method="post"
+                                    id="joinForm"
+                                    class="w-100"
+                                >
+                                    <input
+                                        type="hidden"
+                                        name="equipo"
+                                        id="equipoInput"
+                                    />
+                                    <button
+                                        id="btn-unirse"
+                                        class="btn btn-primary w-100"
+                                        type="button"
+                                        th:if="${!partido.yaParticipa}"
+                                        th:disabled="${!partido.hayCupo || partido.yaParticipa}"
+                                        data-bs-toggle="modal"
+                                        data-bs-target="#joinModal"
+                                    >
+                                        Unirse
+                                    </button>
+                                </form>
+                                <form
+                                    th:action="@{/partidos/{id}/leave(id=${partido.id})}"
                                     method="post"
                                     class="w-100"
                                 >
                                     <button
-                                        id="btn-unirse"
-                                        class="btn btn-primary w-100"
-                                        name="join"
-                                        th:if="${!partido.yaParticipa}"
-                                        th:disabled="${!partido.hayCupo || partido.yaParticipa}"
-                                    >
-                                        Unirse
-                                    </button>
-                                    <button
                                         type="submit"
-                                        name="leave"
                                         class="btn btn-secondary w-100"
                                         th:if="${partido.yaParticipa}"
                                     >
@@ -227,10 +240,81 @@
                 </div>
             </div>
         </main>
+
+        <!-- Modal for team selection -->
+        <div
+            th:if="${partido != null}"
+            class="modal fade"
+            id="joinModal"
+            tabindex="-1"
+            aria-labelledby="joinModalLabel"
+            aria-hidden="true"
+        >
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="joinModalLabel">
+                            Elegir Equipo
+                        </h5>
+                        <button
+                            type="button"
+                            class="btn-close"
+                            data-bs-dismiss="modal"
+                            aria-label="Close"
+                        ></button>
+                    </div>
+                    <div class="modal-body">
+                        <p>Selecciona el equipo al que quieres unirte:</p>
+                        <select class="form-select" id="equipoSelect">
+                            <option value="">Selecciona un equipo</option>
+                            <option th:value="${partido.equipo1Id}">
+                                Equipo 1
+                            </option>
+                            <option th:value="${partido.equipo2Id}">
+                                Equipo 2
+                            </option>
+                        </select>
+                    </div>
+                    <div class="modal-footer">
+                        <button
+                            type="button"
+                            class="btn btn-secondary"
+                            data-bs-dismiss="modal"
+                        >
+                            Cancelar
+                        </button>
+                        <button
+                            type="button"
+                            class="btn btn-primary"
+                            id="confirmJoin"
+                        >
+                            Unirse
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <script
             type="text/javascript"
             th:src="@{/webjars/bootstrap/5.2.0/js/bootstrap.bundle.min.js}"
         ></script>
+        <script>
+            document
+                .getElementById("confirmJoin")
+                .addEventListener("click", function () {
+                    const selected =
+                        document.getElementById("equipoSelect").value;
+                    if (selected) {
+                        document.getElementById("equipoInput").value = selected;
+                        const modal = bootstrap.Modal.getInstance(
+                            document.getElementById("joinModal")
+                        );
+                        modal.hide();
+                        document.getElementById("joinForm").submit();
+                    }
+                });
+        </script>
         <script type="module" th:src="@{/js/common.js}"></script>
         <script type="module" th:src="@{/js/participantes-partido.js}"></script>
     </body>

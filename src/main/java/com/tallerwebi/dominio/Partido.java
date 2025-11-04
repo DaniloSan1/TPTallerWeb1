@@ -1,9 +1,13 @@
 package com.tallerwebi.dominio;
 
 import javax.persistence.*;
+
+import com.tallerwebi.presentacion.DetalleParticipante;
+
 import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Entity
 public class Partido {
@@ -46,8 +50,10 @@ public class Partido {
     }
 
     // helpers para manejar participantes
-    public Set<PartidoParticipante> getParticipantes() {
-        return participantes;
+    public Set<EquipoJugador> getParticipantes() {
+        return this.equipos.stream()
+                .flatMap(pe -> pe.getJugadores().stream())
+                .collect(Collectors.toSet());
     }
 
     public Set<Long> getParticipantesIds() {
@@ -137,8 +143,9 @@ public class Partido {
     }
 
     public boolean validarParticipanteExistente(Long usuarioId) {
-        return participantes.stream()
-                .anyMatch(pp -> pp.getUsuario().getId().equals(usuarioId));
+        return equipos.stream()
+                .flatMap(pe -> pe.getJugadores().stream())
+                .anyMatch(jugador -> jugador.getUsuario().getId().equals(usuarioId));
     }
 
     public boolean validarEquipoExistente(Long equipoId) {
@@ -175,5 +182,23 @@ public class Partido {
 
     public void setEquipos(Set<PartidoEquipo> equipos) {
         this.equipos = equipos;
+    }
+
+    public void agregarParticipante(EquipoJugador equipoJugador) {
+        this.equipos.stream()
+                .filter(pe -> pe.getEquipo().getId().equals(equipoJugador.getEquipo().getId()))
+                .findFirst()
+                .ifPresent(pe -> pe.getJugadores().add(equipoJugador));
+    }
+
+    public EquipoJugador buscarJugador(Long id2) {
+        for (PartidoEquipo pe : this.equipos) {
+            for (EquipoJugador ej : pe.getJugadores()) {
+                if (ej.getUsuario().getId().equals(id2)) {
+                    return ej;
+                }
+            }
+        }
+        return null;
     }
 }

@@ -6,6 +6,7 @@ import java.util.stream.Collectors;
 
 import com.tallerwebi.dominio.Nivel;
 import com.tallerwebi.dominio.Partido;
+import com.tallerwebi.dominio.PartidoEquipo;
 import com.tallerwebi.dominio.Usuario;
 import com.tallerwebi.dominio.Zona;
 
@@ -29,6 +30,8 @@ public class DetallePartido {
     private int cuposDisponibles;
     private String direccion;
     private List<DetalleParticipante> participantes;
+    private Long equipo1Id;
+    private Long equipo2Id;
 
     public DetallePartido(Partido partido, Usuario usuario) {
         this.id = partido.getId();
@@ -50,11 +53,17 @@ public class DetallePartido {
         this.cuposDisponibles = partido.cuposDisponibles();
         this.direccion = partido.getReserva().getCancha().getDireccion();
 
-        this.participantes = partido.getEquipos().stream()
-                .flatMap(pe -> pe.getJugadores().stream())
+        this.participantes = partido.getParticipantes().stream()
                 .map(DetalleParticipante::new)
                 .collect(Collectors.toList());
 
+        for (PartidoEquipo pe : partido.getEquipos()) {
+            if ("EQUIPO_1".equals(pe.getEquipo().getNombre())) {
+                this.equipo1Id = pe.getEquipo().getId();
+            } else if ("EQUIPO_2".equals(pe.getEquipo().getNombre())) {
+                this.equipo2Id = pe.getEquipo().getId();
+            }
+        }
     }
 
     public Long getId() {
@@ -131,5 +140,13 @@ public class DetallePartido {
 
     public List<DetalleParticipante> getParticipantes() {
         return participantes;
+    }
+
+    public Long getEquipo1Id() {
+        return equipo1Id;
+    }
+
+    public Long getEquipo2Id() {
+        return equipo2Id;
     }
 }

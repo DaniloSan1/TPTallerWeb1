@@ -137,7 +137,6 @@ INSERT INTO PartidoEquipo(id, partido_id, equipo_id, points) VALUES
 
 -- Insert equipo_jugador
 INSERT INTO EquipoJugador(id, equipo_id, usuario_id, fecha_union) VALUES
-(NULL, (SELECT id FROM Equipo WHERE nombre = 'EQUIPO_1' AND creado_por_id = (SELECT creador_id FROM Partido WHERE id = 1)), 1, NOW()),
 (NULL, (SELECT id FROM Equipo WHERE nombre = 'EQUIPO_1' AND creado_por_id = (SELECT creador_id FROM Partido WHERE id = 1)), 2, NOW()),
 (NULL, (SELECT id FROM Equipo WHERE nombre = 'EQUIPO_1' AND creado_por_id = (SELECT creador_id FROM Partido WHERE id = 1)), 3, NOW()),
 (NULL, (SELECT id FROM Equipo WHERE nombre = 'EQUIPO_1' AND creado_por_id = (SELECT creador_id FROM Partido WHERE id = 1)), 4, NOW()),

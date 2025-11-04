@@ -7,7 +7,6 @@ import javax.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.tallerwebi.dominio.excepcion.NoExisteElUsuario;
 import com.tallerwebi.dominio.excepcion.NoHayCupoEnPartido;
 import com.tallerwebi.dominio.excepcion.PartidoNoEncontrado;
 import com.tallerwebi.dominio.excepcion.PermisosInsufficientes;
@@ -70,31 +69,6 @@ public class ServicioPartidoImpl implements ServicioPartido {
         return partido;
     }
 
-    @Transactional
-    public Partido anotarParticipanteOld(Long partidoId, Usuario usuario)
-            throws NoExisteElUsuario, NoHayCupoEnPartido, PartidoNoEncontrado, YaExisteElParticipante {
-        Partido partido = repoPartido.porId(partidoId);
-
-        if (partido == null) {
-            throw new PartidoNoEncontrado();
-        }
-
-        if (!partido.validarCupo()) {
-            throw new NoHayCupoEnPartido();
-        }
-
-        if (partido.validarParticipanteExistente(usuario.getId())) {
-            throw new YaExisteElParticipante();
-        }
-
-        PartidoParticipante partidoParticipante = new PartidoParticipante(partido, usuario, EquipoEnum.SIN_EQUIPO);
-        repoPartidoParticipante.guardar(partidoParticipante);
-
-        partido.getParticipantes().add(partidoParticipante);
-
-        return partido;
-    }
-
     @Override
     @Transactional
     public Partido anotarParticipante(Partido partido, Equipo equipo, Usuario usuario)
@@ -105,27 +79,15 @@ public class ServicioPartidoImpl implements ServicioPartido {
         }
 
         EquipoJugador equipoJugador = servicioEquipoJugador.crearEquipoJugador(equipo, usuario);
-        equipo.agregarJugador(equipoJugador);
-
+        partido.agregarParticipante(equipoJugador);
         return partido;
     }
 
     @Override
-    @Transactional
-    public void abandonarPartido(Long partidoId, Long usuarioId) {
-        Partido partido = repoPartido.porId(partidoId);
-        if (partido == null) {
-            throw new PartidoNoEncontrado();
-        }
-
-        PartidoParticipante partidoParticipante = partido.getParticipantes().stream()
-                .filter(pp -> pp.getUsuario().getId().equals(usuarioId))
-                .findFirst()
-                .orElseThrow(() -> new RuntimeException("El usuario no está inscripto en este partido"));
-
-        boolean removed = partido.getParticipantes().remove(partidoParticipante);
-        // El @Transactional se encarga del guardado automático
-
+    public void abandonarPartido(Long partidoId, Usuario usuario) {
+        Partido partido = obtenerPorId(partidoId);
+        EquipoJugador equipoJugador = partido.buscarJugador(usuario.getId());
+        servicioEquipoJugador.eliminarPorId(equipoJugador.getId());
     }
 
     @Override

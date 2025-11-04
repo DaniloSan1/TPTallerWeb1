@@ -15,7 +15,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -122,7 +121,7 @@ public class ControladorPartido {
         return "redirect:/partidos/" + id;
     }
 
-    @RequestMapping(params = "join", path = "/{id}", method = RequestMethod.POST)
+    @PostMapping("/{id}/join")
     public ModelAndView inscripcion(@PathVariable long id, @RequestParam("equipo") long equipoId,
             HttpServletRequest request) throws Exception {
         ModelMap modelo = new ModelMap();
@@ -145,15 +144,14 @@ public class ControladorPartido {
         return new ModelAndView("detalle-partido", modelo);
     }
 
-    @RequestMapping(params = "leave", path = "/{id}", method = RequestMethod.POST)
+    @PostMapping("/{id}/leave")
     public String abandonarPartido(@PathVariable Long id, HttpServletRequest request) {
         Usuario usuario = (Usuario) request.getSession().getAttribute("USUARIO");
         if (usuario == null) {
-            // si no hay usuario logueado, lo mandamos al login
             return "redirect:/login";
         }
 
-        servicio.abandonarPartido(id, usuario.getId());
+        servicio.abandonarPartido(id, usuario);
         return "redirect:/home";
     }
 }

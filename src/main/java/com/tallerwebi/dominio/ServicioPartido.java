@@ -9,7 +9,7 @@ public interface ServicioPartido {
 
         Partido obtenerPorId(Long id);
 
-        public void abandonarPartido(Long partidoId, Long usuarioId);
+        public void abandonarPartido(Long partidoId, Usuario usuario);
 
         Partido anotarParticipante(Partido partido, Equipo equipo, Usuario usuario)
                         throws YaExisteElParticipante, NoHayCupoEnPartido;

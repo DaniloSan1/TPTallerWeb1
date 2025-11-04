@@ -22,6 +22,18 @@ public class ServicioEquipoJugadorImpl implements ServicioEquipoJugador {
 
         EquipoJugador equipoJugador = new EquipoJugador(equipo, jugador);
         repositorioEquipoJugador.guardar(equipoJugador);
+
         return equipoJugador;
+    }
+
+    @Override
+    public void eliminarPorId(Long id) {
+        EquipoJugador equipoJugador = repositorioEquipoJugador.buscarPorId(id);
+        repositorioEquipoJugador.eliminar(equipoJugador);
+    }
+
+    @Override
+    public EquipoJugador buscarPorEquipoYUsuario(Equipo equipo, Usuario usuario) {
+        return repositorioEquipoJugador.buscarPorEquipoYUsuario(equipo, usuario);
     }
 }

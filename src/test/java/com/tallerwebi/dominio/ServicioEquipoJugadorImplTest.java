@@ -30,4 +30,35 @@ public class ServicioEquipoJugadorImplTest {
         assertThat(equipoJugadorCreado.getEquipo(), equalTo(equipo));
         assertThat(equipoJugadorCreado.getUsuario(), equalTo(jugador));
     }
+
+    @Test
+    public void queSePuedaBuscarEquipoJugadorPorEquipoYUsuario() {
+        Usuario creador = new Usuario();
+        Equipo equipo = new Equipo("Equipo Test", creador, java.time.LocalDateTime.now());
+        Usuario jugador = new Usuario();
+        EquipoJugador equipoJugador = new EquipoJugador(equipo, jugador);
+
+        when(repositorioEquipoJugador.buscarPorEquipoYUsuario(equipo, jugador)).thenReturn(equipoJugador);
+
+        EquipoJugador resultado = servicioEquipoJugadorImpl.buscarPorEquipoYUsuario(equipo, jugador);
+
+        verify(repositorioEquipoJugador).buscarPorEquipoYUsuario(equipo, jugador);
+        assertThat(resultado, equalTo(equipoJugador));
+    }
+
+    @Test
+    public void queSePuedaEliminarEquipoJugadorPorId() {
+        Long id = 1L;
+        Usuario creador = new Usuario();
+        Equipo equipo = new Equipo("Equipo Test", creador, java.time.LocalDateTime.now());
+        Usuario jugador = new Usuario();
+        EquipoJugador equipoJugador = new EquipoJugador(equipo, jugador);
+
+        when(repositorioEquipoJugador.buscarPorId(id)).thenReturn(equipoJugador);
+
+        servicioEquipoJugadorImpl.eliminarPorId(id);
+
+        verify(repositorioEquipoJugador).buscarPorId(id);
+        verify(repositorioEquipoJugador).eliminar(equipoJugador);
+    }
 }

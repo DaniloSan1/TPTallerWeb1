@@ -11,10 +11,12 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import com.tallerwebi.dominio.ServicioEquipoJugador;
 import com.tallerwebi.dominio.ServicioPartidoParticipante;
 
 public class ControladorParticipantesTest {
     private ServicioPartidoParticipante servicioPartidoParticipanteMock;
+    private ServicioEquipoJugador servicioEquipoJugador;
     private ControladorParticipantes controladorParticipantes;
     private HttpServletRequest requestMock;
     private HttpSession sessionMock;
@@ -23,7 +25,8 @@ public class ControladorParticipantesTest {
     @BeforeEach
     public void init() {
         servicioPartidoParticipanteMock = Mockito.mock(ServicioPartidoParticipante.class);
-        controladorParticipantes = new ControladorParticipantes(servicioPartidoParticipanteMock);
+        servicioEquipoJugador = Mockito.mock(ServicioEquipoJugador.class);
+        controladorParticipantes = new ControladorParticipantes(servicioPartidoParticipanteMock, servicioEquipoJugador);
         requestMock = Mockito.mock(HttpServletRequest.class);
         sessionMock = Mockito.mock(HttpSession.class);
         redirectAttributesMock = Mockito.mock(RedirectAttributes.class);

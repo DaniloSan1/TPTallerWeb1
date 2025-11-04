@@ -78,4 +78,34 @@ public class RepositorioEquipoJugadorImplTest {
 
         assertThat(equipoJugadorEncontrado, equalTo(equipoJugadorAGuardar));
     }
+
+    @Test
+    @Transactional
+    @Rollback
+    public void debeEliminarEquipoJugador() {
+        Usuario creador = new Usuario("nombre", "password", "email@test.com", "username");
+        sessionFactory.getCurrentSession().save(creador);
+
+        Usuario jugador = new Usuario("jugador", "password", "jugador@test.com", "jugador");
+        sessionFactory.getCurrentSession().save(jugador);
+
+        Equipo equipo = new Equipo("Equipo Test", creador, LocalDateTime.now());
+        sessionFactory.getCurrentSession().save(equipo);
+
+        EquipoJugador equipoJugadorAGuardar = new EquipoJugador(equipo, jugador);
+        sessionFactory.getCurrentSession().save(equipoJugadorAGuardar);
+        sessionFactory.getCurrentSession().flush();
+
+        // Verificar que existe antes de eliminar
+        EquipoJugador equipoJugadorAntes = repositorioEquipoJugador.buscarPorId(equipoJugadorAGuardar.getId());
+        assertThat(equipoJugadorAntes, equalTo(equipoJugadorAGuardar));
+
+        // Eliminar
+        repositorioEquipoJugador.eliminar(equipoJugadorAGuardar);
+        sessionFactory.getCurrentSession().flush();
+
+        // Verificar que ya no existe
+        EquipoJugador equipoJugadorDespues = repositorioEquipoJugador.buscarPorId(equipoJugadorAGuardar.getId());
+        assertThat(equipoJugadorDespues, equalTo(null));
+    }
 }

@@ -30,4 +30,21 @@ public class RepositorioEquipoJugadorImpl implements RepositorioEquipoJugador {
         final Session session = sessionFactory.getCurrentSession();
         return (EquipoJugador) session.get(EquipoJugador.class, id);
     }
+
+    @Override
+    public EquipoJugador buscarPorEquipoYUsuario(com.tallerwebi.dominio.Equipo equipo,
+            com.tallerwebi.dominio.Usuario usuario) {
+        final Session session = sessionFactory.getCurrentSession();
+        return (EquipoJugador) session
+                .createQuery("FROM EquipoJugador ej WHERE ej.equipo = :equipo AND ej.usuario = :usuario")
+                .setParameter("equipo", equipo)
+                .setParameter("usuario", usuario)
+                .uniqueResult();
+    }
+
+    @Override
+    public void eliminar(EquipoJugador equipoJugador) {
+        final Session session = sessionFactory.getCurrentSession();
+        session.delete(equipoJugador);
+    }
 }

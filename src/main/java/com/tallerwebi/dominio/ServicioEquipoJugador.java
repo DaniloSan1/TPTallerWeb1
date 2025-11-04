@@ -7,4 +7,8 @@ import com.tallerwebi.dominio.excepcion.YaExisteElParticipante;
 @Service
 public interface ServicioEquipoJugador {
     EquipoJugador crearEquipoJugador(Equipo equipo, Usuario jugador) throws YaExisteElParticipante;
+
+    EquipoJugador buscarPorEquipoYUsuario(Equipo equipo, Usuario usuario);
+
+    void eliminarPorId(Long id);
 }
