@@ -18,6 +18,9 @@ public interface ServicioPartido {
                         int cupoMaximo, Usuario usuario);
 
         List<Partido> listarTodos(String busqueda, Zona filtroZona, Nivel filtroNivel);
-
-        void actualizarPartido(Long id, String titulo, String descripcion, Usuario usuario);
+        
+        public void actualizarPartido(Long id, String titulo, String descripcion, Usuario usuario);
+        
+        List<Partido> listarPorCreador(Usuario usuario);
+    
 }

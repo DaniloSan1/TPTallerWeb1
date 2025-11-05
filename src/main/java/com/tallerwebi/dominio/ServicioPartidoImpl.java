@@ -107,6 +107,13 @@ public class ServicioPartidoImpl implements ServicioPartido {
     }
 
     @Override
+    public List<Partido> listarPorCreador(Usuario usuario) {
+        if (usuario == null || usuario.getId() == null) {
+        return java.util.Collections.emptyList();
+    }
+    return repoPartido.listarPorCreador(usuario.getId());
+    }
+    @Override
     public void actualizarPartido(Long id, String titulo, String descripcion, Usuario usuario)
             throws PermisosInsufficientes {
         Partido partido = obtenerPorId(id);

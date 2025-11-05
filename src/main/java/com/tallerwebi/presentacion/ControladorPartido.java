@@ -1,5 +1,8 @@
 package com.tallerwebi.presentacion;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,9 +16,16 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+
 import com.tallerwebi.dominio.Equipo;
 import com.tallerwebi.dominio.Partido;
 import com.tallerwebi.dominio.ServicioEquipo;
+import com.tallerwebi.dominio.FotoCancha;
+import com.tallerwebi.dominio.Horario;
+import com.tallerwebi.dominio.Nivel;
+import com.tallerwebi.dominio.Partido;
+import com.tallerwebi.dominio.Reserva;
+import com.tallerwebi.dominio.ServicioFotoCancha;
 import com.tallerwebi.dominio.ServicioHorario;
 import com.tallerwebi.dominio.ServicioLogin;
 import com.tallerwebi.dominio.ServicioPartido;
@@ -33,17 +43,19 @@ public class ControladorPartido {
     private ServicioUsuario servicioUsuario;
     private ServicioHorario servicioHorario;
     private ServicioEquipo servicioEquipo;
+    private ServicioFotoCancha servicioFotoCancha;
 
     @Autowired
     public ControladorPartido(ServicioPartido servicio, ServicioLogin servicioLogin, ServicioHorario servicioHorario,
-            ServicioReserva servicioReserva, ServicioPartido servicioPartido, ServicioUsuario servicioUsuario,
-            ServicioEquipo servicioEquipo) {
+            ServicioReserva servicioReserva, ServicioPartido servicioPartido, ServicioUsuario servicioUsuario, ServicioEquipo servicioEquipoMock,
+            ServicioEquipo servicioEquipo, ServicioFotoCancha servicioFotoCancha) {
         this.servicio = servicio;
         this.servicioLogin = servicioLogin;
         this.servicioReserva = servicioReserva;
         this.servicioPartido = servicioPartido;
         this.servicioUsuario = servicioUsuario;
         this.servicioEquipo = servicioEquipo;
+        this.servicioFotoCancha = servicioFotoCancha;
     }
 
     @GetMapping("/{id}")
@@ -144,5 +156,24 @@ public class ControladorPartido {
 
         servicio.abandonarPartido(id, usuario);
         return "redirect:/home";
+    }   
+    @GetMapping("/mios")
+    public ModelAndView misPartidos(HttpServletRequest request, ModelMap model) {
+    String email = (String) request.getSession().getAttribute("EMAIL");
+    if (email == null) {
+        return new ModelAndView("redirect:/login");
     }
+
+    Usuario usuario = servicioLogin.buscarPorEmail(email);
+    List<Partido> partidos = servicio.listarPorCreador(usuario);
+
+    List<FotoCancha> fotosCanchas = servicioFotoCancha.insertarFotosAModelPartidos(partidos);
+
+    model.put("partidos", partidos);
+    model.put("fotosCanchas", fotosCanchas);
+    model.put("currentPage", "mis-partidos");
+
+
+    return new ModelAndView("mis-partidos", model);
 }
+}           
