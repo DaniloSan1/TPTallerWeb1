@@ -53,12 +53,14 @@ public class ControladorPartido {
 
     @Autowired
     public ControladorPartido(ServicioPartido servicio, ServicioLogin servicioLogin, ServicioHorario servicioHorario,
-            ServicioReserva servicioReserva, ServicioPartido servicioPartido, ServicioUsuario servicioUsuario) {
+            ServicioReserva servicioReserva, ServicioPartido servicioPartido, ServicioUsuario servicioUsuario,
+            ServicioFotoCancha servicioFotoCancha) {
         this.servicio = servicio;
         this.servicioLogin = servicioLogin;
         this.servicioReserva = servicioReserva;
         this.servicioPartido = servicioPartido;
         this.servicioUsuario = servicioUsuario;
+        this.servicioFotoCancha = servicioFotoCancha;
     }
 
     @GetMapping("/{id}")
@@ -154,7 +156,7 @@ public class ControladorPartido {
         return "redirect:/home";
     }   
     @GetMapping("/mios")
-public ModelAndView misPartidos(HttpServletRequest request, ModelMap model) {
+    public ModelAndView misPartidos(HttpServletRequest request, ModelMap model) {
     String email = (String) request.getSession().getAttribute("EMAIL");
     if (email == null) {
         return new ModelAndView("redirect:/login");
@@ -168,6 +170,7 @@ public ModelAndView misPartidos(HttpServletRequest request, ModelMap model) {
     model.put("partidos", partidos);
     model.put("fotosCanchas", fotosCanchas);
     model.put("currentPage", "mis-partidos");
+
 
     return new ModelAndView("mis-partidos", model);
 }
