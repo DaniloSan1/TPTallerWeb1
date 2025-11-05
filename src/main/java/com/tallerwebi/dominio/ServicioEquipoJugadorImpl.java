@@ -69,13 +69,10 @@ public class ServicioEquipoJugadorImpl implements ServicioEquipoJugador {
         for (EquipoJugador jugador : jugadores) {
             if (jugador.isEsCapitan()) {
                 jugador.setEsCapitan(false);
-                repositorioEquipoJugador.guardar(jugador); // Use guardar instead of actualizar, assuming it handles
-                                                           // updates
             }
         }
 
         // Set the new captain
         nuevoCapitan.setEsCapitan(true);
-        repositorioEquipoJugador.guardar(nuevoCapitan);
     }
 }

@@ -13,6 +13,7 @@ public class DetalleParticipante {
     private Long idEquipo;
     private String equipo;
     private LocalDateTime fechaUnion;
+    private boolean esCapitan;
 
     public DetalleParticipante(EquipoJugador equipoJugador) {
         this.id = equipoJugador.getId();
@@ -23,6 +24,7 @@ public class DetalleParticipante {
         this.idEquipo = equipoJugador.getEquipo().getId();
         this.fechaUnion = equipoJugador.getFechaUnion();
         this.username = equipoJugador.getUsuario().getUsername();
+        this.esCapitan = equipoJugador.isEsCapitan();
     }
 
     public Long getId() {
@@ -55,5 +57,9 @@ public class DetalleParticipante {
 
     public String getUsername() {
         return username;
+    }
+
+    public boolean isEsCapitan() {
+        return esCapitan;
     }
 }

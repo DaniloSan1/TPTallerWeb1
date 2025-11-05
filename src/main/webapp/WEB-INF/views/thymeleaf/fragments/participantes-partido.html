@@ -20,7 +20,13 @@
                 class="participante-item"
                 th:each="participante : ${participantes}"
             >
-                <span class="profile-avatar"></span>
+                <span class="profile-avatar">
+                    <span
+                        th:if="${participante.esCapitan}"
+                        class="captain-shield material-symbols-outlined"
+                        >chess_queen</span
+                    >
+                </span>
                 <div class="d-flex flex-column">
                     <strong
                         class="w-100"
