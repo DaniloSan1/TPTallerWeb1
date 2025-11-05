@@ -10,6 +10,7 @@ public class DetalleEquipoPartido {
     private Long id;
     private Long idEquipo;
     private String nombre;
+    private Integer goles;
     private List<DetalleParticipante> participantes;
 
     public DetalleEquipoPartido(PartidoEquipo equipoEnPartido) {
@@ -21,6 +22,7 @@ public class DetalleEquipoPartido {
                 .sorted(Comparator.comparing(DetalleParticipante::isEsCapitan).reversed()
                         .thenComparing(DetalleParticipante::getFechaUnion))
                 .collect(Collectors.toList());
+        this.goles = equipoEnPartido.getGoles() != null ? equipoEnPartido.getGoles() : 0;
     }
 
     public Long getId() {
@@ -37,5 +39,9 @@ public class DetalleEquipoPartido {
 
     public Long getIdEquipo() {
         return idEquipo;
+    }
+
+    public Integer getGoles() {
+        return goles;
     }
 }

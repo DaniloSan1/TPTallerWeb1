@@ -34,6 +34,7 @@ public class DetallePartido {
     private int cuposDisponibles;
     private String direccion;
     private Set<DetalleEquipoPartido> equipos;
+    private boolean finalizado;
 
     public DetallePartido(Partido partido, Usuario usuario) {
         this.id = partido.getId();
@@ -54,6 +55,7 @@ public class DetallePartido {
         this.horarioId = partido.getReserva().getHorario().getId();
         this.cuposDisponibles = partido.getCupoDisponible();
         this.direccion = partido.getReserva().getCancha().getDireccion();
+        this.finalizado = partido.getFinalizado();
 
         this.equipos = partido.getEquipos().stream()
                 .map(DetalleEquipoPartido::new)
@@ -135,6 +137,10 @@ public class DetallePartido {
 
     public Set<DetalleEquipoPartido> getEquipos() {
         return equipos;
+    }
+
+    public boolean getFinalizado() {
+        return finalizado;
     }
 
     public List<DetalleParticipante> getParticipantes() {

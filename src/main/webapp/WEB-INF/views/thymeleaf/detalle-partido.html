@@ -42,7 +42,10 @@
                         class="mainbox width-100"
                     >
                         <div class="card-header">
-                            <h1 class="mb-2" th:text="${partido.titulo}"></h1>
+                            <h1
+                                class="mb-2"
+                                th:text="${partido.titulo} + ${partido.finalizado ? ' (Finalizado)' : ''}"
+                            ></h1>
                             <div id="partido-header-data">
                                 <h4
                                     id="fecha-partido"
@@ -149,7 +152,7 @@
                                         class="btn btn-primary w-100"
                                         type="button"
                                         th:if="${!partido.yaParticipa}"
-                                        th:disabled="${!partido.hayCupo || partido.yaParticipa}"
+                                        th:disabled="${!partido.hayCupo || partido.yaParticipa || partido.finalizado}"
                                         data-bs-toggle="modal"
                                         data-bs-target="#joinModal"
                                     >
@@ -165,6 +168,7 @@
                                         type="submit"
                                         class="btn btn-secondary w-100"
                                         th:if="${partido.yaParticipa}"
+                                        th:disabled="${partido.finalizado}"
                                     >
                                         Abandonar partido
                                     </button>
@@ -174,9 +178,20 @@
                                     class="btn btn-primary w-100"
                                     name="editar"
                                     th:if="${partido.esCreador}"
+                                    th:disabled="${partido.finalizado}"
                                     th:onclick="'location.href=\'' + @{/partidos/{id}/editar-partido(id=${partido.id})} + '\''"
                                 >
                                     Editar
+                                </button>
+                                <button
+                                    id="btn-finalizar"
+                                    class="btn btn-success w-100"
+                                    name="finalizar"
+                                    th:if="${partido.esCreador}"
+                                    th:disabled="${partido.finalizado}"
+                                    th:onclick="'location.href=\'' + @{/partidos/{id}/finalizar-partido(id=${partido.id})} + '\''"
+                                >
+                                    Finalizar Partido
                                 </button>
                                 <form
                                     th:action="@{/reserva/{id}(id=${partido.reservaId})}"
@@ -196,6 +211,7 @@
                                     <button
                                         type="submit"
                                         class="btn btn-danger w-100"
+                                        th:disabled="${partido.finalizado}"
                                     >
                                         Cancelar reserva
                                     </button>
@@ -229,7 +245,7 @@
                             th:each="equipoPartido : ${partido.equipos}"
                         >
                             <div
-                                th:replace="~{fragments/participantes-partido :: participantes-partido (participantes=${equipoPartido.participantes}, equipo=${equipoPartido}, equipos=${partido.equipos}, showDropdown=${partido.esCreador})}"
+                                th:replace="~{fragments/participantes-partido :: participantes-partido (participantes=${equipoPartido.participantes}, equipo=${equipoPartido}, equipos=${partido.equipos}, showDropdown=${partido.esCreador and not partido.finalizado})}"
                             ></div>
                         </div>
                     </div>
@@ -295,9 +311,9 @@
             th:src="@{/webjars/bootstrap/5.2.0/js/bootstrap.bundle.min.js}"
         ></script>
         <script>
-            document
-                .getElementById("confirmJoin")
-                .addEventListener("click", function () {
+            const confirmJoinBtn = document.getElementById("confirmJoin");
+            if (confirmJoinBtn) {
+                confirmJoinBtn.addEventListener("click", function () {
                     const selected =
                         document.getElementById("equipoSelect").value;
                     if (selected) {
@@ -309,6 +325,7 @@
                         document.getElementById("joinForm").submit();
                     }
                 });
+            }
         </script>
         <script type="module" th:src="@{/js/common.js}"></script>
         <script type="module" th:src="@{/js/participantes-partido.js}"></script>

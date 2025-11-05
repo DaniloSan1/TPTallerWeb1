@@ -13,6 +13,7 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import com.tallerwebi.dominio.excepcion.NoHayCupoEnPartido;
 import com.tallerwebi.dominio.excepcion.PartidoNoEncontrado;
+import com.tallerwebi.dominio.excepcion.PermisosInsufficientes;
 import com.tallerwebi.dominio.excepcion.YaExisteElParticipante;
 
 public class ServicioPartidoImplTest {
@@ -236,6 +237,26 @@ public class ServicioPartidoImplTest {
                 assertSame(usuarioCreadorPartido, partidoCreado.getCreador());
 
                 Mockito.verify(repositorioPartidoMock, Mockito.times(1)).guardar(Mockito.same(partidoCreado));
+        }
+
+        @Test
+        public void deberiaFinalizarPartidoSiEsCreador() throws PermisosInsufficientes {
+                Mockito.when(partidoMock.esCreador("usuario@email.com")).thenReturn(true);
+
+                servicioPartido.finalizarPartido(partidoMock, usuarioMock);
+
+                Mockito.verify(partidoMock, Mockito.times(1)).setFechaFinalizacion(Mockito.any(LocalDateTime.class));
+                Mockito.verify(repositorioPartidoMock, Mockito.times(1)).actualizar(partidoMock);
+        }
+
+        @Test
+        public void deberiaLanzarExcepcionAlFinalizarPartidoSiNoEsCreador() {
+                Mockito.when(partidoMock.esCreador("usuario@email.com")).thenReturn(false);
+
+                assertThrows(PermisosInsufficientes.class,
+                                () -> servicioPartido.finalizarPartido(partidoMock, usuarioMock));
+                Mockito.verify(partidoMock, Mockito.never()).setFechaFinalizacion(Mockito.any());
+                Mockito.verify(repositorioPartidoMock, Mockito.never()).actualizar(Mockito.any());
         }
 
 }

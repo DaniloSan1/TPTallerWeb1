@@ -31,6 +31,9 @@ public class Partido {
     @OneToMany(mappedBy = "partido", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
     private Set<PartidoEquipo> equipos = new HashSet<>();
 
+    @Column(name = "fecha_finalizacion")
+    private LocalDateTime fechaFinalizacion;
+
     // Constructor por defecto para JPA
     public Partido() {
     }
@@ -184,5 +187,17 @@ public class Partido {
             }
         }
         return null;
+    }
+
+    public LocalDateTime getFechaFinalizacion() {
+        return fechaFinalizacion;
+    }
+
+    public void setFechaFinalizacion(LocalDateTime fechaFinalizacion) {
+        this.fechaFinalizacion = fechaFinalizacion;
+    }
+
+    public boolean getFinalizado() {
+        return fechaFinalizacion != null;
     }
 }

@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+    <head>
+        <meta charset="utf-8" />
+        <meta
+            name="viewport"
+            content="width=device-width, initial-scale=1, shrink-to-fit=no"
+        />
+
+        <title>Finalizar Partido</title>
+
+        <link
+            rel="stylesheet"
+            th:href="@{/webjars/bootstrap/5.2.0/css/bootstrap.min.css}"
+        />
+
+        <link rel="stylesheet" th:href="@{/css/main.css}" />
+        <link rel="stylesheet" th:href="@{/css/detalle-partido.css}" />
+        <link
+            rel="stylesheet"
+            href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&icon_names=calendar_month,groups"
+        />
+        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    </head>
+
+    <body>
+        <!-- Include the navbar fragment -->
+        <div th:replace="~{fragments/navbar :: navbar}"></div>
+
+        <main role="main" class="container" style="padding-top: 135px">
+            <div th:unless="${partido}" class="no-match"></div>
+
+            <div
+                class="container d-flex flex-column justify-content-center width-100"
+            >
+                <div
+                    class="container d-flex flex-column justify-content-center width-100 card"
+                >
+                    <div
+                        th:if="${partido != null}"
+                        id="loginbox"
+                        class="mainbox width-100"
+                    >
+                        <div class="card-header">
+                            <h1>
+                                Finalizar Partido:
+                                <span th:text="${partido.titulo}"></span>
+                            </h1>
+                        </div>
+                        <!-- Mensajes -->
+                        <div
+                            th:if="${error != null}"
+                            class="error w-100 mt-2"
+                            th:text="${error}"
+                            id="alertError"
+                        ></div>
+                        <div class="card-body">
+                            <button
+                                id="agregar-goles"
+                                class="btn btn-primary mb-3"
+                            >
+                                Agregar Goles
+                            </button>
+                            <form
+                                id="form-goles"
+                                th:action="@{/partidos/{id}/finalizar-partido(id=${partido.id})}"
+                                method="post"
+                            >
+                                <div
+                                    id="contenedor-tarjetas"
+                                    class="mb-3"
+                                ></div>
+                                <button type="submit" class="btn btn-success">
+                                    Finalizar Partido
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+        <script
+            type="text/javascript"
+            th:src="@{/webjars/bootstrap/5.2.0/js/bootstrap.bundle.min.js}"
+        ></script>
+        <script type="module" th:src="@{/js/common.js}"></script>
+        <script th:inline="javascript">
+            var equipos = /*[[${equipos}]]*/ [];
+            var equipoJugadores = /*[[${equipoJugadores}]]*/ {};
+        </script>
+        <script>
+            $(document).ready(function () {
+                $("#agregar-goles").click(function () {
+                    const contenedor = $("#contenedor-tarjetas");
+                    var optionsEquipo =
+                        '<option value="">Seleccionar Equipo</option>';
+                    equipos.forEach(function (pe) {
+                        // `equipos` is populated in the controller as a list of maps {id, nombre}
+                        optionsEquipo +=
+                            '<option value="' +
+                            pe.id +
+                            '">' +
+                            pe.nombre +
+                            "</option>";
+                    });
+                    const tarjeta = $(
+                        '<div class="card mb-3"><div class="card-body">' +
+                            '<div class="form-group"><label>Goles:</label><input type="number" name="cantidades" min="1" required class="form-control"></div>' +
+                            '<div class="form-group"><label>Equipo:</label><select name="equipo" class="equipo-select form-control" required>' +
+                            optionsEquipo +
+                            "</select></div>" +
+                            '<div class="form-group"><label>Jugador:</label><select name="equipoJugadorIds" class="jugador-select form-control" required>' +
+                            '<option value="">Seleccionar Jugador</option></select></div>' +
+                            '<button type="button" class="btn btn-danger remove-card">Remover</button>' +
+                            "</div></div>"
+                    );
+                    contenedor.append(tarjeta);
+                });
+
+                $(document).on("change", ".equipo-select", function () {
+                    const equipoId = $(this).val();
+                    const jugadorSelect = $(this)
+                        .closest(".card-body")
+                        .find(".jugador-select");
+                    if (equipoId) {
+                        var players = equipoJugadores[equipoId] || [];
+                        var options =
+                            '<option value="">Seleccionar Jugador</option>';
+                        players.forEach(function (p) {
+                            options +=
+                                '<option value="' +
+                                p.id +
+                                '">' +
+                                p.nombre +
+                                "</option>";
+                        });
+                        jugadorSelect.html(options);
+                    } else {
+                        jugadorSelect.html(
+                            '<option value="">Seleccionar Jugador</option>'
+                        );
+                    }
+                });
+
+                $(document).on("click", ".remove-card", function () {
+                    $(this).closest(".card").remove();
+                });
+            });
+        </script>
+    </body>
+</html>
