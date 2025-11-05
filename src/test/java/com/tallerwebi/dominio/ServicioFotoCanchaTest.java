@@ -84,7 +84,7 @@ public class ServicioFotoCanchaTest {
                .thenReturn(fotoCancha2Mock);
 
         ServicioFotoCancha servicioFotoCancha = new ServicioFotoCanchaImpl(repositorioFotoCanchaMock);
-        var resultados = servicioFotoCancha.insertarFotosAModelPartidos(partidos);
+        List<FotoCancha> resultados = servicioFotoCancha.insertarFotosAModelPartidos(partidos);
 
         Assertions.assertEquals(2, resultados.size());
     }
