@@ -14,14 +14,26 @@ import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.tallerwebi.dominio.Equipo;
+import com.tallerwebi.dominio.EquipoJugador;
+import com.tallerwebi.dominio.Gol;
 import com.tallerwebi.dominio.Partido;
+import com.tallerwebi.dominio.PartidoEquipo;
 import com.tallerwebi.dominio.ServicioEquipo;
+import com.tallerwebi.dominio.ServicioEquipoJugador;
+import com.tallerwebi.dominio.ServicioGoles;
 import com.tallerwebi.dominio.ServicioHorario;
 import com.tallerwebi.dominio.ServicioLogin;
 import com.tallerwebi.dominio.ServicioPartido;
 import com.tallerwebi.dominio.ServicioReserva;
+import com.tallerwebi.presentacion.EquipoSimple;
 import com.tallerwebi.dominio.ServicioUsuario;
 import com.tallerwebi.dominio.Usuario;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.HashMap;
 
 @Controller
 @RequestMapping("/partidos")
@@ -33,17 +45,22 @@ public class ControladorPartido {
     private ServicioUsuario servicioUsuario;
     private ServicioHorario servicioHorario;
     private ServicioEquipo servicioEquipo;
+    private ServicioGoles servicioGoles;
+    private ServicioEquipoJugador servicioEquipoJugador;
 
     @Autowired
     public ControladorPartido(ServicioPartido servicio, ServicioLogin servicioLogin, ServicioHorario servicioHorario,
             ServicioReserva servicioReserva, ServicioPartido servicioPartido, ServicioUsuario servicioUsuario,
-            ServicioEquipo servicioEquipo) {
+            ServicioEquipo servicioEquipo, ServicioGoles servicioGoles, ServicioEquipoJugador servicioEquipoJugador) {
         this.servicio = servicio;
         this.servicioLogin = servicioLogin;
+        this.servicioHorario = servicioHorario;
         this.servicioReserva = servicioReserva;
         this.servicioPartido = servicioPartido;
         this.servicioUsuario = servicioUsuario;
         this.servicioEquipo = servicioEquipo;
+        this.servicioGoles = servicioGoles;
+        this.servicioEquipoJugador = servicioEquipoJugador;
     }
 
     @GetMapping("/{id}")
@@ -57,6 +74,7 @@ public class ControladorPartido {
 
             Usuario usuario = servicioLogin.buscarPorEmail(request.getSession().getAttribute("EMAIL").toString());
             Partido partido = servicio.obtenerPorId(id);
+
             modelo.put("partido", new DetallePartido(partido, usuario));
 
         } catch (Exception e) {
@@ -144,5 +162,80 @@ public class ControladorPartido {
 
         servicio.abandonarPartido(id, usuario);
         return "redirect:/home";
+    }
+
+    @GetMapping("/{id}/finalizar-partido")
+    public ModelAndView finalizarPartido(@PathVariable long id, HttpServletRequest request) {
+        ModelMap modelo = new ModelMap();
+        try {
+            String email = (String) request.getSession().getAttribute("EMAIL");
+            if (email == null) {
+                return new ModelAndView("redirect:/login");
+            }
+            Usuario usuario = servicioLogin.buscarPorEmail(email);
+            Partido partido = servicio.obtenerPorId(id);
+            if (!partido.esCreador(email)) {
+                modelo.put("error", "No tienes permiso.");
+                return new ModelAndView("redirect:/partidos/" + id);
+            }
+
+            modelo.put("partido", new DetallePartido(partido, usuario));
+
+            Set<PartidoEquipo> partidoEquipos = partido.getEquipos();
+            List<EquipoSimple> equiposSimple = new ArrayList<>();
+            for (PartidoEquipo pe : partidoEquipos) {
+                equiposSimple.add(new EquipoSimple(pe));
+            }
+            modelo.put("equipos", equiposSimple);
+
+            // Preload players for all teams
+            // TODO: Mejorar agregando mapper.
+            Map<Long, List<Map<String, Object>>> equipoJugadores = new HashMap<>();
+            for (PartidoEquipo partidoEquipo : partidoEquipos) {
+                List<EquipoJugador> jugadoresPorqEquipos = servicioEquipoJugador
+                        .buscarPorEquipo(partidoEquipo.getEquipo());
+                List<Map<String, Object>> jugadores = new ArrayList<>();
+                for (EquipoJugador ej : jugadoresPorqEquipos) {
+                    Map<String, Object> player = new HashMap<>();
+                    player.put("id", ej.getId());
+                    player.put("nombre", ej.getUsuario().getNombre() + " " + ej.getUsuario().getApellido());
+                    jugadores.add(player);
+                }
+                equipoJugadores.put(partidoEquipo.getEquipo().getId(), jugadores);
+            }
+            modelo.put("equipoJugadores", equipoJugadores);
+        } catch (Exception e) {
+            modelo.put("error", e.getMessage());
+        }
+        return new ModelAndView("finalizar-partido", modelo);
+    }
+
+    @PostMapping("/{id}/finalizar-partido")
+    public String procesarFinalizarPartido(@PathVariable long id,
+            @RequestParam List<Long> equipoJugadorIds,
+            @RequestParam List<Integer> cantidades,
+            HttpServletRequest request, RedirectAttributes redirectAttributes) {
+        try {
+            String email = (String) request.getSession().getAttribute("EMAIL");
+            if (email == null) {
+                return "redirect:/login";
+            }
+            Usuario usuario = servicioLogin.buscarPorEmail(email);
+            Partido partido = servicio.obtenerPorId(id);
+            if (!partido.esCreador(email)) {
+                redirectAttributes.addFlashAttribute("error", "No tienes permiso.");
+                return "redirect:/partidos/" + id;
+            }
+            List<Gol> goles = new ArrayList<>();
+            for (int i = 0; i < equipoJugadorIds.size(); i++) {
+                EquipoJugador equipoJugador = servicioEquipoJugador.buscarPorId(equipoJugadorIds.get(i));
+                goles.add(new Gol(partido, equipoJugador, cantidades.get(i)));
+            }
+            servicioGoles.registrarGoles(partido, goles, usuario);
+            redirectAttributes.addFlashAttribute("success", "Partido finalizado correctamente.");
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("error", "Error al finalizar el partido.");
+        }
+        return "redirect:/partidos/" + id;
     }
 }

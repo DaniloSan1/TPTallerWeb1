@@ -92,10 +92,10 @@ public class ControladorParticipantesTest {
                 this.sessionFactory.getCurrentSession().save(equipo2);
 
                 // Crear PartidoEquipo
-                PartidoEquipo pe1 = new PartidoEquipo(nuevoPartido, equipo1, 0);
+                PartidoEquipo pe1 = new PartidoEquipo(nuevoPartido, equipo1);
                 this.sessionFactory.getCurrentSession().save(pe1);
 
-                PartidoEquipo pe2 = new PartidoEquipo(nuevoPartido, equipo2, 0);
+                PartidoEquipo pe2 = new PartidoEquipo(nuevoPartido, equipo2);
                 this.sessionFactory.getCurrentSession().save(pe2);
 
                 Usuario participante = new Usuario("usuario2", "password2", "email2@example.com", "username2");

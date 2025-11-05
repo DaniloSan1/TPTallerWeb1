@@ -3,6 +3,7 @@ package com.tallerwebi.dominio;
 import java.util.List;
 
 import com.tallerwebi.dominio.excepcion.NoHayCupoEnPartido;
+import com.tallerwebi.dominio.excepcion.PermisosInsufficientes;
 import com.tallerwebi.dominio.excepcion.YaExisteElParticipante;
 
 public interface ServicioPartido {
@@ -20,4 +21,6 @@ public interface ServicioPartido {
         List<Partido> listarTodos(String busqueda, Zona filtroZona, Nivel filtroNivel);
 
         void actualizarPartido(Long id, String titulo, String descripcion, Usuario usuario);
+
+        void finalizarPartido(Partido partido, Usuario usuario) throws PermisosInsufficientes;
 }

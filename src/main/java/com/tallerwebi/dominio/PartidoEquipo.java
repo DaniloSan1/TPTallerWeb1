@@ -4,6 +4,8 @@ import java.util.Set;
 
 import javax.persistence.*;
 
+import com.tallerwebi.dominio.excepcion.GolesDebeSerMayorOIgualACero;
+
 @Entity
 public class PartidoEquipo {
     @Id
@@ -19,16 +21,15 @@ public class PartidoEquipo {
     private Equipo equipo;
 
     @Column(nullable = false)
-    private Integer points;
+    private Integer goles = 0;
 
     // Constructor por defecto para JPA
     public PartidoEquipo() {
     }
 
-    public PartidoEquipo(Partido partido, Equipo equipo, Integer points) {
+    public PartidoEquipo(Partido partido, Equipo equipo) {
         this.partido = partido;
         this.equipo = equipo;
-        this.points = points;
     }
 
     // Getters and setters
@@ -56,18 +57,18 @@ public class PartidoEquipo {
         this.equipo = equipo;
     }
 
-    public Integer getPoints() {
-        return points;
-    }
-
     public Set<EquipoJugador> getJugadores() {
         return equipo != null ? equipo.getJugadores() : java.util.Collections.emptySet();
     }
 
-    public void setPoints(Integer points) {
-        if (points < 0) {
-            throw new IllegalArgumentException("Points must be greater than or equal to 0");
+    public Integer getGoles() {
+        return goles;
+    }
+
+    public void setGoles(Integer goles) {
+        if (goles < 0) {
+            throw new GolesDebeSerMayorOIgualACero();
         }
-        this.points = points;
+        this.goles = goles;
     }
 }

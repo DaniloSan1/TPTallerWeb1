@@ -1,5 +1,7 @@
 package com.tallerwebi.dominio;
 
+import java.util.List;
+
 import javax.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -7,8 +9,6 @@ import org.springframework.stereotype.Service;
 
 import com.tallerwebi.dominio.excepcion.ParticipanteNoEncontrado;
 import com.tallerwebi.dominio.excepcion.YaExisteElParticipante;
-
-import java.util.List;
 
 @Service
 public class ServicioEquipoJugadorImpl implements ServicioEquipoJugador {
@@ -43,6 +43,11 @@ public class ServicioEquipoJugadorImpl implements ServicioEquipoJugador {
     }
 
     @Override
+    public EquipoJugador buscarPorId(Long id) {
+        return repositorioEquipoJugador.buscarPorId(id);
+    }
+
+    @Override
     @Transactional
     public EquipoJugador actualizarEquipo(long partidoParticipanteId, Equipo nuevoEquipo)
             throws ParticipanteNoEncontrado {
@@ -74,5 +79,10 @@ public class ServicioEquipoJugadorImpl implements ServicioEquipoJugador {
 
         // Set the new captain
         nuevoCapitan.setEsCapitan(true);
+    }
+
+    @Override
+    public List<EquipoJugador> buscarPorEquipo(Equipo equipo) {
+        return repositorioEquipoJugador.buscarPorEquipo(equipo);
     }
 }
