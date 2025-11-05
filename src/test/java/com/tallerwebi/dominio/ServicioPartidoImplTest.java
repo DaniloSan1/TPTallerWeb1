@@ -40,6 +40,7 @@ public class ServicioPartidoImplTest {
                 usuarioMock = Mockito.mock(Usuario.class);
                 equipoMock = Mockito.mock(Equipo.class);
 
+                Mockito.when(usuarioMock.getEmail()).thenReturn("usuario@email.com");
                 servicioPartido = new ServicioPartidoImpl(repositorioPartidoMock,
                                 repositorioReservaMock,
                                 repositorioUsuarioMock, servicioEquipoJugadorMock, servicioEquipoMock,
@@ -241,8 +242,7 @@ public class ServicioPartidoImplTest {
 
         @Test
         public void deberiaFinalizarPartidoSiEsCreador() throws PermisosInsufficientes {
-                Mockito.when(partidoMock.esCreador("usuario@email.com")).thenReturn(true);
-
+                Mockito.when(partidoMock.esCreador(Mockito.anyString())).thenReturn(true);
                 servicioPartido.finalizarPartido(partidoMock, usuarioMock);
 
                 Mockito.verify(partidoMock, Mockito.times(1)).setFechaFinalizacion(Mockito.any(LocalDateTime.class));
@@ -251,7 +251,7 @@ public class ServicioPartidoImplTest {
 
         @Test
         public void deberiaLanzarExcepcionAlFinalizarPartidoSiNoEsCreador() {
-                Mockito.when(partidoMock.esCreador("usuario@email.com")).thenReturn(false);
+                Mockito.when(partidoMock.esCreador(usuarioMock.getEmail())).thenReturn(false);
 
                 assertThrows(PermisosInsufficientes.class,
                                 () -> servicioPartido.finalizarPartido(partidoMock, usuarioMock));
