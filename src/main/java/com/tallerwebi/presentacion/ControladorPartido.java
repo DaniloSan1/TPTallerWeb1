@@ -1,5 +1,7 @@
 package com.tallerwebi.presentacion;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -19,10 +21,12 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.tallerwebi.dominio.FotoCancha;
 import com.tallerwebi.dominio.Horario;
 import com.tallerwebi.dominio.Nivel;
 import com.tallerwebi.dominio.Partido;
 import com.tallerwebi.dominio.Reserva;
+import com.tallerwebi.dominio.ServicioFotoCancha;
 import com.tallerwebi.dominio.ServicioHorario;
 import com.tallerwebi.dominio.ServicioLogin;
 import com.tallerwebi.dominio.ServicioPartido;
@@ -45,15 +49,18 @@ public class ControladorPartido {
     private ServicioReserva servicioReserva;
     private ServicioUsuario servicioUsuario;
     private ServicioHorario servicioHorario;
+    private ServicioFotoCancha servicioFotoCancha;
 
     @Autowired
     public ControladorPartido(ServicioPartido servicio, ServicioLogin servicioLogin, ServicioHorario servicioHorario,
-            ServicioReserva servicioReserva, ServicioPartido servicioPartido, ServicioUsuario servicioUsuario) {
+            ServicioReserva servicioReserva, ServicioPartido servicioPartido, ServicioUsuario servicioUsuario,
+            ServicioFotoCancha servicioFotoCancha) {
         this.servicio = servicio;
         this.servicioLogin = servicioLogin;
         this.servicioReserva = servicioReserva;
         this.servicioPartido = servicioPartido;
         this.servicioUsuario = servicioUsuario;
+        this.servicioFotoCancha = servicioFotoCancha;
     }
 
     @GetMapping("/{id}")
@@ -147,5 +154,24 @@ public class ControladorPartido {
 
         servicio.abandonarPartido(id, usuario.getId());
         return "redirect:/home";
+    }   
+    @GetMapping("/mios")
+    public ModelAndView misPartidos(HttpServletRequest request, ModelMap model) {
+    String email = (String) request.getSession().getAttribute("EMAIL");
+    if (email == null) {
+        return new ModelAndView("redirect:/login");
     }
+
+    Usuario usuario = servicioLogin.buscarPorEmail(email);
+    List<Partido> partidos = servicio.listarPorCreador(usuario);
+
+    List<FotoCancha> fotosCanchas = servicioFotoCancha.insertarFotosAModelPartidos(partidos);
+
+    model.put("partidos", partidos);
+    model.put("fotosCanchas", fotosCanchas);
+    model.put("currentPage", "mis-partidos");
+
+
+    return new ModelAndView("mis-partidos", model);
 }
+}           

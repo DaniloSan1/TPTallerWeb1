@@ -35,6 +35,12 @@
               th:classappend="${currentPage == 'canchas-disponibles'} ? 'active' : ''"
               >Canchas disponibles</a
             >
+           <a class="nav-link text-white"
+   th:href="@{/partidos/mios}"
+   th:classappend="${currentPage == 'mis-partidos'} ? 'active' : ''">
+  Mis partidos
+</a>
+
             <a
               class="nav-link text-white"
               th:href="@{/perfil}"

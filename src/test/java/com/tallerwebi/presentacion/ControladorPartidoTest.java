@@ -87,7 +87,7 @@ public class ControladorPartidoTest {
         when(partidoMock.cuposDisponibles()).thenReturn(5);
 
         controladorPartido = new ControladorPartido(servicioPartidoMock, servicioLoginMock, null, null,
-                servicioPartidoMock, null);
+                servicioPartidoMock, null, null);
     }
 
     @Test

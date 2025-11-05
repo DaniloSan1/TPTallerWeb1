@@ -21,5 +21,7 @@ public interface ServicioPartido {
 
     List<Partido> listarTodos(String busqueda, Zona filtroZona, Nivel filtroNivel);
 
+    List<Partido> listarPorCreador(Usuario usuario);
+    
     void actualizarPartido(Long id, String titulo, String descripcion, Usuario usuario);
 }
