@@ -118,6 +118,7 @@ public class ServicioPartidoImpl implements ServicioPartido {
     }
     return repoPartido.listarPorCreador(usuario.getId());
     }
+    
     @Override
     public void actualizarPartido(Long id, String titulo, String descripcion, Usuario usuario) {
         Partido partido = obtenerPorId(id);
