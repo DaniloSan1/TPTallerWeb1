@@ -20,7 +20,13 @@
                 class="participante-item"
                 th:each="participante : ${participantes}"
             >
-                <span class="profile-avatar"></span>
+                <span class="profile-avatar">
+                    <span
+                        th:if="${participante.esCapitan}"
+                        class="captain-shield material-symbols-outlined"
+                        >chess_queen</span
+                    >
+                </span>
                 <div class="d-flex flex-column">
                     <strong
                         class="w-100"
@@ -66,6 +72,17 @@
                                 th:data-bs-equipo="${participante.idEquipo}"
                                 th:data-bs-id="${participante.id}"
                                 >Asignar Equipo</a
+                            >
+                        </li>
+                        <li>
+                            <a
+                                class="dropdown-item"
+                                data-bs-toggle="modal"
+                                th:if="${showDropdown}"
+                                data-bs-target="#promoverCapitanModal"
+                                th:data-bs-nombre="${participante.nombreCompleto}"
+                                th:data-bs-id="${participante.id}"
+                                >Promover a capitán</a
                             >
                         </li>
                         <div class="dropdown-divider"></div>
@@ -190,6 +207,59 @@
                                 id="btn-eliminar"
                             >
                                 Aceptar
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- Modal Promover Capitán -->
+        <div
+            class="modal fade"
+            id="promoverCapitanModal"
+            data-bs-backdrop="static"
+            data-bs-keyboard="false"
+            tabindex="-1"
+            aria-labelledby="promoverCapitanLabel"
+        >
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <form id="form-promover-capitan" method="POST">
+                        <input
+                            type="hidden"
+                            id="participante-a-promover-id"
+                            name="participanteAPromoverId"
+                        />
+                        <div class="modal-header">
+                            <h1
+                                class="modal-title fs-5"
+                                id="promoverCapitanLabel"
+                            >
+                                Promover a Capitán
+                            </h1>
+                        </div>
+                        <div class="modal-body">
+                            <p id="mensaje-promover-capitan">
+                                ¿Estás seguro que deseas promover a este jugador
+                                a capitán? Esto removerá al capitán actual si
+                                existe.
+                            </p>
+                        </div>
+                        <div class="modal-footer">
+                            <button
+                                type="button"
+                                class="btn btn-secondary"
+                                data-bs-dismiss="modal"
+                            >
+                                Cancelar
+                            </button>
+                            <button
+                                type="button"
+                                class="btn btn-primary"
+                                id="btn-promover-capitan"
+                            >
+                                Confirmar
                             </button>
                         </div>
                     </form>

@@ -14,4 +14,6 @@ public interface ServicioEquipoJugador {
     void eliminarPorId(Long id);
 
     EquipoJugador actualizarEquipo(long partidoParticipanteId, Equipo nuevoEquipo) throws ParticipanteNoEncontrado;
+
+    void promoverCapitan(Long equipoJugadorId) throws ParticipanteNoEncontrado;
 }

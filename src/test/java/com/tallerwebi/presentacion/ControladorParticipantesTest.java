@@ -14,6 +14,8 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import com.tallerwebi.dominio.Equipo;
 import com.tallerwebi.dominio.ServicioEquipo;
 import com.tallerwebi.dominio.ServicioEquipoJugador;
+import com.tallerwebi.dominio.excepcion.ParticipanteNoEncontrado;
+import com.tallerwebi.dominio.excepcion.ParticipanteNoEncontrado;
 
 public class ControladorParticipantesTest {
     private ServicioEquipoJugador servicioEquipoJugadorMock;
@@ -132,5 +134,64 @@ public class ControladorParticipantesTest {
         assertEquals("redirect:http://localhost/partido/1", result);
         verify(redirectAttributesMock).addFlashAttribute("listaParticipantesError",
                 "Error al eliminar el participante");
+    }
+
+    @Test
+    public void promoverCapitanDeberiaRedirigirALoginSiNoHayEmailEnSesion() {
+        when(sessionMock.getAttribute("EMAIL")).thenReturn(null);
+
+        String result = controladorParticipantes.promoverCapitan(1L, redirectAttributesMock, requestMock);
+
+        assertEquals("redirect:/login", result);
+    }
+
+    @Test
+    public void promoverCapitanDeberiaRedirigirConExitoSiPromocionCorrecta() {
+        when(sessionMock.getAttribute("EMAIL")).thenReturn("usuario@email.com");
+        when(requestMock.getHeader("referer")).thenReturn("http://localhost/spring/partido/1");
+
+        String result = controladorParticipantes.promoverCapitan(1L, redirectAttributesMock, requestMock);
+
+        assertEquals("redirect:http://localhost/spring/partido/1", result);
+        verify(servicioEquipoJugadorMock).promoverCapitan(1L);
+        verify(redirectAttributesMock).addFlashAttribute("listaParticipantesSuccess",
+                "Capitán promovido correctamente");
+    }
+
+    @Test
+    public void promoverCapitanDeberiaRedirigirAHomeSiNoHayReferrer() {
+        when(sessionMock.getAttribute("EMAIL")).thenReturn("usuario@email.com");
+        when(requestMock.getHeader("referer")).thenReturn(null);
+
+        String result = controladorParticipantes.promoverCapitan(1L, redirectAttributesMock, requestMock);
+
+        assertEquals("redirect:/home", result);
+        verify(servicioEquipoJugadorMock).promoverCapitan(1L);
+        verify(redirectAttributesMock).addFlashAttribute("listaParticipantesSuccess",
+                "Capitán promovido correctamente");
+    }
+
+    @Test
+    public void promoverCapitanDeberiaRedirigirConErrorSiParticipanteNoEncontrado() {
+        when(sessionMock.getAttribute("EMAIL")).thenReturn("usuario@email.com");
+        when(requestMock.getHeader("referer")).thenReturn("http://localhost/partido/1");
+        doThrow(new ParticipanteNoEncontrado()).when(servicioEquipoJugadorMock).promoverCapitan(1L);
+
+        String result = controladorParticipantes.promoverCapitan(1L, redirectAttributesMock, requestMock);
+
+        assertEquals("redirect:http://localhost/partido/1", result);
+        verify(redirectAttributesMock).addFlashAttribute("listaParticipantesError", "No se encontró el participante");
+    }
+
+    @Test
+    public void promoverCapitanDeberiaRedirigirConErrorSiOcurreExcepcionGeneral() {
+        when(sessionMock.getAttribute("EMAIL")).thenReturn("usuario@email.com");
+        when(requestMock.getHeader("referer")).thenReturn("http://localhost/partido/1");
+        doThrow(new RuntimeException("Error general")).when(servicioEquipoJugadorMock).promoverCapitan(1L);
+
+        String result = controladorParticipantes.promoverCapitan(1L, redirectAttributesMock, requestMock);
+
+        assertEquals("redirect:http://localhost/partido/1", result);
+        verify(redirectAttributesMock).addFlashAttribute("listaParticipantesError", "Error al promover al capitán");
     }
 }

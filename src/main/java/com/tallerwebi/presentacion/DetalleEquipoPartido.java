@@ -1,5 +1,6 @@
 package com.tallerwebi.presentacion;
 
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -17,6 +18,8 @@ public class DetalleEquipoPartido {
         this.nombre = equipoEnPartido.getEquipo().getNombre();
         this.participantes = equipoEnPartido.getEquipo().getJugadores().stream()
                 .map(DetalleParticipante::new)
+                .sorted(Comparator.comparing(DetalleParticipante::isEsCapitan).reversed()
+                        .thenComparing(DetalleParticipante::getFechaUnion))
                 .collect(Collectors.toList());
     }
 

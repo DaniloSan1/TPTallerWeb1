@@ -91,4 +91,30 @@ public class ControladorParticipantes {
             return "redirect:/home";
         }
     }
+
+    @RequestMapping(path = "/{id}/promover-capitan", method = RequestMethod.POST)
+    public String promoverCapitan(@PathVariable long id, RedirectAttributes redirectAttributes,
+            HttpServletRequest request) {
+        try {
+            String email = (String) request.getSession().getAttribute("EMAIL");
+            if (email == null) {
+                return "redirect:/login";
+            }
+
+            servicioEquipoJugador.promoverCapitan(id);
+            redirectAttributes.addFlashAttribute("listaParticipantesSuccess", "Capitán promovido correctamente");
+
+        } catch (ParticipanteNoEncontrado e) {
+            redirectAttributes.addFlashAttribute("listaParticipantesError", e.getMessage());
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("listaParticipantesError", "Error al promover al capitán");
+        }
+
+        String referrer = request.getHeader("referer");
+        if (referrer != null) {
+            return "redirect:" + referrer;
+        } else {
+            return "redirect:/home";
+        }
+    }
 }
