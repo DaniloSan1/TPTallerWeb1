@@ -165,51 +165,56 @@
         <div id="contenedor-participantes" class="mt-5">
           <h2 class="participantes-titulo">Horarios disponibles</h2>
           <hr class="colorgraph" />
+            <div th:if="${#lists.isEmpty(horarios)}" class="text-muted">
+              No hay horarios disponibles.
+            </div>
 
-          <div th:if="${#lists.isEmpty(horarios)}" class="text-muted">
-            No hay horarios disponibles.
-          </div>
+            <!-- Wrapper limitado con altura y scroll interno; botón 'Mostrar más' para expandir -->
+            <div th:if="${!#lists.isEmpty(horarios)}">
+              <div id="horariosWrapper" class="horarios-wrapper">
+                <ul class="list-group">
+                  <li
+                    class="list-group-item d-flex justify-content-between align-items-center"
+                    th:each="horario : ${horarios}"
+                  >
+                    <div>
+                      <strong th:switch="${horario.diaSemana}">
+                      <span th:case="${T(java.time.DayOfWeek).MONDAY}">Lunes</span>
+                      <span th:case="${T(java.time.DayOfWeek).TUESDAY}">Martes</span>
+                      <span th:case="${T(java.time.DayOfWeek).WEDNESDAY}">Miércoles</span>
+                      <span th:case="${T(java.time.DayOfWeek).THURSDAY}">Jueves</span>
+                      <span th:case="${T(java.time.DayOfWeek).FRIDAY}">Viernes</span>
+                      <span th:case="${T(java.time.DayOfWeek).SATURDAY}">Sábado</span>
+                      <span th:case="${T(java.time.DayOfWeek).SUNDAY}">Domingo</span>
+                      <span th:case="*">Desconocido</span>
+                    </strong>
+                      <span th:text="${horario.horaInicio}"></span> -
+                      <span th:text="${horario.horaFin}"></span>
+                    </div>
+                    <div>
+                      <button
+                        th:if="${horario.disponible}"
+                        class="btn btn-success btn-sm"
+                        th:onclick="'location.href=\'/spring/reserva/nueva?usuarioId=' + ${usuarioId} + '&horarioId=' + ${horario.id} + '\';'"
+                      >
+                        Reservar
+                      </button>
+                      <button
+                        th:if="${!horario.disponible}"
+                        class="btn btn-secondary btn-sm"
+                        disabled
+                      >
+                        No disponible
+                      </button>
+                    </div>
+                  </li>
+                </ul>
+              </div>
 
-          <ul
-            class="list-group"
-            th:if="${!#lists.isEmpty(horarios)}"
-          >
-            <li
-              class="list-group-item d-flex justify-content-between align-items-center"
-              th:each="horario : ${horarios}"
-            >
-              <div>
-                <strong th:switch="${horario.diaSemana}">
-                <span th:case="${T(java.time.DayOfWeek).MONDAY}">Lunes</span>
-                <span th:case="${T(java.time.DayOfWeek).TUESDAY}">Martes</span>
-                <span th:case="${T(java.time.DayOfWeek).WEDNESDAY}">Miércoles</span>
-                <span th:case="${T(java.time.DayOfWeek).THURSDAY}">Jueves</span>
-                <span th:case="${T(java.time.DayOfWeek).FRIDAY}">Viernes</span>
-                <span th:case="${T(java.time.DayOfWeek).SATURDAY}">Sábado</span>
-                <span th:case="${T(java.time.DayOfWeek).SUNDAY}">Domingo</span>
-                <span th:case="*">Desconocido</span>
-              </strong>
-                <span th:text="${horario.horaInicio}"></span> -
-                <span th:text="${horario.horaFin}"></span>
+              <div class="text-center mt-2">
+                <button id="toggleHorariosBtn" class="btn btn-link">Mostrar más</button>
               </div>
-              <div>
-                <button
-                  th:if="${horario.disponible}"
-                  class="btn btn-success btn-sm"
-                  th:onclick="'location.href=\'/spring/reserva/nueva?usuarioId=' + ${usuarioId} + '&horarioId=' + ${horario.id} + '\';'"
-                >
-                  Reservar
-                </button>
-                <button
-                  th:if="${!horario.disponible}"
-                  class="btn btn-secondary btn-sm"
-                  disabled
-                >
-                  No disponible
-                </button>
-              </div>
-            </li>
-          </ul>
+            </div>
         </div>
       </div>
     </main>
@@ -284,7 +289,40 @@
         if (items && items.length > 0) {
           showReview(0);
         }
+        // Toggle 'Mostrar más' para la lista de horarios
+        const toggleBtn = document.getElementById('toggleHorariosBtn');
+        const wrapper = document.getElementById('horariosWrapper');
+        if (toggleBtn && wrapper) {
+          toggleBtn.addEventListener('click', function(e) {
+            e.preventDefault();
+            const expanded = wrapper.classList.toggle('expanded');
+            toggleBtn.textContent = expanded ? 'Mostrar menos' : 'Mostrar más';
+            // Si está expandido quitar la restricción de max-height
+            if (expanded) {
+              wrapper.style.maxHeight = 'none';
+              wrapper.style.overflowY = 'visible';
+            } else {
+              wrapper.style.maxHeight = '300px';
+              wrapper.style.overflowY = 'auto';
+            }
+          });
+        }
       });
     </script>
+    <style>
+      /* Limitar la altura de la lista de horarios para evitar un scroll largo en la página */
+      .horarios-wrapper {
+        max-height: 300px; /* ajustar según preferencia */
+        overflow-y: auto;
+      }
+      .horarios-wrapper.expanded {
+        max-height: none;
+        overflow-y: visible;
+      }
+      /* Mejorar el aspecto del botón link */
+      #toggleHorariosBtn {
+        text-decoration: none;
+      }
+    </style>
   </body>
 </html>
