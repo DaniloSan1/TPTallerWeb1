@@ -18,4 +18,6 @@ public interface ServicioAmistad {
 
     public Amistad buscarRelacionEntreUsuarios(Long id1, Long id2);
 
+    public void eliminarAmistad(Long idAmistad);
+
 }

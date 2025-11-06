@@ -1,7 +1,6 @@
 package com.tallerwebi.dominio;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -64,6 +63,14 @@ public class ServicioAmistadImpl implements ServicioAmistad {
             return amistadDirecta;
         }
         return amistadInversa;
+    }
+
+    @Override
+    public void eliminarAmistad(Long idAmistad) {
+        Amistad amistad = repositorioAmistad.buscarPorId(idAmistad);
+        if (amistad != null) {
+            repositorioAmistad.eliminar(amistad);
+        }
     }
 
 }

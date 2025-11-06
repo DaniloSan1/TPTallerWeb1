@@ -17,4 +17,6 @@ public interface RepositorioAmistad {
 
     List<Amistad> buscarAceptadas(Usuario usuario);
 
+    void eliminar(Amistad amistad);
+
 }

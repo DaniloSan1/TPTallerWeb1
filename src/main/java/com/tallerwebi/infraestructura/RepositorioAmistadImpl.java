@@ -54,5 +54,10 @@ public class RepositorioAmistadImpl implements RepositorioAmistad {
             .list();
     }
 
+    @Override
+    public void eliminar(Amistad amistad) {
+        sessionFactory.getCurrentSession().delete(amistad);
+    }
+
 
 }
