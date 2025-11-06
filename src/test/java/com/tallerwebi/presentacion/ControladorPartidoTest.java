@@ -22,9 +22,14 @@ import com.tallerwebi.dominio.Partido;
 import com.tallerwebi.dominio.Reserva;
 import com.tallerwebi.dominio.ServicioEquipo;
 import com.tallerwebi.dominio.ServicioEquipoJugador;
+import com.tallerwebi.dominio.ServicioFotoCancha;
 import com.tallerwebi.dominio.ServicioGoles;
+import com.tallerwebi.dominio.ServicioHorario;
 import com.tallerwebi.dominio.ServicioLogin;
 import com.tallerwebi.dominio.ServicioPartido;
+import com.tallerwebi.dominio.ServicioReserva;
+import com.tallerwebi.dominio.ServicioSolicitudUnirse;
+import com.tallerwebi.dominio.ServicioUsuario;
 import com.tallerwebi.dominio.Usuario;
 import com.tallerwebi.dominio.Zona;
 import com.tallerwebi.dominio.excepcion.NoHayCupoEnPartido;
@@ -45,6 +50,11 @@ public class ControladorPartidoTest {
     private ServicioGoles servicioGolesMock;
     private ServicioEquipoJugador servicioEquipoJugadorMock;
     private RedirectAttributes redirectAttributesMock;
+    private ServicioHorario servicioHorarioMock;
+    private ServicioReserva servicioReservaMock;
+    private ServicioUsuario servicioUsuarioMock;
+    private ServicioFotoCancha servicioFotoCanchaMock;
+    private ServicioSolicitudUnirse servicioSolicitudUnirse;
 
     @BeforeEach
     public void init() {
@@ -55,6 +65,11 @@ public class ControladorPartidoTest {
         servicioEquipoMock = Mockito.mock(ServicioEquipo.class);
         servicioGolesMock = Mockito.mock(ServicioGoles.class);
         servicioEquipoJugadorMock = Mockito.mock(ServicioEquipoJugador.class);
+        servicioHorarioMock = Mockito.mock(ServicioHorario.class);
+        servicioReservaMock = Mockito.mock(ServicioReserva.class);
+        servicioUsuarioMock = Mockito.mock(ServicioUsuario.class);
+        servicioFotoCanchaMock = Mockito.mock(ServicioFotoCancha.class);
+        servicioSolicitudUnirse = Mockito.mock(ServicioSolicitudUnirse.class);
         partidoMock = Mockito.mock(Partido.class);
         usuarioMock = Mockito.mock(Usuario.class);
         redirectAttributesMock = Mockito.mock(RedirectAttributes.class);
@@ -75,6 +90,7 @@ public class ControladorPartidoTest {
         when(usuarioMock.getEmail()).thenReturn("usuario1@email.com");
         when(usuarioMock.getId()).thenReturn(1L);
         when(usuarioMock.getNombre()).thenReturn("Usuario Creador");
+        when(usuarioMock.getNombreCompleto()).thenReturn("Usuario Creador");
         when(partidoMock.tieneCupo()).thenReturn(true);
         when(partidoMock.validarParticipanteExistente(Mockito.anyLong())).thenReturn(false);
         when(partidoMock.esCreador(Mockito.anyString())).thenReturn(true);
@@ -83,6 +99,7 @@ public class ControladorPartidoTest {
         Cancha canchaMock = Mockito.mock(Cancha.class);
         when(canchaMock.getId()).thenReturn(1L);
         when(canchaMock.getNombre()).thenReturn("Cancha 1");
+        when(canchaMock.getDireccion()).thenReturn("Dirección de prueba 123");
 
         Usuario creadorMock = Mockito.mock(Usuario.class);
         when(creadorMock.getId()).thenReturn(1L);
@@ -103,6 +120,8 @@ public class ControladorPartidoTest {
         when(partidoMock.getReserva()).thenReturn(reservaMock);
         when(partidoMock.getCreador()).thenReturn(creadorMock);
         when(partidoMock.getCupoDisponible()).thenReturn(5);
+        when(partidoMock.getFinalizado()).thenReturn(false);
+        when(partidoMock.getEquipos()).thenReturn(new java.util.HashSet<>());
 
         // Create mock for Equipo
         equipoMock = Mockito.mock(Equipo.class);
@@ -121,8 +140,9 @@ public class ControladorPartidoTest {
         } catch (EquipoNoEncontrado e) {
             // Should not happen in mock
         }
-        controladorPartido = new ControladorPartido(servicioPartidoMock, servicioLoginMock, null, null,
-                servicioPartidoMock, null, servicioEquipoMock, servicioGolesMock, servicioEquipoJugadorMock);
+        controladorPartido = new ControladorPartido(servicioPartidoMock, servicioLoginMock, servicioHorarioMock,
+                servicioReservaMock, servicioUsuarioMock, servicioEquipoMock, servicioFotoCanchaMock, servicioGolesMock,
+                servicioEquipoJugadorMock, servicioSolicitudUnirse);
     }
 
     @Test

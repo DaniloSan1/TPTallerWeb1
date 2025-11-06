@@ -46,12 +46,10 @@
     display: flex;
     flex-direction: column;
     flex-wrap: wrap;
-    /* Alinear al inicio para que la info y las acciones se apilen desde arriba */
-    align-items: flex-start;
-    justify-content: flex-start;
+    align-items: center;
+    justify-content: center;
     width: 100%;
     margin-top: 2rem;
-    align-self: flex-start;
 }
 
 #contenedor-detalle-info {
@@ -63,8 +61,6 @@
 
 #contendor-mapa-detalle {
     gap: 0.5rem;
-    /* Asegurar que el mapa y la columna derecha se alineen por el tope en pantallas grandes */
-    align-items: flex-start;
 }
 
 #partido-header-data{
@@ -101,16 +97,12 @@
         gap: 0;
     }
 
-    /* Right column (info + actions) */
     #contenedor-detalle {
         width: 30%;
         height: 100%;
-        /* Mostrar elementos desde arriba para que las acciones queden justo debajo de la info (Nivel) */
-        justify-content: flex-start;
-        align-items: flex-start;
+        justify-content: space-between;
         padding: 0 0 0 1rem;
         margin-top: 0;
-        gap: 0.5rem;
     }
 
     #map-iframe {
@@ -118,18 +110,7 @@
         height: 100%;
     }   
 
-    /* Acciones: apilar botones debajo de la info y que ocupen todo el ancho */
     #contenedor-detalle-acciones {
-        margin-top: 0.25rem;
-        width: 100%;
-        display: flex;
-        flex-direction: column;
-        gap: 0.5rem;
-    }
-
-    /* Forzar botones full-width dentro del panel de acciones */
-    #contenedor-detalle-acciones .btn {
-        width: 100% !important;
-        text-align: center;
+        margin-top: 0;
     }
 }
