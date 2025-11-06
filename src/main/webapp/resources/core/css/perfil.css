@@ -52,3 +52,8 @@
 .btn-logout:hover {
     background-color: #b92c38;
 }
+
+/* margin under the last friend item in the friends list */
+.friends-list .list-group-item:last-child {
+    margin-bottom: 20px;
+}

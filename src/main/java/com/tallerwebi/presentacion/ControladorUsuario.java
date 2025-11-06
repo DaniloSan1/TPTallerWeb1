@@ -11,6 +11,7 @@ import org.springframework.web.servlet.ModelAndView;
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.util.List;
+import java.util.ArrayList;
 
 @Controller
 @RequestMapping("/perfil")
@@ -51,8 +52,7 @@ public class ControladorUsuario {
             return "redirect:/perfil";
         }
 
-        Amistad amistad = servicioAmistad.buscarRelacionEntreUsuarios(usuarioActual.getId(), usuarioAVer.getId());
-        EstadoDeAmistad estado = amistad != null ? amistad.getEstadoDeAmistad() : null;
+    Amistad amistad = servicioAmistad.buscarRelacionEntreUsuarios(usuarioActual.getId(), usuarioAVer.getId());
 
 
         modelo.addAttribute("usuarioAVer", usuarioAVer);
@@ -69,6 +69,19 @@ public class ControladorUsuario {
         if (email != null) {
             Usuario usuario = servicioLogin.buscarPorEmail(email);
             modelo.addAttribute("usuario", usuario);
+            // poblar lista de amigos (solo usuarios) para la vista
+            List<Amistad> relaciones = servicioAmistad.verAmigos(usuario.getId());
+            List<Usuario> amigos = new ArrayList<>();
+            if (relaciones != null) {
+                for (Amistad a : relaciones) {
+                    if (a.getUsuario1() != null && a.getUsuario1().getId().equals(usuario.getId())) {
+                        amigos.add(a.getUsuario2());
+                    } else {
+                        amigos.add(a.getUsuario1());
+                    }
+                }
+            }
+            modelo.addAttribute("amigos", amigos);
             modelo.put("currentPage", "perfil");
             return "perfil";
         }
@@ -164,6 +177,21 @@ public class ControladorUsuario {
     public String rechazarSolicitud(@PathVariable Long idAmistad) {
         servicioAmistad.rechazarSolicitud(idAmistad);
         return "redirect:/perfil/solicitudes";
+    }
+
+    @PostMapping("/amigos/eliminar")
+    public String eliminarAmigo(@RequestParam Long amigoId, HttpServletRequest request) {
+        String email = (String) request.getSession().getAttribute("EMAIL");
+        if (email == null) return "redirect:/login";
+        Usuario usuario = servicioLogin.buscarPorEmail(email);
+        if (usuario == null) return "redirect:/login";
+
+        Amistad amistad = servicioAmistad.buscarRelacionEntreUsuarios(usuario.getId(), amigoId);
+        if (amistad != null) {
+            // eliminar físicamente la relación de amistad
+            servicioAmistad.eliminarAmistad(amistad.getIdAmistad());
+        }
+        return "redirect:/perfil";
     }
 
 

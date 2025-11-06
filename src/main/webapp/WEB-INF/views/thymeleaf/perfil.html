@@ -90,6 +90,34 @@
             </div>
         </div>
     </div>
+<!-- Tus amigos -->
+<div class="container mt-4">
+    <h5 class="text-center mb-3">Tus amigos</h5>
+
+    <div class="text-muted text-center" th:if="${#lists.isEmpty(amigos)}">
+        Aún no agregaste amigos.
+    </div>
+
+    <div th:if="${!#lists.isEmpty(amigos)}">
+        <div class="friends-list">
+        <ul class="list-group">
+            <li class="list-group-item d-flex justify-content-between align-items-center" th:each="amigo : ${amigos}">
+                <div>
+                    <strong th:text="${amigo.nombre + ' ' + amigo.apellido}">Nombre Apellido</strong>
+                    <div class="small text-muted" th:text="${amigo.email}">email@example.com</div>
+                </div>
+                <div>
+                    <a th:href="@{/perfil/ver/id/{id}(id=${amigo.id})}" class="btn btn-primary btn-sm me-2">Ver perfil</a>
+                    <form th:action="@{/perfil/amigos/eliminar}" method="post" class="d-inline">
+                        <input type="hidden" name="amigoId" th:value="${amigo.id}" />
+                        <button class="btn btn-outline-danger btn-sm">Quitar</button>
+                    </form>
+                </div>
+            </li>
+        </ul>
+        </div>
+    </div>
+</div>
 
 
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">

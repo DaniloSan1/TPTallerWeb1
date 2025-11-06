@@ -45,8 +45,8 @@ public class ServicioSolicitudUnirseImpl implements ServicioSolicitudUnirse {
 
         repo.guardar(solicitud);
 
-        // Construimos el link público hacia la página del partido con token como query param
-        String link = System.getProperty("app.baseurl", "http://localhost:8080/spring") + "/partidos/" + partido.getId() + "?token=" + solicitud.getToken();
+        // Construimos el link público hacia la página de aceptación
+        String link = System.getProperty("app.baseurl", "http://localhost:8080/spring") + "/solicitudes-partido/" + solicitud.getToken();
 
         // Intentamos enviar el email si hay configuración SMTP disponible (propiedades del sistema)
         try {

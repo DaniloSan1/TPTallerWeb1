@@ -149,3 +149,35 @@ INSERT INTO EquipoJugador(id, equipo_id, usuario_id, fecha_union, es_capitan) VA
 (NULL, (SELECT id FROM Equipo WHERE nombre = 'Equipo 2' AND creado_por_id = (SELECT creador_id FROM Partido WHERE id = 1)), 6, NOW(), false),
 (NULL, (SELECT id FROM Equipo WHERE nombre = 'Equipo 2' AND creado_por_id = (SELECT creador_id FROM Partido WHERE id = 1)), 7, NOW(), false),
 (NULL, (SELECT id FROM Equipo WHERE nombre = 'Equipo 2' AND creado_por_id = (SELECT creador_id FROM Partido WHERE id = 1)), 8, NOW(), false);
+
+-- Insertar amistades
+INSERT INTO Amistad (usuario_1_id, usuario_2_id, estadoDeAmistad, fechaSolicitud) VALUES
+-- John (1) y Jane (2) son amigos
+(1, 2, 'ACEPTADA', CURRENT_DATE()),
+-- Ricardo (3) y Bruno (4) son amigos
+(3, 4, 'ACEPTADA', CURRENT_DATE()),
+-- Carlos (5) y Maria (6) son amigos
+(5, 6, 'ACEPTADA', CURRENT_DATE()),
+-- Pedro (7) envió solicitud a Ana (8)
+(7, 8, 'PENDIENTE', CURRENT_DATE()),
+-- Luis (9) envió solicitud a Sofia (10)
+(9, 10, 'PENDIENTE', CURRENT_DATE()),
+-- John (1) y Ricardo (3) son amigos
+(1, 3, 'ACEPTADA', CURRENT_DATE()),
+-- Jane (2) y Maria (6) son amigas
+(2, 6, 'ACEPTADA', CURRENT_DATE()),
+-- Bruno (4) y Carlos (5) son amigos
+(4, 5, 'ACEPTADA', CURRENT_DATE()),
+-- Sofia (10) y Ana (8) son amigas
+(10, 8, 'ACEPTADA', CURRENT_DATE()),
+-- John (1) envió solicitud a Pedro (7)
+(1, 7, 'PENDIENTE', CURRENT_DATE());
+
+-- Más amistades para John (id = 1) — ahora John tiene varios amigos aceptados
+INSERT INTO Amistad (usuario_1_id, usuario_2_id, estadoDeAmistad, fechaSolicitud) VALUES
+	(1, 4, 'ACEPTADA', CURRENT_DATE()),
+	(1, 5, 'ACEPTADA', CURRENT_DATE()),
+	(1, 6, 'ACEPTADA', CURRENT_DATE()),
+	(1, 8, 'ACEPTADA', CURRENT_DATE()),
+	(1, 9, 'ACEPTADA', CURRENT_DATE()),
+	(1, 10, 'ACEPTADA', CURRENT_DATE());
