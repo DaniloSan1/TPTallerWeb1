@@ -18,7 +18,7 @@ public class ServicioUsuarioImpl implements ServicioUsuario {
 
     @Override
     public Usuario buscarPorEmailYPassword(String email, String password) throws UsuarioNoEncontradoException {
-        if(repositorioUsuario.buscarUsuario(email, password) == null) {
+        if (repositorioUsuario.buscarUsuario(email, password) == null) {
             throw new UsuarioNoEncontradoException();
         }
         return repositorioUsuario.buscarUsuario(email, password);
@@ -26,7 +26,7 @@ public class ServicioUsuarioImpl implements ServicioUsuario {
 
     @Override
     public void registrarUsuario(Usuario usuario) throws UsuarioExistenteException {
-        if(repositorioUsuario.buscar(usuario.getEmail()) != null) {
+        if (repositorioUsuario.buscar(usuario.getEmail()) != null) {
             throw new UsuarioExistenteException();
         }
         repositorioUsuario.guardar(usuario);
@@ -39,8 +39,9 @@ public class ServicioUsuarioImpl implements ServicioUsuario {
 
     @Override
     public void modificarUsuario(Usuario usuario) {
-    repositorioUsuario.modificar(usuario);
+        repositorioUsuario.modificar(usuario);
     }
+
     @Override
     public Usuario buscarPorId(Long id) {
         return repositorioUsuario.buscarPorId(id);

@@ -20,7 +20,8 @@ public class ControladorUsuario {
     private ServicioLogin servicioLogin;
     private ServicioAmistad servicioAmistad;
 
-    public ControladorUsuario(ServicioLogin servicioLogin, ServicioUsuario servicioUsuario, ServicioAmistad servicioAmistad) {
+    public ControladorUsuario(ServicioLogin servicioLogin, ServicioUsuario servicioUsuario,
+            ServicioAmistad servicioAmistad) {
         this.servicioLogin = servicioLogin;
         this.servicioUsuario = servicioUsuario;
         this.servicioAmistad = servicioAmistad;
@@ -52,8 +53,7 @@ public class ControladorUsuario {
             return "redirect:/perfil";
         }
 
-    Amistad amistad = servicioAmistad.buscarRelacionEntreUsuarios(usuarioActual.getId(), usuarioAVer.getId());
-
+        Amistad amistad = servicioAmistad.buscarRelacionEntreUsuarios(usuarioActual.getId(), usuarioAVer.getId());
 
         modelo.addAttribute("usuarioAVer", usuarioAVer);
         modelo.addAttribute("usuarioActual", usuarioActual);
@@ -69,7 +69,7 @@ public class ControladorUsuario {
         if (email != null) {
             Usuario usuario = servicioLogin.buscarPorEmail(email);
             modelo.addAttribute("usuario", usuario);
-            
+
             // Obtener amigos
             List<Amistad> relaciones = servicioAmistad.verAmigos(usuario.getId());
             List<Usuario> amigos = new ArrayList<>();
@@ -83,11 +83,12 @@ public class ControladorUsuario {
                 }
             }
             modelo.addAttribute("amigos", amigos);
-            
+
             // Obtener cantidad de solicitudes pendientes
             List<Amistad> solicitudesPendientes = servicioAmistad.verSolicitudesPendientes(usuario.getId());
-            modelo.addAttribute("solicitudesPendientes", solicitudesPendientes != null ? solicitudesPendientes.size() : 0);
-            
+            modelo.addAttribute("solicitudesPendientes",
+                    solicitudesPendientes != null ? solicitudesPendientes.size() : 0);
+
             modelo.put("currentPage", "perfil");
             return "perfil";
         }
@@ -170,7 +171,7 @@ public class ControladorUsuario {
             servicioAmistad.enviarSolicitud(remitente.getId(), idReceptor);
         }
 
-       return "redirect:/perfil/ver/username/" + receptor.getUsername();
+        return "redirect:/perfil/ver/username/" + receptor.getUsername();
     }
 
     @PostMapping("/amistad/aceptar/{idAmistad}")
@@ -188,9 +189,11 @@ public class ControladorUsuario {
     @PostMapping("/amigos/eliminar")
     public String eliminarAmigo(@RequestParam Long amigoId, HttpServletRequest request) {
         String email = (String) request.getSession().getAttribute("EMAIL");
-        if (email == null) return "redirect:/login";
+        if (email == null)
+            return "redirect:/login";
         Usuario usuario = servicioLogin.buscarPorEmail(email);
-        if (usuario == null) return "redirect:/login";
+        if (usuario == null)
+            return "redirect:/login";
 
         Amistad amistad = servicioAmistad.buscarRelacionEntreUsuarios(usuario.getId(), amigoId);
         if (amistad != null) {
@@ -203,10 +206,12 @@ public class ControladorUsuario {
     @GetMapping("/solicitudes")
     public String verSolicitudesAmistad(ModelMap modelo, HttpServletRequest request) {
         String email = (String) request.getSession().getAttribute("EMAIL");
-        if (email == null) return "redirect:/login";
+        if (email == null)
+            return "redirect:/login";
 
         Usuario usuario = servicioLogin.buscarPorEmail(email);
-        if (usuario == null) return "redirect:/login";
+        if (usuario == null)
+            return "redirect:/login";
 
         List<Amistad> solicitudesPendientes = servicioAmistad.verSolicitudesPendientes(usuario.getId());
         modelo.addAttribute("solicitudesPendientes", solicitudesPendientes);
