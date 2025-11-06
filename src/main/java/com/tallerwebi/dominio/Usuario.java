@@ -1,5 +1,7 @@
 package com.tallerwebi.dominio;
 
+import java.util.List;
+
 import javax.persistence.*;
 
 @Entity
@@ -26,6 +28,9 @@ public class Usuario {
 
     @Column(nullable = true)
     private String fotoPerfil;
+    
+    @OneToMany(mappedBy = "usuario", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    private List<ReseniaCancha> reseñasCanchas;
 
     public Usuario() {
     }
@@ -145,5 +150,12 @@ public class Usuario {
 
     public void setTotalCalificaciones(Integer totalCalificaciones) {
         this.totalCalificaciones = totalCalificaciones;
+    }
+    
+    public List<ReseniaCancha> getReseñasCanchas() {
+        return reseñasCanchas;
+    }
+    public void setReseñasCanchas(List<ReseniaCancha> reseñasCanchas) {
+        this.reseñasCanchas = reseñasCanchas;
     }
 }

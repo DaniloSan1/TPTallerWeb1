@@ -21,6 +21,7 @@ import com.tallerwebi.dominio.ServicioCancha;
 import com.tallerwebi.dominio.ServicioFotoCancha;
 import com.tallerwebi.dominio.ServicioHorario;
 import com.tallerwebi.dominio.ServicioLogin;
+import com.tallerwebi.dominio.ServicioReseniaCancha;
 import com.tallerwebi.dominio.Usuario;
 import com.tallerwebi.dominio.Zona;
 
@@ -30,17 +31,20 @@ public class ControladorCancha {
     private final ServicioHorario servicioHorario;
     private final ServicioLogin servicioLogin;
     private final ServicioFotoCancha servicioFotoCancha;
+    private final ServicioReseniaCancha servicioReseniaCancha;
 
     @Autowired
     public ControladorCancha(ServicioCancha servicioCancha, ServicioHorario servicioHorario,
-            ServicioLogin servicioLogin, ServicioFotoCancha servicioFotoCancha) {
+        ServicioLogin servicioLogin, ServicioFotoCancha servicioFotoCancha, ServicioReseniaCancha servicioReseniaCancha) {
         this.servicioCancha = servicioCancha;
         this.servicioHorario = servicioHorario;
         this.servicioLogin = servicioLogin;
         this.servicioFotoCancha = servicioFotoCancha;
+        this.servicioReseniaCancha = servicioReseniaCancha;
     }
 
     @GetMapping("/canchas-disponibles")
+    
     public String listarCanchas(ModelMap model,HttpServletRequest request) {
         String busqueda = request.getParameter("busqueda");
         String zonaParam = request.getParameter("zona");
@@ -58,7 +62,13 @@ public class ControladorCancha {
                 precio = Double.parseDouble(precioParam);
             }
             List<Cancha> canchas = servicioCancha.obtenerCanchasDisponibles(busqueda, zona, precio);
-            List<FotoCancha> fotosCancha = servicioFotoCancha.insertarFotosAModelCanchas(canchas);  
+            List<FotoCancha> fotosCancha = servicioFotoCancha.insertarFotosAModelCanchas(canchas);
+            List<Double> calificacionesPromedio = new ArrayList<>();
+            for (Cancha cancha : canchas) {
+                calificacionesPromedio.add(servicioReseniaCancha.calcularCalificacionPromedioCancha(cancha.getId()));
+            }
+            // Exponer la lista de calificaciones promedio al modelo para la vista
+            model.put("calificacionesPromedio", calificacionesPromedio);
             model.put("fotosCanchas", fotosCancha);
             model.put("canchas", canchas);
             model.put("currentPage", "canchas-disponibles");
@@ -83,6 +93,7 @@ public class ControladorCancha {
             model.put("cancha", cancha);
             model.put("horarios", horarios);
             model.put("usuarioId", usuario.getId());
+            model.put("calificacionPromedio", servicioReseniaCancha.calcularCalificacionPromedioCancha(id));
 
         } catch (Exception e) {
             model.put("error", e.getMessage());
