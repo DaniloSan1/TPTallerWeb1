@@ -2,7 +2,7 @@
 <html lang="es" xmlns:th="http://www.thymeleaf.org">
     <head> </head>
     <body
-        th:fragment="participantes-partido (participantes, equipo, equipos, showDropdown)"
+        th:fragment="participantes-partido (idPartido, participantes, equipo, equipos, showDropdown)"
     >
         <h4 class="w-100 mt-2" th:text="${equipo.nombre}"></h4>
         <div class="alert alert-info" th:if="${#lists.isEmpty(participantes)}">
@@ -82,7 +82,22 @@
                                 >Promover a capitán</a
                             >
                         </li>
-                        <div class="dropdown-divider"></div>
+                        <li>
+                            <a
+                                class="dropdown-item"
+                                data-bs-toggle="modal"
+                                data-bs-target="#modalCalificar"
+                                th:data-bs-id="${participante.idUsuario}"
+                                th:data-bs-nombre="${participante.nombreCompleto}"
+                                th:data-bs-partido-id="${idPartido}"
+                            >
+                                Calificar jugador ⭐
+                            </a>
+                        </li>
+                        <div
+                            th:if="${showDropdown}"
+                            class="dropdown-divider"
+                        ></div>
                         <li>
                             <a
                                 class="dropdown-item text-danger"

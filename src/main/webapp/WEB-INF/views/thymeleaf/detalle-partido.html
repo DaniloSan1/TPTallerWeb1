@@ -285,7 +285,7 @@
                             th:each="equipoPartido : ${partido.equipos}"
                         >
                             <div
-                                th:replace="~{fragments/participantes-partido :: participantes-partido (participantes=${equipoPartido.participantes}, equipo=${equipoPartido}, equipos=${partido.equipos}, showDropdown=${partido.esCreador and not partido.finalizado})}"
+                                th:replace="~{fragments/participantes-partido :: participantes-partido (idPartido=${partido.id}, participantes=${equipoPartido.participantes}, equipo=${equipoPartido}, equipos=${partido.equipos}, showDropdown=${partido.esCreador and not partido.finalizado})}"
                             ></div>
                         </div>
                     </div>
@@ -293,7 +293,6 @@
             </div>
         </main>
 
-        <!-- Modal for team selection -->
         <div
             th:if="${partido != null}"
             class="modal fade"
