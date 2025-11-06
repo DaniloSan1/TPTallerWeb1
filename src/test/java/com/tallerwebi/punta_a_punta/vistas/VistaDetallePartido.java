@@ -1,5 +1,6 @@
 package com.tallerwebi.punta_a_punta.vistas;
 
+import com.microsoft.playwright.Locator;
 import com.microsoft.playwright.Page;
 
 public class VistaDetallePartido extends VistaWeb {
@@ -24,12 +25,20 @@ public class VistaDetallePartido extends VistaWeb {
         this.darClickEnElElemento("#btn-unirse");
     }
 
+    public void seleccionarEquipo(String equipoId) {
+        page.selectOption("#equipoSelect", equipoId);
+    }
+
+    public void confirmarUnion() {
+        this.darClickEnElElemento("#confirmJoin");
+    }
+
     public boolean estaBotonUnirseVisible() {
         return page.locator("#btn-unirse").isVisible();
     }
 
     public boolean estaBotonAbandonarVisible() {
-        return page.locator("button[name='leave']").isVisible();
+        return page.locator("button").filter(new Locator.FilterOptions().setHasText("Abandonar partido")).isVisible();
     }
 
     public String obtenerTituloDelPartido() {

@@ -156,7 +156,11 @@
                           >0</span
                         >
                       </li>
-                    </ul>
+                          <li>
+                            <strong>Calificación: </strong>
+                            <span th:text="${calificacionesPromedio != null and calificacionesPromedio.size() > iterStat.index ? (calificacionesPromedio[iterStat.index] != 0.0 ? calificacionesPromedio[iterStat.index] : 'Sin calificaciones') : 'Sin calificaciones'}">Sin calificaciones</span>
+                          </li>
+                        </ul>
                   </div>
                   <div class="card-footer card-footer-chips">
                     <span class="chip chip-zona" th:text="${cancha.zona}"

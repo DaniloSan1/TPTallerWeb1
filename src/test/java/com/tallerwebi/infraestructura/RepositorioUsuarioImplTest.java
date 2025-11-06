@@ -16,7 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
-import static org.springframework.test.web.servlet.result.StatusResultMatchersExtensionsKt.isEqualTo;
+
 
 @ExtendWith(SpringExtension.class)
 @ContextConfiguration(classes = {HibernateTestInfraestructuraConfig.class})
@@ -43,9 +43,9 @@ public class RepositorioUsuarioImplTest {
     sessionFactory.getCurrentSession().flush();
 
     String hql = "FROM Usuario u WHERE u.email = :email";
-    Query query = sessionFactory.getCurrentSession().createQuery(hql);
+    Query<Usuario> query = sessionFactory.getCurrentSession().createQuery(hql, Usuario.class);
     query.setParameter("email", "email");
-    Usuario usuario = (Usuario) query.getSingleResult();
+    Usuario usuario = query.getSingleResult();
 
     assertThat(usuario, equalTo(usuarioAGuardar));
     }

@@ -11,7 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.tallerwebi.dominio.FotoCancha;
 import com.tallerwebi.dominio.RepositorioFotoCancha;
 
-@Repository("repositorioFotoCancha")
+@Repository
 @Transactional
 public class RepositorioFotoCanchaImpl implements RepositorioFotoCancha {
     private SessionFactory sessionFactory;

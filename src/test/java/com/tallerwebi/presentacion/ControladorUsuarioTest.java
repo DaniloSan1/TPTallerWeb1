@@ -1,5 +1,6 @@
 package com.tallerwebi.presentacion;
 
+import com.tallerwebi.dominio.ServicioAmistad;
 import com.tallerwebi.dominio.ServicioLogin;
 import com.tallerwebi.dominio.ServicioUsuario;
 import com.tallerwebi.dominio.Usuario;
@@ -22,6 +23,7 @@ import static org.mockito.Mockito.*;
 public class ControladorUsuarioTest {
     private ServicioLogin servicioLoginMock;
     private ServicioUsuario servicioUsuarioMock;
+    private ServicioAmistad servicioAmistadMock;
     private ControladorUsuario controladorUsuario;
     private Usuario usuarioMock;
     private HttpServletRequest httpServletRequestMock;
@@ -32,9 +34,10 @@ public class ControladorUsuarioTest {
     public void init() {
         servicioLoginMock = mock(ServicioLogin.class);
         servicioUsuarioMock = mock(ServicioUsuario.class);
+        servicioAmistadMock = mock(ServicioAmistad.class);
         sessionMock = mock(HttpSession.class);
         httpServletRequestMock = mock(HttpServletRequest.class);
-        controladorUsuario = new ControladorUsuario(servicioLoginMock,servicioUsuarioMock);
+        controladorUsuario = new ControladorUsuario(servicioLoginMock, servicioUsuarioMock, servicioAmistadMock);
 
         requestMock = mock(HttpServletRequest.class);
         usuarioMock = mock(Usuario.class);
@@ -96,8 +99,6 @@ public class ControladorUsuarioTest {
         usuarioEditado.setApellido("NuevoApellido");
         usuarioEditado.setPosicionFavorita("Delantero");
 
-
-
         when(requestMock.getSession()).thenReturn(sessionMock);
         when(sessionMock.getAttribute("EMAIL")).thenReturn("user@example.com");
         when(servicioLoginMock.buscarPorEmail("user@example.com")).thenReturn(usuarioEnSesion);
@@ -135,10 +136,7 @@ public class ControladorUsuarioTest {
         when(requestMock.getSession()).thenReturn(sessionMock);
         ModelMap modelo = new ModelMap();
 
-
-
         String vista = controladorUsuario.guardarCambios(usuarioEditado, requestMock, modelo);
-
 
         assertEquals("editarPerfil", vista);
         assertTrue(modelo.containsKey("error"));

@@ -4,11 +4,13 @@ import com.tallerwebi.dominio.RepositorioUsuario;
 import com.tallerwebi.dominio.Usuario;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
-import org.hibernate.criterion.Restrictions;
+import org.hibernate.query.Query;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 @Primary
 @Repository("repositorioUsuario")
@@ -22,14 +24,24 @@ public class RepositorioUsuarioImpl implements RepositorioUsuario {
         this.sessionFactory = sessionFactory;
     }
 
+
+    @Override
+    public List<Usuario> filtrarPorUsername(String username) {
+        String hql = "FROM Usuario u WHERE u.username LIKE :username";
+        return sessionFactory.getCurrentSession().createQuery(hql, Usuario.class)
+            .setParameter("username", "%" + username + "%") //%username%
+            .getResultList();
+    }
+
+
     @Override
     public Usuario buscarUsuario(String email, String password) {
-
         final Session session = sessionFactory.getCurrentSession();
-        return (Usuario) session.createCriteria(Usuario.class)
-                .add(Restrictions.eq("email", email))
-                .add(Restrictions.eq("password", password))
-                .uniqueResult();
+        String hql = "FROM Usuario WHERE email = :email AND password = :password";
+        Query<Usuario> query = session.createQuery(hql, Usuario.class);
+        query.setParameter("email", email);
+        query.setParameter("password", password);
+        return query.uniqueResult();
     }
 
     @Override
@@ -39,9 +51,10 @@ public class RepositorioUsuarioImpl implements RepositorioUsuario {
 
     @Override
     public Usuario buscar(String email) {
-        return (Usuario) sessionFactory.getCurrentSession().createCriteria(Usuario.class)
-                .add(Restrictions.eq("email", email))
-                .uniqueResult();
+        String hql = "FROM Usuario WHERE email = :email";
+        Query<Usuario> query = sessionFactory.getCurrentSession().createQuery(hql, Usuario.class);
+        query.setParameter("email", email);
+        return query.uniqueResult();
     }
 
     @Override
@@ -51,15 +64,17 @@ public class RepositorioUsuarioImpl implements RepositorioUsuario {
 
     @Override
     public Usuario buscarPorId(Long id) {
-        return (Usuario) sessionFactory.getCurrentSession().createCriteria(Usuario.class)
-                .add(Restrictions.eq("id", id))
-                .uniqueResult();
+        String hql = "FROM Usuario WHERE id = :id";
+        Query<Usuario> query = sessionFactory.getCurrentSession().createQuery(hql, Usuario.class);
+        query.setParameter("id", id);
+        return query.uniqueResult();
     }
 
     @Override
     public Usuario buscarPorUsername(String username) {
-        return (Usuario) sessionFactory.getCurrentSession().createCriteria(Usuario.class)
-                .add(Restrictions.eq("username", username))
-                .uniqueResult();
+        String hql = "FROM Usuario WHERE username = :username";
+        Query<Usuario> query = sessionFactory.getCurrentSession().createQuery(hql, Usuario.class);
+        query.setParameter("username", username);
+        return query.uniqueResult();
     }
 }

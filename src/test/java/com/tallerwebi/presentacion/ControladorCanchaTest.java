@@ -26,8 +26,12 @@ class ControladorCanchaTest {
 
     @Mock
     private ServicioLogin servicioLoginMock;
+    
     @Mock
     private ServicioFotoCancha servicioFotoCanchaMock;
+
+    @Mock
+    private ServicioReseniaCancha servicioReseniaCanchaMock;
 
     @Mock
     private HttpServletRequest request;
@@ -41,6 +45,8 @@ class ControladorCanchaTest {
     @BeforeEach
     void setUp() {
         MockitoAnnotations.openMocks(this);
+        // Por defecto devolver 0.0 para la calificación promedio en las pruebas
+        when(servicioReseniaCanchaMock.calcularCalificacionPromedioCancha(anyLong())).thenReturn(0.0);
     }
 
   
@@ -51,10 +57,10 @@ class ControladorCanchaTest {
         List<Cancha> canchas = Arrays.asList(new Cancha(), new Cancha());
         when(servicioCanchaMock.obtenerCanchasDisponibles(null, null, 0.0)).thenReturn(canchas);
         ModelMap model = new ModelMap();
-
+        
         
         String vista = controladorCancha.listarCanchas(model, request);
-
+            
         
         assertThat(vista, is("canchas"));
         assertThat(model, hasEntry("canchas", canchas));
@@ -140,5 +146,27 @@ class ControladorCanchaTest {
         // then
         assertThat(mav.getViewName(), is("cancha"));
         assertThat(mav.getModel(), hasEntry("error", "Falla al obtener usuario"));
+    }
+
+    @Test
+    void listarCanchasDeberiaAgregarFotosAlModelo() {
+        // given
+        List<Cancha> canchas = Arrays.asList(new Cancha(), new Cancha());
+        List<FotoCancha> fotos = Arrays.asList(new FotoCancha(), new FotoCancha());
+
+        when(servicioCanchaMock.obtenerCanchasDisponibles(null, null, 0.0)).thenReturn(canchas);
+
+        when(servicioFotoCanchaMock.insertarFotosAModelCanchas(canchas)).thenReturn(fotos);
+
+
+        ModelMap model = new ModelMap();
+
+        // when
+        String vista = controladorCancha.listarCanchas(model, request);
+
+        // then
+        assertThat(vista, is("canchas"));
+        assertThat(model, hasEntry("fotosCanchas", fotos));
+        verify(servicioFotoCanchaMock, times(1)).insertarFotosAModelCanchas(canchas);
     }
 }

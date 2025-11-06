@@ -52,7 +52,7 @@ public class VistaDetallePartidoE2E {
     @Test
     void deberiaPermitirAlUsuarioUnirseAlPartido() throws MalformedURLException {
         dadoQueElUsuarioEstaLogueado("test@unlam.edu.ar", "test");
-        cuandoElUsuarioNavegaAlDetalleDelPartido(2L);
+        cuandoElUsuarioNavegaAlDetalleDelPartido(1L);
         entoncesElBotonUnirseDeberiaEstarVisible();
         cuandoElUsuarioHaceClickEnUnirse();
         entoncesDeberiaVerUnMensajeDeExito();
@@ -71,6 +71,8 @@ public class VistaDetallePartidoE2E {
 
     private void cuandoElUsuarioHaceClickEnUnirse() {
         vistaDetallePartido.darClickEnUnirse();
+        vistaDetallePartido.seleccionarEquipo("1"); // Equipo 1 for partido 1
+        vistaDetallePartido.confirmarUnion();
     }
 
     private void entoncesDeberiaVerUnMensajeDeExito() {

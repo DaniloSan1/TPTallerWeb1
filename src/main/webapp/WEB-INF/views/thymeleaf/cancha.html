@@ -36,6 +36,14 @@
         class="alert alert-success text-center"
         th:text="${success}"
       ></div>
+      <!-- Mensaje de error cuando la cancha existe (por ejemplo: ya reseñó esta cancha) -->
+      <div
+        th:if="${error != null and cancha != null}"
+        class="alert alert-danger text-center"
+        id="alertErrorCancha"
+      >
+        <h4 th:text="${error}"></h4>
+      </div>
 
       <!-- Contenido principal -->
       <div
@@ -50,6 +58,10 @@
               th:text="${cancha.nombre}"
               style="margin: 0 !important"
             ></h1>
+            <h3 class="w-100 text-center text-secondary" style="margin: 0 !important">
+              Calificación promedio:
+              <span th:text="${calificacionPromedio != null and calificacionPromedio != 0.0 ? calificacionPromedio : 'Sin calificaciones'}"></span>
+            </h4>
             <h4
               id="direccion-cancha"
               class="w-100 d-flex align-items-center justify-content-center gap-2"
@@ -57,6 +69,7 @@
               <span class="material-symbols-outlined"></span>
               <span th:text="${cancha.direccion}"></span>
             </h4>
+            
           </div>
           <hr class="colorgraph" />
         </div>
@@ -113,7 +126,38 @@
               >
                 Volver a la lista de canchas
               </a>
+               <a
+                th:href="@{/reseniar-cancha/{canchaId}(canchaId=${cancha.id})}"
+                class="btn btn-success w-100"
+              >
+                Reseñar cancha
+              </a>
             </div>
+          </div>
+        </div>
+
+        <!-- Reseñas: carrusel simple que muestra una reseña a la vez -->
+        <div id="contenedor-resenias" class="mt-4 w-100">
+          <h2 class="participantes-titulo">Reseñas</h2>
+          <hr class="colorgraph" />
+
+          <div th:if="${#lists.isEmpty(resenias)}" class="text-muted">No hay reseñas aún.</div>
+
+            <div th:if="${!#lists.isEmpty(resenias)}" class="d-flex align-items-center justify-content-center">
+            <button id="prevReview" class="btn btn-outline-secondary me-2" onclick="prevReview()">&laquo;</button>
+
+            <div id="reviewsContainer" style="max-width:720px; width:100%">
+              <div th:each="resenia, stat : ${resenias}" class="review-item card p-3 mb-2" th:attr="data-index=${stat.index}" style="display:none">
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                  <strong th:text="${resenia.usuario != null ? (resenia.usuario.nombre != null ? resenia.usuario.nombre : resenia.usuario.username) : 'Anónimo'}">Usuario</strong>
+                  <span class="badge bg-primary rating-badge" th:attr="data-rating=${resenia.calificacion}" aria-label="Calificación de la reseña">5</span>
+                </div>
+                <p th:text="${resenia.comentario != null && resenia.comentario != '' ? resenia.comentario : 'Sin comentario'}">Comentario</p>
+                <div class="text-end text-muted" style="font-size:0.9rem">#<span th:text="${stat.index + 1}"></span> de <span th:text="${#lists.size(resenias)}"></span></div>
+              </div>
+            </div>
+
+            <button id="nextReview" class="btn btn-outline-secondary ms-2" onclick="nextReview()">&raquo;</button>
           </div>
         </div>
 
@@ -121,51 +165,56 @@
         <div id="contenedor-participantes" class="mt-5">
           <h2 class="participantes-titulo">Horarios disponibles</h2>
           <hr class="colorgraph" />
+            <div th:if="${#lists.isEmpty(horarios)}" class="text-muted">
+              No hay horarios disponibles.
+            </div>
 
-          <div th:if="${#lists.isEmpty(horarios)}" class="text-muted">
-            No hay horarios disponibles.
-          </div>
+            <!-- Wrapper limitado con altura y scroll interno; botón 'Mostrar más' para expandir -->
+            <div th:if="${!#lists.isEmpty(horarios)}">
+              <div id="horariosWrapper" class="horarios-wrapper">
+                <ul class="list-group">
+                  <li
+                    class="list-group-item d-flex justify-content-between align-items-center"
+                    th:each="horario : ${horarios}"
+                  >
+                    <div>
+                      <strong th:switch="${horario.diaSemana}">
+                      <span th:case="${T(java.time.DayOfWeek).MONDAY}">Lunes</span>
+                      <span th:case="${T(java.time.DayOfWeek).TUESDAY}">Martes</span>
+                      <span th:case="${T(java.time.DayOfWeek).WEDNESDAY}">Miércoles</span>
+                      <span th:case="${T(java.time.DayOfWeek).THURSDAY}">Jueves</span>
+                      <span th:case="${T(java.time.DayOfWeek).FRIDAY}">Viernes</span>
+                      <span th:case="${T(java.time.DayOfWeek).SATURDAY}">Sábado</span>
+                      <span th:case="${T(java.time.DayOfWeek).SUNDAY}">Domingo</span>
+                      <span th:case="*">Desconocido</span>
+                    </strong>
+                      <span th:text="${horario.horaInicio}"></span> -
+                      <span th:text="${horario.horaFin}"></span>
+                    </div>
+                    <div>
+                      <button
+                        th:if="${horario.disponible}"
+                        class="btn btn-success btn-sm"
+                        th:onclick="'location.href=\'/spring/reserva/nueva?usuarioId=' + ${usuarioId} + '&horarioId=' + ${horario.id} + '\';'"
+                      >
+                        Reservar
+                      </button>
+                      <button
+                        th:if="${!horario.disponible}"
+                        class="btn btn-secondary btn-sm"
+                        disabled
+                      >
+                        No disponible
+                      </button>
+                    </div>
+                  </li>
+                </ul>
+              </div>
 
-          <ul
-            class="list-group"
-            th:if="${!#lists.isEmpty(horarios)}"
-          >
-            <li
-              class="list-group-item d-flex justify-content-between align-items-center"
-              th:each="horario : ${horarios}"
-            >
-              <div>
-                <strong th:switch="${horario.diaSemana}">
-                <span th:case="${T(java.time.DayOfWeek).MONDAY}">Lunes</span>
-                <span th:case="${T(java.time.DayOfWeek).TUESDAY}">Martes</span>
-                <span th:case="${T(java.time.DayOfWeek).WEDNESDAY}">Miércoles</span>
-                <span th:case="${T(java.time.DayOfWeek).THURSDAY}">Jueves</span>
-                <span th:case="${T(java.time.DayOfWeek).FRIDAY}">Viernes</span>
-                <span th:case="${T(java.time.DayOfWeek).SATURDAY}">Sábado</span>
-                <span th:case="${T(java.time.DayOfWeek).SUNDAY}">Domingo</span>
-                <span th:case="*">Desconocido</span>
-              </strong>
-                <span th:text="${horario.horaInicio}"></span> -
-                <span th:text="${horario.horaFin}"></span>
+              <div class="text-center mt-2">
+                <button id="toggleHorariosBtn" class="btn btn-link">Mostrar más</button>
               </div>
-              <div>
-                <button
-                  th:if="${horario.disponible}"
-                  class="btn btn-success btn-sm"
-                  th:onclick="'location.href=\'/spring/reserva/nueva?usuarioId=' + ${usuarioId} + '&horarioId=' + ${horario.id} + '\';'"
-                >
-                  Reservar
-                </button>
-                <button
-                  th:if="${!horario.disponible}"
-                  class="btn btn-secondary btn-sm"
-                  disabled
-                >
-                  No disponible
-                </button>
-              </div>
-            </li>
-          </ul>
+            </div>
         </div>
       </div>
     </main>
@@ -175,5 +224,105 @@
       th:src="@{/webjars/bootstrap/5.2.0/js/bootstrap.min.js}"
     ></script>
     <script type="module" th:src="@{/js/common.js}"></script>
+    <script>
+      // Carrusel simple de reseñas
+      let reviewIndex = 0;
+    
+      function renderStars() {
+        const starEntity = '&#9733;'; 
+        const emptyEntity = '&#9734;';
+        const ratingElems = document.querySelectorAll('[data-rating]');
+        ratingElems.forEach(elem => {
+          const val = parseFloat(elem.getAttribute('data-rating'));
+          if (isNaN(val) || val === 0) {
+            elem.style.color='gold';
+            elem.innerText = 'Sin calificaciones';
+            return;
+          }
+          const rounded = Math.round(val);
+          let starsHtml = '';
+          for (let i = 0; i < 5; i++) {
+            starsHtml += (i < rounded) ? starEntity : emptyEntity;
+          }
+          elem.innerHTML = starsHtml + ' (' + rounded + ')';
+          elem.style.color = 'gold';
+          elem.style.fontSize = '1.2rem';
+        });
+        // elementos específicos con clase rating-badge: mostrar solo estrellas sin número
+        const badgeElems = document.querySelectorAll('.rating-badge');
+        badgeElems.forEach(b => {
+          const v = parseFloat(b.getAttribute('data-rating'));
+          if (isNaN(v) || v === 0) {
+            b.innerText = 'Sin';
+            return;
+          }
+          const r = Math.round(v);
+          let s = '';
+          for (let i = 0; i < r; i++) s += starEntity;
+          for (let i = r; i < 5; i++) s += emptyEntity;
+          b.innerHTML = s;
+          b.style.backgroundColor = '#0d6efd';
+          b.style.color = 'gold';
+        });
+      }
+      function showReview(i) {
+        const items = document.querySelectorAll('.review-item');
+        if (!items || items.length === 0) return;
+        if (i < 0) i = 0;
+        if (i > items.length - 1) i = items.length - 1;
+        reviewIndex = i;
+        items.forEach((it, idx) => {
+          it.style.display = idx === i ? 'block' : 'none';
+        });
+        // deshabilitar botones si corresponde
+        const prev = document.getElementById('prevReview');
+        const next = document.getElementById('nextReview');
+        if (prev) prev.disabled = (i === 0);
+        if (next) next.disabled = (i === items.length - 1);
+      }
+      function nextReview() { showReview(reviewIndex + 1); }
+      function prevReview() { showReview(reviewIndex - 1); }
+      // Inicializar al cargar
+      document.addEventListener('DOMContentLoaded', function() {
+        const items = document.querySelectorAll('.review-item');
+        renderStars();
+        if (items && items.length > 0) {
+          showReview(0);
+        }
+        // Toggle 'Mostrar más' para la lista de horarios
+        const toggleBtn = document.getElementById('toggleHorariosBtn');
+        const wrapper = document.getElementById('horariosWrapper');
+        if (toggleBtn && wrapper) {
+          toggleBtn.addEventListener('click', function(e) {
+            e.preventDefault();
+            const expanded = wrapper.classList.toggle('expanded');
+            toggleBtn.textContent = expanded ? 'Mostrar menos' : 'Mostrar más';
+            // Si está expandido quitar la restricción de max-height
+            if (expanded) {
+              wrapper.style.maxHeight = 'none';
+              wrapper.style.overflowY = 'visible';
+            } else {
+              wrapper.style.maxHeight = '300px';
+              wrapper.style.overflowY = 'auto';
+            }
+          });
+        }
+      });
+    </script>
+    <style>
+      /* Limitar la altura de la lista de horarios para evitar un scroll largo en la página */
+      .horarios-wrapper {
+        max-height: 300px; /* ajustar según preferencia */
+        overflow-y: auto;
+      }
+      .horarios-wrapper.expanded {
+        max-height: none;
+        overflow-y: visible;
+      }
+      /* Mejorar el aspecto del botón link */
+      #toggleHorariosBtn {
+        text-decoration: none;
+      }
+    </style>
   </body>
 </html>
