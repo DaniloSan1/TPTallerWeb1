@@ -107,6 +107,13 @@
             <version>${hibernate.version}</version>
         </dependency>
         
+        <!-- JavaMail (for sending invitation emails if SMTP is configured) -->
+        <dependency>
+            <groupId>com.sun.mail</groupId>
+            <artifactId>javax.mail</artifactId>
+            <version>1.6.2</version>
+        </dependency>
+        
         <dependency>
             <groupId>com.mercadopago</groupId>
             <artifactId>sdk-java</artifactId>

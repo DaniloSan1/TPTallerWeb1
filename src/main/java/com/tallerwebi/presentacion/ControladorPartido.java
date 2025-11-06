@@ -35,6 +35,7 @@ import com.tallerwebi.dominio.ServicioHorario;
 import com.tallerwebi.dominio.ServicioLogin;
 import com.tallerwebi.dominio.ServicioPartido;
 import com.tallerwebi.dominio.ServicioReserva;
+import com.tallerwebi.dominio.ServicioSolicitudUnirse;
 import com.tallerwebi.presentacion.EquipoSimple;
 import com.tallerwebi.dominio.ServicioUsuario;
 import com.tallerwebi.dominio.Usuario;
@@ -57,12 +58,14 @@ public class ControladorPartido {
     private ServicioFotoCancha servicioFotoCancha;
     private ServicioGoles servicioGoles;
     private ServicioEquipoJugador servicioEquipoJugador;
+    private ServicioSolicitudUnirse servicioSolicitudUnirse;
 
 
     @Autowired
     public ControladorPartido(ServicioPartido servicio, ServicioLogin servicioLogin, ServicioHorario servicioHorario,
             ServicioReserva servicioReserva, ServicioUsuario servicioUsuario,
-            ServicioEquipo servicioEquipo, ServicioFotoCancha servicioFotoCancha, ServicioGoles servicioGoles, ServicioEquipoJugador servicioEquipoJugador) {
+            ServicioEquipo servicioEquipo, ServicioFotoCancha servicioFotoCancha, ServicioGoles servicioGoles, ServicioEquipoJugador servicioEquipoJugador,
+            ServicioSolicitudUnirse servicioSolicitudUnirse) {
         this.servicio = servicio;
         this.servicioLogin = servicioLogin;
         this.servicioHorario = servicioHorario;
@@ -72,6 +75,7 @@ public class ControladorPartido {
         this.servicioFotoCancha = servicioFotoCancha;
         this.servicioGoles = servicioGoles;
         this.servicioEquipoJugador = servicioEquipoJugador;
+        this.servicioSolicitudUnirse = servicioSolicitudUnirse;
     }
 
     public ControladorPartido(ServicioPartido servicioPartidoMock, ServicioLogin servicioLoginMock,
@@ -94,6 +98,20 @@ public class ControladorPartido {
             Partido partido = servicio.obtenerPorId(id);
 
             modelo.put("partido", new DetallePartido(partido, usuario));
+
+            // Si en la URL viene un token como query param, procesamos la aceptación aquí
+            String token = request.getParameter("token");
+            if (token != null && !token.isEmpty()) {
+                var res = servicioSolicitudUnirse.aceptarPorToken(token, usuario);
+                // refrescar estado del partido tras posible aceptación
+                partido = servicio.obtenerPorId(id);
+                modelo.put("partido", new DetallePartido(partido, usuario));
+                if (res.ok) {
+                    modelo.put("mensajeExito", res.mensaje);
+                } else {
+                    modelo.put("mensajeError", res.mensaje);
+                }
+            }
 
         } catch (Exception e) {
             modelo.put("error", e.getMessage());
