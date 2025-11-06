@@ -29,7 +29,7 @@ public class Usuario {
     @Column(nullable = true)
     private String fotoPerfil;
 
-    @OneToMany(mappedBy = "usuario", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "usuario", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
     private Set<EquipoJugador> equipos = new HashSet<>();
 
     public Usuario() {

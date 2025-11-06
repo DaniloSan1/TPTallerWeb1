@@ -2,17 +2,14 @@ package com.tallerwebi.dominio;
 
 import java.util.List;
 
-import javax.transaction.Transactional;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.tallerwebi.dominio.excepcion.NoHayCupoEnPartido;
 import com.tallerwebi.dominio.excepcion.PartidoNoEncontrado;
 import com.tallerwebi.dominio.excepcion.PermisosInsufficientes;
 import com.tallerwebi.dominio.excepcion.YaExisteElParticipante;
-
-import com.tallerwebi.dominio.RepositorioPartidoEquipo;
 
 @Service
 public class ServicioPartidoImpl implements ServicioPartido {
@@ -66,8 +63,8 @@ public class ServicioPartidoImpl implements ServicioPartido {
         Equipo equipo2 = servicioEquipo.crearEquipo("Equipo 2", usuario);
 
         // Crear las relaciones PartidoEquipo
-        PartidoEquipo partidoEquipo1 = new PartidoEquipo(partido, equipo1, 0);
-        PartidoEquipo partidoEquipo2 = new PartidoEquipo(partido, equipo2, 0);
+        PartidoEquipo partidoEquipo1 = new PartidoEquipo(partido, equipo1);
+        PartidoEquipo partidoEquipo2 = new PartidoEquipo(partido, equipo2);
 
         repoPartidoEquipo.guardar(partidoEquipo1);
         repoPartidoEquipo.guardar(partidoEquipo2);
@@ -122,6 +119,15 @@ public class ServicioPartidoImpl implements ServicioPartido {
         }
         partido.setTitulo(titulo);
         partido.setDescripcion(descripcion);
+        repoPartido.actualizar(partido);
+    }
+
+    @Override
+    public void finalizarPartido(Partido partido, Usuario usuario) throws PermisosInsufficientes {
+        if (!partido.esCreador(usuario.getEmail())) {
+            throw new PermisosInsufficientes();
+        }
+        partido.setFechaFinalizacion(java.time.LocalDateTime.now());
         repoPartido.actualizar(partido);
     }
 }

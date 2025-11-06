@@ -55,7 +55,7 @@ public class RepositorioPartidoEquipoImplTest {
         Partido partido = new Partido(null, "Partido Test", "Descripcion", Nivel.PRINCIPIANTE, 10, reserva, creador);
         sessionFactory.getCurrentSession().save(partido);
 
-        PartidoEquipo partidoEquipoAGuardar = new PartidoEquipo(partido, equipo, 5);
+        PartidoEquipo partidoEquipoAGuardar = new PartidoEquipo(partido, equipo);
 
         repositorioPartidoEquipo.guardar(partidoEquipoAGuardar);
         sessionFactory.getCurrentSession().flush();
@@ -94,7 +94,7 @@ public class RepositorioPartidoEquipoImplTest {
         Partido partido = new Partido(null, "Partido Test", "Descripcion", Nivel.PRINCIPIANTE, 10, reserva, creador);
         sessionFactory.getCurrentSession().save(partido);
 
-        PartidoEquipo partidoEquipoAGuardar = new PartidoEquipo(partido, equipo, 5);
+        PartidoEquipo partidoEquipoAGuardar = new PartidoEquipo(partido, equipo);
         sessionFactory.getCurrentSession().save(partidoEquipoAGuardar);
         sessionFactory.getCurrentSession().flush();
 

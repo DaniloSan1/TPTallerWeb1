@@ -6,6 +6,8 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.time.LocalDateTime;
+import java.util.Arrays;
+import java.util.List;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
@@ -67,5 +69,35 @@ public class ServicioEquipoImplTest {
 
         verify(repositorioEquipo).modificar(equipo);
         assertThat(equipo.getNombre(), equalTo(nuevoNombre));
+    }
+
+    @Test
+    public void queSePuedanObtenerLosEquiposDeUnUsuario() {
+        Usuario usuario = new Usuario("nombre", "password", "email@test.com", "username");
+        List<Equipo> equiposEsperados = Arrays.asList(
+                new Equipo("Equipo 1", usuario, LocalDateTime.now()),
+                new Equipo("Equipo 2", usuario, LocalDateTime.now()));
+
+        when(repositorioEquipo.buscarEquiposPorUsuario(usuario)).thenReturn(equiposEsperados);
+
+        List<Equipo> equiposObtenidos = servicioEquipoImpl.obtenerEquiposDelUsuario(usuario);
+
+        verify(repositorioEquipo).buscarEquiposPorUsuario(usuario);
+        assertThat(equiposObtenidos, equalTo(equiposEsperados));
+    }
+
+    @Test
+    public void queSePuedanObtenerLosEquiposDeUnUsuarioConFiltro() {
+        Usuario usuario = new Usuario("nombre", "password", "email@test.com", "username");
+        String filtro = "Equipo 1";
+        List<Equipo> equiposEsperados = Arrays.asList(
+                new Equipo("Equipo 1", usuario, LocalDateTime.now()));
+
+        when(repositorioEquipo.buscarEquiposPorUsuarioYNombre(usuario, filtro)).thenReturn(equiposEsperados);
+
+        List<Equipo> equiposObtenidos = servicioEquipoImpl.obtenerEquiposDelUsuarioConFiltro(usuario, filtro);
+
+        verify(repositorioEquipo).buscarEquiposPorUsuarioYNombre(usuario, filtro);
+        assertThat(equiposObtenidos, equalTo(equiposEsperados));
     }
 }

@@ -137,8 +137,8 @@ public class ControladorPartidoTest {
 		this.sessionFactory.getCurrentSession().flush();
 
 		// agrega PartidoEquipo
-		PartidoEquipo pe1 = new PartidoEquipo(nuevoPartido, equipo1, 0);
-		PartidoEquipo pe2 = new PartidoEquipo(nuevoPartido, equipo2, 0);
+		PartidoEquipo pe1 = new PartidoEquipo(nuevoPartido, equipo1);
+		PartidoEquipo pe2 = new PartidoEquipo(nuevoPartido, equipo2);
 		nuevoPartido.getEquipos().add(pe1);
 		nuevoPartido.getEquipos().add(pe2);
 		this.sessionFactory.getCurrentSession().save(pe1);

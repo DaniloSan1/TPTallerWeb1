@@ -21,6 +21,8 @@ import com.tallerwebi.dominio.Nivel;
 import com.tallerwebi.dominio.Partido;
 import com.tallerwebi.dominio.Reserva;
 import com.tallerwebi.dominio.ServicioEquipo;
+import com.tallerwebi.dominio.ServicioEquipoJugador;
+import com.tallerwebi.dominio.ServicioGoles;
 import com.tallerwebi.dominio.ServicioLogin;
 import com.tallerwebi.dominio.ServicioPartido;
 import com.tallerwebi.dominio.Usuario;
@@ -40,6 +42,8 @@ public class ControladorPartidoTest {
     private Usuario usuarioMock;
     private Equipo equipoMock;
     private ServicioEquipo servicioEquipoMock;
+    private ServicioGoles servicioGolesMock;
+    private ServicioEquipoJugador servicioEquipoJugadorMock;
     private RedirectAttributes redirectAttributesMock;
 
     @BeforeEach
@@ -49,6 +53,8 @@ public class ControladorPartidoTest {
         servicioLoginMock = Mockito.mock(ServicioLogin.class);
         servicioPartidoMock = Mockito.mock(ServicioPartido.class);
         servicioEquipoMock = Mockito.mock(ServicioEquipo.class);
+        servicioGolesMock = Mockito.mock(ServicioGoles.class);
+        servicioEquipoJugadorMock = Mockito.mock(ServicioEquipoJugador.class);
         partidoMock = Mockito.mock(Partido.class);
         usuarioMock = Mockito.mock(Usuario.class);
         redirectAttributesMock = Mockito.mock(RedirectAttributes.class);
@@ -114,8 +120,10 @@ public class ControladorPartidoTest {
         } catch (EquipoNoEncontrado e) {
             // Should not happen in mock
         }
-
+        
         controladorPartido = new ControladorPartido(servicioPartidoMock, servicioLoginMock, null, null, servicioPartidoMock, null, servicioEquipoMock, servicioEquipoMock, null);
+        controladorPartido = new ControladorPartido(servicioPartidoMock, servicioLoginMock, null, null,
+                servicioPartidoMock, null, servicioEquipoMock, servicioGolesMock, servicioEquipoJugadorMock);
     }
 
     @Test
@@ -240,5 +248,29 @@ public class ControladorPartidoTest {
         Mockito.verify(redirectAttributesMock).addFlashAttribute("success", "Te has unido al partido correctamente.");
         Mockito.verify(servicioPartidoMock, Mockito.times(1)).anotarParticipante(Mockito.any(Partido.class),
                 Mockito.any(Equipo.class), Mockito.any(Usuario.class));
+    }
+
+    @Test
+    public void finalizarPartidoDeberiaRedirigirALoginSiNoHayEmailEnSesion() {
+        when(sessionMock.getAttribute("EMAIL")).thenReturn(null);
+
+        ModelAndView modelAndView = controladorPartido.finalizarPartido(1L, requestMock);
+
+        assertNotNull(modelAndView);
+        assertEquals("redirect:/login", modelAndView.getViewName());
+    }
+
+    @Test
+    public void finalizarPartidoDeberiaMostrarVistaSiUsuarioEsCreador() {
+        when(sessionMock.getAttribute("EMAIL")).thenReturn("email@test.com");
+        when(requestMock.getSession()).thenReturn(sessionMock);
+        when(servicioLoginMock.buscarPorEmail("email@test.com")).thenReturn(usuarioMock);
+        when(servicioPartidoMock.obtenerPorId(1L)).thenReturn(partidoMock);
+        when(partidoMock.esCreador("email@test.com")).thenReturn(true);
+
+        ModelAndView modelAndView = controladorPartido.finalizarPartido(1L, requestMock);
+
+        assertNotNull(modelAndView);
+        assertEquals("finalizar-partido", modelAndView.getViewName());
     }
 }

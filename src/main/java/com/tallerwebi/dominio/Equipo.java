@@ -34,6 +34,13 @@ public class Equipo {
         this.fechaCreacion = fechaCreacion;
     }
 
+    @PrePersist
+    public void setFechaCreacionDefault() {
+        if (fechaCreacion == null) {
+            fechaCreacion = LocalDateTime.now();
+        }
+    }
+
     // Getters and setters
     public Long getId() {
         return id;
