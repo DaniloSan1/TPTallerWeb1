@@ -42,7 +42,7 @@ public class ServicioPartidoImpl implements ServicioPartido {
             int cupoMaximo, Usuario usuario) {
 
         Partido partido = new Partido();
-        partido.setUsuario(usuario);
+        partido.setCreador(usuario);
         partido.setReserva(nuevaReserva);
 
         String tituloFinal = (titulo != null && !titulo.isEmpty()) ? titulo
@@ -106,9 +106,13 @@ public class ServicioPartidoImpl implements ServicioPartido {
     @Override
     public List<Partido> listarPorCreador(Usuario usuario) {
         if (usuario == null || usuario.getId() == null) {
-        return java.util.Collections.emptyList();
-    }
-    return repoPartido.listarPorCreador(usuario.getId());
+            System.out.println("Usuario nulo o sin ID");
+            return java.util.Collections.emptyList();
+        }
+        System.out.println("Buscando partidos para usuario ID: " + usuario.getId());
+        List<Partido> partidos = repoPartido.listarPorCreador(usuario.getId());
+        System.out.println("Partidos encontrados: " + (partidos != null ? partidos.size() : "null"));
+        return partidos != null ? partidos : java.util.Collections.emptyList();
     }
     @Override
     public void actualizarPartido(Long id, String titulo, String descripcion, Usuario usuario)

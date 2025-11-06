@@ -151,8 +151,10 @@ public class Partido {
         this.reserva = reserva;
     }
 
+    @Deprecated
     public void setUsuario(Usuario usuario) {
-        this.creador = usuario;
+        // Para mantener compatibilidad con código existente
+        this.setCreador(usuario);
     }
 
     public boolean esCreador(String email) {

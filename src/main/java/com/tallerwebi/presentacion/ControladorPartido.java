@@ -50,7 +50,6 @@ import java.util.HashMap;
 public class ControladorPartido {
     private ServicioPartido servicio;
     private ServicioLogin servicioLogin;
-    private ServicioPartido servicioPartido;
     private ServicioReserva servicioReserva;
     private ServicioUsuario servicioUsuario;
     private ServicioHorario servicioHorario;
@@ -62,18 +61,24 @@ public class ControladorPartido {
 
     @Autowired
     public ControladorPartido(ServicioPartido servicio, ServicioLogin servicioLogin, ServicioHorario servicioHorario,
-            ServicioReserva servicioReserva, ServicioPartido servicioPartido, ServicioUsuario servicioUsuario,
-            ServicioEquipo servicioEquipo, ServicioGoles servicioGoles, ServicioEquipoJugador servicioEquipoJugador) {
+            ServicioReserva servicioReserva, ServicioUsuario servicioUsuario,
+            ServicioEquipo servicioEquipo, ServicioFotoCancha servicioFotoCancha, ServicioGoles servicioGoles, ServicioEquipoJugador servicioEquipoJugador) {
         this.servicio = servicio;
         this.servicioLogin = servicioLogin;
         this.servicioHorario = servicioHorario;
         this.servicioReserva = servicioReserva;
-        this.servicioPartido = servicioPartido;
         this.servicioUsuario = servicioUsuario;
         this.servicioEquipo = servicioEquipo;
         this.servicioFotoCancha = servicioFotoCancha;
         this.servicioGoles = servicioGoles;
         this.servicioEquipoJugador = servicioEquipoJugador;
+    }
+
+    public ControladorPartido(ServicioPartido servicioPartidoMock, ServicioLogin servicioLoginMock,
+            Object servicioHorario2, Object servicioReserva2, ServicioPartido servicioPartidoMock2,
+            Object servicioEquipo2, ServicioEquipo servicioEquipoMock, ServicioGoles servicioGolesMock,
+            ServicioEquipoJugador servicioEquipoJugadorMock) {
+        //TODO Auto-generated constructor stub
     }
 
     @GetMapping("/{id}")
@@ -178,21 +183,22 @@ public class ControladorPartido {
     }   
     @GetMapping("/mios")
     public ModelAndView misPartidos(HttpServletRequest request, ModelMap model) {
-    String email = (String) request.getSession().getAttribute("EMAIL");
-    if (email == null) {
-        return new ModelAndView("redirect:/login");
-    }
-    Usuario usuario = servicioLogin.buscarPorEmail(email);
-    List<Partido> partidos = servicio.listarPorCreador(usuario);
+        String email = (String) request.getSession().getAttribute("EMAIL");
+        if (email == null) return new ModelAndView("redirect:/login");
 
-    List<FotoCancha> fotosCanchas = servicioFotoCancha.insertarFotosAModelPartidos(partidos);
+        Usuario usuario = servicioLogin.buscarPorEmail(email);
+        List<Partido> partidos = servicio.listarPorCreador(usuario);
 
-    model.put("partidos", partidos);
-    model.put("fotosCanchas", fotosCanchas);
-    model.put("currentPage", "mis-partidos");
+        // Asegurar que fotosCanchas siempre esté en el modelo (puede ser lista vacía)
+        List<FotoCancha> fotosCanchas = new ArrayList<>();
+        if (partidos != null && !partidos.isEmpty()) {
+            fotosCanchas = servicioFotoCancha.insertarFotosAModelPartidos(partidos);
+        }
 
-
-    return new ModelAndView("mis-partidos", model);
+        model.put("partidos", partidos != null ? partidos : java.util.Collections.emptyList());
+        model.put("fotosCanchas", fotosCanchas);
+        model.put("currentPage", "mis-partidos");
+        return new ModelAndView("mis-partidos", model);
     }
     @GetMapping("/{id}/finalizar-partido")
     public ModelAndView finalizarPartido(@PathVariable long id, HttpServletRequest request) {
