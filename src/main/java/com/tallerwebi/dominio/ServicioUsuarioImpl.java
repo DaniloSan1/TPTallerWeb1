@@ -5,6 +5,8 @@ import com.tallerwebi.dominio.excepcion.UsuarioNoEncontradoException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class ServicioUsuarioImpl implements ServicioUsuario {
     private final RepositorioUsuario repositorioUsuario;
@@ -47,5 +49,10 @@ public class ServicioUsuarioImpl implements ServicioUsuario {
     @Override
     public Usuario buscarPorUsername(String username) {
         return repositorioUsuario.buscarPorUsername(username);
+    }
+
+    @Override
+    public List<Usuario> filtrarPorUsername(String username) {
+        return repositorioUsuario.filtrarPorUsername(username);
     }
 }

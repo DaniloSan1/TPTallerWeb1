@@ -1,8 +1,6 @@
 package com.tallerwebi.presentacion;
 
-import com.tallerwebi.dominio.ServicioLogin;
-import com.tallerwebi.dominio.ServicioUsuario;
-import com.tallerwebi.dominio.Usuario;
+import com.tallerwebi.dominio.*;
 import com.tallerwebi.dominio.excepcion.UsernameExistenteException;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
@@ -12,16 +10,19 @@ import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
+import java.util.List;
 
 @Controller
 @RequestMapping("/perfil")
 public class ControladorUsuario {
     private final ServicioUsuario servicioUsuario;
     private ServicioLogin servicioLogin;
+    private ServicioAmistad servicioAmistad;
 
-    public ControladorUsuario(ServicioLogin servicioLogin, ServicioUsuario servicioUsuario) {
+    public ControladorUsuario(ServicioLogin servicioLogin, ServicioUsuario servicioUsuario, ServicioAmistad servicioAmistad) {
         this.servicioLogin = servicioLogin;
         this.servicioUsuario = servicioUsuario;
+        this.servicioAmistad = servicioAmistad;
     }
 
     @GetMapping("/ver/id/{id}")
@@ -45,11 +46,20 @@ public class ControladorUsuario {
         }
 
         String usernameABuscar = (String) request.getSession().getAttribute("USERNAME");
+        Usuario usuarioActual = servicioUsuario.buscarPorUsername(usernameABuscar);
         if (usuarioAVer.getUsername().equals(usernameABuscar)) {
             return "redirect:/perfil";
         }
 
+        Amistad amistad = servicioAmistad.buscarRelacionEntreUsuarios(usuarioActual.getId(), usuarioAVer.getId());
+        EstadoDeAmistad estado = amistad != null ? amistad.getEstadoDeAmistad() : null;
+
+
         modelo.addAttribute("usuarioAVer", usuarioAVer);
+        modelo.addAttribute("usuarioActual", usuarioActual);
+        modelo.addAttribute("amistad", amistad);
+        modelo.addAttribute("estadoAmistad", amistad != null ? amistad.getEstadoDeAmistad() : null);
+
         return "perfilDeOtroJugador";
     }
 
@@ -99,7 +109,6 @@ public class ControladorUsuario {
                 usuario.setNombre(usuarioEditado.getNombre());
                 usuario.setApellido(usuarioEditado.getApellido());
                 usuario.setPosicionFavorita(usuarioEditado.getPosicionFavorita());
-
                 servicioUsuario.modificarUsuario(usuario);
 
                 return "redirect:/perfil";
@@ -113,4 +122,50 @@ public class ControladorUsuario {
         }
         return "redirect:/login";
     }
+
+    @GetMapping("/buscar")
+    public String buscarPorUsername(@RequestParam("username") String username, ModelMap modelo) {
+        if (username == null || username.trim().isEmpty()) {
+            modelo.addAttribute("error", "Por favor ingrese un nombre de usuario para buscar");
+            return "usuariosBuscados";
+        }
+
+        List<Usuario> usuarios = servicioUsuario.filtrarPorUsername(username.trim());
+        modelo.addAttribute("usuarios", usuarios);
+        modelo.addAttribute("terminoBusqueda", username);
+
+        if (usuarios.isEmpty()) {
+            modelo.addAttribute("mensaje", "No se encontraron usuarios con ese nombre");
+        }
+
+        return "usuariosBuscados";
+    }
+
+    @PostMapping("/amistad/enviar/{idReceptor}")
+    public String enviarSolicitud(@PathVariable Long idReceptor, HttpServletRequest request) {
+        String email = (String) request.getSession().getAttribute("EMAIL");
+        Usuario remitente = servicioLogin.buscarPorEmail(email);
+        Usuario receptor = servicioLogin.buscarPorId(idReceptor);
+
+        if (remitente != null) {
+            servicioAmistad.enviarSolicitud(remitente.getId(), idReceptor);
+        }
+
+       return "redirect:/perfil/ver/username/" + receptor.getUsername();
+    }
+
+    @PostMapping("/amistad/aceptar/{idAmistad}")
+    public String aceptarSolicitud(@PathVariable Long idAmistad) {
+        servicioAmistad.aceptarSolicitud(idAmistad);
+        return "redirect:/perfil/solicitudes";
+    }
+
+    @PostMapping("/amistad/rechazar/{idAmistad}")
+    public String rechazarSolicitud(@PathVariable Long idAmistad) {
+        servicioAmistad.rechazarSolicitud(idAmistad);
+        return "redirect:/perfil/solicitudes";
+    }
+
+
+
 }

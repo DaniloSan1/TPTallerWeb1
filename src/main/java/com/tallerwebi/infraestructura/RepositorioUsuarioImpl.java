@@ -10,6 +10,8 @@ import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 @Primary
 @Repository("repositorioUsuario")
 @Transactional
@@ -21,6 +23,16 @@ public class RepositorioUsuarioImpl implements RepositorioUsuario {
     public RepositorioUsuarioImpl(SessionFactory sessionFactory) {
         this.sessionFactory = sessionFactory;
     }
+
+
+    @Override
+    public List<Usuario> filtrarPorUsername(String username) {
+        String hql = "FROM Usuario u WHERE u.username LIKE :username";
+        return sessionFactory.getCurrentSession().createQuery(hql, Usuario.class)
+            .setParameter("username", "%" + username + "%") //%username%
+            .getResultList();
+    }
+
 
     @Override
     public Usuario buscarUsuario(String email, String password) {

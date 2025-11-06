@@ -3,6 +3,8 @@ package com.tallerwebi.dominio;
 import java.util.List;
 
 import javax.persistence.*;
+import java.util.List;
+import java.util.List;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -14,6 +16,12 @@ public class Usuario {
     private Long id;
     private String nombre;
     private String apellido;
+
+    @OneToMany(mappedBy = "usuario1")
+    private List<Amistad> amistadesEnviadas;
+
+    @OneToMany(mappedBy = "usuario2")
+    private List<Amistad> amistadesRecibidas;
 
     @Column(unique = true)
     private String email;
@@ -33,7 +41,7 @@ public class Usuario {
 
     @OneToMany(mappedBy = "usuario", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
     private Set<EquipoJugador> equipos = new HashSet<>();
-    
+
     @OneToMany(mappedBy = "usuario", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private List<ReseniaCancha> reseniasCanchas;
 
@@ -164,7 +172,7 @@ public class Usuario {
     public void setEquipos(Set<EquipoJugador> equipos) {
         this.equipos = equipos;
     }
-    
+
     public List<ReseniaCancha> getReseñasCanchas() {
         return reseniasCanchas;
     }
