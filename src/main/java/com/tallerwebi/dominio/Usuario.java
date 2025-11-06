@@ -35,7 +35,7 @@ public class Usuario {
     private Set<EquipoJugador> equipos = new HashSet<>();
     
     @OneToMany(mappedBy = "usuario", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
-    private List<ReseniaCancha> reseñasCanchas;
+    private List<ReseniaCancha> reseniasCanchas;
 
     public Usuario() {
     }
@@ -166,9 +166,9 @@ public class Usuario {
     }
     
     public List<ReseniaCancha> getReseñasCanchas() {
-        return reseñasCanchas;
+        return reseniasCanchas;
     }
     public void setReseñasCanchas(List<ReseniaCancha> reseñasCanchas) {
-        this.reseñasCanchas = reseñasCanchas;
+        this.reseniasCanchas = reseñasCanchas;
     }
 }
