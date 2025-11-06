@@ -7,4 +7,5 @@ public interface ServicioReseniaCancha {
     public double calcularCalificacionPromedioCancha(Long canchaId);
     public List<ReseniaCancha> obtenerReseniasPorCancha(Long canchaId);
     public List<ReseniaCancha> obtenerReseniasPorUsuario(Long usuarioId);
+    Boolean verificarSiElUsuarioPuedeReseniarEsaCancha(Usuario usuario, Cancha cancha);
 }

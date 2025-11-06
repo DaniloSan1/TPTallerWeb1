@@ -13,10 +13,12 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.tallerwebi.dominio.Cancha;
 import com.tallerwebi.dominio.FotoCancha;
 import com.tallerwebi.dominio.Horario;
+import com.tallerwebi.dominio.ReseniaCancha;
 import com.tallerwebi.dominio.ServicioCancha;
 import com.tallerwebi.dominio.ServicioFotoCancha;
 import com.tallerwebi.dominio.ServicioHorario;
@@ -86,14 +88,16 @@ public class ControladorCancha {
             if (email == null) {
                 return new ModelAndView("redirect:/login");
             }
-
+            
             Usuario usuario = servicioLogin.buscarPorEmail(request.getSession().getAttribute("EMAIL").toString());
             Cancha cancha = servicioCancha.obtenerCanchaPorId(id);
             List<Horario> horarios = servicioHorario.obtenerPorCancha(cancha);
+            List<ReseniaCancha> resniasCancha= servicioReseniaCancha.obtenerReseniasPorCancha(id);
             model.put("cancha", cancha);
             model.put("horarios", horarios);
             model.put("usuarioId", usuario.getId());
             model.put("calificacionPromedio", servicioReseniaCancha.calcularCalificacionPromedioCancha(id));
+            model.put("resenias", resniasCancha);
 
         } catch (Exception e) {
             model.put("error", e.getMessage());

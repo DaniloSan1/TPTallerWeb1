@@ -17,7 +17,11 @@ public class ServicioReseniaCanchaImpl implements ServicioReseniaCancha {
 
     @Override
     public void agregarReseniaCancha(ReseniaCancha reseniaCancha) {
-        repositorioReseniaCancha.guardar(reseniaCancha); 
+        Boolean puedeReseniar = this.verificarSiElUsuarioPuedeReseniarEsaCancha(reseniaCancha.getUsuario(), reseniaCancha.getCancha());
+        if(puedeReseniar){
+            repositorioReseniaCancha.guardar(reseniaCancha);
+        }
+         
     }
 
     @Override
@@ -41,5 +45,15 @@ public class ServicioReseniaCanchaImpl implements ServicioReseniaCancha {
             sumaCalificaciones += resenia.getCalificacion();
         }
         return sumaCalificaciones / cantidadResenias;
+    }
+
+    @Override
+    public Boolean verificarSiElUsuarioPuedeReseniarEsaCancha(Usuario usuario, Cancha cancha){
+        Boolean puede=true;
+        List<ReseniaCancha> reseniaCancha= this.repositorioReseniaCancha.buscarReseniaPreviaDelUsuarioAUnaCanchaDeterminada(usuario.getId(), cancha.getId());
+        if (!reseniaCancha.isEmpty()){
+            return puede=false;
+        }
+        return puede;
     }
 }

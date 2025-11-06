@@ -82,7 +82,13 @@ public class ControladorPartido {
             Object servicioHorario2, Object servicioReserva2, ServicioPartido servicioPartidoMock2,
             Object servicioEquipo2, ServicioEquipo servicioEquipoMock, ServicioGoles servicioGolesMock,
             ServicioEquipoJugador servicioEquipoJugadorMock) {
-        //TODO Auto-generated constructor stub
+        // Constructor auxiliar usado en tests: asignar las dependencias mínimas
+        this.servicio = servicioPartidoMock;
+        this.servicioLogin = servicioLoginMock;
+        // Asignar los mocks proporcionados que coinciden por tipo
+        this.servicioEquipo = servicioEquipoMock;
+        this.servicioGoles = servicioGolesMock;
+        this.servicioEquipoJugador = servicioEquipoJugadorMock;
     }
 
     @GetMapping("/{id}")

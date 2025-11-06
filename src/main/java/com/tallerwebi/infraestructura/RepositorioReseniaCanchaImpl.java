@@ -1,5 +1,7 @@
 package com.tallerwebi.infraestructura;
 
+import java.util.List;
+
 import javax.transaction.Transactional;
 
 import org.hibernate.SessionFactory;
@@ -24,7 +26,7 @@ public class RepositorioReseniaCanchaImpl implements RespositorioReseniaCancha {
     }
 
     @Override
-    public java.util.List<ReseniaCancha> obtenerReseniasPorCancha(Long canchaId) {
+    public List<ReseniaCancha> obtenerReseniasPorCancha(Long canchaId) {
         String hql = "FROM ReseniaCancha r WHERE r.cancha.id = :canchaId";
         return this.sessionFactory.getCurrentSession().createQuery(hql, ReseniaCancha.class)
                 .setParameter("canchaId", canchaId)
@@ -32,7 +34,7 @@ public class RepositorioReseniaCanchaImpl implements RespositorioReseniaCancha {
     }
 
     @Override
-    public java.util.List<ReseniaCancha> obtenerReseniasPorUsuario(Long usuarioId) {
+    public List<ReseniaCancha> obtenerReseniasPorUsuario(Long usuarioId) {
         String hql = "FROM ReseniaCancha r WHERE r.usuario.id = :usuarioId";
         return this.sessionFactory.getCurrentSession().createQuery(hql, ReseniaCancha.class)
                 .setParameter("usuarioId", usuarioId)
@@ -45,6 +47,19 @@ public class RepositorioReseniaCanchaImpl implements RespositorioReseniaCancha {
         return ((Long) this.sessionFactory.getCurrentSession().createQuery(hql)
                 .setParameter("canchaId", canchaId)
                 .getSingleResult()).intValue();
+    }
+
+    @Override
+    public List<ReseniaCancha> buscarReseniaPreviaDelUsuarioAUnaCanchaDeterminada(Long usuarioId,Long canchaId){
+    
+        String hql = "FROM ReseniaCancha r WHERE r.usuario.id = :usuarioId AND r.cancha.id = :canchaId";
+        return this.sessionFactory.getCurrentSession()
+        .createQuery(hql, ReseniaCancha.class)
+        .setParameter("usuarioId", usuarioId)
+        .setParameter("canchaId", canchaId)
+        .setMaxResults(1)
+        .getResultList();
+
     }
 
 }

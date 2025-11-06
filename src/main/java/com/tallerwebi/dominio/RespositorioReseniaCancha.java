@@ -7,5 +7,6 @@ public interface RespositorioReseniaCancha {
     List<ReseniaCancha> obtenerReseniasPorCancha(Long canchaId);
     List<ReseniaCancha> obtenerReseniasPorUsuario(Long usuarioId);
     int contarReseniasPorCancha(Long canchaId);
+    List<ReseniaCancha> buscarReseniaPreviaDelUsuarioAUnaCanchaDeterminada(Long usuarioId,Long canchaId);
     
 } 

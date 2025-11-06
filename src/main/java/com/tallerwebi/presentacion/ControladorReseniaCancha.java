@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.tallerwebi.dominio.Cancha;
 import com.tallerwebi.dominio.ReseniaCancha;
@@ -31,7 +32,7 @@ public class ControladorReseniaCancha {
 
     @GetMapping("/reseniar-cancha/{canchaId}")
 
-    public ModelAndView mostrarFormularioResenia(@PathVariable Long canchaId, HttpServletRequest request) {
+    public ModelAndView mostrarFormularioResenia(@PathVariable Long canchaId, HttpServletRequest request, RedirectAttributes redirectAttributes) {
         ModelAndView modelAndView = new ModelAndView("reseniar-cancha");    
         try {
             String email = (String) request.getSession().getAttribute("EMAIL");
@@ -43,9 +44,16 @@ public class ControladorReseniaCancha {
             modelAndView.setViewName("canchas");
             modelAndView.addObject("error", "La cancha que quiere reseñar no existe");
             return modelAndView;
+        }
+        Usuario usuario = this.servicioUsuario.buscarPorEmail(email);
+        Boolean puedeReseniar =this.servicioReseniaCancha.verificarSiElUsuarioPuedeReseniarEsaCancha(usuario, cancha);
+            if (puedeReseniar == false) {
+                String mensaje = "ya reseño esta cancha";
+                redirectAttributes.addFlashAttribute("error", mensaje);
+                return new ModelAndView("redirect:/cancha/" + canchaId);
         }  
         modelAndView.addObject("cancha", cancha);
-        modelAndView.addObject("usuarioId", request.getSession().getAttribute("USUARIO_ID"));
+        modelAndView.addObject("usuario", usuario);
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -55,7 +63,6 @@ public class ControladorReseniaCancha {
     @PostMapping("/resenia/guardar")
         public ModelAndView guardarResenia(
         @RequestParam("canchaId") Long canchaId,
-        @RequestParam("usuarioId") Long usuarioId,
         @RequestParam("calificacion") Integer calificacion,
         @RequestParam(value = "descripcion", required = false) String descripcion,
         ModelMap model,
@@ -64,7 +71,6 @@ public class ControladorReseniaCancha {
         String email = (String) request.getSession().getAttribute("EMAIL");
         Usuario usuario = servicioUsuario.buscarPorEmail(email);
         Cancha cancha = servicioCancha.obtenerCanchaPorId(canchaId);
-
         servicioReseniaCancha.agregarReseniaCancha(
             new ReseniaCancha(calificacion, descripcion, usuario, cancha));
 

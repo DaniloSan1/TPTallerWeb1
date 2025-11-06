@@ -31,6 +31,9 @@ class ControladorCanchaTest {
     private ServicioFotoCancha servicioFotoCanchaMock;
 
     @Mock
+    private ServicioReseniaCancha servicioReseniaCanchaMock;
+
+    @Mock
     private HttpServletRequest request;
 
     @Mock
@@ -42,6 +45,8 @@ class ControladorCanchaTest {
     @BeforeEach
     void setUp() {
         MockitoAnnotations.openMocks(this);
+        // Por defecto devolver 0.0 para la calificación promedio en las pruebas
+        when(servicioReseniaCanchaMock.calcularCalificacionPromedioCancha(anyLong())).thenReturn(0.0);
     }
 
   
@@ -52,10 +57,10 @@ class ControladorCanchaTest {
         List<Cancha> canchas = Arrays.asList(new Cancha(), new Cancha());
         when(servicioCanchaMock.obtenerCanchasDisponibles(null, null, 0.0)).thenReturn(canchas);
         ModelMap model = new ModelMap();
-
+        
         
         String vista = controladorCancha.listarCanchas(model, request);
-
+            
         
         assertThat(vista, is("canchas"));
         assertThat(model, hasEntry("canchas", canchas));

@@ -29,26 +29,24 @@
 
             <form th:action="@{/resenia/guardar}" method="post">
                 <input type="hidden" name="canchaId" th:value="${cancha.id}" />
-                <input type="hidden" name="usuarioId" th:value="${usuarioId}" />
-
                 <!-- Calificación con estrellas -->
                 <div class="mb-3 text-center">
                     <label class="form-label fw-bold">Calificación:</label>
                     <div class="star-rating">
                         <input type="radio" id="star5" name="calificacion" value="5" required />
-                        <label for="star5" title="5 estrellas">★</label>
+                        <label for="star5" title="5 estrellas">&#9733;</label>
 
                         <input type="radio" id="star4" name="calificacion" value="4" />
-                        <label for="star4" title="4 estrellas">★</label>
+                        <label for="star4" title="4 estrellas">&#9733;</label>
 
                         <input type="radio" id="star3" name="calificacion" value="3" />
-                        <label for="star3" title="3 estrellas">★</label>
+                        <label for="star3" title="3 estrellas">&#9733;</label>
 
                         <input type="radio" id="star2" name="calificacion" value="2" />
-                        <label for="star2" title="2 estrellas">★</label>
+                        <label for="star2" title="2 estrellas">&#9733;</label>
 
                         <input type="radio" id="star1" name="calificacion" value="1" />
-                        <label for="star1" title="1 estrella">★</label>
+                        <label for="star1" title="1 estrella">&#9733;</label>
                     </div>
                 </div>
 
