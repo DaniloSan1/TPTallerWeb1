@@ -222,8 +222,8 @@
                 </div>
                 <!-- Invitación -->
                 <div
-                    class="container card"
                     style="margin-top: 32px; display: none"
+                    th:if="${partido != null and (partido.yaParticipa or partido.esCreador)}"
                 >
                     <div class="card-header">
                         <h2>&iexcl;Invita a tus amigos!</h2>
