@@ -1,9 +1,13 @@
 package com.tallerwebi.dominio;
 
 import javax.persistence.*;
+
+import com.tallerwebi.presentacion.DetalleParticipante;
+
 import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Entity
 public class Partido {
@@ -25,7 +29,10 @@ public class Partido {
     private Usuario creador;
 
     @OneToMany(mappedBy = "partido", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
-    private Set<PartidoParticipante> participantes = new HashSet<>();
+    private Set<PartidoEquipo> equipos = new HashSet<>();
+
+    @Column(name = "fecha_finalizacion")
+    private LocalDateTime fechaFinalizacion;
 
     // Constructor por defecto para JPA
     public Partido() {
@@ -43,14 +50,10 @@ public class Partido {
     }
 
     // helpers para manejar participantes
-    public Set<PartidoParticipante> getParticipantes() {
-        return participantes;
-    }
-
-    public Set<Long> getParticipantesIds() {
-        return participantes.stream()
-                .map(pp -> pp.getUsuario().getId())
-                .collect(java.util.stream.Collectors.toSet());
+    public Set<EquipoJugador> getParticipantes() {
+        return this.equipos.stream()
+                .flatMap(pe -> pe.getJugadores().stream())
+                .collect(Collectors.toSet());
     }
 
     public Reserva getReserva() {
@@ -78,11 +81,11 @@ public class Partido {
     }
 
     public int getCupoMaximo() {
-        return cupoMaximo;
+        return reserva.getCancha().getCapacidad();
     }
 
     public int getCupoDisponible() {
-        return Math.max(0, cupoMaximo - participantes.size());
+        return Math.max(0, getCupoMaximo() - getParticipantes().size());
     }
 
     public boolean tieneCupo() {
@@ -130,12 +133,18 @@ public class Partido {
     }
 
     public boolean validarCupo() {
-        return participantes.size() < cupoMaximo;
+        return getParticipantes().size() < this.getCupoMaximo();
     }
 
     public boolean validarParticipanteExistente(Long usuarioId) {
-        return participantes.stream()
-                .anyMatch(pp -> pp.getUsuario().getId().equals(usuarioId));
+        return equipos.stream()
+                .flatMap(pe -> pe.getJugadores().stream())
+                .anyMatch(jugador -> jugador.getUsuario().getId().equals(usuarioId));
+    }
+
+    public boolean validarEquipoExistente(Long equipoId) {
+        return equipos.stream()
+                .anyMatch(pe -> pe.getEquipo().getId().equals(equipoId));
     }
 
     public void setReserva(Reserva reserva) {
@@ -154,7 +163,41 @@ public class Partido {
         return this.reserva != null && this.reserva.getActiva();
     }
 
-    public int cuposDisponibles() {
-        return this.cupoMaximo - this.participantes.size();
+    public Set<PartidoEquipo> getEquipos() {
+        return equipos;
+    }
+
+    public void setEquipos(Set<PartidoEquipo> equipos) {
+        this.equipos = equipos;
+    }
+
+    public void agregarParticipante(EquipoJugador equipoJugador) {
+        this.equipos.stream()
+                .filter(pe -> pe.getEquipo().getId().equals(equipoJugador.getEquipo().getId()))
+                .findFirst()
+                .ifPresent(pe -> pe.getJugadores().add(equipoJugador));
+    }
+
+    public EquipoJugador buscarJugador(Long id2) {
+        for (PartidoEquipo pe : this.equipos) {
+            for (EquipoJugador ej : pe.getJugadores()) {
+                if (ej.getUsuario().getId().equals(id2)) {
+                    return ej;
+                }
+            }
+        }
+        return null;
+    }
+
+    public LocalDateTime getFechaFinalizacion() {
+        return fechaFinalizacion;
+    }
+
+    public void setFechaFinalizacion(LocalDateTime fechaFinalizacion) {
+        this.fechaFinalizacion = fechaFinalizacion;
+    }
+
+    public boolean getFinalizado() {
+        return fechaFinalizacion != null;
     }
 }
