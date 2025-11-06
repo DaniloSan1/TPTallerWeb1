@@ -120,8 +120,6 @@ public class ControladorPartidoTest {
         } catch (EquipoNoEncontrado e) {
             // Should not happen in mock
         }
-        
-        controladorPartido = new ControladorPartido(servicioPartidoMock, servicioLoginMock, null, null, servicioPartidoMock, null, servicioEquipoMock, servicioEquipoMock, null);
         controladorPartido = new ControladorPartido(servicioPartidoMock, servicioLoginMock, null, null,
                 servicioPartidoMock, null, servicioEquipoMock, servicioGolesMock, servicioEquipoJugadorMock);
     }
