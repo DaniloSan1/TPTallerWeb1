@@ -16,7 +16,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-
 import com.tallerwebi.dominio.Equipo;
 import com.tallerwebi.dominio.EquipoJugador;
 import com.tallerwebi.dominio.Gol;
@@ -60,11 +59,11 @@ public class ControladorPartido {
     private ServicioEquipoJugador servicioEquipoJugador;
     private ServicioSolicitudUnirse servicioSolicitudUnirse;
 
-
     @Autowired
     public ControladorPartido(ServicioPartido servicio, ServicioLogin servicioLogin, ServicioHorario servicioHorario,
             ServicioReserva servicioReserva, ServicioUsuario servicioUsuario,
-            ServicioEquipo servicioEquipo, ServicioFotoCancha servicioFotoCancha, ServicioGoles servicioGoles, ServicioEquipoJugador servicioEquipoJugador,
+            ServicioEquipo servicioEquipo, ServicioFotoCancha servicioFotoCancha, ServicioGoles servicioGoles,
+            ServicioEquipoJugador servicioEquipoJugador,
             ServicioSolicitudUnirse servicioSolicitudUnirse) {
         this.servicio = servicio;
         this.servicioLogin = servicioLogin;
@@ -76,13 +75,6 @@ public class ControladorPartido {
         this.servicioGoles = servicioGoles;
         this.servicioEquipoJugador = servicioEquipoJugador;
         this.servicioSolicitudUnirse = servicioSolicitudUnirse;
-    }
-
-    public ControladorPartido(ServicioPartido servicioPartidoMock, ServicioLogin servicioLoginMock,
-            Object servicioHorario2, Object servicioReserva2, ServicioPartido servicioPartidoMock2,
-            Object servicioEquipo2, ServicioEquipo servicioEquipoMock, ServicioGoles servicioGolesMock,
-            ServicioEquipoJugador servicioEquipoJugadorMock) {
-        //TODO Auto-generated constructor stub
     }
 
     @GetMapping("/{id}")
@@ -198,11 +190,13 @@ public class ControladorPartido {
 
         servicio.abandonarPartido(id, usuario);
         return "redirect:/home";
-    }   
+    }
+
     @GetMapping("/mios")
     public ModelAndView misPartidos(HttpServletRequest request, ModelMap model) {
         String email = (String) request.getSession().getAttribute("EMAIL");
-        if (email == null) return new ModelAndView("redirect:/login");
+        if (email == null)
+            return new ModelAndView("redirect:/login");
 
         Usuario usuario = servicioLogin.buscarPorEmail(email);
         List<Partido> partidos = servicio.listarPorCreador(usuario);
@@ -218,6 +212,7 @@ public class ControladorPartido {
         model.put("currentPage", "mis-partidos");
         return new ModelAndView("mis-partidos", model);
     }
+
     @GetMapping("/{id}/finalizar-partido")
     public ModelAndView finalizarPartido(@PathVariable long id, HttpServletRequest request) {
         ModelMap modelo = new ModelMap();
