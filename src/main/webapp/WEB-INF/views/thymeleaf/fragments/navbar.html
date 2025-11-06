@@ -1,92 +1,31 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-    <head></head>
-    <body>
-        <nav
-            th:fragment="navbar"
-            class="navbar navbar-expand-md navbar-dark fixed-top"
-        >
-          <span class="navbar-toggler-icon"></span>
-        </button>
-        <div class="collapse navbar-collapse" id="navbar-menu">
-          <div class="navbar-nav ms-auto d-flex gap-3">
-            <a
-              class="nav-link text-white"
-              th:href="@{/home}"
-              th:classappend="${currentPage == 'home'} ? 'active' : ''"
-              >Partidos disponibles</a
-            >
-            <a
-              class="nav-link text-white"
-              th:href="@{/canchas-disponibles}"
-              th:classappend="${currentPage == 'canchas-disponibles'} ? 'active' : ''"
-              >Canchas disponibles</a
-            >
-           <a class="nav-link text-white"
-   th:href="@{/partidos/mios}"
-   th:classappend="${currentPage == 'mis-partidos'} ? 'active' : ''">
-  Mis partidos
-</a>
-
-            <a
-              class="nav-link text-white"
-              th:href="@{/perfil}"
-              th:classappend="${currentPage == 'perfil'} ? 'active' : ''"
-              >Mi perfil</a
-            >
-          </div>
-        </div>
-      </div>
-    </nav>
-  </body>
-            <div class="container-fluid">
-                <a id="navbar-logo" class="navbar-brand" th:href="@{/home}">
-                    <img
-                        th:src="@{/assets/logo.png}"
-                        alt="Logo"
-                        style="height: 80px"
-                    />
-                </a>
-                <button
-                    class="navbar-toggler"
-                    type="button"
-                    data-bs-toggle="collapse"
-                    data-bs-target="#navbar-menu"
-                    aria-controls="navbar-menu"
-                    aria-expanded="false"
-                    aria-label="Toggle navigation"
-                >
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-                <div class="collapse navbar-collapse" id="navbar-menu">
-                    <div class="navbar-nav ms-auto d-flex gap-3">
-                        <a
-                            class="nav-link text-white"
-                            th:href="@{/home}"
-                            th:classappend="${currentPage == 'home'} ? 'active' : ''"
-                            >Partidos disponibles</a
-                        >
-                        <a
-                            class="nav-link text-white"
-                            th:href="@{/canchas-disponibles}"
-                            th:classappend="${currentPage == 'canchas-disponibles'} ? 'active' : ''"
-                            >Canchas disponibles</a
-                        >
-                        <a
-                            class="nav-link text-white"
-                            th:href="@{/equipos/mis-equipos}"
-                            th:classappend="${currentPage == 'mis-equipos'} ? 'active' : ''"
-                            >Mis Equipos</a
-                        >
-                        <a
-                            class="nav-link text-white"
-                            th:href="@{/perfil}"
-                            th:classappend="${currentPage == 'perfil'} ? 'active' : ''"
-                            >Mi perfil</a
-                        >
-                    </div>
+<head></head>
+<body>
+    <nav th:fragment="navbar" class="navbar navbar-expand-md navbar-dark fixed-top">
+        <div class="container-fluid">
+            <a id="navbar-logo" class="navbar-brand" th:href="@{/home}">
+                <img th:src="@{/assets/logo.png}" alt="Logo" style="height: 80px" />
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar-menu"
+                aria-controls="navbar-menu" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbar-menu">
+                <div class="navbar-nav ms-auto d-flex gap-3">
+                    <a class="nav-link text-white" th:href="@{/home}"
+                        th:classappend="${currentPage == 'home'} ? 'active' : ''">Partidos disponibles</a>
+                    <a class="nav-link text-white" th:href="@{/canchas-disponibles}"
+                        th:classappend="${currentPage == 'canchas-disponibles'} ? 'active' : ''">Canchas disponibles</a>
+                    <a class="nav-link text-white" th:href="@{/partidos/mios}"
+                        th:classappend="${currentPage == 'mis-partidos'} ? 'active' : ''">Mis partidos</a>
+                    <a class="nav-link text-white" th:href="@{/equipos/mis-equipos}"
+                        th:classappend="${currentPage == 'mis-equipos'} ? 'active' : ''">Mis Equipos</a>
+                    <a class="nav-link text-white" th:href="@{/perfil}"
+                        th:classappend="${currentPage == 'perfil'} ? 'active' : ''">Mi perfil</a>
                 </div>
             </div>
-        </nav>
-    </body>
+        </div>
+    </nav>
+</body>
 </html>

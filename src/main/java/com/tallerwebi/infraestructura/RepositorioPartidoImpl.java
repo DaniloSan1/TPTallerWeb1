@@ -69,13 +69,13 @@ public class RepositorioPartidoImpl implements RepositorioPartido {
     }
 
    @Override
-   public List<Partido> listarPorCreador (Long idCreador) {
+   public List<Partido> listarPorCreador(Long idCreador) {
        final Session session = sessionFactory.getCurrentSession();
-       String hql =  "SELECT p " +
-       "FROM Partido p " +
-       "WHERE p.creador.id = :idCreador";
+       // Consulta HQL compatible con Java 11 y la estructura de la entidad Partido
+       String hql = "FROM Partido p WHERE p.creador.id = :idCreador";
+
        var query = session.createQuery(hql, Partido.class);
-       query.setParameter("idCreador", idCreador);       
+       query.setParameter("idCreador", idCreador);
        return query.list();
    }
 

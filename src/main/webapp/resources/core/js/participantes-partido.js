@@ -105,3 +105,14 @@ if (btnPromoverCapitan) {
         form.submit();
     });
 }
+const modalCalificar = document.getElementById("modalCalificar");
+if (modalCalificar) {
+  modalCalificar.addEventListener("show.bs.modal", (event) => {
+    const button = event.relatedTarget;
+    const calificadoId = button.getAttribute("data-bs-id");
+    const partidoId = document.body.getAttribute("data-partido-id");
+    document.getElementById("jugador-calificar-id").value = calificadoId;
+    const form = document.getElementById("form-calificar-jugador");
+    form.action = `/spring/calificaciones/partido/${partidoId}/jugador/${calificadoId}`;
+  });
+}
