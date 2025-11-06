@@ -19,7 +19,7 @@
         <link rel="stylesheet" th:href="@{/css/participantes-partido.css}" />
         <link
             rel="stylesheet"
-            href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&icon_names=calendar_month,groups"
+            href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined"
         />
     </head>
 
@@ -42,7 +42,10 @@
                         class="mainbox width-100"
                     >
                         <div class="card-header">
-                            <h1 class="mb-2" th:text="${partido.titulo}"></h1>
+                            <h1
+                                class="mb-2"
+                                th:text="${partido.titulo} + ${partido.finalizado ? ' (Finalizado)' : ''}"
+                            ></h1>
                             <div id="partido-header-data">
                                 <h4
                                     id="fecha-partido"
@@ -66,8 +69,8 @@
                     </div>
                     <!-- Mensajes -->
                     <div
-                        th:if="${error != null && partido == null}"
-                        class="error w-100 mt-2"
+                        th:if="${error != null}"
+                        class="alert alert-danger w-100 mt-2"
                         th:text="${error}"
                         id="alertError"
                     ></div>
@@ -134,24 +137,38 @@
                                 th:if="${partido != null}"
                             >
                                 <form
-                                    th:action="@{/partidos/{id}(id=${partido.id})}"
+                                    th:action="@{/partidos/{id}/join(id=${partido.id})}"
+                                    method="post"
+                                    id="joinForm"
+                                    class="w-100"
+                                >
+                                    <input
+                                        type="hidden"
+                                        name="equipo"
+                                        id="equipoInput"
+                                    />
+                                    <button
+                                        id="btn-unirse"
+                                        class="btn btn-primary w-100"
+                                        type="button"
+                                        th:if="${!partido.yaParticipa}"
+                                        th:disabled="${!partido.hayCupo || partido.yaParticipa || partido.finalizado}"
+                                        data-bs-toggle="modal"
+                                        data-bs-target="#joinModal"
+                                    >
+                                        Unirse
+                                    </button>
+                                </form>
+                                <form
+                                    th:action="@{/partidos/{id}/leave(id=${partido.id})}"
                                     method="post"
                                     class="w-100"
                                 >
                                     <button
-                                        id="btn-unirse"
-                                        class="btn btn-primary w-100"
-                                        name="join"
-                                        th:if="${!partido.yaParticipa}"
-                                        th:disabled="${!partido.hayCupo || partido.yaParticipa}"
-                                    >
-                                        Unirse
-                                    </button>
-                                    <button
                                         type="submit"
-                                        name="leave"
                                         class="btn btn-secondary w-100"
                                         th:if="${partido.yaParticipa}"
+                                        th:disabled="${partido.finalizado}"
                                     >
                                         Abandonar partido
                                     </button>
@@ -161,9 +178,20 @@
                                     class="btn btn-primary w-100"
                                     name="editar"
                                     th:if="${partido.esCreador}"
+                                    th:disabled="${partido.finalizado}"
                                     th:onclick="'location.href=\'' + @{/partidos/{id}/editar-partido(id=${partido.id})} + '\''"
                                 >
                                     Editar
+                                </button>
+                                <button
+                                    id="btn-finalizar"
+                                    class="btn btn-success w-100"
+                                    name="finalizar"
+                                    th:if="${partido.esCreador}"
+                                    th:disabled="${partido.finalizado}"
+                                    th:onclick="'location.href=\'' + @{/partidos/{id}/finalizar-partido(id=${partido.id})} + '\''"
+                                >
+                                    Finalizar Partido
                                 </button>
                                 <form
                                     th:action="@{/reserva/{id}(id=${partido.reservaId})}"
@@ -183,10 +211,31 @@
                                     <button
                                         type="submit"
                                         class="btn btn-danger w-100"
+                                        th:disabled="${partido.finalizado}"
                                     >
                                         Cancelar reserva
                                     </button>
                                 </form>
+                                <div th:if="${partido.yaParticipa or partido.esCreador}" class="w-100">
+                                    <form th:action="@{/solicitudes-partido/crear}" method="post" class="w-100">
+                                        <input type="hidden" name="partidoId" th:value="${partido.id}" />
+                                        <div class="input-group mb-2">
+                                            <input
+                                                class="form-control"
+                                                type="email"
+                                                name="emailDestino"
+                                                placeholder="Email del amigo"
+                                                required
+                                            />
+                                            <button class="btn btn-primary" type="submit">Generar invitación</button>
+                                        </div>
+                                        <small class="text-muted d-block mb-2">Se enviará un link al email indicado. Si no está configurado el envío por SMTP te mostraremos el link aquí.</small>
+                                    </form>
+                                </div>
+
+<div th:if="${mensajeExito}" class="alert alert-success mt-2" th:text="${mensajeExito}"></div>
+<div th:if="${mensajeError}" class="alert alert-danger  mt-2" th:text="${mensajeError}"></div>
+
                             </div>
                         </div>
                     </div>
@@ -211,26 +260,93 @@
                             class="alert alert-success w-100"
                             th:text="${listaParticipantesSuccess}"
                         ></div>
-                        <!-- Equipo 1 -->
                         <div
-                            th:replace="~{fragments/participantes-partido :: participantes-partido (participantes=${partido.participantes}, equipoAMostrar='EQUIPO_1', showDropdown=${partido.esCreador})}"
-                        ></div>
-                        <!-- Equipo 2 -->
-                        <div
-                            th:replace="~{fragments/participantes-partido :: participantes-partido (participantes=${partido.participantes}, equipoAMostrar='EQUIPO_2', showDropdown=${partido.esCreador})}"
-                        ></div>
-                        <!-- Sin Equipo -->
-                        <div
-                            th:replace="~{fragments/participantes-partido :: participantes-partido (participantes=${partido.participantes}, equipoAMostrar='SIN_EQUIPO', showDropdown=${partido.esCreador})}"
-                        ></div>
+                            class="w-100"
+                            th:each="equipoPartido : ${partido.equipos}"
+                        >
+                            <div
+                                th:replace="~{fragments/participantes-partido :: participantes-partido (participantes=${equipoPartido.participantes}, equipo=${equipoPartido}, equipos=${partido.equipos}, showDropdown=${partido.esCreador and not partido.finalizado})}"
+                            ></div>
+                        </div>
                     </div>
                 </div>
             </div>
         </main>
+
+        <!-- Modal for team selection -->
+        <div
+            th:if="${partido != null}"
+            class="modal fade"
+            id="joinModal"
+            tabindex="-1"
+            aria-labelledby="joinModalLabel"
+            aria-hidden="true"
+        >
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="joinModalLabel">
+                            Elegir Equipo
+                        </h5>
+                        <button
+                            type="button"
+                            class="btn-close"
+                            data-bs-dismiss="modal"
+                            aria-label="Close"
+                        ></button>
+                    </div>
+                    <div class="modal-body">
+                        <p>Selecciona el equipo al que quieres unirte:</p>
+                        <select class="form-select" id="equipoSelect">
+                            <option value="">Selecciona un equipo</option>
+                            <option
+                                th:each="equipo : ${partido.equipos}"
+                                th:value="${equipo.id}"
+                                th:text="${equipo.nombre}"
+                            ></option>
+                        </select>
+                    </div>
+                    <div class="modal-footer">
+                        <button
+                            type="button"
+                            class="btn btn-secondary"
+                            data-bs-dismiss="modal"
+                        >
+                            Cancelar
+                        </button>
+                        <button
+                            type="button"
+                            class="btn btn-primary"
+                            id="confirmJoin"
+                        >
+                            Unirse
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <script
             type="text/javascript"
             th:src="@{/webjars/bootstrap/5.2.0/js/bootstrap.bundle.min.js}"
         ></script>
+        <script>
+            const confirmJoinBtn = document.getElementById("confirmJoin");
+            if (confirmJoinBtn) {
+                confirmJoinBtn.addEventListener("click", function () {
+                    const selected =
+                        document.getElementById("equipoSelect").value;
+                    if (selected) {
+                        document.getElementById("equipoInput").value = selected;
+                        const modal = bootstrap.Modal.getInstance(
+                            document.getElementById("joinModal")
+                        );
+                        modal.hide();
+                        document.getElementById("joinForm").submit();
+                    }
+                });
+            }
+        </script>
         <script type="module" th:src="@{/js/common.js}"></script>
         <script type="module" th:src="@{/js/participantes-partido.js}"></script>
     </body>

@@ -10,5 +10,7 @@ public interface RepositorioPartido {
 
     List<Partido> listar(String busqueda, Zona filtroZona, Nivel filtroNivel);
 
+    List<Partido> listarPorCreador(Long idCreador);
+
     void actualizar(Partido partido);
 }

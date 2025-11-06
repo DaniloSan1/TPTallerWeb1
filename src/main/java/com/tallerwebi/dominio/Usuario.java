@@ -3,6 +3,8 @@ package com.tallerwebi.dominio;
 import java.util.List;
 
 import javax.persistence.*;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 public class Usuario {
@@ -28,6 +30,9 @@ public class Usuario {
 
     @Column(nullable = true)
     private String fotoPerfil;
+
+    @OneToMany(mappedBy = "usuario", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
+    private Set<EquipoJugador> equipos = new HashSet<>();
     
     @OneToMany(mappedBy = "usuario", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private List<ReseniaCancha> reseñasCanchas;
@@ -150,6 +155,14 @@ public class Usuario {
 
     public void setTotalCalificaciones(Integer totalCalificaciones) {
         this.totalCalificaciones = totalCalificaciones;
+    }
+
+    public Set<EquipoJugador> getEquipos() {
+        return equipos;
+    }
+
+    public void setEquipos(Set<EquipoJugador> equipos) {
+        this.equipos = equipos;
     }
     
     public List<ReseniaCancha> getReseñasCanchas() {

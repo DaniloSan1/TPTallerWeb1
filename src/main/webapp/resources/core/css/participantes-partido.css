@@ -17,6 +17,18 @@
     border: 2px solid var(--primary-color);
     background: url("../assets/avatar.png")
     center/cover no-repeat;
+    position: relative;
+}
+
+.captain-shield {
+    position: absolute;
+    top: -27px;
+    left: 50%;
+    transform: translateX(-50%);
+    border-radius: 50%;
+    padding: 2px;
+    font-size: 2rem;
+    color: var(--secondary-color);
 }
 
 #contenedor-participantes {
