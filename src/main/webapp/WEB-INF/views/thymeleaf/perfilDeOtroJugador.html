@@ -54,11 +54,37 @@
                         <span th:text="${usuarioAVer.posicionFavorita}"></span>
                     </p>
                 </div>
-                <div class="card-footer text-end">
-                    <a class="btn btn-success btn-lg">
-                        Añadir amigo
-                    </a>
+
+
+                <div th:if="${estadoAmistad?.name() == 'ACEPTADA'}">
+                    <button class="btn btn-secondary btn-lg" disabled>Ya son amigos </button>
                 </div>
+
+                <!-- cuando se envia la solicitiud -->
+                <div th:if="${amistad != null and estadoAmistad?.name() == 'PENDIENTE'}">
+                    <!-- Si yo mando la solicitud -->
+                    <div th:if="${amistad.usuario1 != null and amistad.usuario1.id == usuarioActual.id}">
+                        <button class="btn btn-outline-warning btn-lg" disabled>Solicitud enviada </button>
+                    </div>
+
+                    <!-- parte receptor -->
+                    <div th:if="${amistad.usuario2 != null and amistad.usuario2.id == usuarioActual.id}">
+                        <form style="display:inline;">
+                            <button type="submit" class="btn btn-success btn-lg">Aceptar solicitud</button>
+                        </form>
+                        <form style="display:inline;">
+                            <button type="submit" class="btn btn-danger btn-lg">Rechazar solicitud</button>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- sin amistad -->
+                <div th:if="${amistad == null}">
+                    <form th:action="@{/perfil/amistad/enviar/{idReceptor}(idReceptor=${usuarioAVer.id})}" method="post">
+                        <button type="submit" class="btn btn-success btn-lg">Añadir amigo</button>
+                    </form>
+                </div>
+
             </div>
         </div>
     </div>

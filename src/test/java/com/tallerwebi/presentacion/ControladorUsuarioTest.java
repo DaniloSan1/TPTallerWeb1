@@ -1,5 +1,6 @@
 package com.tallerwebi.presentacion;
 
+import com.tallerwebi.dominio.ServicioAmistad;
 import com.tallerwebi.dominio.ServicioLogin;
 import com.tallerwebi.dominio.ServicioUsuario;
 import com.tallerwebi.dominio.Usuario;
@@ -22,6 +23,7 @@ import static org.mockito.Mockito.*;
 public class ControladorUsuarioTest {
     private ServicioLogin servicioLoginMock;
     private ServicioUsuario servicioUsuarioMock;
+    private ServicioAmistad servicioAmistadMock;
     private ControladorUsuario controladorUsuario;
     private Usuario usuarioMock;
     private HttpServletRequest httpServletRequestMock;
@@ -32,9 +34,10 @@ public class ControladorUsuarioTest {
     public void init() {
         servicioLoginMock = mock(ServicioLogin.class);
         servicioUsuarioMock = mock(ServicioUsuario.class);
+        servicioAmistadMock = mock(ServicioAmistad.class);
         sessionMock = mock(HttpSession.class);
         httpServletRequestMock = mock(HttpServletRequest.class);
-        controladorUsuario = new ControladorUsuario(servicioLoginMock,servicioUsuarioMock);
+        controladorUsuario = new ControladorUsuario(servicioLoginMock,servicioUsuarioMock,servicioAmistadMock);
 
         requestMock = mock(HttpServletRequest.class);
         usuarioMock = mock(Usuario.class);
