@@ -210,40 +210,53 @@
                 </div>
             </div>
         </div>
-      </div>
-    </div>
-        <!-- Modal Calificar Jugador -->
-<div class="modal fade" id="modalCalificar" tabindex="-1">
-  <div class="modal-dialog modal-dialog-centered">
-    <div class="modal-content">
-      <form id="form-calificar-jugador" method="post">
-        <input type="hidden" id="jugador-calificar-id" name="jugadorId">
+        <div class="modal fade" id="modalCalificar" tabindex="-1">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <form id="form-calificar-jugador" method="post">
+                        <input
+                            type="hidden"
+                            id="jugador-calificar-id"
+                            name="jugadorId"
+                        />
 
-        <div class="modal-header">
-          <h5 class="modal-title">Calificar jugador</h5>
+                        <div class="modal-header">
+                            <h5 class="modal-title">Calificar jugador</h5>
+                        </div>
+                        <div class="modal-body">
+                            <label class="form-label">Puntuación</label>
+                            <select name="puntuacion" class="form-select mb-2">
+                                <option value="1">⭐</option>
+                                <option value="2">⭐⭐</option>
+                                <option value="3">⭐⭐⭐</option>
+                                <option value="4">⭐⭐⭐⭐</option>
+                                <option value="5">⭐⭐⭐⭐⭐</option>
+                            </select>
+                            <label class="form-label"
+                                >Comentario (opcional)</label
+                            >
+                            <input
+                                type="text"
+                                name="comentario"
+                                class="form-control"
+                            />
+                        </div>
+                        <div class="modal-footer">
+                            <button
+                                type="button"
+                                class="btn btn-secondary"
+                                data-bs-dismiss="modal"
+                            >
+                                Cancelar
+                            </button>
+                            <button type="submit" class="btn btn-success">
+                                Enviar calificación
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
         </div>
-        <div class="modal-body">
-          <label class="form-label">Puntuación</label>
-          <select name="puntuacion" class="form-select mb-2">
-            <option value="1">⭐</option>
-            <option value="2">⭐⭐</option>
-            <option value="3">⭐⭐⭐</option>
-            <option value="4">⭐⭐⭐⭐</option>
-            <option value="5">⭐⭐⭐⭐⭐</option>
-          </select>
-          <label class="form-label">Comentario (opcional)</label>
-          <input type="text" name="comentario" class="form-control">
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-          <button type="submit" class="btn btn-success">Enviar calificación</button>
-        </div>
-      </form>
-    </div>
-  </div>
-</div>
-
-</body>
 
         <!-- Modal Promover Capitán -->
         <div

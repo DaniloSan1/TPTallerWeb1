@@ -69,8 +69,8 @@
                     </div>
                     <!-- Mensajes -->
                     <div
-                        th:if="${error != null}"
-                        class="alert alert-danger w-100 mt-2"
+                        th:if="${error != null && partido == null}"
+                        class="error w-100 mt-2"
                         th:text="${error}"
                         id="alertError"
                     ></div>
@@ -216,28 +216,48 @@
                                         Cancelar reserva
                                     </button>
                                 </form>
-                                <div th:if="${partido.yaParticipa or partido.esCreador}" class="w-100">
-                                    <form th:action="@{/solicitudes-partido/crear}" method="post" class="w-100">
-                                        <input type="hidden" name="partidoId" th:value="${partido.id}" />
-                                        <div class="input-group mb-2">
-                                            <input
-                                                class="form-control"
-                                                type="email"
-                                                name="emailDestino"
-                                                placeholder="Email del amigo"
-                                                required
-                                            />
-                                            <button class="btn btn-primary" type="submit">Generar invitación</button>
-                                        </div>
-                                        <small class="text-muted d-block mb-2">Se enviará un link al email indicado. Si no está configurado el envío por SMTP te mostraremos el link aquí.</small>
-                                    </form>
-                                </div>
-
-<div th:if="${mensajeExito}" class="alert alert-success mt-2" th:text="${mensajeExito}"></div>
-<div th:if="${mensajeError}" class="alert alert-danger  mt-2" th:text="${mensajeError}"></div>
-
                             </div>
                         </div>
+                    </div>
+                </div>
+                <!-- Invitación -->
+                <div
+                    class="container card"
+                    style="margin-top: 32px"
+                    th:if="${partido != null and (partido.yaParticipa or partido.esCreador)}"
+                >
+                    <div class="card-header">
+                        <h2>&iexcl;Invita a tus amigos!</h2>
+                    </div>
+                    <div class="card-body">
+                        <form
+                            th:action="@{/solicitudes-partido/crear}"
+                            method="post"
+                            class="w-100"
+                        >
+                            <input
+                                type="hidden"
+                                name="partidoId"
+                                th:value="${partido.id}"
+                            />
+                            <div class="input-group mb-2">
+                                <input
+                                    class="form-control"
+                                    type="email"
+                                    name="emailDestino"
+                                    placeholder="Email del amigo"
+                                    required
+                                />
+                                <button class="btn btn-primary" type="submit">
+                                    Generar invitación
+                                </button>
+                            </div>
+                            <small class="text-muted d-block mb-2"
+                                >Se enviará un link al email indicado. Si no
+                                está configurado el envío por SMTP te
+                                mostraremos el link aquí.</small
+                            >
+                        </form>
                     </div>
                 </div>
                 <!-- Jugadores -->
