@@ -26,7 +26,7 @@ public class ServicioEquipoJugadorImplTest {
     @Test
     public void queSePuedaCrearUnEquipoJugador() {
         Usuario creador = new Usuario();
-        Equipo equipo = new Equipo("Equipo Test", creador, java.time.LocalDateTime.now());
+        Equipo equipo = new Equipo("Equipo Test", "Descripción", creador, java.time.LocalDateTime.now());
         Usuario jugador = new Usuario();
 
         EquipoJugador equipoJugadorCreado = servicioEquipoJugadorImpl.crearEquipoJugador(equipo, jugador);
@@ -39,7 +39,7 @@ public class ServicioEquipoJugadorImplTest {
     @Test
     public void queSePuedaBuscarEquipoJugadorPorEquipoYUsuario() {
         Usuario creador = new Usuario();
-        Equipo equipo = new Equipo("Equipo Test", creador, java.time.LocalDateTime.now());
+        Equipo equipo = new Equipo("Equipo Test", "Descripción", creador, java.time.LocalDateTime.now());
         Usuario jugador = new Usuario();
         EquipoJugador equipoJugador = new EquipoJugador(equipo, jugador);
 
@@ -55,7 +55,7 @@ public class ServicioEquipoJugadorImplTest {
     public void queSePuedaEliminarEquipoJugadorPorId() {
         Long id = 1L;
         Usuario creador = new Usuario();
-        Equipo equipo = new Equipo("Equipo Test", creador, java.time.LocalDateTime.now());
+        Equipo equipo = new Equipo("Equipo Test", "Descripción", creador, java.time.LocalDateTime.now());
         Usuario jugador = new Usuario();
         EquipoJugador equipoJugador = new EquipoJugador(equipo, jugador);
 
@@ -72,7 +72,7 @@ public class ServicioEquipoJugadorImplTest {
         // Arrange
         Long idNuevoCapitan = 1L;
         Usuario creador = new Usuario();
-        Equipo equipo = new Equipo("Equipo Test", creador, java.time.LocalDateTime.now());
+        Equipo equipo = new Equipo("Equipo Test", "Descripción", creador, java.time.LocalDateTime.now());
         Usuario jugador1 = new Usuario();
         Usuario jugador2 = new Usuario();
         EquipoJugador nuevoCapitan = new EquipoJugador(equipo, jugador1);

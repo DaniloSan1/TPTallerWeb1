@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+    <head> </head>
+    <body th:fragment="jugador-simple (jugador)">
+        <div class="card">
+            <div class="d-flex">
+                <div class="d-flex">
+                    <span class="avatar-jugador"></span>
+                </div>
+                <div class="detalle-jugador">
+                    <h5
+                        class="card-title d-flex align-items-center justify-content-between"
+                    >
+                        <span th:text="${jugador.nombreCompleto}"></span>
+                        <span
+                            th:if="${jugador.esCapitan}"
+                            class="material-symbols-outlined"
+                            >label_important</span
+                        >
+                    </h5>
+                    <ul class="list-group list-group-flush">
+                        <li
+                            class="list-group-item"
+                            th:text="${jugador.posicionFavorita}"
+                        ></li>
+                        <li
+                            class="list-group-item"
+                            th:text="${jugador.fechaUnion}"
+                        ></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </body>
+</html>

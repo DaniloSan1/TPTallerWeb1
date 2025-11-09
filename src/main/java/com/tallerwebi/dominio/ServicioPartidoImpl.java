@@ -59,8 +59,8 @@ public class ServicioPartidoImpl implements ServicioPartido {
         repoPartido.guardar(partido);
 
         // Crear dos equipos por defecto
-        Equipo equipo1 = servicioEquipo.crearEquipo("Equipo 1", usuario);
-        Equipo equipo2 = servicioEquipo.crearEquipo("Equipo 2", usuario);
+        Equipo equipo1 = servicioEquipo.crearEquipo("Equipo 1", "Equipo generado para " + partido.getTitulo(), usuario);
+        Equipo equipo2 = servicioEquipo.crearEquipo("Equipo 2", "Equipo generado para " + partido.getTitulo(), usuario);
 
         // Crear las relaciones PartidoEquipo
         PartidoEquipo partidoEquipo1 = new PartidoEquipo(partido, equipo1);
@@ -114,6 +114,7 @@ public class ServicioPartidoImpl implements ServicioPartido {
         System.out.println("Partidos encontrados: " + (partidos != null ? partidos.size() : "null"));
         return partidos != null ? partidos : java.util.Collections.emptyList();
     }
+
     @Override
     public void actualizarPartido(Long id, String titulo, String descripcion, Usuario usuario)
             throws PermisosInsufficientes {

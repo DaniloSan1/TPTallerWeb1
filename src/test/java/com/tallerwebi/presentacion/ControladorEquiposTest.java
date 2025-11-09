@@ -43,8 +43,8 @@ class ControladorEquiposTest {
         String email = "usuario@test.com";
         Usuario usuario = new Usuario("Nombre", "password", "usuario@test.com", "username");
         List<Equipo> equipos = Arrays.asList(
-                new Equipo("Equipo 1", usuario, java.time.LocalDateTime.now()),
-                new Equipo("Equipo 2", usuario, java.time.LocalDateTime.now()));
+                new Equipo("Equipo 1", "Descripción 1", usuario, java.time.LocalDateTime.now()),
+                new Equipo("Equipo 2", "Descripción 2", usuario, java.time.LocalDateTime.now()));
 
         when(request.getSession()).thenReturn(session);
         when(session.getAttribute("EMAIL")).thenReturn(email);
@@ -82,7 +82,7 @@ class ControladorEquiposTest {
         String busqueda = "Equipo 1";
         Usuario usuario = new Usuario("Nombre", "password", "usuario@test.com", "username");
         List<Equipo> equiposFiltrados = Arrays.asList(
-                new Equipo("Equipo 1", usuario, java.time.LocalDateTime.now()));
+                new Equipo("Equipo 1", "Descripción 1", usuario, java.time.LocalDateTime.now()));
 
         when(request.getSession()).thenReturn(session);
         when(session.getAttribute("EMAIL")).thenReturn(email);

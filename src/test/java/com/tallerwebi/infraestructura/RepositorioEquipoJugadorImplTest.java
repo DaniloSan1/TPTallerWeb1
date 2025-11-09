@@ -40,7 +40,7 @@ public class RepositorioEquipoJugadorImplTest {
         Usuario jugador = new Usuario("jugador", "password", "jugador@test.com", "jugador");
         sessionFactory.getCurrentSession().save(jugador);
 
-        Equipo equipo = new Equipo("Equipo Test", creador, LocalDateTime.now());
+        Equipo equipo = new Equipo("Equipo Test", "Descripción del equipo", creador, LocalDateTime.now());
         sessionFactory.getCurrentSession().save(equipo);
 
         EquipoJugador equipoJugadorAGuardar = new EquipoJugador(equipo, jugador);
@@ -67,7 +67,7 @@ public class RepositorioEquipoJugadorImplTest {
         Usuario jugador = new Usuario("jugador", "password", "jugador@test.com", "jugador");
         sessionFactory.getCurrentSession().save(jugador);
 
-        Equipo equipo = new Equipo("Equipo Test", creador, LocalDateTime.now());
+        Equipo equipo = new Equipo("Equipo Test", "Descripción del equipo", creador, LocalDateTime.now());
         sessionFactory.getCurrentSession().save(equipo);
 
         EquipoJugador equipoJugadorAGuardar = new EquipoJugador(equipo, jugador);
@@ -89,7 +89,7 @@ public class RepositorioEquipoJugadorImplTest {
         Usuario jugador = new Usuario("jugador", "password", "jugador@test.com", "jugador");
         sessionFactory.getCurrentSession().save(jugador);
 
-        Equipo equipo = new Equipo("Equipo Test", creador, LocalDateTime.now());
+        Equipo equipo = new Equipo("Equipo Test", "Descripción del equipo", creador, LocalDateTime.now());
         sessionFactory.getCurrentSession().save(equipo);
 
         EquipoJugador equipoJugadorAGuardar = new EquipoJugador(equipo, jugador);
