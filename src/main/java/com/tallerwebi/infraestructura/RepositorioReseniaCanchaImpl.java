@@ -64,7 +64,7 @@ public class RepositorioReseniaCanchaImpl implements RespositorioReseniaCancha {
 
     }
 
-   @Override
+    @Override
     public ReseniaCancha obtenerReseniaCanchaPorId(Long reseniaCanchaId){
         String hql = "FROM ReseniaCancha r WHERE r.id = :reseniaCanchaId";
         List<ReseniaCancha> resultados = this.sessionFactory.getCurrentSession()

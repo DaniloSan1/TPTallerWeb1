@@ -109,7 +109,7 @@ public class ServicioPartidoImpl implements ServicioPartido {
 
     @Override
     public void abandonarPartido(Long partidoId, Usuario usuario) {
-        // En tests se espera que se use porId -> obtenerPorId() que delega a repo.porId
+    
         Partido partido = obtenerPorId(partidoId);
         EquipoJugador equipoJugador = partido.buscarJugador(usuario.getId());
         servicioEquipoJugador.eliminarPorId(equipoJugador.getId());

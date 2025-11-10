@@ -164,7 +164,6 @@ public class ControladorPartido {
 
             Usuario usuario = servicioLogin.buscarPorEmail(request.getSession().getAttribute("EMAIL").toString());
             Equipo equipo = servicioEquipo.buscarPorId(equipoId);
-            // Para la inscripción usamos obtenerPorId() (los tests mockean este método)
             Partido partido = servicio.obtenerPorId(id);
             partido = servicio.anotarParticipante(partido, equipo, usuario);
 
