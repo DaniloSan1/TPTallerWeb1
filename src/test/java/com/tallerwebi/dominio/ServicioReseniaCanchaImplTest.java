@@ -13,12 +13,12 @@ import org.mockito.Mockito;
 
 public class ServicioReseniaCanchaImplTest {
 
-    private RespositorioReseniaCancha repositorioMock;
+    private RepositorioReseniaCancha repositorioMock;
     private ServicioReseniaCancha servicio;
 
     @BeforeEach
     public void init() {
-        repositorioMock = Mockito.mock(RespositorioReseniaCancha.class);
+        repositorioMock = Mockito.mock(RepositorioReseniaCancha.class);
         servicio = new ServicioReseniaCanchaImpl(repositorioMock);
     }
 

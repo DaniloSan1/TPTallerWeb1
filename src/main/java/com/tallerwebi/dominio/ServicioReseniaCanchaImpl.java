@@ -11,8 +11,8 @@ public class ServicioReseniaCanchaImpl implements ServicioReseniaCancha {
     private final RepositorioReseniaCancha repositorioReseniaCancha;
 
     @Autowired
-    public ServicioReseniaCanchaImpl(RepositorioReseniaCancha repositorioReseniaCancha) {
-        this.repositorioReseniaCancha = repositorioReseniaCancha;
+    public ServicioReseniaCanchaImpl(RepositorioReseniaCancha repositorioMock) {
+        this.repositorioReseniaCancha = repositorioMock;
     }
 
     @Override
