@@ -1,6 +1,7 @@
 package com.tallerwebi.presentacion;
 
 import com.tallerwebi.dominio.*;
+import com.tallerwebi.dominio.excepcion.UsuarioNoEncontradoException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.*;
@@ -24,6 +25,12 @@ class ControladorEquiposTest {
     private ServicioLogin servicioLoginMock;
 
     @Mock
+    private ServicioEquipoJugador servicioEquipoJugadorMock;
+
+    @Mock
+    private ServicioPartido servicioPartidoMock;
+
+    @Mock
     private HttpServletRequest request;
 
     @Mock
@@ -38,7 +45,7 @@ class ControladorEquiposTest {
     }
 
     @Test
-    void misEquiposDeberiaRetornarVistaMisEquiposConListaDeEquipos() {
+    void misEquiposDeberiaRetornarVistaMisEquiposConListaDeEquipos() throws UsuarioNoEncontradoException {
         // Given
         String email = "usuario@test.com";
         Usuario usuario = new Usuario("Nombre", "password", "usuario@test.com", "username");
@@ -61,7 +68,7 @@ class ControladorEquiposTest {
     }
 
     @Test
-    void misEquiposDeberiaRedirigirALoginSiNoHaySesion() {
+    void misEquiposDeberiaRedirigirALoginSiNoHaySesion() throws UsuarioNoEncontradoException {
         // Given
         when(request.getSession()).thenReturn(session);
         when(session.getAttribute("EMAIL")).thenReturn(null);
@@ -76,7 +83,7 @@ class ControladorEquiposTest {
     }
 
     @Test
-    void misEquiposDeberiaFiltrarEquiposPorNombreCuandoSeProporcionaBusqueda() {
+    void misEquiposDeberiaFiltrarEquiposPorNombreCuandoSeProporcionaBusqueda() throws UsuarioNoEncontradoException {
         // Given
         String email = "usuario@test.com";
         String busqueda = "Equipo 1";

@@ -24,19 +24,24 @@ public class ControladorSolicitudUnirse {
 
     @PostMapping("/crear")
     public String crearInvitacion(@RequestParam Long partidoId,
-                                  @RequestParam String emailDestino,
-                                  HttpServletRequest request,
-                                  RedirectAttributes ra) {
-        String email = (String) request.getSession().getAttribute("EMAIL");
-        if (email == null) return "redirect:/login";
-        Usuario yo = servicioLogin.buscarPorEmail(email);
+            @RequestParam String emailDestino,
+            HttpServletRequest request,
+            RedirectAttributes ra) {
+        try {
+            String email = (String) request.getSession().getAttribute("EMAIL");
+            if (email == null)
+                return "redirect:/login";
+            Usuario yo = servicioLogin.buscarPorEmail(email);
 
-        String link = servicio.crearInvitacion(partidoId, yo, emailDestino);
-        if (link == null) {
-            ra.addFlashAttribute("mensajeError", "No se pudo generar la invitación.");
-        } else {
-            // Enviar por email = tarea aparte. Por ahora mostramos para copiar:
-            ra.addFlashAttribute("mensajeExito", "Invitación creada. Copiá y compartí este link: " + link);
+            String link = servicio.crearInvitacion(partidoId, yo, emailDestino);
+            if (link == null) {
+                ra.addFlashAttribute("mensajeError", "No se pudo generar la invitación.");
+            } else {
+                // Enviar por email = tarea aparte. Por ahora mostramos para copiar:
+                ra.addFlashAttribute("mensajeExito", "Invitación creada. Copiá y compartí este link: " + link);
+            }
+        } catch (Exception e) {
+            ra.addFlashAttribute("mensajeError", "Error al crear la invitación");
         }
         return "redirect:/partidos/" + partidoId;
     }
@@ -44,19 +49,25 @@ public class ControladorSolicitudUnirse {
     // El amigo abre este link ya logueado y se une
     @GetMapping("/{token}")
     public String aceptar(@PathVariable String token,
-                          HttpServletRequest request,
-                          RedirectAttributes ra) {
-        String email = (String) request.getSession().getAttribute("EMAIL");
-        if (email == null) return "redirect:/login";
-        Usuario yo = servicioLogin.buscarPorEmail(email);
+            HttpServletRequest request,
+            RedirectAttributes ra) {
+        try {
+            String email = (String) request.getSession().getAttribute("EMAIL");
+            if (email == null)
+                return "redirect:/login";
+            Usuario yo = servicioLogin.buscarPorEmail(email);
 
-        var res = servicio.aceptarPorToken(token, yo);
-        if (res.ok) {
-            ra.addFlashAttribute("mensajeExito", res.mensaje);
-        } else {
-            ra.addFlashAttribute("mensajeError", res.mensaje);
+            var res = servicio.aceptarPorToken(token, yo);
+            if (res.ok) {
+                ra.addFlashAttribute("mensajeExito", res.mensaje);
+            } else {
+                ra.addFlashAttribute("mensajeError", res.mensaje);
+            }
+        } catch (Exception e) {
+            ra.addFlashAttribute("mensajeError", "Error al aceptar la invitación");
         }
-        // no sabemos el partidoId acá sin consultar, pero la service ya resolvió. Podrías
+        // no sabemos el partidoId acá sin consultar, pero la service ya resolvió.
+        // Podrías
         // redirigir a /home como fallback:
         return "redirect:/home";
     }

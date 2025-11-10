@@ -10,7 +10,7 @@ public interface ServicioPartido {
 
         Partido obtenerPorId(Long id);
 
-        public void abandonarPartido(Long partidoId, Usuario usuario);
+        void abandonarPartido(Long partidoId, Usuario usuario);
 
         Partido anotarParticipante(Partido partido, Equipo equipo, Usuario usuario)
                         throws YaExisteElParticipante, NoHayCupoEnPartido;
@@ -19,11 +19,14 @@ public interface ServicioPartido {
                         int cupoMaximo, Usuario usuario);
 
         List<Partido> listarTodos(String busqueda, Zona filtroZona, Nivel filtroNivel);
-        
-        public void actualizarPartido(Long id, String titulo, String descripcion, Usuario usuario);
-        
+
+        void actualizarPartido(Long id, String titulo, String descripcion, Usuario usuario);
+
         List<Partido> listarPorCreador(Usuario usuario);
 
-       public void finalizarPartido(Partido partido, Usuario usuario) throws PermisosInsufficientes;
-}
+        void finalizarPartido(Partido partido, Usuario usuario) throws PermisosInsufficientes;
 
+        List<Partido> listarPorEquipoConInfoCancha(Equipo equipo);
+
+        Partido obtenerPorIdConJugadores(Long id);
+}

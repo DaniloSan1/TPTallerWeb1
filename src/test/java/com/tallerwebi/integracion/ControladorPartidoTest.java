@@ -188,6 +188,12 @@ public class ControladorPartidoTest {
 	@Transactional
 	@Rollback
 	public void debeRetornarLaPaginaDetallePartidoConErrorCuandoElPartidoNoExiste() throws Exception {
+		// Crear usuario en la base de datos
+		Usuario usuario = new Usuario("usuario", "password", "email@example.com", "username");
+		usuario.setApellido("apellido");
+		this.sessionFactory.getCurrentSession().save(usuario);
+		this.sessionFactory.getCurrentSession().flush();
+
 		MvcResult result = this.mockMvc.perform(get("/partidos/{id}", 999L)
 				.sessionAttr("EMAIL", "email@example.com"))
 				.andExpect(status().isOk())

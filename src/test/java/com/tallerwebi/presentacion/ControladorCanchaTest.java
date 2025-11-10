@@ -1,6 +1,7 @@
 package com.tallerwebi.presentacion;
 
 import com.tallerwebi.dominio.*;
+import com.tallerwebi.dominio.excepcion.UsuarioNoEncontradoException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.*;
@@ -26,7 +27,7 @@ class ControladorCanchaTest {
 
     @Mock
     private ServicioLogin servicioLoginMock;
-    
+
     @Mock
     private ServicioFotoCancha servicioFotoCanchaMock;
 
@@ -49,19 +50,15 @@ class ControladorCanchaTest {
         when(servicioReseniaCanchaMock.calcularCalificacionPromedioCancha(anyLong())).thenReturn(0.0);
     }
 
-  
-
     @Test
     void listarCanchasDeberiaRetornarVistaCanchasConLista() {
-       
+
         List<Cancha> canchas = Arrays.asList(new Cancha(), new Cancha());
         when(servicioCanchaMock.obtenerCanchasDisponibles(null, null, 0.0)).thenReturn(canchas);
         ModelMap model = new ModelMap();
-        
-        
+
         String vista = controladorCancha.listarCanchas(model, request);
-            
-        
+
         assertThat(vista, is("canchas"));
         assertThat(model, hasEntry("canchas", canchas));
         assertThat(model, hasEntry("currentPage", "canchas-disponibles"));
@@ -71,7 +68,8 @@ class ControladorCanchaTest {
     @Test
     void listarCanchasDeberiaManejarExcepcionYAgregarErrorAlModel() {
         // given
-        when(servicioCanchaMock.obtenerCanchasDisponibles(null, null, 0.0)).thenThrow(new RuntimeException("Error inesperado"));
+        when(servicioCanchaMock.obtenerCanchasDisponibles(null, null, 0.0))
+                .thenThrow(new RuntimeException("Error inesperado"));
         ModelMap model = new ModelMap();
 
         // when
@@ -83,7 +81,7 @@ class ControladorCanchaTest {
     }
 
     @Test
-    void verCanchaConUnUsuarioLogueadoDeberiaMostrarVistaCancha() {
+    void verCanchaConUnUsuarioLogueadoDeberiaMostrarVistaCancha() throws UsuarioNoEncontradoException {
         // given
         Long canchaId = 1L;
         String email = "test@correo.com";
@@ -132,7 +130,7 @@ class ControladorCanchaTest {
     }
 
     @Test
-    void verCanchaDeberiaManejarExcepcionYAgregarError() {
+    void verCanchaDeberiaManejarExcepcionYAgregarError() throws UsuarioNoEncontradoException {
         // given
         when(request.getSession()).thenReturn(session);
         when(session.getAttribute("EMAIL")).thenReturn("usuario@correo.com");
@@ -157,7 +155,6 @@ class ControladorCanchaTest {
         when(servicioCanchaMock.obtenerCanchasDisponibles(null, null, 0.0)).thenReturn(canchas);
 
         when(servicioFotoCanchaMock.insertarFotosAModelCanchas(canchas)).thenReturn(fotos);
-
 
         ModelMap model = new ModelMap();
 

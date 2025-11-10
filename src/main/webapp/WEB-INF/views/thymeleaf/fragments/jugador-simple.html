@@ -2,7 +2,17 @@
 <html lang="es" xmlns:th="http://www.thymeleaf.org">
     <head> </head>
     <body th:fragment="jugador-simple (jugador)">
-        <div class="card">
+        <div
+            class="card"
+            style="
+                position: relative;
+                cursor: pointer;
+                transition: transform 0.2s ease-in-out,
+                    box-shadow 0.2s ease-in-out;
+            "
+            onmouseover="this.style.transform='translateY(-5px)'; this.style.boxShadow='0 4px 15px rgba(0,0,0,0.2)';"
+            onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 1px 3px rgba(0,0,0,0.12)';"
+        >
             <div class="d-flex">
                 <div class="d-flex">
                     <span class="avatar-jugador"></span>

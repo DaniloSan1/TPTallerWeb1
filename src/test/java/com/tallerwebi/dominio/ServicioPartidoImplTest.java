@@ -7,6 +7,8 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import java.time.DayOfWeek;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.Arrays;
+import java.util.List;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -257,6 +259,19 @@ public class ServicioPartidoImplTest {
                                 () -> servicioPartido.finalizarPartido(partidoMock, usuarioMock));
                 Mockito.verify(partidoMock, Mockito.never()).setFechaFinalizacion(Mockito.any());
                 Mockito.verify(repositorioPartidoMock, Mockito.never()).actualizar(Mockito.any());
+        }
+
+        @Test
+        public void deberiaListarPartidosPorEquipo() {
+                List<Partido> partidosEsperados = Arrays.asList(partidoMock);
+                Mockito.when(repositorioPartidoMock.listarPorEquipoConInfoCancha(equipoMock.getId()))
+                                .thenReturn(partidosEsperados);
+
+                List<Partido> partidos = servicioPartido.listarPorEquipoConInfoCancha(equipoMock);
+
+                assertEquals(partidosEsperados, partidos);
+                Mockito.verify(repositorioPartidoMock, Mockito.times(1))
+                                .listarPorEquipoConInfoCancha(equipoMock.getId());
         }
 
 }

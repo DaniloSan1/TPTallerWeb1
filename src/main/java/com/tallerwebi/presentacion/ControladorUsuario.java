@@ -2,6 +2,8 @@ package com.tallerwebi.presentacion;
 
 import com.tallerwebi.dominio.*;
 import com.tallerwebi.dominio.excepcion.UsernameExistenteException;
+import com.tallerwebi.dominio.excepcion.UsuarioNoEncontradoException;
+
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.*;
@@ -67,30 +69,34 @@ public class ControladorUsuario {
     public String perfil(ModelMap modelo, HttpServletRequest request) {
         String email = (String) request.getSession().getAttribute("EMAIL");
         if (email != null) {
-            Usuario usuario = servicioLogin.buscarPorEmail(email);
-            modelo.addAttribute("usuario", usuario);
+            try {
+                Usuario usuario = servicioLogin.buscarPorEmail(email);
+                modelo.addAttribute("usuario", usuario);
 
-            // Obtener amigos
-            List<Amistad> relaciones = servicioAmistad.verAmigos(usuario.getId());
-            List<Usuario> amigos = new ArrayList<>();
-            if (relaciones != null) {
-                for (Amistad a : relaciones) {
-                    if (a.getUsuario1() != null && a.getUsuario1().getId().equals(usuario.getId())) {
-                        amigos.add(a.getUsuario2());
-                    } else {
-                        amigos.add(a.getUsuario1());
+                // Obtener amigos
+                List<Amistad> relaciones = servicioAmistad.verAmigos(usuario.getId());
+                List<Usuario> amigos = new ArrayList<>();
+                if (relaciones != null) {
+                    for (Amistad a : relaciones) {
+                        if (a.getUsuario1() != null && a.getUsuario1().getId().equals(usuario.getId())) {
+                            amigos.add(a.getUsuario2());
+                        } else {
+                            amigos.add(a.getUsuario1());
+                        }
                     }
                 }
+                modelo.addAttribute("amigos", amigos);
+
+                // Obtener cantidad de solicitudes pendientes
+                List<Amistad> solicitudesPendientes = servicioAmistad.verSolicitudesPendientes(usuario.getId());
+                modelo.addAttribute("solicitudesPendientes",
+                        solicitudesPendientes != null ? solicitudesPendientes.size() : 0);
+
+                modelo.put("currentPage", "perfil");
+                return "perfil";
+            } catch (UsuarioNoEncontradoException e) {
+                return "redirect:/login";
             }
-            modelo.addAttribute("amigos", amigos);
-
-            // Obtener cantidad de solicitudes pendientes
-            List<Amistad> solicitudesPendientes = servicioAmistad.verSolicitudesPendientes(usuario.getId());
-            modelo.addAttribute("solicitudesPendientes",
-                    solicitudesPendientes != null ? solicitudesPendientes.size() : 0);
-
-            modelo.put("currentPage", "perfil");
-            return "perfil";
         }
         return "redirect:/login";
     }
@@ -105,9 +111,13 @@ public class ControladorUsuario {
     public String editar(ModelMap modelo, HttpServletRequest request) {
         String email = (String) request.getSession().getAttribute("EMAIL");
         if (email != null) {
-            Usuario usuario = servicioLogin.buscarPorEmail(email);
-            modelo.addAttribute("usuario", usuario);
-            return "editarPerfil";
+            try {
+                Usuario usuario = servicioLogin.buscarPorEmail(email);
+                modelo.addAttribute("usuario", usuario);
+                return "editarPerfil";
+            } catch (UsuarioNoEncontradoException e) {
+                return "redirect:/login";
+            }
         }
 
         return "redirect:/login";
@@ -137,8 +147,9 @@ public class ControladorUsuario {
                 modelo.addAttribute("usuario", usuarioEditado);
                 modelo.addAttribute("error", e.getMessage());
                 return "editarPerfil";
+            } catch (UsuarioNoEncontradoException e) {
+                return "redirect:/login";
             }
-
         }
         return "redirect:/login";
     }
@@ -163,15 +174,19 @@ public class ControladorUsuario {
 
     @PostMapping("/amistad/enviar/{idReceptor}")
     public String enviarSolicitud(@PathVariable Long idReceptor, HttpServletRequest request) {
-        String email = (String) request.getSession().getAttribute("EMAIL");
-        Usuario remitente = servicioLogin.buscarPorEmail(email);
-        Usuario receptor = servicioLogin.buscarPorId(idReceptor);
+        try {
+            String email = (String) request.getSession().getAttribute("EMAIL");
+            Usuario remitente = servicioLogin.buscarPorEmail(email);
+            Usuario receptor = servicioLogin.buscarPorId(idReceptor);
 
-        if (remitente != null) {
-            servicioAmistad.enviarSolicitud(remitente.getId(), idReceptor);
+            if (remitente != null) {
+                servicioAmistad.enviarSolicitud(remitente.getId(), idReceptor);
+            }
+
+            return "redirect:/perfil/ver/username/" + receptor.getUsername();
+        } catch (Exception e) {
+            return "redirect:/home";
         }
-
-        return "redirect:/perfil/ver/username/" + receptor.getUsername();
     }
 
     @PostMapping("/amistad/aceptar/{idAmistad}")
@@ -188,34 +203,38 @@ public class ControladorUsuario {
 
     @PostMapping("/amigos/eliminar")
     public String eliminarAmigo(@RequestParam Long amigoId, HttpServletRequest request) {
-        String email = (String) request.getSession().getAttribute("EMAIL");
-        if (email == null)
-            return "redirect:/login";
-        Usuario usuario = servicioLogin.buscarPorEmail(email);
-        if (usuario == null)
-            return "redirect:/login";
+        try {
+            String email = (String) request.getSession().getAttribute("EMAIL");
+            if (email == null)
+                return "redirect:/login";
+            Usuario usuario = servicioLogin.buscarPorEmail(email);
 
-        Amistad amistad = servicioAmistad.buscarRelacionEntreUsuarios(usuario.getId(), amigoId);
-        if (amistad != null) {
-            // eliminar físicamente la relación de amistad
-            servicioAmistad.eliminarAmistad(amistad.getIdAmistad());
+            Amistad amistad = servicioAmistad.buscarRelacionEntreUsuarios(usuario.getId(), amigoId);
+            if (amistad != null) {
+                // eliminar físicamente la relación de amistad
+                servicioAmistad.eliminarAmistad(amistad.getIdAmistad());
+            }
+            return "redirect:/perfil";
+        } catch (UsuarioNoEncontradoException e) {
+            return "redirect:/login";
         }
-        return "redirect:/perfil";
     }
 
     @GetMapping("/solicitudes")
     public String verSolicitudesAmistad(ModelMap modelo, HttpServletRequest request) {
-        String email = (String) request.getSession().getAttribute("EMAIL");
-        if (email == null)
-            return "redirect:/login";
+        try {
+            String email = (String) request.getSession().getAttribute("EMAIL");
+            if (email == null)
+                return "redirect:/login";
 
-        Usuario usuario = servicioLogin.buscarPorEmail(email);
-        if (usuario == null)
-            return "redirect:/login";
+            Usuario usuario = servicioLogin.buscarPorEmail(email);
+            List<Amistad> solicitudesPendientes = servicioAmistad.verSolicitudesPendientes(usuario.getId());
+            modelo.addAttribute("solicitudesPendientes", solicitudesPendientes);
 
-        List<Amistad> solicitudesPendientes = servicioAmistad.verSolicitudesPendientes(usuario.getId());
-        modelo.addAttribute("solicitudesPendientes", solicitudesPendientes);
-        return "solicitudes-amistad";
+            return "solicitudes-amistad";
+        } catch (UsuarioNoEncontradoException e) {
+            return "redirect:/login";
+        }
     }
 
 }

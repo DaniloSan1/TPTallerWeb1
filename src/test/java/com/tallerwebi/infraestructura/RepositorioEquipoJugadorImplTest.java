@@ -108,4 +108,77 @@ public class RepositorioEquipoJugadorImplTest {
         EquipoJugador equipoJugadorDespues = repositorioEquipoJugador.buscarPorId(equipoJugadorAGuardar.getId());
         assertThat(equipoJugadorDespues, equalTo(null));
     }
+
+    @Test
+    @Transactional
+    @Rollback
+    public void debeBuscarEquipoJugadorPorEquipoYUsuario() {
+        Usuario creador = new Usuario("nombre", "password", "email@test.com", "username");
+        sessionFactory.getCurrentSession().save(creador);
+
+        Usuario jugador = new Usuario("jugador", "password", "jugador@test.com", "jugador");
+        sessionFactory.getCurrentSession().save(jugador);
+
+        Equipo equipo = new Equipo("Equipo Test", "Descripción del equipo", creador, LocalDateTime.now());
+        sessionFactory.getCurrentSession().save(equipo);
+
+        EquipoJugador equipoJugadorAGuardar = new EquipoJugador(equipo, jugador);
+        sessionFactory.getCurrentSession().save(equipoJugadorAGuardar);
+        sessionFactory.getCurrentSession().flush();
+
+        EquipoJugador equipoJugadorEncontrado = repositorioEquipoJugador.buscarPorEquipoYUsuario(equipo, jugador);
+
+        assertThat(equipoJugadorEncontrado, equalTo(equipoJugadorAGuardar));
+    }
+
+    @Test
+    @Transactional
+    @Rollback
+    public void debeRetornarNullCuandoNoExisteEquipoJugadorPorEquipoYUsuario() {
+        Usuario creador = new Usuario("nombre", "password", "email@test.com", "username");
+        sessionFactory.getCurrentSession().save(creador);
+
+        Usuario jugador = new Usuario("jugador", "password", "jugador@test.com", "jugador");
+        sessionFactory.getCurrentSession().save(jugador);
+
+        Equipo equipo = new Equipo("Equipo Test", "Descripción del equipo", creador, LocalDateTime.now());
+        sessionFactory.getCurrentSession().save(equipo);
+
+        // No guardamos el EquipoJugador
+
+        EquipoJugador equipoJugadorEncontrado = repositorioEquipoJugador.buscarPorEquipoYUsuario(equipo, jugador);
+
+        assertThat(equipoJugadorEncontrado, equalTo(null));
+    }
+
+    @Test
+    @Transactional
+    @Rollback
+    public void debeBuscarEquipoJugadoresPorEquipo() {
+        Usuario creador = new Usuario("nombre", "password", "email@test.com", "username");
+        sessionFactory.getCurrentSession().save(creador);
+
+        Usuario jugador1 = new Usuario("jugador1", "password", "jugador1@test.com", "jugador1");
+        sessionFactory.getCurrentSession().save(jugador1);
+
+        Usuario jugador2 = new Usuario("jugador2", "password", "jugador2@test.com", "jugador2");
+        sessionFactory.getCurrentSession().save(jugador2);
+
+        Equipo equipo = new Equipo("Equipo Test", "Descripción del equipo", creador, LocalDateTime.now());
+        sessionFactory.getCurrentSession().save(equipo);
+
+        EquipoJugador equipoJugador1 = new EquipoJugador(equipo, jugador1);
+        sessionFactory.getCurrentSession().save(equipoJugador1);
+
+        EquipoJugador equipoJugador2 = new EquipoJugador(equipo, jugador2);
+        sessionFactory.getCurrentSession().save(equipoJugador2);
+
+        sessionFactory.getCurrentSession().flush();
+
+        var equipoJugadores = repositorioEquipoJugador.buscarPorEquipo(equipo);
+
+        assertThat(equipoJugadores.size(), equalTo(2));
+        assertThat(equipoJugadores.contains(equipoJugador1), equalTo(true));
+        assertThat(equipoJugadores.contains(equipoJugador2), equalTo(true));
+    }
 }

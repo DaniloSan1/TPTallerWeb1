@@ -1,6 +1,7 @@
 package com.tallerwebi.dominio;
 
 import com.tallerwebi.dominio.excepcion.ParticipanteNoEncontrado;
+import com.tallerwebi.dominio.excepcion.YaExisteElParticipante;
 import com.tallerwebi.infraestructura.RepositorioEquipoJugadorImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -34,6 +35,22 @@ public class ServicioEquipoJugadorImplTest {
         verify(repositorioEquipoJugador).guardar(any(EquipoJugador.class));
         assertThat(equipoJugadorCreado.getEquipo(), equalTo(equipo));
         assertThat(equipoJugadorCreado.getUsuario(), equalTo(jugador));
+    }
+
+    @Test
+    public void queLanceExcepcionSiYaExisteElParticipante() {
+        Usuario creador = new Usuario();
+        Equipo equipo = new Equipo("Equipo Test", "Descripción", creador, java.time.LocalDateTime.now());
+        Usuario jugador = new Usuario();
+        EquipoJugador existente = new EquipoJugador(equipo, jugador);
+
+        when(repositorioEquipoJugador.buscarPorEquipoYUsuario(equipo, jugador)).thenReturn(existente);
+
+        assertThrows(YaExisteElParticipante.class, () -> {
+            servicioEquipoJugadorImpl.crearEquipoJugador(equipo, jugador);
+        });
+
+        verify(repositorioEquipoJugador, never()).guardar(any(EquipoJugador.class));
     }
 
     @Test
@@ -105,5 +122,33 @@ public class ServicioEquipoJugadorImplTest {
             servicioEquipoJugadorImpl.promoverCapitan(idInexistente);
         });
         verify(repositorioEquipoJugador).buscarPorId(idInexistente);
+    }
+
+    @Test
+    public void queLanceExcepcionSiYaExisteParticipanteEnEquipo() {
+        Usuario creador = new Usuario();
+        Equipo equipo = new Equipo("Equipo Test", "Descripción", creador, java.time.LocalDateTime.now());
+        Usuario jugador = new Usuario();
+        EquipoJugador equipoJugador = new EquipoJugador(equipo, jugador);
+
+        // Caso cuando existe
+        when(repositorioEquipoJugador.buscarPorEquipoYUsuario(equipo, jugador)).thenReturn(equipoJugador);
+
+        assertThrows(YaExisteElParticipante.class, () -> {
+            servicioEquipoJugadorImpl.validarQueNoExisteParticipanteEnEquipo(equipo, jugador);
+        });
+    }
+
+    @Test
+    public void queNoLanceExcepcionSiNoExisteParticipanteEnEquipo() {
+        Usuario creador = new Usuario();
+        Equipo equipo = new Equipo("Equipo Test", "Descripción", creador, java.time.LocalDateTime.now());
+        Usuario jugador = new Usuario();
+
+        // Caso cuando no existe
+        when(repositorioEquipoJugador.buscarPorEquipoYUsuario(equipo, jugador)).thenReturn(null);
+
+        // Should not throw
+        servicioEquipoJugadorImpl.validarQueNoExisteParticipanteEnEquipo(equipo, jugador);
     }
 }

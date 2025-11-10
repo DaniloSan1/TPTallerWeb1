@@ -83,22 +83,30 @@ public class ServicioPartidoImpl implements ServicioPartido {
     }
 
     @Override
+    public Partido obtenerPorIdConJugadores(Long id) {
+        Partido partido = repoPartido.obtenerPorIdConJugadores(id);
+        if (partido == null) {
+            throw new PartidoNoEncontrado();
+        }
+        return partido;
+    }
+
+    @Override
     @Transactional
     public Partido anotarParticipante(Partido partido, Equipo equipo, Usuario usuario)
             throws YaExisteElParticipante, NoHayCupoEnPartido {
 
-        if (!partido.validarCupo()) {
-            throw new NoHayCupoEnPartido();
-        }
+        partido.validarCupo();
 
         EquipoJugador equipoJugador = servicioEquipoJugador.crearEquipoJugador(equipo, usuario);
         partido.agregarParticipante(equipoJugador);
+
         return partido;
     }
 
     @Override
     public void abandonarPartido(Long partidoId, Usuario usuario) {
-        Partido partido = obtenerPorId(partidoId);
+        Partido partido = obtenerPorIdConJugadores(partidoId);
         EquipoJugador equipoJugador = partido.buscarJugador(usuario.getId());
         servicioEquipoJugador.eliminarPorId(equipoJugador.getId());
     }
@@ -134,5 +142,10 @@ public class ServicioPartidoImpl implements ServicioPartido {
         }
         partido.setFechaFinalizacion(java.time.LocalDateTime.now());
         repoPartido.actualizar(partido);
+    }
+
+    @Override
+    public List<Partido> listarPorEquipoConInfoCancha(Equipo equipo) {
+        return repoPartido.listarPorEquipoConInfoCancha(equipo.getId());
     }
 }
