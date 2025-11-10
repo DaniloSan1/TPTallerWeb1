@@ -12,24 +12,31 @@ public class Equipo {
     private Long id;
     private String nombre;
 
+    @Column(name = "descripcion")
+    private String descripcion;
+
+    @Column(name = "insignia_url")
+    private String insigniaUrl;
+
     @ManyToOne
     @JoinColumn(name = "creado_por_id")
     private Usuario creadoPor;
 
     private LocalDateTime fechaCreacion;
 
-    @OneToMany(mappedBy = "equipo", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "equipo", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private Set<EquipoJugador> jugadores = new HashSet<>();
 
-    @OneToMany(mappedBy = "equipo", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "equipo", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private Set<PartidoEquipo> partidos = new HashSet<>();
 
     // Constructor por defecto para JPA
     public Equipo() {
     }
 
-    public Equipo(String nombre, Usuario creadoPor, LocalDateTime fechaCreacion) {
+    public Equipo(String nombre, String descripcion, Usuario creadoPor, LocalDateTime fechaCreacion) {
         this.nombre = nombre;
+        this.descripcion = descripcion;
         this.creadoPor = creadoPor;
         this.fechaCreacion = fechaCreacion;
     }
@@ -88,6 +95,22 @@ public class Equipo {
 
     public void setPartidos(Set<PartidoEquipo> partidos) {
         this.partidos = partidos;
+    }
+
+    public String getDescripcion() {
+        return descripcion;
+    }
+
+    public void setDescripcion(String descripcion) {
+        this.descripcion = descripcion;
+    }
+
+    public String getInsigniaUrl() {
+        return insigniaUrl;
+    }
+
+    public void setInsigniaUrl(String insigniaUrl) {
+        this.insigniaUrl = insigniaUrl;
     }
 
     public boolean yaExisteJugador(Long usuarioId) {

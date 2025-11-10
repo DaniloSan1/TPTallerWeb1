@@ -8,13 +8,15 @@ import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
+import com.tallerwebi.dominio.Partido;
 import com.tallerwebi.dominio.ReseniaCancha;
 import com.tallerwebi.dominio.RespositorioReseniaCancha;
 
 @Repository
 @Transactional
 public class RepositorioReseniaCanchaImpl implements RespositorioReseniaCancha {
-       private final SessionFactory sessionFactory;
+    private final SessionFactory sessionFactory;
+
     @Autowired
     public RepositorioReseniaCanchaImpl(SessionFactory sessionFactory) {
         this.sessionFactory = sessionFactory;
@@ -50,16 +52,15 @@ public class RepositorioReseniaCanchaImpl implements RespositorioReseniaCancha {
     }
 
     @Override
-    public List<ReseniaCancha> buscarReseniaPreviaDelUsuarioAUnaCanchaDeterminada(Long usuarioId,Long canchaId){
-    
+    public List<ReseniaCancha> buscarReseniaPreviaDelUsuarioAUnaCanchaDeterminada(Long usuarioId, Long canchaId) {
+
         String hql = "FROM ReseniaCancha r WHERE r.usuario.id = :usuarioId AND r.cancha.id = :canchaId";
         return this.sessionFactory.getCurrentSession()
-        .createQuery(hql, ReseniaCancha.class)
-        .setParameter("usuarioId", usuarioId)
-        .setParameter("canchaId", canchaId)
-        .setMaxResults(1)
-        .getResultList();
+                .createQuery(hql, ReseniaCancha.class)
+                .setParameter("usuarioId", usuarioId)
+                .setParameter("canchaId", canchaId)
+                .setMaxResults(1)
+                .getResultList();
 
     }
-
 }
