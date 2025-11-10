@@ -28,18 +28,20 @@ public class ServicioEquipoImplTest {
     public void queSePuedaCrearUnEquipo() {
         Usuario creador = new Usuario("nombre", "password", "email@test.com", "username");
         String nombreEquipo = "Equipo Test";
+        String descripcion = "Descripción del equipo";
 
-        Equipo equipoCreado = servicioEquipoImpl.crearEquipo(nombreEquipo, creador);
+        Equipo equipoCreado = servicioEquipoImpl.crearEquipo(nombreEquipo, descripcion, creador);
 
         verify(repositorioEquipo).guardar(any(Equipo.class));
         assertThat(equipoCreado.getNombre(), equalTo(nombreEquipo));
+        assertThat(equipoCreado.getDescripcion(), equalTo(descripcion));
         assertThat(equipoCreado.getCreadoPor(), equalTo(creador));
     }
 
     @Test
     public void queSePuedaBuscarUnEquipoPorId() throws EquipoNoEncontrado {
         Long id = 1L;
-        Equipo equipoEsperado = new Equipo("Equipo Test", new Usuario(), java.time.LocalDateTime.now());
+        Equipo equipoEsperado = new Equipo("Equipo Test", "Descripción", new Usuario(), java.time.LocalDateTime.now());
         equipoEsperado.setId(id);
 
         when(repositorioEquipo.buscarPorId(id)).thenReturn(equipoEsperado);
@@ -62,7 +64,7 @@ public class ServicioEquipoImplTest {
 
     @Test
     public void queSePuedaActualizarElNombreDeUnEquipo() {
-        Equipo equipo = new Equipo("Equipo Original", new Usuario(), java.time.LocalDateTime.now());
+        Equipo equipo = new Equipo("Equipo Original", "Descripción", new Usuario(), java.time.LocalDateTime.now());
         String nuevoNombre = "Equipo Modificado";
 
         servicioEquipoImpl.actualizarNombre(equipo, nuevoNombre);
@@ -75,8 +77,8 @@ public class ServicioEquipoImplTest {
     public void queSePuedanObtenerLosEquiposDeUnUsuario() {
         Usuario usuario = new Usuario("nombre", "password", "email@test.com", "username");
         List<Equipo> equiposEsperados = Arrays.asList(
-                new Equipo("Equipo 1", usuario, LocalDateTime.now()),
-                new Equipo("Equipo 2", usuario, LocalDateTime.now()));
+                new Equipo("Equipo 1", "Descripción 1", usuario, LocalDateTime.now()),
+                new Equipo("Equipo 2", "Descripción 2", usuario, LocalDateTime.now()));
 
         when(repositorioEquipo.buscarEquiposPorUsuario(usuario)).thenReturn(equiposEsperados);
 
@@ -91,7 +93,7 @@ public class ServicioEquipoImplTest {
         Usuario usuario = new Usuario("nombre", "password", "email@test.com", "username");
         String filtro = "Equipo 1";
         List<Equipo> equiposEsperados = Arrays.asList(
-                new Equipo("Equipo 1", usuario, LocalDateTime.now()));
+                new Equipo("Equipo 1", "Descripción 1", usuario, LocalDateTime.now()));
 
         when(repositorioEquipo.buscarEquiposPorUsuarioYNombre(usuario, filtro)).thenReturn(equiposEsperados);
 

@@ -87,7 +87,7 @@ public class ControladorPartido {
             }
 
             Usuario usuario = servicioLogin.buscarPorEmail(request.getSession().getAttribute("EMAIL").toString());
-            Partido partido = servicio.obtenerPorId(id);
+            Partido partido = servicio.obtenerPorIdConJugadores(id);
 
             modelo.put("partido", new DetallePartido(partido, usuario));
 
@@ -164,12 +164,11 @@ public class ControladorPartido {
 
             Usuario usuario = servicioLogin.buscarPorEmail(request.getSession().getAttribute("EMAIL").toString());
             Equipo equipo = servicioEquipo.buscarPorId(equipoId);
-            Partido partido = servicio.obtenerPorId(id);
+            Partido partido = servicio.obtenerPorIdConJugadores(id);
             partido = servicio.anotarParticipante(partido, equipo, usuario);
 
             redirectAttributes.addFlashAttribute("success", "Te has unido al partido correctamente.");
         } catch (Exception e) {
-            System.out.println(e);
             redirectAttributes.addFlashAttribute("error", "Ocurrió un error al intentar inscribirte.");
         }
 
@@ -194,22 +193,28 @@ public class ControladorPartido {
 
     @GetMapping("/mios")
     public ModelAndView misPartidos(HttpServletRequest request, ModelMap model) {
-        String email = (String) request.getSession().getAttribute("EMAIL");
-        if (email == null)
-            return new ModelAndView("redirect:/login");
+        try {
 
-        Usuario usuario = servicioLogin.buscarPorEmail(email);
-        List<Partido> partidos = servicio.listarPorCreador(usuario);
+            String email = (String) request.getSession().getAttribute("EMAIL");
+            if (email == null)
+                return new ModelAndView("redirect:/login");
 
-        // Asegurar que fotosCanchas siempre esté en el modelo (puede ser lista vacía)
-        List<FotoCancha> fotosCanchas = new ArrayList<>();
-        if (partidos != null && !partidos.isEmpty()) {
-            fotosCanchas = servicioFotoCancha.insertarFotosAModelPartidos(partidos);
+            Usuario usuario = servicioLogin.buscarPorEmail(email);
+            List<Partido> partidos = servicio.listarPorCreador(usuario);
+
+            // Asegurar que fotosCanchas siempre esté en el modelo (puede ser lista vacía)
+            List<FotoCancha> fotosCanchas = new ArrayList<>();
+            if (partidos != null && !partidos.isEmpty()) {
+                fotosCanchas = servicioFotoCancha.insertarFotosAModelPartidos(partidos);
+            }
+
+            model.put("partidos", partidos != null ? partidos : java.util.Collections.emptyList());
+            model.put("fotosCanchas", fotosCanchas);
+            model.put("currentPage", "mis-partidos");
+        } catch (Exception e) {
+            model.put("error", e.getMessage());
         }
 
-        model.put("partidos", partidos != null ? partidos : java.util.Collections.emptyList());
-        model.put("fotosCanchas", fotosCanchas);
-        model.put("currentPage", "mis-partidos");
         return new ModelAndView("mis-partidos", model);
     }
 

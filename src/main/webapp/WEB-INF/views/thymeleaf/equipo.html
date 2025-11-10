@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+    <head>
+        <meta charset="utf-8" />
+        <meta
+            name="viewport"
+            content="width=device-width, initial-scale=1, shrink-to-fit=no"
+        />
+
+        <title>Partidazo - Detalle del Equipo</title>
+
+        <link
+            rel="stylesheet"
+            th:href="@{/webjars/bootstrap/5.2.0/css/bootstrap.min.css}"
+        />
+
+        <link
+            rel="stylesheet"
+            href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200"
+        />
+        <link rel="stylesheet" th:href="@{/css/main.css}" />
+        <link rel="stylesheet" th:href="@{/css/jugador-simple.css}" />
+        <link rel="stylesheet" th:href="@{/css/equipo.css}" />
+    </head>
+
+    <body>
+        <!-- Include the navbar fragment -->
+        <div th:replace="~{fragments/navbar :: navbar}"></div>
+
+        <main role="main" class="container" style="padding-top: 135px">
+            <div th:unless="${equipo}" class="no-match"></div>
+
+            <div id="contenedor-equipo">
+                <div id="contenedor-equipo-detalle" class="container card">
+                    <div th:if="${equipo != null}" class="d-flex w-100">
+                        <div class="card-header w-100">
+                            <h1 class="mb-2" th:text="${equipo.titulo}"></h1>
+                        </div>
+                    </div>
+                    <!-- Mensajes -->
+                    <div
+                        th:if="${error != null && equipo == null}"
+                        class="error w-100 mt-2"
+                        th:text="${error}"
+                        id="alertError"
+                    ></div>
+                    <div
+                        th:if="${success != null}"
+                        id="alertSuccess"
+                        class="alert alert-success w-100 mt-2"
+                        th:text="${success}"
+                    ></div>
+                    <!-- Detalle del Equipo -->
+                    <div class="card-body">
+                        <div
+                            id="contenedor-insignia"
+                            class="d-flex justify-content-center align-items-center"
+                        >
+                            <img
+                                th:src="${equipo.insigniaUrl != null ? equipo.insigniaUrl : 'https://www.ligaprofesional.ar/wp-content/uploads/2024/06/BOC-escudo.png'}"
+                                alt="Insignia del equipo"
+                                class="img-fluid"
+                                style="
+                                    max-height: 100%;
+                                    max-width: 100%;
+                                    object-fit: contain;
+                                "
+                            />
+                        </div>
+                        <div id="contenedor-detalle">
+                            <div
+                                id="contenedor-detalle-info"
+                                th:if="${equipo != null}"
+                            >
+                                <div
+                                    class="w-100"
+                                    th:if="${equipo.descripcion != null && !equipo.descripcion.isEmpty()}"
+                                >
+                                    <strong>Acerca del equipo:</strong>
+                                    <span
+                                        style="text-align: justify"
+                                        th:text="${equipo.descripcion}"
+                                    ></span>
+                                </div>
+
+                                <div class="detalle-columna">
+                                    <div
+                                        th:if="${equipo.fechaCreacion != null}"
+                                    >
+                                        <strong>Fecha de creación:</strong>
+                                        <span
+                                            th:text="${equipo.fechaCreacion}"
+                                        ></span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div id="contenedor-miembros">
+                    <!-- Jugadores del Equipo -->
+                    <div
+                        class="container card w-100 mb-2"
+                        th:if="${equipo !=
+                null}"
+                    >
+                        <div class="card-header">
+                            <h2>&iexcl;Miembros del Equipo!</h2>
+                        </div>
+                        <div class="card-body d-flex flex-row flex-wrap gap-1">
+                            <div
+                                th:if="${listadoMiembrosError != null}"
+                                class="error w-100"
+                                th:text="${listadoMiembrosError}"
+                            ></div>
+                            <div
+                                th:if="${listadoMiembrosSuccess != null}"
+                                class="alert alert-success w-100"
+                                th:text="${listadoMiembrosSuccess}"
+                            ></div>
+                            <div
+                                class="card-jugador"
+                                th:each="miembro : ${equipo.listaJugadores}"
+                            >
+                                <a
+                                    th:href="@{/perfil/ver/username/} + ${miembro.username}"
+                                    class="text-decoration-none"
+                                    style="color: inherit"
+                                >
+                                    <div
+                                        th:replace="~{fragments/jugador-simple :: jugador-simple (jugador=${miembro})}"
+                                    ></div>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Partidos del Equipo -->
+                    <div
+                        id="contenedor-partidos"
+                        class="container card"
+                        th:if="${equipo.listaPartidos != null and !equipo.listaPartidos.isEmpty()}"
+                    >
+                        <div class="card-header">
+                            <h2>Partidos</h2>
+                        </div>
+                        <div
+                            class="card-body g-3"
+                            th:if="${!#lists.isEmpty(equipo.listaPartidos)}"
+                        >
+                            <div
+                                class="col-12 col-sm-6 col-lg-3"
+                                th:each="p, iterStat : ${equipo.listaPartidos}"
+                            >
+                                <a
+                                    th:href="@{|/partidos/${p.id}|}"
+                                    class="text-decoration-none"
+                                    style="color: inherit"
+                                >
+                                    <div
+                                        class="card h-100"
+                                        style="
+                                            position: relative;
+                                            cursor: pointer;
+                                            transition: transform 0.2s
+                                                    ease-in-out,
+                                                box-shadow 0.2s ease-in-out;
+                                        "
+                                        onmouseover="this.style.transform='translateY(-5px)'; this.style.boxShadow='0 4px 15px rgba(0,0,0,0.2)';"
+                                        onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 1px 3px rgba(0,0,0,0.12)';"
+                                    >
+                                        <span
+                                            id="owner-icon"
+                                            class="material-symbols-outlined"
+                                            style="
+                                                background-color: #ffffff;
+                                                position: absolute;
+                                                top: 10px;
+                                                left: 10px;
+                                                color: var(--secondary-color);
+                                                font-size: 32px;
+                                                z-index: 10;
+                                            "
+                                            >person</span
+                                        >
+                                        <img
+                                            th:src="${p.fotoCanchaUrl}"
+                                            alt="cancha"
+                                            style="height: 180px"
+                                        />
+                                        <div
+                                            class="card-body d-flex flex-column"
+                                        >
+                                            <h5
+                                                class="card-title"
+                                                th:text="${p.titulo}"
+                                            >
+                                                Título
+                                            </h5>
+                                        </div>
+                                        <div
+                                            class="card-footer card-footer-chips"
+                                        >
+                                            <span
+                                                class="chip chip-zona"
+                                                th:text="${p.zona}"
+                                                >Zona</span
+                                            >
+                                            <span
+                                                class="chip chip-nivel"
+                                                th:text="${p.nivel}"
+                                                >Nivel</span
+                                            >
+                                        </div>
+                                    </div>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <script th:src="@{/webjars/jquery/3.6.4/jquery.min.js}"></script>
+        <script
+            th:src="@{/webjars/bootstrap/5.2.0/js/bootstrap.bundle.min.js}"
+        ></script>
+        <script th:src="@{/webjars/popper.js/2.9.3/umd/popper.min.js}"></script>
+    </body>
+</html>

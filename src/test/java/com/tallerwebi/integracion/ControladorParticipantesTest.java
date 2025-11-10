@@ -85,10 +85,10 @@ public class ControladorParticipantesTest {
                 this.sessionFactory.getCurrentSession().save(nuevoPartido);
 
                 // Crear equipos
-                Equipo equipo1 = new Equipo("EQUIPO_1", creador, LocalDateTime.now());
+                Equipo equipo1 = new Equipo("EQUIPO_1", "Descripción 1", creador, LocalDateTime.now());
                 this.sessionFactory.getCurrentSession().save(equipo1);
 
-                Equipo equipo2 = new Equipo("EQUIPO_2", creador, LocalDateTime.now());
+                Equipo equipo2 = new Equipo("EQUIPO_2", "Descripción 2", creador, LocalDateTime.now());
                 this.sessionFactory.getCurrentSession().save(equipo2);
 
                 // Crear PartidoEquipo
@@ -132,7 +132,7 @@ public class ControladorParticipantesTest {
                 this.sessionFactory.getCurrentSession().save(creador);
 
                 // Crear equipos
-                Equipo equipo1 = new Equipo("EQUIPO_1", creador, LocalDateTime.now());
+                Equipo equipo1 = new Equipo("EQUIPO_1", "Descripción 1", creador, LocalDateTime.now());
                 this.sessionFactory.getCurrentSession().save(equipo1);
 
                 this.sessionFactory.getCurrentSession().flush();

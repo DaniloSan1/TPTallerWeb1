@@ -6,6 +6,8 @@ public interface RepositorioPartido {
 
     Partido porId(Long id);
 
+    Partido obtenerPorIdConJugadores(Long id);
+
     void guardar(Partido partido);
 
     List<Partido> listar(String busqueda, Zona filtroZona, Nivel filtroNivel);
@@ -13,4 +15,6 @@ public interface RepositorioPartido {
     List<Partido> listarPorCreador(Long idCreador);
 
     void actualizar(Partido partido);
+
+    List<Partido> listarPorEquipoConInfoCancha(Long idEquipo);
 }
