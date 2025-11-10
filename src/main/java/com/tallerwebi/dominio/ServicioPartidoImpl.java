@@ -96,10 +96,7 @@ public class ServicioPartidoImpl implements ServicioPartido {
     public Partido anotarParticipante(Partido partido, Equipo equipo, Usuario usuario)
             throws YaExisteElParticipante, NoHayCupoEnPartido {
 
-        // validarCupo() devuelve boolean indicando si hay lugar
-        if (!partido.validarCupo()) {
-            throw new NoHayCupoEnPartido();
-        }
+        partido.validarCupo();
 
         EquipoJugador equipoJugador = servicioEquipoJugador.crearEquipoJugador(equipo, usuario);
         partido.agregarParticipante(equipoJugador);
@@ -109,8 +106,7 @@ public class ServicioPartidoImpl implements ServicioPartido {
 
     @Override
     public void abandonarPartido(Long partidoId, Usuario usuario) {
-    
-        Partido partido = obtenerPorId(partidoId);
+        Partido partido = obtenerPorIdConJugadores(partidoId);
         EquipoJugador equipoJugador = partido.buscarJugador(usuario.getId());
         servicioEquipoJugador.eliminarPorId(equipoJugador.getId());
     }

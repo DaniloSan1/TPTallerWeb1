@@ -182,3 +182,10 @@ INSERT INTO Amistad (usuario_1_id, usuario_2_id, estadoDeAmistad, fechaSolicitud
 	(1, 8, 'ACEPTADA', CURRENT_DATE()),
 	(1, 9, 'ACEPTADA', CURRENT_DATE()),
 	(1, 10, 'ACEPTADA', CURRENT_DATE());
+
+-- Pending requests targeted to John (id = 1) for testing accept flow
+INSERT INTO Amistad (usuario_1_id, usuario_2_id, estadoDeAmistad, fechaSolicitud) VALUES
+	(2, 1, 'PENDIENTE', CURRENT_DATE()),
+	(3, 1, 'PENDIENTE', CURRENT_DATE()),
+	(4, 1, 'PENDIENTE', CURRENT_DATE()),
+	(5, 1, 'PENDIENTE', CURRENT_DATE());

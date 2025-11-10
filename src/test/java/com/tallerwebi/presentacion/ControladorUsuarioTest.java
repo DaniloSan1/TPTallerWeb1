@@ -38,7 +38,7 @@ public class ControladorUsuarioTest {
         servicioAmistadMock = mock(ServicioAmistad.class);
         sessionMock = mock(HttpSession.class);
         httpServletRequestMock = mock(HttpServletRequest.class);
-        controladorUsuario = new ControladorUsuario(servicioLoginMock,servicioUsuarioMock,servicioAmistadMock);
+        controladorUsuario = new ControladorUsuario(servicioLoginMock, servicioUsuarioMock, servicioAmistadMock);
 
         requestMock = mock(HttpServletRequest.class);
         usuarioMock = mock(Usuario.class);
@@ -100,8 +100,6 @@ public class ControladorUsuarioTest {
         usuarioEditado.setApellido("NuevoApellido");
         usuarioEditado.setPosicionFavorita("Delantero");
 
-
-
         when(requestMock.getSession()).thenReturn(sessionMock);
         when(sessionMock.getAttribute("EMAIL")).thenReturn("user@example.com");
         when(servicioLoginMock.buscarPorEmail("user@example.com")).thenReturn(usuarioEnSesion);
@@ -139,10 +137,7 @@ public class ControladorUsuarioTest {
         when(requestMock.getSession()).thenReturn(sessionMock);
         ModelMap modelo = new ModelMap();
 
-
-
         String vista = controladorUsuario.guardarCambios(usuarioEditado, requestMock, modelo);
-
 
         assertEquals("editarPerfil", vista);
         assertTrue(modelo.containsKey("error"));

@@ -19,7 +19,8 @@ public class ReiniciarDB {
             Statement stmt = conn.createStatement();
 
             stmt.executeUpdate("DELETE FROM Usuario WHERE email = 'e2e@unlam.edu.ar';");
-            stmt.executeUpdate("DELETE FROM EquipoJugador WHERE equipo_id = 1 and usuario_id = 1;");
+            stmt.executeUpdate(
+                    "DELETE FROM EquipoJugador WHERE usuario_id = 1 AND equipo_id IN (SELECT equipo_id FROM PartidoEquipo WHERE partido_id = 2);");
             conn.close();
             System.out.println("Base de datos limpiada exitosamente");
 

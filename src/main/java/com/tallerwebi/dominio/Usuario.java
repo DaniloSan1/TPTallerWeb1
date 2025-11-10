@@ -176,6 +176,7 @@ public class Usuario {
     public List<ReseniaCancha> getReseñasCanchas() {
         return reseniasCanchas;
     }
+
     public void setReseñasCanchas(List<ReseniaCancha> reseñasCanchas) {
         this.reseniasCanchas = reseñasCanchas;
     }

@@ -164,7 +164,7 @@ public class ControladorPartido {
 
             Usuario usuario = servicioLogin.buscarPorEmail(request.getSession().getAttribute("EMAIL").toString());
             Equipo equipo = servicioEquipo.buscarPorId(equipoId);
-            Partido partido = servicio.obtenerPorId(id);
+            Partido partido = servicio.obtenerPorIdConJugadores(id);
             partido = servicio.anotarParticipante(partido, equipo, usuario);
 
             redirectAttributes.addFlashAttribute("success", "Te has unido al partido correctamente.");

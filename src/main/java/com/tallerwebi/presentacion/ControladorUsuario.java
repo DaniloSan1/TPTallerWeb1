@@ -22,7 +22,8 @@ public class ControladorUsuario {
     private ServicioLogin servicioLogin;
     private ServicioAmistad servicioAmistad;
 
-    public ControladorUsuario(ServicioLogin servicioLogin, ServicioUsuario servicioUsuario, ServicioAmistad servicioAmistad) {
+    public ControladorUsuario(ServicioLogin servicioLogin, ServicioUsuario servicioUsuario,
+            ServicioAmistad servicioAmistad) {
         this.servicioLogin = servicioLogin;
         this.servicioUsuario = servicioUsuario;
         this.servicioAmistad = servicioAmistad;
@@ -54,8 +55,7 @@ public class ControladorUsuario {
             return "redirect:/perfil";
         }
 
-    Amistad amistad = servicioAmistad.buscarRelacionEntreUsuarios(usuarioActual.getId(), usuarioAVer.getId());
-
+        Amistad amistad = servicioAmistad.buscarRelacionEntreUsuarios(usuarioActual.getId(), usuarioAVer.getId());
 
         modelo.addAttribute("usuarioAVer", usuarioAVer);
         modelo.addAttribute("usuarioActual", usuarioActual);
