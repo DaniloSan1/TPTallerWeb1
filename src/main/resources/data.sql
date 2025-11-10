@@ -124,13 +124,13 @@ INSERT INTO FotoCancha(id, cancha_id, url) VALUES
 (NULL, 6, 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR2yuiJDyLI93stVf9dBqBRFUKLE-ZhxAo4dw&s');
 
 -- Insert equipos for partidos
-INSERT INTO Equipo(id, nombre, creado_por_id, fechaCreacion) VALUES
-(NULL, 'Equipo 1', (SELECT creador_id FROM Partido WHERE id = 1), NOW()),
-(NULL, 'Equipo 2', (SELECT creador_id FROM Partido WHERE id = 1), NOW()),
-(NULL, 'Equipo 1', (SELECT creador_id FROM Partido WHERE id = 2), NOW()),
-(NULL, 'Equipo 2', (SELECT creador_id FROM Partido WHERE id = 2), NOW()),
-(NULL, 'Equipo 1', (SELECT creador_id FROM Partido WHERE id = 3), NOW()),
-(NULL, 'Equipo 2', (SELECT creador_id FROM Partido WHERE id = 3), NOW());
+INSERT INTO Equipo(id, nombre, creado_por_id, fechaCreacion, descripcion, insignia_url) VALUES
+(NULL, 'Equipo 1', (SELECT creador_id FROM Partido WHERE id = 1), NOW(), 'Equipo formado para el primer partido. Buscamos jugadores comprometidos y con ganas de pasarla bien.', 'https://www.ligaprofesional.ar/wp-content/uploads/2024/06/BOC-escudo.png'),
+(NULL, 'Equipo 2', (SELECT creador_id FROM Partido WHERE id = 1), NOW(), 'Segundo equipo del partido. Unidos por la pasión del fútbol.', 'https://www.ligaprofesional.ar/wp-content/uploads/2024/06/RIV-escudo.png'),
+(NULL, 'Equipo 1', (SELECT creador_id FROM Partido WHERE id = 2), NOW(), 'Equipo de nivel avanzado. Jugamos limpio y con estrategia.', 'https://www.ligaprofesional.ar/wp-content/uploads/2024/06/SLO-escudo.png'),
+(NULL, 'Equipo 2', (SELECT creador_id FROM Partido WHERE id = 2), NOW(), 'Buscamos la victoria siempre con fair play.', 'https://www.ligaprofesional.ar/wp-content/uploads/2024/06/RAC-escudo.png'),
+(NULL, 'Equipo 1', (SELECT creador_id FROM Partido WHERE id = 3), NOW(), 'Equipo nocturno. Nos gusta el fútbol bajo las estrellas.', 'https://www.ligaprofesional.ar/wp-content/uploads/2024/06/IND-escudo.png'),
+(NULL, 'Equipo 2', (SELECT creador_id FROM Partido WHERE id = 3), NOW(), 'Segundo equipo del partido nocturno. Juego limpio y diversión.', 'https://www.ligaprofesional.ar/wp-content/uploads/2024/06/VEL-escudo.png');
 
 -- Insert partido_equipo
 INSERT INTO PartidoEquipo(id, partido_id, equipo_id, goles) VALUES
@@ -142,13 +142,14 @@ INSERT INTO PartidoEquipo(id, partido_id, equipo_id, goles) VALUES
 (NULL, 3, (SELECT id FROM Equipo WHERE nombre = 'Equipo 2' AND creado_por_id = (SELECT creador_id FROM Partido WHERE id = 3)), 0);
 -- Insert equipo_jugador
 INSERT INTO EquipoJugador(id, equipo_id, usuario_id, fecha_union, es_capitan) VALUES
-(NULL, (SELECT id FROM Equipo WHERE nombre = 'Equipo 1' AND creado_por_id = (SELECT creador_id FROM Partido WHERE id = 1)), 2, NOW(), false),
+(NULL, (SELECT id FROM Equipo WHERE nombre = 'Equipo 1' AND creado_por_id = (SELECT creador_id FROM Partido WHERE id = 1)), 1, NOW(), false),
+(NULL, (SELECT id FROM Equipo WHERE nombre = 'Equipo 1' AND creado_por_id = (SELECT creador_id FROM Partido WHERE id = 1)), 2, NOW(), true),
 (NULL, (SELECT id FROM Equipo WHERE nombre = 'Equipo 1' AND creado_por_id = (SELECT creador_id FROM Partido WHERE id = 1)), 3, NOW(), false),
 (NULL, (SELECT id FROM Equipo WHERE nombre = 'Equipo 1' AND creado_por_id = (SELECT creador_id FROM Partido WHERE id = 1)), 4, NOW(), false),
 (NULL, (SELECT id FROM Equipo WHERE nombre = 'Equipo 2' AND creado_por_id = (SELECT creador_id FROM Partido WHERE id = 1)), 5, NOW(), false),
 (NULL, (SELECT id FROM Equipo WHERE nombre = 'Equipo 2' AND creado_por_id = (SELECT creador_id FROM Partido WHERE id = 1)), 6, NOW(), false),
 (NULL, (SELECT id FROM Equipo WHERE nombre = 'Equipo 2' AND creado_por_id = (SELECT creador_id FROM Partido WHERE id = 1)), 7, NOW(), false),
-(NULL, (SELECT id FROM Equipo WHERE nombre = 'Equipo 2' AND creado_por_id = (SELECT creador_id FROM Partido WHERE id = 1)), 8, NOW(), false);
+(NULL, (SELECT id FROM Equipo WHERE nombre = 'Equipo 2' AND creado_por_id = (SELECT creador_id FROM Partido WHERE id = 1)), 8, NOW(), true);
 
 -- Insertar amistades
 INSERT INTO Amistad (usuario_1_id, usuario_2_id, estadoDeAmistad, fechaSolicitud) VALUES

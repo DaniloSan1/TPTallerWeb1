@@ -21,9 +21,7 @@ public class ServicioEquipoJugadorImpl implements ServicioEquipoJugador {
 
     @Override
     public EquipoJugador crearEquipoJugador(Equipo equipo, Usuario jugador) throws YaExisteElParticipante {
-        if (equipo.yaExisteJugador(jugador.getId())) {
-            throw new YaExisteElParticipante(); // TODO: Agregar test unitario para esta excepcion
-        }
+        validarQueNoExisteParticipanteEnEquipo(equipo, jugador);
 
         EquipoJugador equipoJugador = new EquipoJugador(equipo, jugador);
         repositorioEquipoJugador.guardar(equipoJugador);
@@ -84,5 +82,13 @@ public class ServicioEquipoJugadorImpl implements ServicioEquipoJugador {
     @Override
     public List<EquipoJugador> buscarPorEquipo(Equipo equipo) {
         return repositorioEquipoJugador.buscarPorEquipo(equipo);
+    }
+
+    @Override
+    public void validarQueNoExisteParticipanteEnEquipo(Equipo equipo, Usuario jugador) throws YaExisteElParticipante {
+        EquipoJugador existente = repositorioEquipoJugador.buscarPorEquipoYUsuario(equipo, jugador);
+        if (existente != null) {
+            throw new YaExisteElParticipante();
+        }
     }
 }

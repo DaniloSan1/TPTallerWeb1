@@ -56,4 +56,18 @@ public class ServicioReseniaCanchaImpl implements ServicioReseniaCancha {
         }
         return puede;
     }
+
+    @Override
+    public ReseniaCancha obtenerReseniaCanchaPorId(Long reseniaCanchaId) {
+        ReseniaCancha resenia = this.repositorioReseniaCancha.obtenerReseniaCanchaPorId(reseniaCanchaId);
+        if (resenia == null) {
+            throw new IllegalArgumentException("Reseña no encontrada para id: " + reseniaCanchaId);
+        }
+        return resenia;
+    }
+
+    @Override
+    public void editarReseniaCancha(ReseniaCancha reseniaCancha){
+        repositorioReseniaCancha.actualizar(reseniaCancha);
+    }
 }

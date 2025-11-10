@@ -1,0 +1,45 @@
+#contenedor-equipo {
+    display: flex;
+    flex-wrap: wrap;
+    flex-direction: column;
+    gap: 0.5rem;
+    align-items: flex-start;
+    justify-content: center;
+    width: 100%;
+}
+
+#contenedor-equipo-detalle {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.25rem;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+}
+
+#contenedor-miembros {
+    width: 100%;
+}
+
+.card-jugador {
+    width: 100%;
+}
+
+@media (min-width: 768px) {
+    #contenedor-equipo {
+        flex-direction: row;
+    }
+
+    #contenedor-equipo-detalle {
+        width: 25%;
+    }
+
+    
+    #contenedor-miembros {
+        width: calc(75% - 0.5rem);
+    }
+        
+    .card-jugador {
+        width: calc(50% - 0.25rem);
+    }
+}

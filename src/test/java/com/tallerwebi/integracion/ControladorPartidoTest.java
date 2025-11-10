@@ -115,8 +115,8 @@ public class ControladorPartidoTest {
 		this.sessionFactory.getCurrentSession().save(participante4);
 
 		// crea equipos
-		Equipo equipo1 = new Equipo("Equipo 1", creador, LocalDateTime.now());
-		Equipo equipo2 = new Equipo("Equipo 2", creador, LocalDateTime.now());
+		Equipo equipo1 = new Equipo("Equipo 1", "Descripción 1", creador, LocalDateTime.now());
+		Equipo equipo2 = new Equipo("Equipo 2", "Descripción 2", creador, LocalDateTime.now());
 		this.sessionFactory.getCurrentSession().save(equipo1);
 		this.sessionFactory.getCurrentSession().save(equipo2);
 		this.sessionFactory.getCurrentSession().flush();
@@ -188,6 +188,12 @@ public class ControladorPartidoTest {
 	@Transactional
 	@Rollback
 	public void debeRetornarLaPaginaDetallePartidoConErrorCuandoElPartidoNoExiste() throws Exception {
+		// Crear usuario en la base de datos
+		Usuario usuario = new Usuario("usuario", "password", "email@example.com", "username");
+		usuario.setApellido("apellido");
+		this.sessionFactory.getCurrentSession().save(usuario);
+		this.sessionFactory.getCurrentSession().flush();
+
 		MvcResult result = this.mockMvc.perform(get("/partidos/{id}", 999L)
 				.sessionAttr("EMAIL", "email@example.com"))
 				.andExpect(status().isOk())

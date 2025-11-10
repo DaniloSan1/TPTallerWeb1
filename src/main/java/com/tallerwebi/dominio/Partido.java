@@ -2,6 +2,7 @@ package com.tallerwebi.dominio;
 
 import javax.persistence.*;
 
+import com.tallerwebi.dominio.excepcion.NoHayCupoEnPartido;
 import com.tallerwebi.presentacion.DetalleParticipante;
 
 import java.time.LocalDateTime;
@@ -28,7 +29,7 @@ public class Partido {
     @JoinColumn(name = "creador_id")
     private Usuario creador;
 
-    @OneToMany(mappedBy = "partido", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "partido", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private Set<PartidoEquipo> equipos = new HashSet<>();
 
     @Column(name = "fecha_finalizacion")
@@ -49,7 +50,6 @@ public class Partido {
         this.descripcion = descripcion;
     }
 
-    // helpers para manejar participantes
     public Set<EquipoJugador> getParticipantes() {
         return this.equipos.stream()
                 .flatMap(pe -> pe.getJugadores().stream())
@@ -132,8 +132,11 @@ public class Partido {
         this.cupoMaximo = cupoMaximo;
     }
 
-    public boolean validarCupo() {
-        return getParticipantes().size() < this.getCupoMaximo();
+    public boolean validarCupo() throws NoHayCupoEnPartido {
+        if (getParticipantes().size() >= this.getCupoMaximo()) {
+            throw new NoHayCupoEnPartido();
+        }
+        return true;
     }
 
     public boolean validarParticipanteExistente(Long usuarioId) {

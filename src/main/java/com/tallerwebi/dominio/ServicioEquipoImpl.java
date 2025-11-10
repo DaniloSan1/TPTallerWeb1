@@ -17,8 +17,8 @@ public class ServicioEquipoImpl implements ServicioEquipo {
     }
 
     @Override
-    public Equipo crearEquipo(String nombre, Usuario creador) {
-        Equipo equipo = new Equipo(nombre, creador, LocalDateTime.now());
+    public Equipo crearEquipo(String nombre, String descripcion, Usuario creador) {
+        Equipo equipo = new Equipo(nombre, descripcion, creador, LocalDateTime.now());
         repositorioEquipo.guardar(equipo);
         return equipo;
     }

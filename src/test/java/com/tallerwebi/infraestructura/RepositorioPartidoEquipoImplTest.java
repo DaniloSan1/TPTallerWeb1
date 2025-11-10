@@ -37,7 +37,7 @@ public class RepositorioPartidoEquipoImplTest {
         Usuario creador = new Usuario("nombre", "password", "email@test.com", "username");
         sessionFactory.getCurrentSession().save(creador);
 
-        Equipo equipo = new Equipo("Equipo Test", creador, LocalDateTime.now());
+        Equipo equipo = new Equipo("Equipo Test", "Descripción del equipo", creador, LocalDateTime.now());
         sessionFactory.getCurrentSession().save(equipo);
 
         // Need to create a Reserva and Cancha for Partido
@@ -76,7 +76,7 @@ public class RepositorioPartidoEquipoImplTest {
         Usuario creador = new Usuario("nombre", "password", "email@test.com", "username");
         sessionFactory.getCurrentSession().save(creador);
 
-        Equipo equipo = new Equipo("Equipo Test", creador, LocalDateTime.now());
+        Equipo equipo = new Equipo("Equipo Test", "Descripción del equipo", creador, LocalDateTime.now());
         sessionFactory.getCurrentSession().save(equipo);
 
         // Need to create a Reserva and Cancha for Partido
