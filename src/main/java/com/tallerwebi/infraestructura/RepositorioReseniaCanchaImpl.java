@@ -10,11 +10,11 @@ import org.springframework.stereotype.Repository;
 
 import com.tallerwebi.dominio.Partido;
 import com.tallerwebi.dominio.ReseniaCancha;
-import com.tallerwebi.dominio.RespositorioReseniaCancha;
+import com.tallerwebi.dominio.RepositorioReseniaCancha;
 
 @Repository
 @Transactional
-public class RepositorioReseniaCanchaImpl implements RespositorioReseniaCancha {
+public class RepositorioReseniaCanchaImpl implements RepositorioReseniaCancha {
     private final SessionFactory sessionFactory;
 
     @Autowired

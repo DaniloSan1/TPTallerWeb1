@@ -42,5 +42,20 @@ public class RepositorioCalificacionImpl implements RepositorioCalificacion {
       .getSingleResult();
       return contador != null && contador > 0;  
     }
-    
+
+    @Override
+    public int contarCalificacionesDelUsuario(Long calificadoId){
+        String hql ="SELECT COUNT(c) FROM Calificacion c WHERE c.calificado.id = :calificadoId";
+     return ((Long) this.sessionFactory.getCurrentSession().createQuery(hql)
+                .setParameter("calificadoId",calificadoId)
+                .getSingleResult()).intValue();
+    }
+
+    @Override
+    public List<Calificacion> obtenerPorCalificado(Long calificadoId){
+        String hql ="FROM Calificacion c WHERE c.calificado.id = :calificadoId";
+        return sessionFactory.getCurrentSession().createQuery(hql,Calificacion.class)
+        .setParameter("calificadoId", calificadoId)
+        .getResultList();
+    }
 }

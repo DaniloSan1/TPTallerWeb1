@@ -2,7 +2,7 @@ package com.tallerwebi.dominio;
 
 import java.util.List;
 
-public interface RespositorioReseniaCancha {
+public interface RepositorioReseniaCancha {
     void guardar(ReseniaCancha reseniaCancha);
     List<ReseniaCancha> obtenerReseniasPorCancha(Long canchaId);
     List<ReseniaCancha> obtenerReseniasPorUsuario(Long usuarioId);

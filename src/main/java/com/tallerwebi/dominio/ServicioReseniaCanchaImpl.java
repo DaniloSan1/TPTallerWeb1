@@ -8,10 +8,10 @@ import org.springframework.stereotype.Service;
 @Service
 public class ServicioReseniaCanchaImpl implements ServicioReseniaCancha {
 
-    private final RespositorioReseniaCancha repositorioReseniaCancha;
+    private final RepositorioReseniaCancha repositorioReseniaCancha;
 
     @Autowired
-    public ServicioReseniaCanchaImpl(RespositorioReseniaCancha repositorioReseniaCancha) {
+    public ServicioReseniaCanchaImpl(RepositorioReseniaCancha repositorioReseniaCancha) {
         this.repositorioReseniaCancha = repositorioReseniaCancha;
     }
 

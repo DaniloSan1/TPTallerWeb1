@@ -21,12 +21,14 @@ public class ControladorUsuario {
     private final ServicioUsuario servicioUsuario;
     private ServicioLogin servicioLogin;
     private ServicioAmistad servicioAmistad;
+    private ServicioCalificacion servicioCalificacion;
 
     public ControladorUsuario(ServicioLogin servicioLogin, ServicioUsuario servicioUsuario,
-            ServicioAmistad servicioAmistad) {
+            ServicioAmistad servicioAmistad, ServicioCalificacion servicioCalificacion) {
         this.servicioLogin = servicioLogin;
         this.servicioUsuario = servicioUsuario;
         this.servicioAmistad = servicioAmistad;
+        this.servicioCalificacion=servicioCalificacion;
     }
 
     @GetMapping("/ver/id/{id}")
@@ -37,6 +39,8 @@ public class ControladorUsuario {
             return "redirect:/home";
         }
 
+        Double calificacionPromedioUsuario = servicioCalificacion.calcularCalificacionPromedioUsuario(usuarioAVer.getId());
+        modelo.addAttribute("calificacionPromedioUsuario", calificacionPromedioUsuario);
         modelo.addAttribute("usuarioAVer", usuarioAVer);
         return "perfilDeOtroJugador";
     }
@@ -56,7 +60,8 @@ public class ControladorUsuario {
         }
 
         Amistad amistad = servicioAmistad.buscarRelacionEntreUsuarios(usuarioActual.getId(), usuarioAVer.getId());
-
+        Double calificacionPromedioUsuario=servicioCalificacion.calcularCalificacionPromedioUsuario(usuarioAVer.getId());
+        modelo.addAttribute("calificacionPromedioUsuario",calificacionPromedioUsuario);
         modelo.addAttribute("usuarioAVer", usuarioAVer);
         modelo.addAttribute("usuarioActual", usuarioActual);
         modelo.addAttribute("amistad", amistad);
@@ -72,6 +77,10 @@ public class ControladorUsuario {
             try {
                 Usuario usuario = servicioLogin.buscarPorEmail(email);
                 modelo.addAttribute("usuario", usuario);
+
+                // Obtener calificación promedio del usuario
+                Double calificacionPromedio = servicioCalificacion.calcularCalificacionPromedioUsuario(usuario.getId());
+                modelo.addAttribute("calificacionPromedio", calificacionPromedio);
 
                 // Obtener amigos
                 List<Amistad> relaciones = servicioAmistad.verAmigos(usuario.getId());
