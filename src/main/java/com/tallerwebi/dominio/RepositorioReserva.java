@@ -7,4 +7,5 @@ public interface RepositorioReserva {
     void guardar(Reserva reserva);
     List<Reserva> porHorarioYFecha(Horario horario, LocalDateTime fechaReserva);
     List<Reserva> porUsuario(Usuario usuario);
+    List<Reserva> porUsuarioTodas(Usuario usuario);
 }

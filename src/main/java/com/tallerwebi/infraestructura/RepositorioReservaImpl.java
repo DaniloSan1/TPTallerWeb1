@@ -1,5 +1,4 @@
 package com.tallerwebi.infraestructura;
-
 import com.tallerwebi.dominio.Horario;
 import com.tallerwebi.dominio.RepositorioReserva;
 import com.tallerwebi.dominio.Reserva;
@@ -51,6 +50,17 @@ public class RepositorioReservaImpl implements RepositorioReserva {
         String hql = "FROM Reserva r " +
                      "WHERE r.usuario = :usuario " +
                      "AND r.activa = true";
+
+        return sessionFactory.getCurrentSession()
+                .createQuery(hql, Reserva.class)
+                .setParameter("usuario", usuario)
+                .getResultList();
+    }
+    
+    @Override
+    public List<Reserva> porUsuarioTodas(Usuario usuario) {
+        String hql = "FROM Reserva r " +
+                     "WHERE r.usuario = :usuario ";
 
         return sessionFactory.getCurrentSession()
                 .createQuery(hql, Reserva.class)

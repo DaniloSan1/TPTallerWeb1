@@ -96,6 +96,14 @@ public class ServicioReservaImpl implements ServicioReserva {
         }
         return this.repositorioReserva.porUsuario(usuario);
     }
+    
+    @Override
+    public List<Reserva> obtenerReservasPorUsuarioTodas(Usuario usuario) {
+        if (usuario == null) {
+            throw new RuntimeException("El usuario es nulo");
+        }
+        return this.repositorioReserva.porUsuarioTodas(usuario);
+    }
 
     @Override
     public Boolean estaDisponible(Horario horario, LocalDateTime fechaReserva) {
