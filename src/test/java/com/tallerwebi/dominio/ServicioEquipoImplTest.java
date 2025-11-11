@@ -1,6 +1,7 @@
 package com.tallerwebi.dominio;
 
 import com.tallerwebi.dominio.excepcion.EquipoNoEncontrado;
+import com.tallerwebi.dominio.excepcion.PermisosInsufficientes;
 import com.tallerwebi.infraestructura.RepositorioEquipoImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -101,5 +102,78 @@ public class ServicioEquipoImplTest {
 
         verify(repositorioEquipo).buscarEquiposPorUsuarioYNombre(usuario, filtro);
         assertThat(equiposObtenidos, equalTo(equiposEsperados));
+    }
+
+    @Test
+    public void queSePuedaVerificarSiUsuarioEsCreadorDelEquipo() {
+        Usuario creador = new Usuario("nombre", "password", "email@test.com", "username");
+        creador.setId(1L);
+        Equipo equipo = new Equipo("Equipo Test", "Descripción", creador, LocalDateTime.now());
+        equipo.setId(1L);
+
+        when(repositorioEquipo.buscarPorId(1L)).thenReturn(equipo);
+
+        boolean esCreador = servicioEquipoImpl.esUsuarioCreador(equipo.getId(), creador);
+
+        assertThat(esCreador, equalTo(true));
+    }
+
+    @Test
+    public void queSePuedaVerificarSiUsuarioNoEsCreadorDelEquipo() {
+        Usuario creador = new Usuario("nombre", "password", "email@test.com", "username");
+        creador.setId(1L);
+        Usuario otroUsuario = new Usuario("otro", "password", "otro@email.com", "otro");
+        otroUsuario.setId(2L);
+        Equipo equipo = new Equipo("Equipo Test", "Descripción", creador, LocalDateTime.now());
+        equipo.setId(1L);
+
+        when(repositorioEquipo.buscarPorId(1L)).thenReturn(equipo);
+
+        boolean esCreador = servicioEquipoImpl.esUsuarioCreador(equipo.getId(), otroUsuario);
+
+        assertThat(esCreador, equalTo(false));
+    }
+
+    @Test
+    public void queSePuedaValidarUsuarioEsCreadorSinExcepcion() throws PermisosInsufficientes {
+        Usuario creador = new Usuario("nombre", "password", "email@test.com", "username");
+        creador.setId(1L);
+        Equipo equipo = new Equipo("Equipo Test", "Descripción", creador, LocalDateTime.now());
+        equipo.setId(1L);
+
+        when(repositorioEquipo.buscarPorId(1L)).thenReturn(equipo);
+
+        servicioEquipoImpl.validarUsuarioEsCreador(equipo.getId(), creador);
+    }
+
+    @Test
+    public void queLanceExcepcionSiUsuarioNoEsCreador() {
+        Usuario creador = new Usuario("nombre", "password", "email@test.com", "username");
+        creador.setId(1L);
+        Usuario otroUsuario = new Usuario("otro", "password", "otro@email.com", "otro");
+        otroUsuario.setId(2L);
+        Equipo equipo = new Equipo("Equipo Test", "Descripción", creador, LocalDateTime.now());
+        equipo.setId(1L);
+
+        when(repositorioEquipo.buscarPorId(1L)).thenReturn(equipo);
+
+        assertThrows(PermisosInsufficientes.class, () -> {
+            servicioEquipoImpl.validarUsuarioEsCreador(equipo.getId(), otroUsuario);
+        });
+    }
+
+    @Test
+    public void queSePuedaActualizarUnEquipo() {
+        Equipo equipo = new Equipo("Equipo Original", "Descripción Original", new Usuario(), LocalDateTime.now());
+        String nuevoNombre = "Equipo Actualizado";
+        String nuevaDescripcion = "Descripción Actualizada";
+        String nuevaInsigniaUrl = "http://example.com/insignia.png";
+
+        servicioEquipoImpl.actualizarEquipo(equipo, nuevoNombre, nuevaDescripcion, nuevaInsigniaUrl);
+
+        verify(repositorioEquipo).modificar(equipo);
+        assertThat(equipo.getNombre(), equalTo(nuevoNombre));
+        assertThat(equipo.getDescripcion(), equalTo(nuevaDescripcion));
+        assertThat(equipo.getInsigniaUrl(), equalTo(nuevaInsigniaUrl));
     }
 }
