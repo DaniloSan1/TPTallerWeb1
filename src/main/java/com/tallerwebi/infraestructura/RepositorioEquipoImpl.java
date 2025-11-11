@@ -52,7 +52,7 @@ public class RepositorioEquipoImpl implements RepositorioEquipo {
     @Override
     public List<Equipo> buscarEquiposPorUsuarioYNombre(Usuario usuario, String nombre) {
         final Session session = sessionFactory.getCurrentSession();
-        String hql = "SELECT e FROM Equipo e JOIN e.jugadores ej WHERE ej.usuario = :usuario";
+        String hql = "SELECT DISTINCT e FROM Equipo e LEFT JOIN e.jugadores ej WHERE (e.creadoPor = :usuario OR ej.usuario = :usuario)";
         if (nombre != null && !nombre.trim().isEmpty()) {
             hql += " AND LOWER(e.nombre) LIKE LOWER(:nombre)";
         }
@@ -65,5 +65,15 @@ public class RepositorioEquipoImpl implements RepositorioEquipo {
         }
 
         return query.getResultList();
+    }
+
+    @Override
+    public Equipo buscarPorIdYUsuario(Long id, Usuario usuario) {
+        final Session session = sessionFactory.getCurrentSession();
+        return (Equipo) session
+                .createQuery("SELECT e FROM Equipo e WHERE e.id = :id AND e.creadoPor = :usuario", Equipo.class)
+                .setParameter("id", id)
+                .setParameter("usuario", usuario)
+                .uniqueResult();
     }
 }
