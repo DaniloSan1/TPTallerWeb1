@@ -1,6 +1,7 @@
 package com.tallerwebi.dominio;
 
 import com.tallerwebi.dominio.excepcion.EquipoNoEncontrado;
+import com.tallerwebi.dominio.excepcion.PermisosInsufficientes;
 import com.tallerwebi.infraestructura.RepositorioEquipoImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
