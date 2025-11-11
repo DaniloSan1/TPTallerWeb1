@@ -10,11 +10,11 @@ import org.springframework.stereotype.Repository;
 
 import com.tallerwebi.dominio.Partido;
 import com.tallerwebi.dominio.ReseniaCancha;
-import com.tallerwebi.dominio.RespositorioReseniaCancha;
+import com.tallerwebi.dominio.RepositorioReseniaCancha;
 
 @Repository
 @Transactional
-public class RepositorioReseniaCanchaImpl implements RespositorioReseniaCancha {
+public class RepositorioReseniaCanchaImpl implements RepositorioReseniaCancha {
     private final SessionFactory sessionFactory;
 
     @Autowired
@@ -63,4 +63,21 @@ public class RepositorioReseniaCanchaImpl implements RespositorioReseniaCancha {
                 .getResultList();
 
     }
+
+    @Override
+    public ReseniaCancha obtenerReseniaCanchaPorId(Long reseniaCanchaId){
+        String hql = "FROM ReseniaCancha r WHERE r.id = :reseniaCanchaId";
+        List<ReseniaCancha> resultados = this.sessionFactory.getCurrentSession()
+                .createQuery(hql, ReseniaCancha.class)
+                .setParameter("reseniaCanchaId", reseniaCanchaId)
+                .setMaxResults(1)
+                .getResultList();
+        return resultados.isEmpty() ? null : resultados.get(0);
+    }
+
+    @Override
+    public void actualizar(ReseniaCancha reseniaCancha){
+        this.sessionFactory.getCurrentSession().merge(reseniaCancha);
+    }
+
 }

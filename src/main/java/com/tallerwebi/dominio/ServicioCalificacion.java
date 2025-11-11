@@ -7,4 +7,5 @@ import org.springframework.stereotype.Service;
 public interface ServicioCalificacion {
     public void calificarJugador(Usuario calificador, Usuario calificado, Partido partido, Integer puntuacion, String comentario);
     public List<Calificacion> obtenerCalificacionesPorPartido(Long partidoId);
+    double calcularCalificacionPromedioUsuario(Long usuarioId);
 }
