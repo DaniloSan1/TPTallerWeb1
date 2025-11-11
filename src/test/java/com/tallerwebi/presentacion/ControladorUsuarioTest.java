@@ -20,6 +20,8 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalToIgnoringCase;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.*;
 
 public class ControladorUsuarioTest {
@@ -38,6 +40,7 @@ public class ControladorUsuarioTest {
         servicioLoginMock = mock(ServicioLogin.class);
         servicioUsuarioMock = mock(ServicioUsuario.class);
         servicioAmistadMock = mock(ServicioAmistad.class);
+        servicioCalificacionMock = mock(ServicioCalificacion.class);
         sessionMock = mock(HttpSession.class);
         httpServletRequestMock = mock(HttpServletRequest.class);
         controladorUsuario = new ControladorUsuario(servicioLoginMock, servicioUsuarioMock, servicioAmistadMock, servicioCalificacionMock);
