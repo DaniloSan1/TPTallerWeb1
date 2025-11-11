@@ -57,11 +57,7 @@ public class ControladorEquipos {
             String busqueda = request.getParameter("busqueda");
             List<com.tallerwebi.dominio.Equipo> equipos;
 
-            if (busqueda != null && !busqueda.trim().isEmpty()) {
-                equipos = servicioEquipo.obtenerEquiposDelUsuarioConFiltro(usuario, busqueda);
-            } else {
-                equipos = servicioEquipo.obtenerEquiposDelUsuario(usuario);
-            }
+            equipos = servicioEquipo.obtenerEquiposDelUsuarioConFiltro(usuario, busqueda);
 
             model.put("equipos", equipos);
             model.put("busqueda", busqueda != null ? busqueda : "");
@@ -71,6 +67,16 @@ public class ControladorEquipos {
         } catch (UsuarioNoEncontradoException e) {
             return "redirect:/login";
         }
+    }
+
+    @GetMapping("/equipos/crear")
+    public String crearEquipo(HttpServletRequest request, ModelMap model) {
+        String email = (String) request.getSession().getAttribute("EMAIL");
+        if (email == null) {
+            return "redirect:/login";
+        }
+        model.put("currentPage", "mis-equipos");
+        return "crear-equipo";
     }
 
     @GetMapping("/equipos/{id}")
@@ -114,8 +120,7 @@ public class ControladorEquipos {
 
         try {
             Usuario usuario = servicioLogin.buscarPorEmail(email);
-            servicioEquipo.validarUsuarioEsCreador(id, usuario);
-            Equipo equipo = servicioEquipo.buscarPorId(id);
+            Equipo equipo = servicioEquipo.buscarPorIdYUsuario(id, usuario);
 
             model.put("equipo", equipo);
             model.put("currentPage", "mis-equipos");
@@ -148,8 +153,7 @@ public class ControladorEquipos {
 
         try {
             Usuario usuario = servicioLogin.buscarPorEmail(email);
-            servicioEquipo.validarUsuarioEsCreador(id, usuario);
-            Equipo equipo = servicioEquipo.buscarPorId(id);
+            Equipo equipo = servicioEquipo.buscarPorIdYUsuario(id, usuario);
 
             // Validate required fields
             if (nombre == null || nombre.trim().isEmpty()) {
@@ -194,6 +198,55 @@ public class ControladorEquipos {
         } catch (Exception e) {
             model.put("error", "Error inesperado al actualizar el equipo");
             return "redirect:/equipos/" + id + "/editar";
+        }
+    }
+
+    @PostMapping("/equipos/crear")
+    public String guardarEquipo(@RequestParam("nombre") String nombre,
+            @RequestParam("descripcion") String descripcion,
+            @RequestParam(value = "insignia", required = false) MultipartFile insignia,
+            HttpServletRequest request, RedirectAttributes redirectAttributes, ModelMap model)
+            throws UsuarioNoEncontradoException {
+        String email = (String) request.getSession().getAttribute("EMAIL");
+        if (email == null) {
+            return "redirect:/login";
+        }
+
+        try {
+            Usuario usuario = servicioLogin.buscarPorEmail(email);
+
+            // Validate required fields
+            if (nombre == null || nombre.trim().isEmpty()) {
+                model.put("error", "El nombre del equipo es obligatorio");
+                return "crear-equipo";
+            }
+            if (descripcion == null || descripcion.trim().isEmpty()) {
+                model.put("error", "La descripción del equipo es obligatoria");
+                return "crear-equipo";
+            }
+            if (insignia == null || insignia.isEmpty()) {
+                model.put("error", "La insignia del equipo es obligatoria");
+                return "crear-equipo";
+            }
+
+            String insigniaUrl;
+            try {
+                insigniaUrl = servicioImagenes.subirImagen(insignia);
+            } catch (Exception e) {
+                model.put("error", "Error al subir la insignia: " + e.getMessage());
+                return "crear-equipo";
+            }
+
+            // Create equipo
+            Equipo equipo = servicioEquipo.crearEquipo(nombre.trim(), descripcion.trim(), insigniaUrl, usuario);
+
+            redirectAttributes.addFlashAttribute("success", "Equipo creado exitosamente");
+            return "redirect:/equipos/" + equipo.getId();
+        } catch (UsuarioNoEncontradoException e) {
+            return "redirect:/login";
+        } catch (Exception e) {
+            model.put("error", "Error inesperado al crear el equipo");
+            return "crear-equipo";
         }
     }
 }

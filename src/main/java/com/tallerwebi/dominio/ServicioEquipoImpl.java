@@ -1,7 +1,6 @@
 package com.tallerwebi.dominio;
 
 import com.tallerwebi.dominio.excepcion.EquipoNoEncontrado;
-import com.tallerwebi.dominio.excepcion.PermisosInsufficientes;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -20,8 +19,9 @@ public class ServicioEquipoImpl implements ServicioEquipo {
     }
 
     @Override
-    public Equipo crearEquipo(String nombre, String descripcion, Usuario creador) {
+    public Equipo crearEquipo(String nombre, String descripcion, String insigniaUrl, Usuario creador) {
         Equipo equipo = new Equipo(nombre, descripcion, creador, LocalDateTime.now());
+        equipo.setInsigniaUrl(insigniaUrl);
         repositorioEquipo.guardar(equipo);
         return equipo;
     }
@@ -50,11 +50,6 @@ public class ServicioEquipoImpl implements ServicioEquipo {
     }
 
     @Override
-    public List<Equipo> obtenerEquiposDelUsuario(Usuario usuario) {
-        return repositorioEquipo.buscarEquiposPorUsuario(usuario);
-    }
-
-    @Override
     public List<Equipo> obtenerEquiposDelUsuarioConFiltro(Usuario usuario, String nombre) {
         return repositorioEquipo.buscarEquiposPorUsuarioYNombre(usuario, nombre);
     }
@@ -75,9 +70,11 @@ public class ServicioEquipoImpl implements ServicioEquipo {
     }
 
     @Override
-    public void validarUsuarioEsCreador(Long equipoId, Usuario usuario) throws PermisosInsufficientes {
-        if (!esUsuarioCreador(equipoId, usuario)) {
-            throw new PermisosInsufficientes();
+    public Equipo buscarPorIdYUsuario(Long equipoId, Usuario usuario) throws EquipoNoEncontrado {
+        Equipo equipo = repositorioEquipo.buscarPorIdYUsuario(equipoId, usuario);
+        if (equipo == null) {
+            throw new EquipoNoEncontrado();
         }
+        return equipo;
     }
 }

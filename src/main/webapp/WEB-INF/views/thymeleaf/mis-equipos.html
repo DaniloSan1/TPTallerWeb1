@@ -39,6 +39,9 @@
                     class="d-flex align-items-center justify-content-between mb-3 card-header"
                 >
                     <h1 class="mb-2">Mis Equipos</h1>
+                    <a th:href="@{/equipos/crear}" class="btn btn-primary"
+                        >Crear Nuevo Equipo</a
+                    >
                 </div>
 
                 <form th:action="@{/equipos/mis-equipos}" method="get">
