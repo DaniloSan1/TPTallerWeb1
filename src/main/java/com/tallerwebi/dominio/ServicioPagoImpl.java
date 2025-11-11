@@ -96,6 +96,18 @@ public class ServicioPagoImpl implements ServicioPago {
     }
 
     @Override
+    public void guardarPagoTorneo(Torneo torneo, Usuario usuario, String preferenciaId, Double monto) {
+        Pago pago = new Pago();
+        pago.setTorneo(torneo);
+        pago.setUsuario(usuario);
+        pago.setPreferenciaId(preferenciaId);
+        pago.setMonto(monto);
+        pago.setEstado("Pendiente");
+        pago.setFechaCreacion(LocalDateTime.now());
+        repositorioPago.guardarPago(pago);
+    }
+
+    @Override
     public Pago obtenerPorPreferencia(String preferenceId) {
         return repositorioPago.obtenerPorPreferencia(preferenceId);
     }
