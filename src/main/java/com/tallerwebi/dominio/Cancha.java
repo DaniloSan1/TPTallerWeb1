@@ -27,7 +27,7 @@ public class Cancha {
     public Cancha() {
     }
 
-    public Cancha(String nombre,String direccion, Integer capacidad, String tipoSuelo, Zona zona) {
+    public Cancha(String nombre, String direccion, Integer capacidad, String tipoSuelo, Zona zona) {
         this.nombre = nombre;
         this.direccion = direccion;
         this.capacidad = capacidad;
@@ -76,38 +76,43 @@ public class Cancha {
         this.zona = zona;
     }
 
-   
+    public List<FotoCancha> getFotos() {
+        return fotos;
+    }
+
     public List<Horario> getHorarios() {
         return horarios;
     }
 
     public void setHorarios(List<Horario> horarios) {
         this.horarios = horarios;
-       
+
     }
 
     public void addHorario(Horario h) {
         horarios.add(h);
         h.setCancha(this);
-       
+
     }
 
     public void removeHorario(Horario h) {
         horarios.remove(h);
         h.setCancha(null);
-       
+
     }
-    
-    
+
     public String getDireccion() {
         return direccion;
     }
+
     public void setDireccion(String direccion) {
         this.direccion = direccion;
     }
+
     public Double getPrecio() {
         return precio;
     }
+
     public void setPrecio(Double precio) {
         this.precio = precio;
     }

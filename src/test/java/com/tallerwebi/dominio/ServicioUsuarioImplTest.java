@@ -16,20 +16,21 @@ public class ServicioUsuarioImplTest {
     private RepositorioUsuario repositorioUsuario;
 
     @BeforeEach
-    public void init(){
+    public void init() {
         repositorioUsuario = mock(RepositorioUsuarioImpl.class);
         servicioUsuarioImpl = new ServicioUsuarioImpl(repositorioUsuario);
 
     }
 
     @Test
-    public void alBuscarUnUsuarioRegistradoPorEmailYPasswordMeDeberiaDevolverElUsuarioCorrecto() throws UsuarioNoEncontradoException {
+    public void alBuscarUnUsuarioRegistradoPorEmailYPasswordMeDeberiaDevolverElUsuarioCorrecto()
+            throws UsuarioNoEncontradoException {
 
         Usuario usuarioABuscar = new Usuario();
         usuarioABuscar.setEmail("email@email");
         usuarioABuscar.setPassword("password");
 
-        when(repositorioUsuario.buscarUsuario("email@email","password")).thenReturn(usuarioABuscar);
+        when(repositorioUsuario.buscarUsuario("email@email", "password")).thenReturn(usuarioABuscar);
         Usuario usuarioRetornado = servicioUsuarioImpl.buscarPorEmailYPassword("email@email", "password");
 
         assertThat(usuarioABuscar, equalTo(usuarioRetornado));
@@ -41,10 +42,10 @@ public class ServicioUsuarioImplTest {
         usuarioABuscar.setEmail("email@email");
         usuarioABuscar.setPassword("password");
 
-        when(repositorioUsuario.buscarUsuario("email@email","password")).thenReturn(null);
+        when(repositorioUsuario.buscarUsuario("email@email", "password")).thenReturn(null);
         assertThrows(UsuarioNoEncontradoException.class, () -> {
             servicioUsuarioImpl.buscarPorEmailYPassword("email@email", "password");
-        } );
+        });
     }
 
     @Test
@@ -52,13 +53,12 @@ public class ServicioUsuarioImplTest {
         Usuario usuarioARegistrar = new Usuario();
         usuarioARegistrar.setEmail("email@email");
         usuarioARegistrar.setPassword("password");
-        when(repositorioUsuario.buscarUsuario("email@email","password")).thenReturn(null);
+        when(repositorioUsuario.buscarUsuario("email@email", "password")).thenReturn(null);
         servicioUsuarioImpl.registrarUsuario(usuarioARegistrar);
-        when(repositorioUsuario.buscarUsuario("email@email","password")).thenReturn(usuarioARegistrar);
+        when(repositorioUsuario.buscarUsuario("email@email", "password")).thenReturn(usuarioARegistrar);
         Usuario usuarioEncontrado = servicioUsuarioImpl.buscarPorEmailYPassword("email@email", "password");
         assertThat(usuarioARegistrar, equalTo(usuarioEncontrado));
     }
-
 
     @Test
     public void queDevuelvaErrorCuandoUnUsuarioExistenteSeQuiereRegistrar() throws UsuarioExistenteException {
@@ -74,8 +74,8 @@ public class ServicioUsuarioImplTest {
         });
     }
 
-
-    //Test de modificar usuario pendiente hasta que implemente la parte de editar perfil
+    // Test de modificar usuario pendiente hasta que implemente la parte de editar
+    // perfil
     @Test
     public void queSePuedaModificarUnUsuarioCorrectamente() {
         // Dado
@@ -95,15 +95,11 @@ public class ServicioUsuarioImplTest {
         usuarioModificado.setApellido("ApellidoNuevo");
         usuarioModificado.setPosicionFavorita("Delantero");
 
-
         when(repositorioUsuario.buscar("email@email.com")).thenReturn(usuarioModificado);
-
 
         servicioUsuarioImpl.modificarUsuario(usuarioModificado);
 
-
         verify(repositorioUsuario).modificar(usuarioModificado);
-
 
         Usuario usuarioActualizado = repositorioUsuario.buscar("email@email.com");
         assertThat(usuarioActualizado.getUsername(), equalTo("usuarioNuevo"));
@@ -114,19 +110,29 @@ public class ServicioUsuarioImplTest {
 
     @Test
     public void queAlBuscarPorUsernameDevuelveUnUsuarioCorrectamente() {
-        Usuario usuarioOriginal = new Usuario("nombre","contraseña","email","username");
+        Usuario usuarioOriginal = new Usuario("nombre", "contraseña", "email", "username");
         usuarioOriginal.setId(1L);
         when(repositorioUsuario.buscar("username")).thenReturn(usuarioOriginal);
-        Usuario usuarioBuscado =  repositorioUsuario.buscar("username");
+        Usuario usuarioBuscado = repositorioUsuario.buscar("username");
         assertThat(usuarioOriginal, equalTo(usuarioBuscado));
     }
 
     @Test
-    public void queAlBuscarPorIdDevuelvaUnUsuarioCorrectamente(){
-        Usuario usuarioOriginal = new Usuario("nombre","contraseña","email","username");
+    public void queAlBuscarPorIdDevuelvaUnUsuarioCorrectamente() {
+        Usuario usuarioOriginal = new Usuario("nombre", "contraseña", "email", "username");
         usuarioOriginal.setId(1L);
         when(repositorioUsuario.buscarPorId(1L)).thenReturn(usuarioOriginal);
-        Usuario usuarioBuscado =  repositorioUsuario.buscarPorId(1L);
+        Usuario usuarioBuscado = repositorioUsuario.buscarPorId(1L);
         assertThat(usuarioOriginal, equalTo(usuarioBuscado));
+    }
+
+    @Test
+    public void queSePuedaBuscarUnUsuarioPorEmail() {
+        Usuario usuarioEsperado = new Usuario("nombre", "password", "email@test.com", "username");
+        when(repositorioUsuario.buscar("email@test.com")).thenReturn(usuarioEsperado);
+
+        Usuario usuarioEncontrado = servicioUsuarioImpl.buscarPorEmail("email@test.com");
+
+        assertThat(usuarioEncontrado, equalTo(usuarioEsperado));
     }
 }

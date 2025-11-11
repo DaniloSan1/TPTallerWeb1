@@ -13,27 +13,30 @@ public class ServicioLoginImpl implements ServicioLogin {
     private RepositorioUsuario repositorioUsuario;
 
     @Autowired
-    public ServicioLoginImpl(RepositorioUsuario repositorioUsuario){
+    public ServicioLoginImpl(RepositorioUsuario repositorioUsuario) {
         this.repositorioUsuario = repositorioUsuario;
     }
 
     @Override
-    public Usuario consultarUsuario (String email, String password) {
+    public Usuario consultarUsuario(String email, String password) {
         return repositorioUsuario.buscarUsuario(email, password);
     }
 
     @Override
     public void registrar(Usuario usuario) throws UsuarioNoEncontradoException {
         Usuario usuarioEncontrado = repositorioUsuario.buscarUsuario(usuario.getEmail(), usuario.getPassword());
-        if(usuarioEncontrado != null){
+        if (usuarioEncontrado != null) {
             throw new UsuarioNoEncontradoException();
         }
         repositorioUsuario.guardar(usuario);
     }
 
     @Override
-    public Usuario buscarPorEmail(String email) {
+    public Usuario buscarPorEmail(String email) throws UsuarioNoEncontradoException {
         Usuario usuarioEncontrado = repositorioUsuario.buscar(email);
+        if (usuarioEncontrado == null) {
+            throw new UsuarioNoEncontradoException();
+        }
         return usuarioEncontrado;
     }
 

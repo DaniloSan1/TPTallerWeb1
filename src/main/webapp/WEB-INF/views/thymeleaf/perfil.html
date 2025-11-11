@@ -33,7 +33,7 @@
         <div class="col-md-6">
             <div class="card shadow profile-card">
                 <div class="card-header">
-                    <div class="d-flex justify-content-between align-items-center">
+                    <div class="d-flex justify-content-between align-items-center mb-3">
                         <div>
                             <h4 class="mb-0" th:text="${usuario.nombre + ' ' + usuario.apellido}">Nombre Apellido</h4>
                             <small th:text="${usuario.email}">email@ejemplo.com</small>
@@ -47,6 +47,21 @@
                                 2
                             </span>
                         </a>
+                        <a th:href="@{/historial-reviews/{id}(id=${usuario.id})}" class="btn btn-outline-primary position-relative">
+                            Historial de reseñas
+                        </a>
+                    </div>
+                    <!-- Calificación promedio al final del header azul -->
+                    <div class="text-center">
+                        <h5 class="mb-0">
+                            <span th:if="${calificacionPromedio != null and calificacionPromedio > 0}">
+                                <strong>Calificación promedio:</strong>
+                                <span th:text="${#numbers.formatDecimal(calificacionPromedio, 1, 2)}" class="text-gold fw-bold">0.00</span>
+                            </span>
+                            <span th:if="${calificacionPromedio == null or calificacionPromedio == 0.0}">
+                                <strong>Sin calificaciones</strong>
+                            </span>
+                        </h5>
                     </div>
                 </div>
                 <div class="card-body">

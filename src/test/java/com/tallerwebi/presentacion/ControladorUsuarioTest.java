@@ -1,9 +1,11 @@
 package com.tallerwebi.presentacion;
 
 import com.tallerwebi.dominio.ServicioAmistad;
+import com.tallerwebi.dominio.ServicioCalificacion;
 import com.tallerwebi.dominio.ServicioLogin;
 import com.tallerwebi.dominio.ServicioUsuario;
 import com.tallerwebi.dominio.Usuario;
+import com.tallerwebi.dominio.excepcion.UsuarioNoEncontradoException;
 import com.tallerwebi.presentacion.ControladorUsuario;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -24,6 +26,7 @@ public class ControladorUsuarioTest {
     private ServicioLogin servicioLoginMock;
     private ServicioUsuario servicioUsuarioMock;
     private ServicioAmistad servicioAmistadMock;
+    private ServicioCalificacion servicioCalificacionMock;
     private ControladorUsuario controladorUsuario;
     private Usuario usuarioMock;
     private HttpServletRequest httpServletRequestMock;
@@ -37,7 +40,7 @@ public class ControladorUsuarioTest {
         servicioAmistadMock = mock(ServicioAmistad.class);
         sessionMock = mock(HttpSession.class);
         httpServletRequestMock = mock(HttpServletRequest.class);
-        controladorUsuario = new ControladorUsuario(servicioLoginMock, servicioUsuarioMock, servicioAmistadMock);
+        controladorUsuario = new ControladorUsuario(servicioLoginMock, servicioUsuarioMock, servicioAmistadMock, servicioCalificacionMock);
 
         requestMock = mock(HttpServletRequest.class);
         usuarioMock = mock(Usuario.class);
@@ -50,7 +53,7 @@ public class ControladorUsuarioTest {
     }
 
     @Test
-    public void perfilConUsuarioLogueadoDeberiaCargarElPerfil() {
+    public void perfilConUsuarioLogueadoDeberiaCargarElPerfil() throws UsuarioNoEncontradoException {
         when(httpServletRequestMock.getSession()).thenReturn(sessionMock);
         when(sessionMock.getAttribute("EMAIL")).thenReturn("usuario@test.com");
         when(servicioLoginMock.buscarPorEmail("usuario@test.com")).thenReturn(usuarioMock);
@@ -64,7 +67,7 @@ public class ControladorUsuarioTest {
     }
 
     @Test
-    public void perfilSinUsuarioLogueadoDeberiaIrAlLogin() {
+    public void perfilSinUsuarioLogueadoDeberiaIrAlLogin() throws UsuarioNoEncontradoException {
         when(httpServletRequestMock.getSession()).thenReturn(sessionMock);
         when(sessionMock.getAttribute("EMAIL")).thenReturn(null);
 
@@ -86,7 +89,7 @@ public class ControladorUsuarioTest {
     }
 
     @Test
-    public void queActualiceLosDatosDelUsuarioCorrectamente() {
+    public void queActualiceLosDatosDelUsuarioCorrectamente() throws UsuarioNoEncontradoException {
         Usuario usuarioEnSesion = new Usuario();
         usuarioEnSesion.setId(1L);
         usuarioEnSesion.setEmail("user@example.com");
@@ -117,7 +120,7 @@ public class ControladorUsuarioTest {
     }
 
     @Test
-    public void queLanceExcepcionCuandoElUsernameYaExiste() {
+    public void queLanceExcepcionCuandoElUsernameYaExiste() throws UsuarioNoEncontradoException {
         Usuario usuarioEnSesion = new Usuario();
         usuarioEnSesion.setId(1L);
         usuarioEnSesion.setEmail("user@example.com");

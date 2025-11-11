@@ -11,6 +11,8 @@ import java.util.List;
 public interface ServicioEquipoJugador {
     EquipoJugador crearEquipoJugador(Equipo equipo, Usuario jugador) throws YaExisteElParticipante;
 
+    void validarQueNoExisteParticipanteEnEquipo(Equipo equipo, Usuario jugador) throws YaExisteElParticipante;
+
     EquipoJugador buscarPorEquipoYUsuario(Equipo equipo, Usuario usuario);
 
     EquipoJugador buscarPorId(Long id);

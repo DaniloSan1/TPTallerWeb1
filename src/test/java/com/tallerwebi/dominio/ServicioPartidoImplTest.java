@@ -7,6 +7,8 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import java.time.DayOfWeek;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.Arrays;
+import java.util.List;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -65,7 +67,7 @@ public class ServicioPartidoImplTest {
 
         @Test
         public void deberiaLanzarExcepcionAlAnotarParticipanteSiNoHayCupo() throws NoHayCupoEnPartido {
-                Mockito.when(partidoMock.validarCupo()).thenReturn(false);
+                Mockito.when(partidoMock.validarCupo()).thenThrow(new NoHayCupoEnPartido());
 
                 assertThrows(NoHayCupoEnPartido.class,
                                 () -> servicioPartido.anotarParticipante(partidoMock, equipoMock, usuarioMock));
@@ -150,22 +152,22 @@ public class ServicioPartidoImplTest {
                 Mockito.when(equipoJugador.getId()).thenReturn(1L);
                 Mockito.when(partido.buscarJugador(1L)).thenReturn(equipoJugador);
 
-                Mockito.when(repositorioPartidoMock.porId(1L)).thenReturn(partido);
+                Mockito.when(repositorioPartidoMock.obtenerPorIdConJugadores(1L)).thenReturn(partido);
 
                 servicioPartido.abandonarPartido(1L, usuario);
 
                 Mockito.verify(servicioEquipoJugadorMock, Mockito.times(1)).eliminarPorId(1L);
-                Mockito.verify(repositorioPartidoMock, Mockito.times(1)).porId(1L);
+                Mockito.verify(repositorioPartidoMock, Mockito.times(1)).obtenerPorIdConJugadores(1L);
         }
 
         @Test
         public void deberiaLanzarExcepcionAlAbandonarPartidoYElPartidoNoExiste() {
                 Usuario usuario = new Usuario("usuario", "123", "email@mail.com", "username");
                 usuario.setId(1L);
-                Mockito.when(repositorioPartidoMock.porId(1L)).thenReturn(null);
+                Mockito.when(repositorioPartidoMock.obtenerPorIdConJugadores(1L)).thenReturn(null);
 
                 assertThrows(PartidoNoEncontrado.class, () -> servicioPartido.abandonarPartido(1L, usuario));
-                Mockito.verify(repositorioPartidoMock, Mockito.times(1)).porId(1L);
+                Mockito.verify(repositorioPartidoMock, Mockito.times(1)).obtenerPorIdConJugadores(1L);
         }
 
         @Test
@@ -175,10 +177,10 @@ public class ServicioPartidoImplTest {
                 Partido partido = new Partido();
                 partido.setId(1L);
 
-                Mockito.when(repositorioPartidoMock.porId(1L)).thenReturn(partido);
+                Mockito.when(repositorioPartidoMock.obtenerPorIdConJugadores(1L)).thenReturn(partido);
 
                 assertThrows(RuntimeException.class, () -> servicioPartido.abandonarPartido(1L, usuario));
-                Mockito.verify(repositorioPartidoMock, Mockito.times(1)).porId(1L);
+                Mockito.verify(repositorioPartidoMock, Mockito.times(1)).obtenerPorIdConJugadores(1L);
                 Mockito.verify(repositorioPartidoMock, Mockito.never()).guardar(Mockito.any());
         }
 
@@ -198,7 +200,7 @@ public class ServicioPartidoImplTest {
                 Mockito.when(partido.buscarJugador(1L)).thenReturn(equipoJugador1);
                 Mockito.when(partido.buscarJugador(2L)).thenReturn(equipoJugador2);
 
-                Mockito.when(repositorioPartidoMock.porId(1L)).thenReturn(partido);
+                Mockito.when(repositorioPartidoMock.obtenerPorIdConJugadores(1L)).thenReturn(partido);
 
                 servicioPartido.abandonarPartido(1L, usuario1);
 
@@ -257,6 +259,19 @@ public class ServicioPartidoImplTest {
                                 () -> servicioPartido.finalizarPartido(partidoMock, usuarioMock));
                 Mockito.verify(partidoMock, Mockito.never()).setFechaFinalizacion(Mockito.any());
                 Mockito.verify(repositorioPartidoMock, Mockito.never()).actualizar(Mockito.any());
+        }
+
+        @Test
+        public void deberiaListarPartidosPorEquipo() {
+                List<Partido> partidosEsperados = Arrays.asList(partidoMock);
+                Mockito.when(repositorioPartidoMock.listarPorEquipoConInfoCancha(equipoMock.getId()))
+                                .thenReturn(partidosEsperados);
+
+                List<Partido> partidos = servicioPartido.listarPorEquipoConInfoCancha(equipoMock);
+
+                assertEquals(partidosEsperados, partidos);
+                Mockito.verify(repositorioPartidoMock, Mockito.times(1))
+                                .listarPorEquipoConInfoCancha(equipoMock.getId());
         }
 
 }
