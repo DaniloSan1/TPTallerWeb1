@@ -1,6 +1,7 @@
 package com.tallerwebi.dominio;
 
 import com.tallerwebi.dominio.excepcion.EquipoNoEncontrado;
+import com.tallerwebi.dominio.excepcion.PermisosInsufficientes;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -13,7 +14,13 @@ public interface ServicioEquipo {
 
     void actualizarNombre(Equipo equipo, String nuevoNombre);
 
+    void actualizarEquipo(Equipo equipo, String nombre, String descripcion, String insigniaUrl);
+
     List<Equipo> obtenerEquiposDelUsuario(Usuario usuario);
 
     List<Equipo> obtenerEquiposDelUsuarioConFiltro(Usuario usuario, String nombre);
+
+    boolean esUsuarioCreador(Long equipoId, Usuario usuario);
+
+    void validarUsuarioEsCreador(Long equipoId, Usuario usuario) throws PermisosInsufficientes;
 }
