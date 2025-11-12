@@ -12,7 +12,7 @@ public interface ServicioLogin {
 
     Usuario buscarPorEmail(String email) throws UsuarioNoEncontradoException;
 
-    Usuario buscarPorId(Long id);
+    Usuario buscarPorId(Long id) throws UsuarioNoEncontradoException;
 
     Usuario buscarPorUsername(String username);
 

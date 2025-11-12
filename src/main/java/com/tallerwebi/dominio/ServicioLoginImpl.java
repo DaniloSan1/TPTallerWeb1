@@ -41,8 +41,11 @@ public class ServicioLoginImpl implements ServicioLogin {
     }
 
     @Override
-    public Usuario buscarPorId(Long id) {
+    public Usuario buscarPorId(Long id) throws UsuarioNoEncontradoException {
         Usuario usuario = repositorioUsuario.buscarPorId(id);
+        if (usuario == null) {
+            throw new UsuarioNoEncontradoException();
+        }
         return usuario;
     }
 

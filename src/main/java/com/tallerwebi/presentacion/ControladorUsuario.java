@@ -28,21 +28,26 @@ public class ControladorUsuario {
         this.servicioLogin = servicioLogin;
         this.servicioUsuario = servicioUsuario;
         this.servicioAmistad = servicioAmistad;
-        this.servicioCalificacion=servicioCalificacion;
+        this.servicioCalificacion = servicioCalificacion;
     }
 
     @GetMapping("/ver/id/{id}")
     public String verPerfilDeOtroJugador(@PathVariable Long id, ModelMap modelo) {
-        Usuario usuarioAVer = servicioLogin.buscarPorId(id);
+        try {
+            Usuario usuarioAVer = servicioLogin.buscarPorId(id);
 
-        if (usuarioAVer == null) {
+            if (usuarioAVer == null) {
+                return "redirect:/home";
+            }
+
+            Double calificacionPromedioUsuario = servicioCalificacion
+                    .calcularCalificacionPromedioUsuario(usuarioAVer.getId());
+            modelo.addAttribute("calificacionPromedioUsuario", calificacionPromedioUsuario);
+            modelo.addAttribute("usuarioAVer", usuarioAVer);
+            return "perfilDeOtroJugador";
+        } catch (UsuarioNoEncontradoException e) {
             return "redirect:/home";
         }
-
-        Double calificacionPromedioUsuario = servicioCalificacion.calcularCalificacionPromedioUsuario(usuarioAVer.getId());
-        modelo.addAttribute("calificacionPromedioUsuario", calificacionPromedioUsuario);
-        modelo.addAttribute("usuarioAVer", usuarioAVer);
-        return "perfilDeOtroJugador";
     }
 
     @GetMapping("/ver/username/{username}")
@@ -60,8 +65,9 @@ public class ControladorUsuario {
         }
 
         Amistad amistad = servicioAmistad.buscarRelacionEntreUsuarios(usuarioActual.getId(), usuarioAVer.getId());
-        Double calificacionPromedioUsuario=servicioCalificacion.calcularCalificacionPromedioUsuario(usuarioAVer.getId());
-        modelo.addAttribute("calificacionPromedioUsuario",calificacionPromedioUsuario);
+        Double calificacionPromedioUsuario = servicioCalificacion
+                .calcularCalificacionPromedioUsuario(usuarioAVer.getId());
+        modelo.addAttribute("calificacionPromedioUsuario", calificacionPromedioUsuario);
         modelo.addAttribute("usuarioAVer", usuarioAVer);
         modelo.addAttribute("usuarioActual", usuarioActual);
         modelo.addAttribute("amistad", amistad);

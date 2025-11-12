@@ -12,7 +12,6 @@ import java.util.List;
 @Repository
 public class RepositorioAmistadImpl implements RepositorioAmistad {
 
-
     @Autowired
     private SessionFactory sessionFactory;
 
@@ -25,10 +24,10 @@ public class RepositorioAmistadImpl implements RepositorioAmistad {
     public Amistad buscarPorUsuarios(Usuario usuario1, Usuario usuario2) {
         String hql = "FROM Amistad a WHERE a.usuario1 = :u1 AND a.usuario2 = :u2";
         return (Amistad) sessionFactory.getCurrentSession()
-            .createQuery(hql)
-            .setParameter("u1", usuario1)
-            .setParameter("u2", usuario2)
-            .uniqueResult();
+                .createQuery(hql)
+                .setParameter("u1", usuario1)
+                .setParameter("u2", usuario2)
+                .uniqueResult();
     }
 
     @Override
@@ -40,24 +39,23 @@ public class RepositorioAmistadImpl implements RepositorioAmistad {
     public List<Amistad> buscarPendientes(Usuario usuario) {
         String hql = "FROM Amistad a WHERE a.usuario2 = :usuario AND a.estadoDeAmistad = 'PENDIENTE'";
         return sessionFactory.getCurrentSession()
-            .createQuery(hql)
-            .setParameter("usuario", usuario)
-            .list();
+                .createQuery(hql)
+                .setParameter("usuario", usuario)
+                .list();
     }
 
     @Override
     public List<Amistad> buscarAceptadas(Usuario usuario) {
-        String hql = "FROM Amistad a WHERE (a.usuario1 = :usuario OR a.usuario2 = :usuario) AND a.estadoDeAmistad = 'ACEPTADA'";
+        String hql = "FROM Amistad a LEFT JOIN FETCH a.usuario1 LEFT JOIN FETCH a.usuario2 WHERE (a.usuario1 = :usuario OR a.usuario2 = :usuario) AND a.estadoDeAmistad = 'ACEPTADA'";
         return sessionFactory.getCurrentSession()
-            .createQuery(hql)
-            .setParameter("usuario", usuario)
-            .list();
+                .createQuery(hql)
+                .setParameter("usuario", usuario)
+                .list();
     }
 
     @Override
     public void eliminar(Amistad amistad) {
         sessionFactory.getCurrentSession().delete(amistad);
     }
-
 
 }

@@ -4,6 +4,7 @@ import com.tallerwebi.dominio.*;
 import com.tallerwebi.dominio.excepcion.EquipoNoEncontrado;
 import com.tallerwebi.dominio.excepcion.PermisosInsufficientes;
 import com.tallerwebi.dominio.excepcion.UsuarioNoEncontradoException;
+import com.tallerwebi.dominio.excepcion.YaExisteElParticipante;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.*;
@@ -443,5 +444,165 @@ class ControladorEquiposTest {
         // Then
         assertThat(vista, equalTo("redirect:/equipos/mis-equipos"));
         assertThat(model.get("error"), equalTo("Equipo no encontrado"));
+    }
+
+    @Test
+    void agregarJugadorDeberiaAgregarJugadorExitosamenteYRedirigirAEquipo() throws Exception {
+        // Given
+        Long equipoId = 1L;
+        Long jugadorId = 2L;
+        String email = "usuario@test.com";
+        Usuario usuario = new Usuario("Nombre", "password", email, "username");
+        Equipo equipo = new Equipo("Equipo Test", "Descripción", usuario, LocalDateTime.now());
+        Usuario jugador = new Usuario("Jugador", "password", "jugador@test.com", "jugador");
+
+        when(request.getSession()).thenReturn(session);
+        when(session.getAttribute("EMAIL")).thenReturn(email);
+        when(servicioLoginMock.buscarPorEmail(email)).thenReturn(usuario);
+        when(servicioEquipoMock.buscarPorIdYUsuario(equipoId, usuario)).thenReturn(equipo);
+        when(servicioLoginMock.buscarPorId(jugadorId)).thenReturn(jugador);
+
+        // When
+        String vista = controladorEquipos.agregarJugador(equipoId, jugadorId, request, redirectAttributesMock);
+
+        // Then
+        assertThat(vista, equalTo("redirect:/equipos/" + equipoId));
+        verify(servicioEquipoJugadorMock).crearEquipoJugador(equipo, jugador);
+        verify(redirectAttributesMock).addFlashAttribute("success", "Jugador agregado exitosamente al equipo");
+    }
+
+    @Test
+    void agregarJugadorDeberiaRedirigirALoginSiNoHaySesion() throws Exception {
+        // Given
+        Long equipoId = 1L;
+        Long jugadorId = 2L;
+
+        when(request.getSession()).thenReturn(session);
+        when(session.getAttribute("EMAIL")).thenReturn(null);
+
+        // When
+        String vista = controladorEquipos.agregarJugador(equipoId, jugadorId, request, redirectAttributesMock);
+
+        // Then
+        assertThat(vista, equalTo("redirect:/login"));
+        verify(servicioLoginMock, never()).buscarPorEmail(anyString());
+        verify(servicioEquipoMock, never()).buscarPorIdYUsuario(anyLong(), any());
+    }
+
+    @Test
+    void agregarJugadorDeberiaRedirigirConErrorSiNoTienePermisos() throws Exception {
+        // Given
+        Long equipoId = 1L;
+        Long jugadorId = 2L;
+        String email = "usuario@test.com";
+        Usuario usuario = new Usuario("Nombre", "password", email, "username");
+
+        when(request.getSession()).thenReturn(session);
+        when(session.getAttribute("EMAIL")).thenReturn(email);
+        when(servicioLoginMock.buscarPorEmail(email)).thenReturn(usuario);
+        when(servicioEquipoMock.buscarPorIdYUsuario(equipoId, usuario)).thenThrow(new PermisosInsufficientes());
+
+        // When
+        String vista = controladorEquipos.agregarJugador(equipoId, jugadorId, request, redirectAttributesMock);
+
+        // Then
+        assertThat(vista, equalTo("redirect:/equipos/mis-equipos"));
+        verify(redirectAttributesMock).addFlashAttribute("error",
+                "No tienes permisos para agregar jugadores a este equipo");
+    }
+
+    @Test
+    void agregarJugadorDeberiaRedirigirConErrorSiEquipoNoEncontrado() throws Exception {
+        // Given
+        Long equipoId = 1L;
+        Long jugadorId = 2L;
+        String email = "usuario@test.com";
+        Usuario usuario = new Usuario("Nombre", "password", email, "username");
+
+        when(request.getSession()).thenReturn(session);
+        when(session.getAttribute("EMAIL")).thenReturn(email);
+        when(servicioLoginMock.buscarPorEmail(email)).thenReturn(usuario);
+        when(servicioEquipoMock.buscarPorIdYUsuario(equipoId, usuario)).thenThrow(new EquipoNoEncontrado());
+
+        // When
+        String vista = controladorEquipos.agregarJugador(equipoId, jugadorId, request, redirectAttributesMock);
+
+        // Then
+        assertThat(vista, equalTo("redirect:/equipos/mis-equipos"));
+        verify(redirectAttributesMock).addFlashAttribute("error", "Equipo no encontrado");
+    }
+
+    @Test
+    void agregarJugadorDeberiaRedirigirConErrorSiJugadorNoEncontrado() throws Exception {
+        // Given
+        Long equipoId = 1L;
+        Long jugadorId = 2L;
+        String email = "usuario@test.com";
+        Usuario usuario = new Usuario("Nombre", "password", email, "username");
+        Equipo equipo = new Equipo("Equipo Test", "Descripción", usuario, LocalDateTime.now());
+
+        when(request.getSession()).thenReturn(session);
+        when(session.getAttribute("EMAIL")).thenReturn(email);
+        when(servicioLoginMock.buscarPorEmail(email)).thenReturn(usuario);
+        when(servicioEquipoMock.buscarPorIdYUsuario(equipoId, usuario)).thenReturn(equipo);
+        when(servicioLoginMock.buscarPorId(jugadorId)).thenThrow(new UsuarioNoEncontradoException());
+
+        // When
+        String vista = controladorEquipos.agregarJugador(equipoId, jugadorId, request, redirectAttributesMock);
+
+        // Then
+        assertThat(vista, equalTo("redirect:/equipos/mis-equipos"));
+        verify(redirectAttributesMock).addFlashAttribute("error", "Usuario no encontrado");
+    }
+
+    @Test
+    void agregarJugadorDeberiaRedirigirConErrorSiJugadorYaExiste() throws Exception {
+        // Given
+        Long equipoId = 1L;
+        Long jugadorId = 2L;
+        String email = "usuario@test.com";
+        Usuario usuario = new Usuario("Nombre", "password", email, "username");
+        Equipo equipo = new Equipo("Equipo Test", "Descripción", usuario, LocalDateTime.now());
+        Usuario jugador = new Usuario("Jugador", "password", "jugador@test.com", "jugador");
+
+        when(request.getSession()).thenReturn(session);
+        when(session.getAttribute("EMAIL")).thenReturn(email);
+        when(servicioLoginMock.buscarPorEmail(email)).thenReturn(usuario);
+        when(servicioEquipoMock.buscarPorIdYUsuario(equipoId, usuario)).thenReturn(equipo);
+        when(servicioLoginMock.buscarPorId(jugadorId)).thenReturn(jugador);
+        doThrow(new YaExisteElParticipante()).when(servicioEquipoJugadorMock).crearEquipoJugador(equipo, jugador);
+
+        // When
+        String vista = controladorEquipos.agregarJugador(equipoId, jugadorId, request, redirectAttributesMock);
+
+        // Then
+        assertThat(vista, equalTo("redirect:/equipos/" + equipoId));
+        verify(redirectAttributesMock).addFlashAttribute("error", "El jugador ya pertenece al equipo");
+    }
+
+    @Test
+    void agregarJugadorDeberiaRedirigirConErrorGenericoEnCasoDeExcepcionInesperada() throws Exception {
+        // Given
+        Long equipoId = 1L;
+        Long jugadorId = 2L;
+        String email = "usuario@test.com";
+        Usuario usuario = new Usuario("Nombre", "password", email, "username");
+        Equipo equipo = new Equipo("Equipo Test", "Descripción", usuario, LocalDateTime.now());
+        Usuario jugador = new Usuario("Jugador", "password", "jugador@test.com", "jugador");
+
+        when(request.getSession()).thenReturn(session);
+        when(session.getAttribute("EMAIL")).thenReturn(email);
+        when(servicioLoginMock.buscarPorEmail(email)).thenReturn(usuario);
+        when(servicioEquipoMock.buscarPorIdYUsuario(equipoId, usuario)).thenReturn(equipo);
+        when(servicioLoginMock.buscarPorId(jugadorId)).thenReturn(jugador);
+        doThrow(new RuntimeException("Error inesperado")).when(servicioEquipoJugadorMock).crearEquipoJugador(equipo,
+                jugador);
+
+        // When
+        String vista = controladorEquipos.agregarJugador(equipoId, jugadorId, request, redirectAttributesMock);
+
+        // Then
+        assertThat(vista, equalTo("redirect:/equipos/" + equipoId));
+        verify(redirectAttributesMock).addFlashAttribute("error", "Error inesperado al agregar el jugador");
     }
 }
