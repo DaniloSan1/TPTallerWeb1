@@ -30,12 +30,14 @@ public class ServicioEquipoImplTest {
         Usuario creador = new Usuario("nombre", "password", "email@test.com", "username");
         String nombreEquipo = "Equipo Test";
         String descripcion = "Descripción del equipo";
+        String insigniaUrl = "http://example.com/insignia.png";
 
-        Equipo equipoCreado = servicioEquipoImpl.crearEquipo(nombreEquipo, descripcion, creador);
+        Equipo equipoCreado = servicioEquipoImpl.crearEquipo(nombreEquipo, descripcion, insigniaUrl, creador);
 
         verify(repositorioEquipo).guardar(any(Equipo.class));
         assertThat(equipoCreado.getNombre(), equalTo(nombreEquipo));
         assertThat(equipoCreado.getDescripcion(), equalTo(descripcion));
+        assertThat(equipoCreado.getInsigniaUrl(), equalTo(insigniaUrl));
         assertThat(equipoCreado.getCreadoPor(), equalTo(creador));
     }
 
@@ -72,21 +74,6 @@ public class ServicioEquipoImplTest {
 
         verify(repositorioEquipo).modificar(equipo);
         assertThat(equipo.getNombre(), equalTo(nuevoNombre));
-    }
-
-    @Test
-    public void queSePuedanObtenerLosEquiposDeUnUsuario() {
-        Usuario usuario = new Usuario("nombre", "password", "email@test.com", "username");
-        List<Equipo> equiposEsperados = Arrays.asList(
-                new Equipo("Equipo 1", "Descripción 1", usuario, LocalDateTime.now()),
-                new Equipo("Equipo 2", "Descripción 2", usuario, LocalDateTime.now()));
-
-        when(repositorioEquipo.buscarEquiposPorUsuario(usuario)).thenReturn(equiposEsperados);
-
-        List<Equipo> equiposObtenidos = servicioEquipoImpl.obtenerEquiposDelUsuario(usuario);
-
-        verify(repositorioEquipo).buscarEquiposPorUsuario(usuario);
-        assertThat(equiposObtenidos, equalTo(equiposEsperados));
     }
 
     @Test
@@ -135,19 +122,21 @@ public class ServicioEquipoImplTest {
     }
 
     @Test
-    public void queSePuedaValidarUsuarioEsCreadorSinExcepcion() throws PermisosInsufficientes {
+    public void queSePuedaBuscarPorIdYUsuarioSinExcepcion() throws EquipoNoEncontrado {
         Usuario creador = new Usuario("nombre", "password", "email@test.com", "username");
         creador.setId(1L);
         Equipo equipo = new Equipo("Equipo Test", "Descripción", creador, LocalDateTime.now());
         equipo.setId(1L);
 
-        when(repositorioEquipo.buscarPorId(1L)).thenReturn(equipo);
+        when(repositorioEquipo.buscarPorIdYUsuario(1L, creador)).thenReturn(equipo);
 
-        servicioEquipoImpl.validarUsuarioEsCreador(equipo.getId(), creador);
+        Equipo result = servicioEquipoImpl.buscarPorIdYUsuario(equipo.getId(), creador);
+
+        assertThat(result, equalTo(equipo));
     }
 
     @Test
-    public void queLanceExcepcionSiUsuarioNoEsCreador() {
+    public void queLanceExcepcionSiUsuarioNoEsCreadorEnBuscarPorIdYUsuario() {
         Usuario creador = new Usuario("nombre", "password", "email@test.com", "username");
         creador.setId(1L);
         Usuario otroUsuario = new Usuario("otro", "password", "otro@email.com", "otro");
@@ -155,10 +144,10 @@ public class ServicioEquipoImplTest {
         Equipo equipo = new Equipo("Equipo Test", "Descripción", creador, LocalDateTime.now());
         equipo.setId(1L);
 
-        when(repositorioEquipo.buscarPorId(1L)).thenReturn(equipo);
+        when(repositorioEquipo.buscarPorIdYUsuario(1L, otroUsuario)).thenReturn(null);
 
-        assertThrows(PermisosInsufficientes.class, () -> {
-            servicioEquipoImpl.validarUsuarioEsCreador(equipo.getId(), otroUsuario);
+        assertThrows(EquipoNoEncontrado.class, () -> {
+            servicioEquipoImpl.buscarPorIdYUsuario(equipo.getId(), otroUsuario);
         });
     }
 

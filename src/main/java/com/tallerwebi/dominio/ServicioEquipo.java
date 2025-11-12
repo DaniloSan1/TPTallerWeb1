@@ -8,7 +8,7 @@ import java.util.List;
 
 @Service
 public interface ServicioEquipo {
-    Equipo crearEquipo(String nombre, String descripcion, Usuario creador);
+    Equipo crearEquipo(String nombre, String descripcion, String insigniaUrl, Usuario creador);
 
     Equipo buscarPorId(Long id) throws EquipoNoEncontrado;
 
@@ -16,11 +16,9 @@ public interface ServicioEquipo {
 
     void actualizarEquipo(Equipo equipo, String nombre, String descripcion, String insigniaUrl);
 
-    List<Equipo> obtenerEquiposDelUsuario(Usuario usuario);
-
     List<Equipo> obtenerEquiposDelUsuarioConFiltro(Usuario usuario, String nombre);
 
     boolean esUsuarioCreador(Long equipoId, Usuario usuario);
 
-    void validarUsuarioEsCreador(Long equipoId, Usuario usuario) throws PermisosInsufficientes;
+    Equipo buscarPorIdYUsuario(Long equipoId, Usuario usuario) throws EquipoNoEncontrado;
 }
