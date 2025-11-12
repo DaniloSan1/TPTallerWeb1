@@ -4,8 +4,10 @@
   <meta charset="UTF-8">
   <title>Organizar Torneo</title>
   <link rel="stylesheet" th:href="@{/webjars/bootstrap/5.2.0/css/bootstrap.min.css}" />
+  <link rel="stylesheet" th:href="@{/css/main.css}" />
 </head>
 <body>
+  <div th:replace="~{fragments/navbar :: navbar}"></div>
     <main role="main" class="container" style="padding-top: 175px">
     <div th:if="${mensajeError}" class="alert alert-danger" th:text="${mensajeError}"></div>
     <div th:if="${mensajeExito}" class="alert alert-success" th:text="${mensajeExito}"></div>

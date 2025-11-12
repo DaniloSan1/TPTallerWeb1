@@ -11,7 +11,7 @@ public interface ServicioTorneo {
     List<Torneo> listarTorneosDisponibles();
 
     boolean existeTorneoEnFecha(Cancha cancha, LocalDate fecha);
-
+    void actualizarTorneo(Torneo torneo);
     Torneo obtenerPorId(Long id);
 
     void cancelarTorneo(Long id);

@@ -50,6 +50,9 @@ public class ServicioTorneoImpl implements ServicioTorneo {
         repositorioTorneo.crearTorneo(torneo);
         return torneo;
     }
+    public void actualizarTorneo(Torneo torneo) {
+        repositorioTorneo.actualizarTorneo(torneo);
+    }
 
     @Override
     public List<Torneo> listarTorneos() {

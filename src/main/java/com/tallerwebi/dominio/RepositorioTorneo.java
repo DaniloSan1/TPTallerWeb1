@@ -15,4 +15,6 @@ public interface RepositorioTorneo {
     void crearTorneo(Torneo torneo);
 
     List<Torneo> listarTorneos();
+
+    void actualizarTorneo(Torneo torneo);
 }

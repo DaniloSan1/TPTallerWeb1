@@ -74,4 +74,8 @@ public class RepositorioTorneoImpl implements RepositorioTorneo {
                 .setParameter("fecha", fecha)
                 .getResultList();
     }
+    @Override
+    public void actualizarTorneo(Torneo torneo) {
+        sessionFactory.getCurrentSession().update(torneo);
+    }
 }
