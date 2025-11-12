@@ -183,7 +183,7 @@ public class ServicioUsuarioImplTest {
         Amistad amistad1 = new Amistad(usuario, amigo1);
         amistad1.setEstadoDeAmistad(EstadoDeAmistad.ACEPTADA);
 
-        Amistad amistad2 = new Amistad(amigo2, usuario);
+        Amistad amistad2 = new Amistad(usuario, amigo2);
         amistad2.setEstadoDeAmistad(EstadoDeAmistad.ACEPTADA);
 
         List<Amistad> amistades = Arrays.asList(amistad1, amistad2);
