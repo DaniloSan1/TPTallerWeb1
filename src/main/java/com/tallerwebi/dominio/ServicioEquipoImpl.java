@@ -78,4 +78,15 @@ public class ServicioEquipoImpl implements ServicioEquipo {
         }
         return equipo;
     }
+
+    @Override
+    public List<Equipo> listarTodos() {
+        return repositorioEquipo.listarTodos();
+    }
+    public Equipo buscarEquipoDelUsuario(Usuario usuario) {
+        return repositorioEquipo.buscarEquipoDelUsuario(usuario);
+    }
+    public List<Equipo> buscarEquiposPorUsuario(Usuario usuario) {
+        return repositorioEquipo.buscarEquiposPorUsuario(usuario);
+    }
 }

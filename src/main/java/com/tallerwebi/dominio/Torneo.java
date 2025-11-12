@@ -2,6 +2,8 @@ package com.tallerwebi.dominio;
 
 import javax.persistence.*;
 
+import java.util.HashSet;
+import java.util.Set;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
@@ -19,6 +21,9 @@ public class Torneo {
     @ManyToOne
     @JoinColumn(name = "cancha_id", nullable = false)
     private Cancha cancha;
+
+   @OneToMany(mappedBy = "torneo", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<InscripcionTorneo> inscripciones = new HashSet<>();
 
     @ManyToOne
     @JoinColumn(name = "organizador_id", nullable = false)

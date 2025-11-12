@@ -14,4 +14,8 @@ public interface RepositorioEquipo {
     List<Equipo> buscarEquiposPorUsuarioYNombre(Usuario usuario, String nombre);
 
     Equipo buscarPorIdYUsuario(Long id, Usuario usuario);
+
+    List<Equipo> listarTodos();
+
+    Equipo buscarEquipoDelUsuario(Usuario usuario);
 }

@@ -21,4 +21,8 @@ public interface ServicioEquipo {
     boolean esUsuarioCreador(Long equipoId, Usuario usuario);
 
     Equipo buscarPorIdYUsuario(Long equipoId, Usuario usuario) throws EquipoNoEncontrado;
+
+    List<Equipo> listarTodos();
+    Equipo buscarEquipoDelUsuario(Usuario usuario);
+    List<Equipo> buscarEquiposPorUsuario(Usuario usuario);
 }

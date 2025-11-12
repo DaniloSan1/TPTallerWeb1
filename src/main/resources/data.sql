@@ -188,3 +188,11 @@ INSERT INTO Amistad (usuario_1_id, usuario_2_id, estadoDeAmistad, fechaSolicitud
 	(3, 1, 'PENDIENTE', CURRENT_DATE()),
 	(4, 1, 'PENDIENTE', CURRENT_DATE()),
 	(5, 1, 'PENDIENTE', CURRENT_DATE());
+INSERT INTO Torneo (id, nombre, fecha, precio, estado, cancha_id, organizador_id) VALUES
+(1, 'Torneo Primavera', '2025-11-20', 5000, 'CONFIRMADO', 1, 1),
+(2, 'Torneo Verano', '2025-12-10', 7000, 'CONFIRMADO', 2, 2);
+
+INSERT INTO InscripcionTorneo (id, fechaInscripcion, torneo_id, equipo_id) VALUES
+(1, NOW(), 1, 1),
+(2, NOW(), 1, 2),
+(3, NOW(), 2, 3);

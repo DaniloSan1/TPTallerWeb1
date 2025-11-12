@@ -57,7 +57,7 @@ public class ServicioPagoImpl implements ServicioPago {
             PreferenceRequest preferenceRequest = PreferenceRequest.builder()
                     .items(items)
                     .backUrls(backUrlsRequest)
-                    //.autoReturn("all")
+                    .autoReturn("all")
                     .build();
 
             System.out.println("Creando preferencia MercadoPago: " + titulo + " | Monto: " + monto);

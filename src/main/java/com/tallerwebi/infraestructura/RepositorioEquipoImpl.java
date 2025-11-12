@@ -76,4 +76,19 @@ public class RepositorioEquipoImpl implements RepositorioEquipo {
                 .setParameter("usuario", usuario)
                 .uniqueResult();
     }
+
+    @Override
+    public List<Equipo> listarTodos() {
+        final Session session = sessionFactory.getCurrentSession();
+        return session.createQuery("SELECT e FROM Equipo e", Equipo.class).getResultList();
+    }
+
+    @Override
+    public Equipo buscarEquipoDelUsuario(Usuario usuario) {
+        final Session session = sessionFactory.getCurrentSession();
+        return (Equipo) session
+                .createQuery("SELECT e FROM Equipo e JOIN e.jugadores ej WHERE ej.usuario = :usuario", Equipo.class)
+                .setParameter("usuario", usuario)
+                .uniqueResult();
+    }
 }
