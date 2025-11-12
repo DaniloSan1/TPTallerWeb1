@@ -6,20 +6,36 @@ import com.tallerwebi.infraestructura.RepositorioUsuarioImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.lang.reflect.Field;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.hasSize;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.*;
 
 public class ServicioUsuarioImplTest {
     private ServicioUsuario servicioUsuarioImpl;
     private RepositorioUsuario repositorioUsuario;
+    private ServicioAmistad servicioAmistad;
 
     @BeforeEach
     public void init() {
         repositorioUsuario = mock(RepositorioUsuarioImpl.class);
+        servicioAmistad = mock(ServicioAmistad.class);
         servicioUsuarioImpl = new ServicioUsuarioImpl(repositorioUsuario);
 
+        // Inject the mocked ServicioAmistad using reflection
+        try {
+            Field servicioAmistadField = ServicioUsuarioImpl.class.getDeclaredField("servicioAmistad");
+            servicioAmistadField.setAccessible(true);
+            servicioAmistadField.set(servicioUsuarioImpl, servicioAmistad);
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to inject ServicioAmistad mock", e);
+        }
     }
 
     @Test
@@ -134,5 +150,68 @@ public class ServicioUsuarioImplTest {
         Usuario usuarioEncontrado = servicioUsuarioImpl.buscarPorEmail("email@test.com");
 
         assertThat(usuarioEncontrado, equalTo(usuarioEsperado));
+    }
+
+    @Test
+    public void queListarAmigosDeUsuarioDevuelvaListaVaciaCuandoNoTieneAmigos() {
+        // Given
+        Usuario usuario = new Usuario("Juan", "password", "juan@email.com", "juan");
+        usuario.setId(1L);
+
+        when(servicioAmistad.verAmigos(1L)).thenReturn(new ArrayList<>());
+
+        // When
+        List<Usuario> amigos = servicioUsuarioImpl.listarAmigosDeUsuario(usuario);
+
+        // Then
+        assertThat(amigos, hasSize(0));
+        verify(servicioAmistad).verAmigos(1L);
+    }
+
+    @Test
+    public void queListarAmigosDeUsuarioDevuelvaLosAmigosCorrectos() {
+        // Given
+        Usuario usuario = new Usuario("Juan", "password", "juan@email.com", "juan");
+        usuario.setId(1L);
+
+        Usuario amigo1 = new Usuario("Pedro", "password", "pedro@email.com", "pedro");
+        amigo1.setId(2L);
+
+        Usuario amigo2 = new Usuario("Maria", "password", "maria@email.com", "maria");
+        amigo2.setId(3L);
+
+        Amistad amistad1 = new Amistad(usuario, amigo1);
+        amistad1.setEstadoDeAmistad(EstadoDeAmistad.ACEPTADA);
+
+        Amistad amistad2 = new Amistad(amigo2, usuario);
+        amistad2.setEstadoDeAmistad(EstadoDeAmistad.ACEPTADA);
+
+        List<Amistad> amistades = Arrays.asList(amistad1, amistad2);
+
+        when(servicioAmistad.verAmigos(1L)).thenReturn(amistades);
+
+        // When
+        List<Usuario> amigos = servicioUsuarioImpl.listarAmigosDeUsuario(usuario);
+
+        // Then
+        assertThat(amigos, hasSize(2));
+        assertThat(amigos.get(0), equalTo(amigo1));
+        assertThat(amigos.get(1), equalTo(amigo2));
+        verify(servicioAmistad).verAmigos(1L);
+    }
+
+    @Test
+    public void queListarAmigosDeUsuarioLlamaCorrectamenteAlServicioDeAmistad() {
+        // Given
+        Usuario usuario = new Usuario("Juan", "password", "juan@email.com", "juan");
+        usuario.setId(5L);
+
+        when(servicioAmistad.verAmigos(5L)).thenReturn(new ArrayList<>());
+
+        // When
+        servicioUsuarioImpl.listarAmigosDeUsuario(usuario);
+
+        // Then
+        verify(servicioAmistad).verAmigos(5L);
     }
 }

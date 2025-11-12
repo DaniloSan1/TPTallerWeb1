@@ -12,6 +12,7 @@ import com.tallerwebi.dominio.Usuario;
 import com.tallerwebi.dominio.excepcion.EquipoNoEncontrado;
 import com.tallerwebi.dominio.excepcion.PermisosInsufficientes;
 import com.tallerwebi.dominio.excepcion.UsuarioNoEncontradoException;
+import com.tallerwebi.dominio.excepcion.YaExisteElParticipante;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -247,6 +248,40 @@ public class ControladorEquipos {
         } catch (Exception e) {
             model.put("error", "Error inesperado al crear el equipo");
             return "crear-equipo";
+        }
+    }
+
+    @PostMapping("/equipos/{equipoId}/agregar-jugador")
+    public String agregarJugador(@PathVariable Long equipoId, @RequestParam Long jugadorId,
+            HttpServletRequest request, RedirectAttributes redirectAttributes) {
+        String email = (String) request.getSession().getAttribute("EMAIL");
+        if (email == null) {
+            return "redirect:/login";
+        }
+
+        try {
+            Usuario usuario = servicioLogin.buscarPorEmail(email);
+            Equipo equipo = servicioEquipo.buscarPorIdYUsuario(equipoId, usuario);
+            Usuario jugador = servicioLogin.buscarPorId(jugadorId);
+            servicioEquipoJugador.crearEquipoJugador(equipo, jugador);
+
+            redirectAttributes.addFlashAttribute("success", "Jugador agregado exitosamente al equipo");
+            return "redirect:/equipos/" + equipoId;
+        } catch (PermisosInsufficientes e) {
+            redirectAttributes.addFlashAttribute("error", "No tienes permisos para agregar jugadores a este equipo");
+            return "redirect:/equipos/mis-equipos";
+        } catch (EquipoNoEncontrado e) {
+            redirectAttributes.addFlashAttribute("error", "Equipo no encontrado");
+            return "redirect:/equipos/mis-equipos";
+        } catch (UsuarioNoEncontradoException e) {
+            redirectAttributes.addFlashAttribute("error", "Usuario no encontrado");
+            return "redirect:/equipos/mis-equipos";
+        } catch (YaExisteElParticipante e) {
+            redirectAttributes.addFlashAttribute("error", "El jugador ya pertenece al equipo");
+            return "redirect:/equipos/" + equipoId;
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("error", "Error inesperado al agregar el jugador");
+            return "redirect:/equipos/" + equipoId;
         }
     }
 }

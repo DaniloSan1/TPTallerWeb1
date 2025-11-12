@@ -21,4 +21,6 @@ public interface ServicioUsuario {
     Usuario buscarPorUsername(String username);
 
     List<Usuario> filtrarPorUsername(String username);
+
+    List<Usuario> listarAmigosDeUsuario(Usuario usuario);
 }
