@@ -16,6 +16,7 @@ public class DetalleEquipo {
     private String descripcion;
     private LocalDate fechaCreacion;
     private String insigniaUrl;
+    private Long creadorId;
     private List<DetalleParticipante> listaJugadores;
     private List<DetallePartidoLista> listaPartidos;
 
@@ -25,6 +26,7 @@ public class DetalleEquipo {
         this.descripcion = equipo.getDescripcion();
         this.fechaCreacion = equipo.getFechaCreacion().toLocalDate();
         this.insigniaUrl = equipo.getInsigniaUrl();
+        this.creadorId = equipo.getCreadoPor().getId();
         listaJugadores = jugadores.stream().map(DetalleParticipante::new)
                 .collect(Collectors.toList());
         listaPartidos = partidos.stream()
@@ -50,6 +52,10 @@ public class DetalleEquipo {
 
     public String getInsigniaUrl() {
         return insigniaUrl;
+    }
+
+    public Long getCreadorId() {
+        return creadorId;
     }
 
     public List<DetalleParticipante> getListaJugadores() {
