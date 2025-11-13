@@ -14,6 +14,12 @@ import com.tallerwebi.dominio.Zona;
 @Repository
 @Transactional
 public class RepositorioCanchaIpl implements RepositorioCancha {
+
+    @Override
+    public List<Cancha> obtenerTodasLasCanchas() {
+        String hql = "FROM Cancha";
+        return sessionFactory.getCurrentSession().createQuery(hql, Cancha.class).getResultList();
+    }
     private SessionFactory sessionFactory;
 
     @Autowired

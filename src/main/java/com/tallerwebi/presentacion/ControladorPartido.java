@@ -33,6 +33,7 @@ import com.tallerwebi.dominio.ServicioGoles;
 import com.tallerwebi.dominio.ServicioHorario;
 import com.tallerwebi.dominio.ServicioLogin;
 import com.tallerwebi.dominio.ServicioPartido;
+import com.tallerwebi.dominio.ServicioAmistad;
 import com.tallerwebi.dominio.ServicioReserva;
 import com.tallerwebi.dominio.ServicioSolicitudUnirse;
 import com.tallerwebi.presentacion.EquipoSimple;
@@ -58,13 +59,14 @@ public class ControladorPartido {
     private ServicioGoles servicioGoles;
     private ServicioEquipoJugador servicioEquipoJugador;
     private ServicioSolicitudUnirse servicioSolicitudUnirse;
+    private ServicioAmistad servicioAmistad;
 
     @Autowired
     public ControladorPartido(ServicioPartido servicio, ServicioLogin servicioLogin, ServicioHorario servicioHorario,
             ServicioReserva servicioReserva, ServicioUsuario servicioUsuario,
             ServicioEquipo servicioEquipo, ServicioFotoCancha servicioFotoCancha, ServicioGoles servicioGoles,
             ServicioEquipoJugador servicioEquipoJugador,
-            ServicioSolicitudUnirse servicioSolicitudUnirse) {
+            ServicioSolicitudUnirse servicioSolicitudUnirse, ServicioAmistad servicioAmistad) {
         this.servicio = servicio;
         this.servicioLogin = servicioLogin;
         this.servicioHorario = servicioHorario;
@@ -75,6 +77,7 @@ public class ControladorPartido {
         this.servicioGoles = servicioGoles;
         this.servicioEquipoJugador = servicioEquipoJugador;
         this.servicioSolicitudUnirse = servicioSolicitudUnirse;
+        this.servicioAmistad = servicioAmistad;
     }
 
     @GetMapping("/{id}")
@@ -90,6 +93,20 @@ public class ControladorPartido {
             Partido partido = servicio.obtenerPorId(id);
 
             modelo.put("partido", new DetallePartido(partido, usuario));
+
+            // Obtener lista de amigos para el dropdown de invitaciones
+            List<com.tallerwebi.dominio.Amistad> relaciones = servicioAmistad.verAmigos(usuario.getId());
+            List<Usuario> amigos = new ArrayList<>();
+            if (relaciones != null) {
+                for (com.tallerwebi.dominio.Amistad a : relaciones) {
+                    if (a.getUsuario1() != null && a.getUsuario1().getId().equals(usuario.getId())) {
+                        amigos.add(a.getUsuario2());
+                    } else {
+                        amigos.add(a.getUsuario1());
+                    }
+                }
+            }
+            modelo.put("amigos", amigos);
 
             // Si en la URL viene un token como query param, procesamos la aceptación aquí
             String token = request.getParameter("token");
@@ -199,7 +216,29 @@ public class ControladorPartido {
             return new ModelAndView("redirect:/login");
 
         Usuario usuario = servicioLogin.buscarPorEmail(email);
-        List<Partido> partidos = servicio.listarPorCreador(usuario);
+        // Obtener partidos creados por el usuario y los partidos a los que está unido
+        List<Partido> creados = servicio.listarPorCreador(usuario);
+        List<Partido> unidos = servicio.listarPorParticipante(usuario);
+
+        // Unir ambas listas evitando duplicados
+        java.util.Set<Long> ids = new java.util.HashSet<>();
+        List<Partido> partidos = new ArrayList<>();
+        if (creados != null) {
+            for (Partido p : creados) {
+                if (p != null && p.getId() != null && !ids.contains(p.getId())) {
+                    ids.add(p.getId());
+                    partidos.add(p);
+                }
+            }
+        }
+        if (unidos != null) {
+            for (Partido p : unidos) {
+                if (p != null && p.getId() != null && !ids.contains(p.getId())) {
+                    ids.add(p.getId());
+                    partidos.add(p);
+                }
+            }
+        }
 
         // Asegurar que fotosCanchas siempre esté en el modelo (puede ser lista vacía)
         List<FotoCancha> fotosCanchas = new ArrayList<>();

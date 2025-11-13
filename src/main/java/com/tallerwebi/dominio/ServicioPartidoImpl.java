@@ -33,8 +33,8 @@ public class ServicioPartidoImpl implements ServicioPartido {
     }
 
     @Override
-    public List<Partido> listarTodos(String busqueda, Zona filtroZona, Nivel filtroNivel) {
-        return repoPartido.listar(busqueda, filtroZona, filtroNivel);
+    public List<Partido> listarTodos(String busqueda, Zona filtroZona, Nivel filtroNivel, java.time.LocalDate fechaFiltro, Long canchaId) {
+        return repoPartido.listar(busqueda, filtroZona, filtroNivel, fechaFiltro, canchaId);
     }
 
     @Override
@@ -112,6 +112,15 @@ public class ServicioPartidoImpl implements ServicioPartido {
         System.out.println("Buscando partidos para usuario ID: " + usuario.getId());
         List<Partido> partidos = repoPartido.listarPorCreador(usuario.getId());
         System.out.println("Partidos encontrados: " + (partidos != null ? partidos.size() : "null"));
+        return partidos != null ? partidos : java.util.Collections.emptyList();
+    }
+
+    @Override
+    public List<Partido> listarPorParticipante(Usuario usuario) {
+        if (usuario == null || usuario.getId() == null) {
+            return java.util.Collections.emptyList();
+        }
+        List<Partido> partidos = repoPartido.listarPorParticipante(usuario.getId());
         return partidos != null ? partidos : java.util.Collections.emptyList();
     }
     @Override

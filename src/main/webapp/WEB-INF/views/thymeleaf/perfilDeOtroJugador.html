@@ -69,19 +69,22 @@
 
                     <!-- parte receptor -->
                     <div th:if="${amistad.usuario2 != null and amistad.usuario2.id == usuarioActual.id}">
-                        <form style="display:inline;">
+                        <form th:action="@{/perfil/amistad/aceptar/{idAmistad}(idAmistad=${amistad.idAmistad})}"
+                              method="post" style="display:inline;">
                             <button type="submit" class="btn btn-success btn-lg">Aceptar solicitud</button>
                         </form>
-                        <form style="display:inline;">
+                        <form th:action="@{/perfil/amistad/rechazar/{idAmistad}(idAmistad=${amistad.idAmistad})}"
+                              method="post" style="display:inline;">
                             <button type="submit" class="btn btn-danger btn-lg">Rechazar solicitud</button>
                         </form>
                     </div>
                 </div>
 
-                <!-- sin amistad -->
-                <div th:if="${amistad == null}">
+                <!-- sin amistad o si la solicitud previa fue rechazada, permitir reenviar -->
+                <div th:if="${amistad == null or estadoAmistad?.name() == 'RECHAZADA'}">
                     <form th:action="@{/perfil/amistad/enviar/{idReceptor}(idReceptor=${usuarioAVer.id})}" method="post">
-                        <button type="submit" class="btn btn-success btn-lg">Añadir amigo</button>
+                        <button type="submit" class="btn btn-success btn-lg"
+                                th:text="${amistad == null} ? 'Añadir amigo' : 'Volver a enviar solicitud'">Añadir amigo</button>
                     </form>
                 </div>
 

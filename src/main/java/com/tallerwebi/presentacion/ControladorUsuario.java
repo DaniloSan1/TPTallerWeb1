@@ -15,24 +15,44 @@ import java.util.ArrayList;
 
 @Controller
 @RequestMapping("/perfil")
+
 public class ControladorUsuario {
     private final ServicioUsuario servicioUsuario;
     private ServicioLogin servicioLogin;
     private ServicioAmistad servicioAmistad;
+    private final ServicioSolicitudUnirse servicioSolicitudUnirse;
 
     public ControladorUsuario(ServicioLogin servicioLogin, ServicioUsuario servicioUsuario,
-            ServicioAmistad servicioAmistad) {
+            ServicioAmistad servicioAmistad, ServicioSolicitudUnirse servicioSolicitudUnirse) {
         this.servicioLogin = servicioLogin;
         this.servicioUsuario = servicioUsuario;
         this.servicioAmistad = servicioAmistad;
+        this.servicioSolicitudUnirse = servicioSolicitudUnirse;
     }
 
     @GetMapping("/ver/id/{id}")
-    public String verPerfilDeOtroJugador(@PathVariable Long id, ModelMap modelo) {
+    public String verPerfilDeOtroJugador(@PathVariable Long id, ModelMap modelo, HttpServletRequest request) {
         Usuario usuarioAVer = servicioLogin.buscarPorId(id);
 
         if (usuarioAVer == null) {
             return "redirect:/home";
+        }
+
+        // Intentar obtener el usuario en sesión y la relación de amistad (si hay sesión activa)
+        String usernameABuscar = (String) request.getSession().getAttribute("USERNAME");
+        if (usernameABuscar != null) {
+            Usuario usuarioActual = servicioUsuario.buscarPorUsername(usernameABuscar);
+            if (usuarioActual != null) {
+                // Si el usuario en sesión está viendo su propio perfil, redirigir al perfil principal
+                if (usuarioAVer.getUsername().equals(usernameABuscar)) {
+                    return "redirect:/perfil";
+                }
+
+                Amistad amistad = servicioAmistad.buscarRelacionEntreUsuarios(usuarioActual.getId(), usuarioAVer.getId());
+                modelo.addAttribute("usuarioActual", usuarioActual);
+                modelo.addAttribute("amistad", amistad);
+                modelo.addAttribute("estadoAmistad", amistad != null ? amistad.getEstadoDeAmistad() : null);
+            }
         }
 
         modelo.addAttribute("usuarioAVer", usuarioAVer);
@@ -84,10 +104,12 @@ public class ControladorUsuario {
             }
             modelo.addAttribute("amigos", amigos);
 
-            // Obtener cantidad de solicitudes pendientes
-            List<Amistad> solicitudesPendientes = servicioAmistad.verSolicitudesPendientes(usuario.getId());
-            modelo.addAttribute("solicitudesPendientes",
-                    solicitudesPendientes != null ? solicitudesPendientes.size() : 0);
+        // Obtener cantidad total de solicitudes pendientes (amistad + invitaciones a partidos)
+        List<Amistad> solicitudesPendientes = servicioAmistad.verSolicitudesPendientes(usuario.getId());
+        List<SolicitudUnirse> invitacionesPartidoPendientes = servicioSolicitudUnirse.listarPendientesPorEmailDestino(email);
+        int cantidadAmistad = solicitudesPendientes != null ? solicitudesPendientes.size() : 0;
+        int cantidadInvitaciones = invitacionesPartidoPendientes != null ? invitacionesPartidoPendientes.size() : 0;
+        modelo.addAttribute("solicitudesPendientes", cantidadAmistad + cantidadInvitaciones);
 
             modelo.put("currentPage", "perfil");
             return "perfil";
@@ -204,7 +226,7 @@ public class ControladorUsuario {
     }
 
     @GetMapping("/solicitudes")
-    public String verSolicitudesAmistad(ModelMap modelo, HttpServletRequest request) {
+    public String verSolicitudes(ModelMap modelo, HttpServletRequest request) {
         String email = (String) request.getSession().getAttribute("EMAIL");
         if (email == null)
             return "redirect:/login";
@@ -213,8 +235,10 @@ public class ControladorUsuario {
         if (usuario == null)
             return "redirect:/login";
 
-        List<Amistad> solicitudesPendientes = servicioAmistad.verSolicitudesPendientes(usuario.getId());
-        modelo.addAttribute("solicitudesPendientes", solicitudesPendientes);
+        List<Amistad> solicitudesAmistadPendientes = servicioAmistad.verSolicitudesPendientes(usuario.getId());
+        List<SolicitudUnirse> invitacionesPartidoPendientes = servicioSolicitudUnirse.listarPendientesPorEmailDestino(email);
+        modelo.addAttribute("solicitudesAmistadPendientes", solicitudesAmistadPendientes);
+        modelo.addAttribute("invitacionesPartidoPendientes", invitacionesPartidoPendientes);
         return "solicitudes-amistad";
     }
 

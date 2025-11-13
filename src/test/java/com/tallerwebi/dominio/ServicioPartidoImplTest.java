@@ -112,14 +112,14 @@ public class ServicioPartidoImplTest {
                 Mockito.when(partidoNorte.getZona()).thenReturn(Zona.NORTE);
                 Mockito.when(partidoSur.getZona()).thenReturn(Zona.SUR);
 
-                Mockito.when(repositorioPartidoMock.listar(null, Zona.NORTE, null))
+                Mockito.when(repositorioPartidoMock.listar(null, Zona.NORTE, null, null, null))
                                 .thenReturn(java.util.List.of(partidoNorte));
 
-                var partidosFiltrados = servicioPartido.listarTodos(null, Zona.NORTE, null);
+                var partidosFiltrados = servicioPartido.listarTodos(null, Zona.NORTE, null, null, null);
 
                 assertEquals(1, partidosFiltrados.size());
                 assertEquals(Zona.NORTE, partidosFiltrados.get(0).getZona());
-                Mockito.verify(repositorioPartidoMock, Mockito.times(1)).listar(null, Zona.NORTE, null);
+                Mockito.verify(repositorioPartidoMock, Mockito.times(1)).listar(null, Zona.NORTE, null, null, null);
         }
 
         @Test
@@ -130,14 +130,14 @@ public class ServicioPartidoImplTest {
                 Mockito.when(partidoAvanzado.getNivel()).thenReturn(Nivel.AVANZADO);
                 Mockito.when(partidoPrincipiante.getNivel()).thenReturn(Nivel.PRINCIPIANTE);
 
-                Mockito.when(repositorioPartidoMock.listar(null, null, Nivel.PRINCIPIANTE))
+                Mockito.when(repositorioPartidoMock.listar(null, null, Nivel.PRINCIPIANTE, null, null))
                                 .thenReturn(java.util.List.of(partidoPrincipiante));
 
-                var partidosFiltrados = servicioPartido.listarTodos(null, null, Nivel.PRINCIPIANTE);
+                var partidosFiltrados = servicioPartido.listarTodos(null, null, Nivel.PRINCIPIANTE, null, null);
 
                 assertEquals(1, partidosFiltrados.size());
                 assertEquals(Nivel.PRINCIPIANTE, partidosFiltrados.get(0).getNivel());
-                Mockito.verify(repositorioPartidoMock, Mockito.times(1)).listar(null, null, Nivel.PRINCIPIANTE);
+                Mockito.verify(repositorioPartidoMock, Mockito.times(1)).listar(null, null, Nivel.PRINCIPIANTE, null, null);
         }
 
         @Test
