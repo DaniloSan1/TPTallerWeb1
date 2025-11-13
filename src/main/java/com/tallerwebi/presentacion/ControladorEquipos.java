@@ -240,7 +240,7 @@ public class ControladorEquipos {
 
             // Create equipo
             Equipo equipo = servicioEquipo.crearEquipo(nombre.trim(), descripcion.trim(), insigniaUrl, usuario);
-
+            servicioEquipoJugador.crearEquipoJugador(equipo, usuario); // Agregar creador como jugador
             redirectAttributes.addFlashAttribute("success", "Equipo creado exitosamente");
             return "redirect:/equipos/" + equipo.getId();
         } catch (UsuarioNoEncontradoException e) {
