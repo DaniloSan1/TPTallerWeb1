@@ -85,6 +85,10 @@
                         <strong>Posición favorita:</strong>
                         <span th:text="${usuario.posicionFavorita}"></span>
                     </p>
+                    <p>
+                        <strong>GolesTotales:</strong>
+                        <span th:text="${golesTotales}"></span>
+                    </p>
                 </div>
                 <div class="card-footer text-end d-flex justify-content-between">
                     <form th:action="@{/perfil/editar}" method="get" class="d-inline">

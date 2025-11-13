@@ -23,6 +23,7 @@ public class ControladorUsuario {
     private ServicioSolicitudUnirse servicioSolicitudUnirse;
     private ServicioCalificacion servicioCalificacion;
     private ServicioNotificacionDeUsuario servicioNotificacionDeUsuario;
+    private ServicioGoles servicioGoles;
 
     // Single constructor with all dependencies to avoid ambiguity during injection
     @Autowired
@@ -31,13 +32,14 @@ public class ControladorUsuario {
                               ServicioAmistad servicioAmistad,
                               ServicioSolicitudUnirse servicioSolicitudUnirse,
                               ServicioCalificacion servicioCalificacion,
-                              ServicioNotificacionDeUsuario servicioNotificacionDeUsuario) {
+                              ServicioNotificacionDeUsuario servicioNotificacionDeUsuario,ServicioGoles servicioGoles) {
         this.servicioLogin = servicioLogin;
         this.servicioUsuario = servicioUsuario;
         this.servicioAmistad = servicioAmistad;
         this.servicioSolicitudUnirse = servicioSolicitudUnirse;
         this.servicioCalificacion = servicioCalificacion;
         this.servicioNotificacionDeUsuario = servicioNotificacionDeUsuario;
+        this.servicioGoles=servicioGoles;
     }
 
     // Backwards-compatible constructor used in tests or contexts where ServicioNotificacionDeUsuario
@@ -46,9 +48,9 @@ public class ControladorUsuario {
                               ServicioUsuario servicioUsuario,
                               ServicioAmistad servicioAmistad,
                               ServicioNotificacionDeUsuario servicioNotificacionDeUsuario,
-                              ServicioCalificacion servicioCalificacion) {
+                              ServicioCalificacion servicioCalificacion,ServicioGoles servicioGoles) {
         // Keep servicioSolicitudUnirse as null for backwards compatibility
-        this(servicioLogin, servicioUsuario, servicioAmistad, null, servicioCalificacion, servicioNotificacionDeUsuario);
+        this(servicioLogin, servicioUsuario, servicioAmistad, null, servicioCalificacion, servicioNotificacionDeUsuario,servicioGoles);
     }
 
     @GetMapping("/ver/id/{id}")
@@ -75,7 +77,9 @@ public class ControladorUsuario {
             }
         }
             Double calificacionPromedioUsuario = servicioCalificacion.calcularCalificacionPromedioUsuario(usuarioAVer.getId());
+            int golesTotalesUsuario=servicioGoles.devolverCantidadTotalDeGolesDelUsuario(usuarioAVer.getId());
             modelo.addAttribute("calificacionPromedioUsuario", calificacionPromedioUsuario);
+            modelo.addAttribute("golesTotalesUsuario",golesTotalesUsuario);
             modelo.addAttribute("usuarioAVer", usuarioAVer);
             return "perfilDeOtroJugador";
         } catch (UsuarioNoEncontradoException e) {
@@ -99,6 +103,8 @@ public class ControladorUsuario {
 
         Amistad amistad = servicioAmistad.buscarRelacionEntreUsuarios(usuarioActual.getId(), usuarioAVer.getId());
         Double calificacionPromedioUsuario = servicioCalificacion.calcularCalificacionPromedioUsuario(usuarioAVer.getId());
+        int golesTotalesUsuario=servicioGoles.devolverCantidadTotalDeGolesDelUsuario(usuarioAVer.getId());
+        modelo.addAttribute("golesTotalesUsuario",golesTotalesUsuario);
         modelo.addAttribute("calificacionPromedioUsuario", calificacionPromedioUsuario);
         modelo.addAttribute("usuarioAVer", usuarioAVer);
         modelo.addAttribute("usuarioActual", usuarioActual);
@@ -120,6 +126,8 @@ public class ControladorUsuario {
 
             // Calificación promedio
             Double calificacionPromedio = servicioCalificacion.calcularCalificacionPromedioUsuario(usuario.getId());
+            int golesTotales=servicioGoles.devolverCantidadTotalDeGolesDelUsuario(usuario.getId());
+            modelo.addAttribute("golesTotales", golesTotales);
             modelo.addAttribute("calificacionPromedio", calificacionPromedio);
 
             // Amigos

@@ -32,22 +32,24 @@ public class ControladorUsuarioTest {
     private ServicioUsuario servicioUsuarioMock;
     private ServicioAmistad servicioAmistadMock;
     private ServicioNotificacionDeUsuario servicioNotificacionMock;
+    private ServicioGoles servicioGolesMock;
     private ServicioCalificacion servicioCalificacionMock;
     private ControladorUsuario controladorUsuario;
     private Usuario usuarioMock;
     private HttpServletRequest httpServletRequestMock;
     private HttpSession sessionMock;
     private HttpServletRequest requestMock;
-
+    
     @BeforeEach
     public void init() {
         servicioLoginMock = mock(ServicioLogin.class);
         servicioUsuarioMock = mock(ServicioUsuario.class);
         servicioAmistadMock = mock(ServicioAmistad.class);
         servicioCalificacionMock = mock(ServicioCalificacion.class);
+        servicioGolesMock=mock(ServicioGoles.class);
         sessionMock = mock(HttpSession.class);
         httpServletRequestMock = mock(HttpServletRequest.class);
-        controladorUsuario = new ControladorUsuario(servicioLoginMock, servicioUsuarioMock, servicioAmistadMock, null, servicioCalificacionMock);
+        controladorUsuario = new ControladorUsuario(servicioLoginMock, servicioUsuarioMock, servicioAmistadMock, null, servicioCalificacionMock,servicioGolesMock);
 
         requestMock = mock(HttpServletRequest.class);
         usuarioMock = mock(Usuario.class);

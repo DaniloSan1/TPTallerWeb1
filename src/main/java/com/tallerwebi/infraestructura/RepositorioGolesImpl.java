@@ -33,4 +33,14 @@ public class RepositorioGolesImpl implements RepositorioGoles {
                 .setParameter("partido", partido)
                 .list();
     }
+
+    @Override
+    public List<Gol>buscarPorUsuario(Long usuarioId){
+        String hql ="SELECT DISTINCT g FROM Gol g JOIN g.equipoJugador e WHERE e.usuario.id = :usuarioId";
+        return sessionFactory
+        .getCurrentSession()
+        .createQuery(hql,Gol.class)
+        .setParameter("usuarioId", usuarioId)
+        .getResultList();
+    }
 }

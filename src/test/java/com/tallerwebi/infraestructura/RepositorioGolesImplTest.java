@@ -17,6 +17,7 @@ import java.util.List;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @ExtendWith(SpringExtension.class)
@@ -150,4 +151,80 @@ public class RepositorioGolesImplTest {
         assertTrue(goles.contains(gol1));
         assertTrue(goles.contains(gol2));
     }
+
+    @Test
+    @Transactional
+    @Rollback
+    public void queCuandoBuscoLosGolesDeUnUsuarioSoloMeTraigaEsos(){
+        Usuario usuario = new Usuario("nombre", "password", "email@test.com", "username");
+        usuario.setId(1L);
+        sessionFactory.getCurrentSession().save(usuario);
+
+        Usuario usuario2 = new Usuario("nombre2", "password", "emailardo@test.com", "username2");
+        usuario2.setId(2L);
+        sessionFactory.getCurrentSession().save(usuario2);
+
+
+        Cancha cancha = new Cancha();
+        cancha.setNombre("Cancha Test");
+        cancha.setDireccion("Dirección Test");
+        cancha.setCapacidad(10);
+        cancha.setPrecio(100.0);
+        cancha.setTipoSuelo("Césped");
+        cancha.setZona(Zona.CENTRO);
+        sessionFactory.getCurrentSession().save(cancha);
+
+        Horario horario = new Horario();
+        horario.setCancha(cancha);
+        horario.setDiaSemana(java.time.DayOfWeek.MONDAY);
+        horario.setHoraInicio(java.time.LocalTime.of(10, 0));
+        horario.setHoraFin(java.time.LocalTime.of(12, 0));
+        horario.setDisponible(true);
+        sessionFactory.getCurrentSession().save(horario);
+
+        Reserva reserva = new Reserva();
+        reserva.setUsuario(usuario);
+        reserva.setHorario(horario);
+        reserva.setFechaReserva(LocalDateTime.now().plusDays(1));
+        reserva.setActiva(true);
+        sessionFactory.getCurrentSession().save(reserva);
+
+        Equipo equipo = new Equipo("Equipo Test", "Descripción", usuario, LocalDateTime.now());
+        sessionFactory.getCurrentSession().save(equipo);
+
+        EquipoJugador equipoJugador = new EquipoJugador();
+        equipoJugador.setUsuario(usuario);
+        equipoJugador.setEquipo(equipo);
+        equipoJugador.setFechaUnion(LocalDateTime.now());
+        sessionFactory.getCurrentSession().save(equipoJugador);
+
+        EquipoJugador equipoJugador2 = new EquipoJugador();
+        equipoJugador2.setUsuario(usuario2);
+        equipoJugador2.setEquipo(equipo);
+        equipoJugador2.setFechaUnion(LocalDateTime.now());
+        sessionFactory.getCurrentSession().save(equipoJugador2);
+
+        Partido partido = new Partido();
+        partido.setTitulo("Partido Test");
+        partido.setCreador(usuario);
+        partido.setReserva(reserva);
+        partido.setCupoMaximo(10);
+        sessionFactory.getCurrentSession().save(partido);
+
+        Gol gol1 = new Gol(partido, equipoJugador, 1);
+        Gol gol2 = new Gol(partido, equipoJugador2, 2);
+        Gol gol3 = new Gol(partido, equipoJugador, 5);
+        repositorioGoles.guardar(gol1);
+        repositorioGoles.guardar(gol2);
+        repositorioGoles.guardar(gol3);
+        sessionFactory.getCurrentSession().flush();
+
+        List<Gol>golesUsuario=repositorioGoles.buscarPorUsuario(1L);
+         assertThat(golesUsuario.size(), equalTo(2));
+        assertTrue(golesUsuario.contains(gol1));
+        assertFalse(golesUsuario.contains(gol2));
+        assertTrue(golesUsuario.contains(gol3));
+    }
+
+
 }
