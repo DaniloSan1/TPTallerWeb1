@@ -1,5 +1,6 @@
 package com.tallerwebi.presentacion;
 
+import com.tallerwebi.dominio.*;
 import com.tallerwebi.dominio.ServicioAmistad;
 import com.tallerwebi.dominio.ServicioCalificacion;
 import com.tallerwebi.dominio.ServicioLogin;
@@ -30,6 +31,7 @@ public class ControladorUsuarioTest {
     private ServicioLogin servicioLoginMock;
     private ServicioUsuario servicioUsuarioMock;
     private ServicioAmistad servicioAmistadMock;
+    private ServicioNotificacionDeUsuario servicioNotificacionMock;
     private ServicioCalificacion servicioCalificacionMock;
     private ControladorUsuario controladorUsuario;
     private Usuario usuarioMock;
@@ -45,8 +47,7 @@ public class ControladorUsuarioTest {
         servicioCalificacionMock = mock(ServicioCalificacion.class);
         sessionMock = mock(HttpSession.class);
         httpServletRequestMock = mock(HttpServletRequest.class);
-        controladorUsuario = new ControladorUsuario(servicioLoginMock, servicioUsuarioMock, servicioAmistadMock,
-                servicioCalificacionMock);
+        controladorUsuario = new ControladorUsuario(servicioLoginMock,servicioUsuarioMock,servicioAmistadMock, servicioNotificacionMock,servicioCalificacionMock);
 
         requestMock = mock(HttpServletRequest.class);
         usuarioMock = mock(Usuario.class);
