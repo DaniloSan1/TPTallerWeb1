@@ -190,7 +190,9 @@
                                                 >Promover a capitán</a
                                             >
                                         </li>
-                                        <li th:if="${esCreador}">
+                                        <li
+                                            th:if="${esCreador and miembro.idUsuario != equipo.creadorId}"
+                                        >
                                             <a
                                                 class="dropdown-item text-danger"
                                                 data-bs-toggle="modal"

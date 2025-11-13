@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.transaction.Transactional;
 
@@ -61,7 +62,8 @@ public class ServicioTorneoImpl implements ServicioTorneo {
 
     @Override
     public List<Torneo> listarTorneosDisponibles() {
-        return repositorioTorneo.torneoFuturo(LocalDate.now());
+        List<Torneo> torneos = repositorioTorneo.torneoFuturo(LocalDate.now());
+        return torneos.stream().filter(torneo -> torneo.getEstado().equals("CONFIRMADO")).collect(Collectors.toList());
     }
 
     @Override
