@@ -68,7 +68,7 @@ public class ControladorReseniaCancha {
         @RequestParam("calificacion") Integer calificacion,
         @RequestParam(value = "descripcion", required = false) String descripcion,
         ModelMap model,
-        HttpServletRequest request) {
+        HttpServletRequest request, RedirectAttributes redirectAttributes) {
 
         String email = (String) request.getSession().getAttribute("EMAIL");
         Usuario usuario = servicioUsuario.buscarPorEmail(email);
@@ -76,6 +76,7 @@ public class ControladorReseniaCancha {
         servicioReseniaCancha.agregarReseniaCancha(
             new ReseniaCancha(calificacion, descripcion, usuario, cancha));
 
+        redirectAttributes.addFlashAttribute("success", "Reseña creada correctamente");
         return new ModelAndView("redirect:/cancha/" + canchaId);
         }   
     
@@ -134,7 +135,7 @@ public class ControladorReseniaCancha {
         @RequestParam("reseniaId") Long reseniaId,
         @RequestParam("calificacion") Integer calificacion,
         @RequestParam(value = "descripcion", required = false) String descripcion,
-        HttpServletRequest request) {
+        HttpServletRequest request,RedirectAttributes redirectAttributes) {
 
         String email = (String) request.getSession().getAttribute("EMAIL");
         Usuario usuario = servicioUsuario.buscarPorEmail(email);
@@ -147,7 +148,7 @@ public class ControladorReseniaCancha {
             reseniaAEditar.setCalificacion(calificacion);
             reseniaAEditar.setComentario(descripcion);
             servicioReseniaCancha.editarReseniaCancha(reseniaAEditar);
-
+            redirectAttributes.addFlashAttribute("success", "Reseña editada correctamente");
             return new ModelAndView("redirect:/cancha/" + reseniaAEditar.getCancha().getId());
             
         } catch (IllegalArgumentException e) {
