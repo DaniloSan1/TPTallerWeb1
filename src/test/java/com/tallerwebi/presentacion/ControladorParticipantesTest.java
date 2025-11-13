@@ -16,7 +16,10 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import com.tallerwebi.dominio.Equipo;
 import com.tallerwebi.dominio.ServicioEquipo;
 import com.tallerwebi.dominio.ServicioEquipoJugador;
+import com.tallerwebi.dominio.ServicioUsuario;
+import com.tallerwebi.dominio.Usuario;
 import com.tallerwebi.dominio.excepcion.ParticipanteNoEncontrado;
+import com.tallerwebi.dominio.excepcion.PermisosInsufficientes;
 
 public class ControladorParticipantesTest {
     private ServicioEquipoJugador servicioEquipoJugadorMock;
@@ -25,14 +28,17 @@ public class ControladorParticipantesTest {
     private HttpSession sessionMock;
     private RedirectAttributes redirectAttributesMock;
     private ServicioEquipo servicioEquipoMock;
+    private ServicioUsuario servicioUsuarioMock;
     private Equipo equipoMock;
 
     @BeforeEach
     public void init() {
         servicioEquipoJugadorMock = Mockito.mock(ServicioEquipoJugador.class);
         servicioEquipoMock = Mockito.mock(ServicioEquipo.class);
+        servicioUsuarioMock = Mockito.mock(ServicioUsuario.class);
         equipoMock = Mockito.mock(Equipo.class);
-        controladorParticipantes = new ControladorParticipantes(servicioEquipoMock, servicioEquipoJugadorMock);
+        controladorParticipantes = new ControladorParticipantes(servicioEquipoMock, servicioEquipoJugadorMock,
+                servicioUsuarioMock);
         requestMock = Mockito.mock(HttpServletRequest.class);
         sessionMock = Mockito.mock(HttpSession.class);
         redirectAttributesMock = Mockito.mock(RedirectAttributes.class);
@@ -148,35 +154,41 @@ public class ControladorParticipantesTest {
 
     @Test
     public void promoverCapitanDeberiaRedirigirConExitoSiPromocionCorrecta() {
+        Usuario usuarioMock = Mockito.mock(Usuario.class);
         when(sessionMock.getAttribute("EMAIL")).thenReturn("usuario@email.com");
+        when(servicioUsuarioMock.buscarPorEmail("usuario@email.com")).thenReturn(usuarioMock);
         when(requestMock.getHeader("referer")).thenReturn("http://localhost/spring/partido/1");
 
         String result = controladorParticipantes.promoverCapitan(1L, redirectAttributesMock, requestMock);
 
         assertEquals("redirect:http://localhost/spring/partido/1", result);
-        verify(servicioEquipoJugadorMock).promoverCapitan(1L);
+        verify(servicioEquipoJugadorMock).promoverCapitan(1L, usuarioMock);
         verify(redirectAttributesMock).addFlashAttribute("listaParticipantesSuccess",
                 "Capitán promovido correctamente");
     }
 
     @Test
     public void promoverCapitanDeberiaRedirigirAHomeSiNoHayReferrer() {
+        Usuario usuarioMock = Mockito.mock(Usuario.class);
         when(sessionMock.getAttribute("EMAIL")).thenReturn("usuario@email.com");
+        when(servicioUsuarioMock.buscarPorEmail("usuario@email.com")).thenReturn(usuarioMock);
         when(requestMock.getHeader("referer")).thenReturn(null);
 
         String result = controladorParticipantes.promoverCapitan(1L, redirectAttributesMock, requestMock);
 
         assertEquals("redirect:/home", result);
-        verify(servicioEquipoJugadorMock).promoverCapitan(1L);
+        verify(servicioEquipoJugadorMock).promoverCapitan(1L, usuarioMock);
         verify(redirectAttributesMock).addFlashAttribute("listaParticipantesSuccess",
                 "Capitán promovido correctamente");
     }
 
     @Test
     public void promoverCapitanDeberiaRedirigirConErrorSiParticipanteNoEncontrado() {
+        Usuario usuarioMock = Mockito.mock(Usuario.class);
         when(sessionMock.getAttribute("EMAIL")).thenReturn("usuario@email.com");
+        when(servicioUsuarioMock.buscarPorEmail("usuario@email.com")).thenReturn(usuarioMock);
         when(requestMock.getHeader("referer")).thenReturn("http://localhost/partido/1");
-        doThrow(new ParticipanteNoEncontrado()).when(servicioEquipoJugadorMock).promoverCapitan(1L);
+        doThrow(new ParticipanteNoEncontrado()).when(servicioEquipoJugadorMock).promoverCapitan(1L, usuarioMock);
 
         String result = controladorParticipantes.promoverCapitan(1L, redirectAttributesMock, requestMock);
 
@@ -186,13 +198,30 @@ public class ControladorParticipantesTest {
 
     @Test
     public void promoverCapitanDeberiaRedirigirConErrorSiOcurreExcepcionGeneral() {
+        Usuario usuarioMock = Mockito.mock(Usuario.class);
         when(sessionMock.getAttribute("EMAIL")).thenReturn("usuario@email.com");
+        when(servicioUsuarioMock.buscarPorEmail("usuario@email.com")).thenReturn(usuarioMock);
         when(requestMock.getHeader("referer")).thenReturn("http://localhost/partido/1");
-        doThrow(new RuntimeException("Error general")).when(servicioEquipoJugadorMock).promoverCapitan(1L);
+        doThrow(new RuntimeException("Error general")).when(servicioEquipoJugadorMock).promoverCapitan(1L, usuarioMock);
 
         String result = controladorParticipantes.promoverCapitan(1L, redirectAttributesMock, requestMock);
 
         assertEquals("redirect:http://localhost/partido/1", result);
         verify(redirectAttributesMock).addFlashAttribute("listaParticipantesError", "Error al promover al capitán");
+    }
+
+    @Test
+    public void promoverCapitanDeberiaRedirigirConErrorSiPermisosInsufficientes() {
+        Usuario usuarioMock = Mockito.mock(Usuario.class);
+        when(sessionMock.getAttribute("EMAIL")).thenReturn("usuario@email.com");
+        when(servicioUsuarioMock.buscarPorEmail("usuario@email.com")).thenReturn(usuarioMock);
+        when(requestMock.getHeader("referer")).thenReturn("http://localhost/partido/1");
+        doThrow(new PermisosInsufficientes()).when(servicioEquipoJugadorMock).promoverCapitan(1L, usuarioMock);
+
+        String result = controladorParticipantes.promoverCapitan(1L, redirectAttributesMock, requestMock);
+
+        assertEquals("redirect:http://localhost/partido/1", result);
+        verify(redirectAttributesMock).addFlashAttribute("listaParticipantesError",
+                "No tienes permisos para promover al capitán");
     }
 }

@@ -13,19 +13,25 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import com.tallerwebi.dominio.Equipo;
 import com.tallerwebi.dominio.ServicioEquipo;
 import com.tallerwebi.dominio.ServicioEquipoJugador;
+import com.tallerwebi.dominio.ServicioUsuario;
+import com.tallerwebi.dominio.Usuario;
 import com.tallerwebi.dominio.excepcion.EquipoNoEncontrado;
 import com.tallerwebi.dominio.excepcion.ParticipanteNoEncontrado;
+import com.tallerwebi.dominio.excepcion.PermisosInsufficientes;
 
 @Controller
 @RequestMapping("/participantes")
 public class ControladorParticipantes {
     private ServicioEquipo servicioEquipo;
     private ServicioEquipoJugador servicioEquipoJugador;
+    private ServicioUsuario servicioUsuario;
 
     @Autowired
-    public ControladorParticipantes(ServicioEquipo servicioEquipo, ServicioEquipoJugador servicioEquipoJugador) {
+    public ControladorParticipantes(ServicioEquipo servicioEquipo, ServicioEquipoJugador servicioEquipoJugador,
+            ServicioUsuario servicioUsuario) {
         this.servicioEquipo = servicioEquipo;
         this.servicioEquipoJugador = servicioEquipoJugador;
+        this.servicioUsuario = servicioUsuario;
     }
 
     @RequestMapping(path = "/{id}/asignacion-equipo", method = RequestMethod.POST)
@@ -101,11 +107,15 @@ public class ControladorParticipantes {
                 return "redirect:/login";
             }
 
-            servicioEquipoJugador.promoverCapitan(id);
+            Usuario usuario = servicioUsuario.buscarPorEmail(email);
+            servicioEquipoJugador.promoverCapitan(id, usuario);
             redirectAttributes.addFlashAttribute("listaParticipantesSuccess", "Capitán promovido correctamente");
 
         } catch (ParticipanteNoEncontrado e) {
             redirectAttributes.addFlashAttribute("listaParticipantesError", e.getMessage());
+        } catch (PermisosInsufficientes e) {
+            redirectAttributes.addFlashAttribute("listaParticipantesError",
+                    "No tienes permisos para promover al capitán");
         } catch (Exception e) {
             redirectAttributes.addFlashAttribute("listaParticipantesError", "Error al promover al capitán");
         }

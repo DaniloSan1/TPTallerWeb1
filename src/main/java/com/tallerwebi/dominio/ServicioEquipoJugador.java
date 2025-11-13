@@ -4,6 +4,7 @@ import org.springframework.stereotype.Service;
 
 import com.tallerwebi.dominio.excepcion.ParticipanteNoEncontrado;
 import com.tallerwebi.dominio.excepcion.YaExisteElParticipante;
+import com.tallerwebi.dominio.excepcion.PermisosInsufficientes;
 
 import java.util.List;
 
@@ -21,7 +22,7 @@ public interface ServicioEquipoJugador {
 
     EquipoJugador actualizarEquipo(long partidoParticipanteId, Equipo nuevoEquipo) throws ParticipanteNoEncontrado;
 
-    void promoverCapitan(Long equipoJugadorId) throws ParticipanteNoEncontrado;
+    void promoverCapitan(Long equipoJugadorId, Usuario usuario) throws ParticipanteNoEncontrado, PermisosInsufficientes;
 
     List<EquipoJugador> buscarPorEquipo(Equipo equipo);
 }

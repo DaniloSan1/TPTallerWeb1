@@ -9,14 +9,17 @@ import org.springframework.stereotype.Service;
 
 import com.tallerwebi.dominio.excepcion.ParticipanteNoEncontrado;
 import com.tallerwebi.dominio.excepcion.YaExisteElParticipante;
+import com.tallerwebi.dominio.excepcion.PermisosInsufficientes;
 
 @Service
 public class ServicioEquipoJugadorImpl implements ServicioEquipoJugador {
     private final RepositorioEquipoJugador repositorioEquipoJugador;
+    private final ServicioEquipo servicioEquipo;
 
     @Autowired
-    public ServicioEquipoJugadorImpl(RepositorioEquipoJugador repositorioEquipoJugador) {
+    public ServicioEquipoJugadorImpl(RepositorioEquipoJugador repositorioEquipoJugador, ServicioEquipo servicioEquipo) {
         this.repositorioEquipoJugador = repositorioEquipoJugador;
+        this.servicioEquipo = servicioEquipo;
     }
 
     @Override
@@ -59,13 +62,18 @@ public class ServicioEquipoJugadorImpl implements ServicioEquipoJugador {
 
     @Override
     @Transactional
-    public void promoverCapitan(Long equipoJugadorId) throws ParticipanteNoEncontrado {
+    public void promoverCapitan(Long equipoJugadorId, Usuario usuario)
+            throws ParticipanteNoEncontrado, PermisosInsufficientes {
         EquipoJugador nuevoCapitan = repositorioEquipoJugador.buscarPorId(equipoJugadorId);
         if (nuevoCapitan == null) {
             throw new ParticipanteNoEncontrado();
         }
 
         Equipo equipo = nuevoCapitan.getEquipo();
+        if (!servicioEquipo.esUsuarioCreador(equipo, usuario)) {
+            throw new PermisosInsufficientes();
+        }
+
         List<EquipoJugador> jugadores = repositorioEquipoJugador.buscarPorEquipo(equipo);
 
         // Unset all captains in the equipo
