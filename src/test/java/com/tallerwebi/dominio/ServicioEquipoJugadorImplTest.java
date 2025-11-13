@@ -1,6 +1,7 @@
 package com.tallerwebi.dominio;
 
 import com.tallerwebi.dominio.excepcion.ParticipanteNoEncontrado;
+import com.tallerwebi.dominio.excepcion.YaExisteElParticipante;
 import com.tallerwebi.infraestructura.RepositorioEquipoJugadorImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -26,7 +27,7 @@ public class ServicioEquipoJugadorImplTest {
     @Test
     public void queSePuedaCrearUnEquipoJugador() {
         Usuario creador = new Usuario();
-        Equipo equipo = new Equipo("Equipo Test", creador, java.time.LocalDateTime.now());
+        Equipo equipo = new Equipo("Equipo Test", "Descripción", creador, java.time.LocalDateTime.now());
         Usuario jugador = new Usuario();
 
         EquipoJugador equipoJugadorCreado = servicioEquipoJugadorImpl.crearEquipoJugador(equipo, jugador);
@@ -37,9 +38,25 @@ public class ServicioEquipoJugadorImplTest {
     }
 
     @Test
+    public void queLanceExcepcionSiYaExisteElParticipante() {
+        Usuario creador = new Usuario();
+        Equipo equipo = new Equipo("Equipo Test", "Descripción", creador, java.time.LocalDateTime.now());
+        Usuario jugador = new Usuario();
+        EquipoJugador existente = new EquipoJugador(equipo, jugador);
+
+        when(repositorioEquipoJugador.buscarPorEquipoYUsuario(equipo, jugador)).thenReturn(existente);
+
+        assertThrows(YaExisteElParticipante.class, () -> {
+            servicioEquipoJugadorImpl.crearEquipoJugador(equipo, jugador);
+        });
+
+        verify(repositorioEquipoJugador, never()).guardar(any(EquipoJugador.class));
+    }
+
+    @Test
     public void queSePuedaBuscarEquipoJugadorPorEquipoYUsuario() {
         Usuario creador = new Usuario();
-        Equipo equipo = new Equipo("Equipo Test", creador, java.time.LocalDateTime.now());
+        Equipo equipo = new Equipo("Equipo Test", "Descripción", creador, java.time.LocalDateTime.now());
         Usuario jugador = new Usuario();
         EquipoJugador equipoJugador = new EquipoJugador(equipo, jugador);
 
@@ -55,7 +72,7 @@ public class ServicioEquipoJugadorImplTest {
     public void queSePuedaEliminarEquipoJugadorPorId() {
         Long id = 1L;
         Usuario creador = new Usuario();
-        Equipo equipo = new Equipo("Equipo Test", creador, java.time.LocalDateTime.now());
+        Equipo equipo = new Equipo("Equipo Test", "Descripción", creador, java.time.LocalDateTime.now());
         Usuario jugador = new Usuario();
         EquipoJugador equipoJugador = new EquipoJugador(equipo, jugador);
 
@@ -72,7 +89,7 @@ public class ServicioEquipoJugadorImplTest {
         // Arrange
         Long idNuevoCapitan = 1L;
         Usuario creador = new Usuario();
-        Equipo equipo = new Equipo("Equipo Test", creador, java.time.LocalDateTime.now());
+        Equipo equipo = new Equipo("Equipo Test", "Descripción", creador, java.time.LocalDateTime.now());
         Usuario jugador1 = new Usuario();
         Usuario jugador2 = new Usuario();
         EquipoJugador nuevoCapitan = new EquipoJugador(equipo, jugador1);
@@ -105,5 +122,51 @@ public class ServicioEquipoJugadorImplTest {
             servicioEquipoJugadorImpl.promoverCapitan(idInexistente);
         });
         verify(repositorioEquipoJugador).buscarPorId(idInexistente);
+    }
+
+    @Test
+    public void queLanceExcepcionSiYaExisteParticipanteEnEquipo() {
+        Usuario creador = new Usuario();
+        Equipo equipo = new Equipo("Equipo Test", "Descripción", creador, java.time.LocalDateTime.now());
+        Usuario jugador = new Usuario();
+        EquipoJugador equipoJugador = new EquipoJugador(equipo, jugador);
+
+        // Caso cuando existe
+        when(repositorioEquipoJugador.buscarPorEquipoYUsuario(equipo, jugador)).thenReturn(equipoJugador);
+
+        assertThrows(YaExisteElParticipante.class, () -> {
+            servicioEquipoJugadorImpl.validarQueNoExisteParticipanteEnEquipo(equipo, jugador);
+        });
+    }
+
+    @Test
+    public void queNoLanceExcepcionSiNoExisteParticipanteEnEquipo() {
+        Usuario creador = new Usuario();
+        Equipo equipo = new Equipo("Equipo Test", "Descripción", creador, java.time.LocalDateTime.now());
+        Usuario jugador = new Usuario();
+
+        // Caso cuando no existe
+        when(repositorioEquipoJugador.buscarPorEquipoYUsuario(equipo, jugador)).thenReturn(null);
+
+        // Should not throw
+        servicioEquipoJugadorImpl.validarQueNoExisteParticipanteEnEquipo(equipo, jugador);
+    }
+
+    @Test
+    public void queSePuedaBuscarEquipoJugadoresPorEquipo() {
+        Usuario creador = new Usuario();
+        Equipo equipo = new Equipo("Equipo Test", "Descripción", creador, java.time.LocalDateTime.now());
+        Usuario jugador1 = new Usuario();
+        Usuario jugador2 = new Usuario();
+        List<EquipoJugador> equipoJugadoresEsperados = Arrays.asList(
+                new EquipoJugador(equipo, jugador1),
+                new EquipoJugador(equipo, jugador2));
+
+        when(repositorioEquipoJugador.buscarPorEquipo(equipo)).thenReturn(equipoJugadoresEsperados);
+
+        List<EquipoJugador> equipoJugadoresObtenidos = servicioEquipoJugadorImpl.buscarPorEquipo(equipo);
+
+        verify(repositorioEquipoJugador).buscarPorEquipo(equipo);
+        assertThat(equipoJugadoresObtenidos, equalTo(equipoJugadoresEsperados));
     }
 }

@@ -13,11 +13,13 @@ public class ControladorPago {
 
     private final ServicioPago servicioPago;
     private final ServicioReserva servicioReserva;
+    private final ServicioTorneo servicioTorneo;
 
     @Autowired
-    public ControladorPago(ServicioPago servicioPago, ServicioReserva servicioReserva) {
+    public ControladorPago(ServicioPago servicioPago, ServicioReserva servicioReserva, ServicioTorneo servicioTorneo) {
         this.servicioPago = servicioPago;
         this.servicioReserva = servicioReserva;
+        this.servicioTorneo = servicioTorneo;
     }
 
     // MercadoPago redirige acá cuando el pago fue exitoso
@@ -41,14 +43,22 @@ public class ControladorPago {
             servicioPago.actualizarPago(pago);
 
             // Activar la reserva asociada
-            Reserva reserva = pago.getReserva();
-            reserva.setActiva(true);
-            servicioReserva.crearReserva(reserva); // guarda actualización
-
-            redirectAttributes.addFlashAttribute("mensajeExito",
+            if (pago.getReserva() != null) {
+                Reserva reserva = pago.getReserva();
+                reserva.setActiva(true);
+                servicioReserva.crearReserva(reserva); // guarda actualización
+                redirectAttributes.addFlashAttribute("mensajeExito",
                     "✅ Pago confirmado y reserva activada con éxito.");
-            return "redirect:/home";
+            }
+            if (pago.getTorneo() != null) {
+                Torneo torneo = pago.getTorneo();
+                torneo.setEstado("CONFIRMADO");
+                servicioTorneo.actualizarTorneo(torneo); // guarda actualización
+                redirectAttributes.addFlashAttribute("mensajeExito",
+                    "✅ Pago confirmado y torneo activado con éxito.");
+            }
 
+            return "redirect:/home";
         } catch (Exception e) {
             e.printStackTrace();
             redirectAttributes.addFlashAttribute("mensajeError", "Error al confirmar el pago: " + e.getMessage());

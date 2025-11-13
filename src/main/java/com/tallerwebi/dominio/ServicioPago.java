@@ -10,4 +10,5 @@ public interface ServicioPago {
     void guardarPago(Reserva reserva, Usuario usuario, String preferenciaId, Double monto);
     Pago obtenerPorPreferencia(String preferenceId);
     void actualizarPago(Pago pago);
+    void guardarPagoTorneo(Torneo torneo, Usuario usuario, String preferenciaId, Double monto);
 }

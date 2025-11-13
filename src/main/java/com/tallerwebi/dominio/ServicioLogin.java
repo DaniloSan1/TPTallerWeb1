@@ -7,9 +7,13 @@ import org.springframework.stereotype.Service;
 public interface ServicioLogin {
 
     Usuario consultarUsuario(String email, String password);
+
     void registrar(Usuario usuario) throws UsuarioNoEncontradoException;
-    Usuario buscarPorEmail(String email);
+
+    Usuario buscarPorEmail(String email) throws UsuarioNoEncontradoException;
+
     Usuario buscarPorId(Long id);
+
     Usuario buscarPorUsername(String username);
 
 }

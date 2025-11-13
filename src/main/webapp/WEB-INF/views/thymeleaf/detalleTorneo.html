@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+  <title>Detalle del Torneo</title>
+
+  <link rel="stylesheet" th:href="@{/webjars/bootstrap/5.2.0/css/bootstrap.min.css}" />
+  <link rel="stylesheet" th:href="@{/css/main.css}" />
+</head>
+<body>
+  <!-- Navbar -->
+  <div th:replace="~{fragments/navbar :: navbar}"></div>
+
+  <main role="main" class="container" style="padding-top: 175px">
+    <div th:if="${mensajeError}" class="alert alert-danger" th:text="${mensajeError}"></div>
+    <div th:if="${mensajeExito}" class="alert alert-success" th:text="${mensajeExito}"></div>
+
+    <div class="card shadow p-4 mx-auto" style="max-width: 600px">
+      <h3 class="text-center mb-3">Detalle del Torneo</h3>
+
+      <div class="mb-3">
+        <label class="form-label fw-bold">Nombre:</label>
+        <span th:text="${torneo.nombre}"></span>
+      </div>
+
+      <div class="mb-3">
+        <label class="form-label fw-bold">Fecha:</label>
+        <span th:text="${torneo.fecha}"></span>
+      </div>
+
+      <div class="mb-3">
+        <label class="form-label fw-bold">Cancha:</label>
+        <span th:text="${cancha.nombre}"></span>
+      </div>
+
+      <div class="mb-3">
+        <label class="form-label fw-bold">Precio:</label>
+        $<span th:text="${torneo.precio}"></span>
+      </div>
+
+      <div class="mb-3">
+        <label class="form-label fw-bold">Estado:</label>
+        <span th:text="${torneo.estado}"></span>
+      </div>
+
+      <div class="mb-3">
+        <label class="form-label fw-bold">Organizador:</label>
+        <span th:text="${torneo.organizador.nombre}"></span>
+      </div>
+
+        <div id="walletBrick_container" class="mt-4"></div>
+
+        <form th:action="@{/torneos/cancelar/{id}(id=${torneo.id})}" method="post">
+          <button type="submit" class="btn btn-danger">Cancelar torneo</button>
+        </form>
+      </div>
+    </div>
+  </main>
+
+  <script th:src="@{/webjars/bootstrap/5.2.0/js/bootstrap.bundle.min.js}"></script>
+  <script src="https://sdk.mercadopago.com/js/v2"></script>
+  <script th:inline="javascript">
+    const publicKey = /*[[${publicKey}]]*/ "";
+    const preferenceId = /*[[${preferenceId}]]*/ "";
+    console.log("Public Key: " + publicKey);
+    console.log("Preference ID: " + preferenceId);
+
+    const mp = new MercadoPago(publicKey);
+    const bricksBuilder = mp.bricks();
+
+    const renderWalletBrick = async (bricksBuilder) => {
+      await bricksBuilder.create("wallet", "walletBrick_container", {
+        initialization: { preferenceId: preferenceId },
+      });
+    };
+
+    renderWalletBrick(bricksBuilder);
+  </script>
+</body>
+</html>

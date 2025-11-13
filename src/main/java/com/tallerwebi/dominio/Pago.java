@@ -26,6 +26,10 @@ public class Pago {
     @ManyToOne
     @JoinColumn(name = "usuario_id")
     private Usuario usuario;
+    
+    @ManyToOne
+    @JoinColumn(name = "torneo_id")
+    private Torneo torneo;
 
     public Pago() {
         this.fechaCreacion = LocalDateTime.now();
@@ -87,4 +91,11 @@ public class Pago {
         this.usuario = usuario;
     }
     
+    public Torneo getTorneo() {
+        return torneo;
+    }
+
+    public void setTorneo(Torneo torneo) {
+        this.torneo = torneo;
+    }
 }

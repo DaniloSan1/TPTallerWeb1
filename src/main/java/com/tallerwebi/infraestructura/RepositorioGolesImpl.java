@@ -14,8 +14,12 @@ import java.util.List;
 @Transactional
 public class RepositorioGolesImpl implements RepositorioGoles {
 
+    private final SessionFactory sessionFactory;
+
     @Autowired
-    private SessionFactory sessionFactory;
+    public RepositorioGolesImpl(SessionFactory sessionFactory) {
+        this.sessionFactory = sessionFactory;
+    }
 
     @Override
     public void guardar(Gol gol) {

@@ -1,8 +1,9 @@
 package com.tallerwebi.presentacion;
 
+import java.util.List;
+
 import javax.servlet.http.HttpServletRequest;
 
-import org.apache.maven.model.Model;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -54,6 +55,7 @@ public class ControladorReseniaCancha {
         }  
         modelAndView.addObject("cancha", cancha);
         modelAndView.addObject("usuario", usuario);
+        modelAndView.addObject("editMode", false);
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -75,13 +77,88 @@ public class ControladorReseniaCancha {
             new ReseniaCancha(calificacion, descripcion, usuario, cancha));
 
         return new ModelAndView("redirect:/cancha/" + canchaId);
-}   
+        }   
+    
+    @GetMapping("/historial-reviews/{usuarioId}")
+        public ModelAndView verHistorial(@PathVariable Long usuarioId, HttpServletRequest request){
+        ModelAndView modelAndView= new ModelAndView();
+        Usuario usuario=servicioUsuario.buscarPorEmail((String)request.getSession().getAttribute("EMAIL"));
+        if(usuarioId !=usuario.getId()){
+            return new ModelAndView("redirect:/perfil/");
+        }
+        List<ReseniaCancha> resenias =servicioReseniaCancha.obtenerReseniasPorUsuario(usuarioId);
+        modelAndView.addObject("resenias", resenias);
+        modelAndView.setViewName("historial-resenias");
+        return modelAndView;
+    }
+
+    @GetMapping("/editar-resenia/{reseniaCanchaId}")
+    public ModelAndView editarResenia(@PathVariable Long reseniaCanchaId, HttpServletRequest request, RedirectAttributes redirectAttributes){
+        ModelAndView modelAndView = new ModelAndView();
+        String email = (String) request.getSession().getAttribute("EMAIL");
+        if (email == null) {
+            return new ModelAndView("redirect:/login");
+        }
+
+        try {
+            ReseniaCancha reseniaAEditar = servicioReseniaCancha.obtenerReseniaCanchaPorId(reseniaCanchaId);
+            Usuario usuarioActual = servicioUsuario.buscarPorEmail(email);
+
+            if (usuarioActual == null) {
+                return new ModelAndView("redirect:/login");
+            }
+
+            
+            if (!reseniaAEditar.getUsuario().getId().equals(usuarioActual.getId())) {
+                redirectAttributes.addFlashAttribute("error", "No tenés permiso para editar esta reseña.");
+                return new ModelAndView("redirect:/perfil");
+            }
+            modelAndView.setViewName("reseniar-cancha");
+            modelAndView.addObject("cancha", reseniaAEditar.getCancha());
+            modelAndView.addObject("usuario", usuarioActual);
+            modelAndView.addObject("resenia", reseniaAEditar);
+            modelAndView.addObject("editMode", true);
+            return modelAndView;
+
+        } catch (IllegalArgumentException e) {
+            redirectAttributes.addFlashAttribute("error", e.getMessage());
+            return new ModelAndView("redirect:/perfil");
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("error", "Ocurrió un error al intentar editar la reseña.");
+            return new ModelAndView("redirect:/perfil");
+        }
+    }
+
+    @PostMapping("/resenia/editar")
+    public ModelAndView actualizarResenia(
+        @RequestParam("reseniaId") Long reseniaId,
+        @RequestParam("calificacion") Integer calificacion,
+        @RequestParam(value = "descripcion", required = false) String descripcion,
+        HttpServletRequest request) {
+
+        String email = (String) request.getSession().getAttribute("EMAIL");
+        Usuario usuario = servicioUsuario.buscarPorEmail(email);
+
+        try {
+            ReseniaCancha reseniaAEditar = servicioReseniaCancha.obtenerReseniaCanchaPorId(reseniaId);
+            if (!reseniaAEditar.getUsuario().getId().equals(usuario.getId())) {
+                return new ModelAndView("redirect:/perfil");
+            }
+            reseniaAEditar.setCalificacion(calificacion);
+            reseniaAEditar.setComentario(descripcion);
+            servicioReseniaCancha.editarReseniaCancha(reseniaAEditar);
+
+            return new ModelAndView("redirect:/cancha/" + reseniaAEditar.getCancha().getId());
+            
+        } catch (IllegalArgumentException e) {
+            return new ModelAndView("redirect:/perfil");
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new ModelAndView("redirect:/perfil");
+        }
+    }
     
     
     
     
     }
-
-
-    
-

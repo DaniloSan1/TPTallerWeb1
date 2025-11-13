@@ -10,7 +10,7 @@ public interface ServicioPartido {
 
         Partido obtenerPorId(Long id);
 
-        public void abandonarPartido(Long partidoId, Usuario usuario);
+        void abandonarPartido(Long partidoId, Usuario usuario);
 
         Partido anotarParticipante(Partido partido, Equipo equipo, Usuario usuario)
                         throws YaExisteElParticipante, NoHayCupoEnPartido;
@@ -18,14 +18,19 @@ public interface ServicioPartido {
         Partido crearDesdeReserva(Reserva nuevaReserva, String titulo, String descripcion, Nivel nivel,
                         int cupoMaximo, Usuario usuario);
 
-        java.util.List<Partido> listarTodos(String busqueda, Zona filtroZona, Nivel filtroNivel, java.time.LocalDate fechaFiltro, Long canchaId);
+       List<Partido> listarTodos(String busqueda, Zona filtroZona, Nivel filtroNivel, java.time.LocalDate fechaFiltro, Long canchaId);
         
-        public void actualizarPartido(Long id, String titulo, String descripcion, Usuario usuario);
-        
-        List<Partido> listarPorCreador(Usuario usuario);
+       public void actualizarPartido(Long id, String titulo, String descripcion, Usuario usuario);
 
         List<Partido> listarPorParticipante(Usuario usuario);
 
        public void finalizarPartido(Partido partido, Usuario usuario) throws PermisosInsufficientes;
-}
 
+        List<Partido> listarTodos(String busqueda, Zona filtroZona, Nivel filtroNivel);
+
+        List<Partido> listarPorCreador(Usuario usuario);
+
+        List<Partido> listarPorEquipoConInfoCancha(Equipo equipo);
+
+        Partido obtenerPorIdConJugadores(Long id);
+}

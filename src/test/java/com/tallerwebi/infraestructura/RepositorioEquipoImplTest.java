@@ -37,7 +37,7 @@ public class RepositorioEquipoImplTest {
         Usuario creador = new Usuario("nombre", "password", "email@test.com", "username");
         sessionFactory.getCurrentSession().save(creador);
 
-        Equipo equipoAGuardar = new Equipo("Equipo Test", creador, LocalDateTime.now());
+        Equipo equipoAGuardar = new Equipo("Equipo Test", "Descripción del equipo", creador, LocalDateTime.now());
 
         repositorioEquipo.guardar(equipoAGuardar);
         sessionFactory.getCurrentSession().flush();
@@ -57,7 +57,7 @@ public class RepositorioEquipoImplTest {
         Usuario creador = new Usuario("nombre", "password", "email@test.com", "username");
         sessionFactory.getCurrentSession().save(creador);
 
-        Equipo equipoAGuardar = new Equipo("Equipo Test", creador, LocalDateTime.now());
+        Equipo equipoAGuardar = new Equipo("Equipo Test", "Descripción del equipo", creador, LocalDateTime.now());
         sessionFactory.getCurrentSession().save(equipoAGuardar);
         sessionFactory.getCurrentSession().flush();
 
@@ -73,7 +73,7 @@ public class RepositorioEquipoImplTest {
         Usuario creador = new Usuario("nombre", "password", "email@test.com", "username");
         sessionFactory.getCurrentSession().save(creador);
 
-        Equipo equipoAGuardar = new Equipo("Equipo Test", creador, LocalDateTime.now());
+        Equipo equipoAGuardar = new Equipo("Equipo Test", "Descripción del equipo", creador, LocalDateTime.now());
         sessionFactory.getCurrentSession().save(equipoAGuardar);
         sessionFactory.getCurrentSession().flush();
 

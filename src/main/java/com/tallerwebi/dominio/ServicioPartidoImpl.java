@@ -59,8 +59,11 @@ public class ServicioPartidoImpl implements ServicioPartido {
         repoPartido.guardar(partido);
 
         // Crear dos equipos por defecto
-        Equipo equipo1 = servicioEquipo.crearEquipo("Equipo 1", usuario);
-        Equipo equipo2 = servicioEquipo.crearEquipo("Equipo 2", usuario);
+        String defaultInsignia = "https://www.ligaprofesional.ar/wp-content/uploads/2024/06/BOC-escudo.png";
+        Equipo equipo1 = servicioEquipo.crearEquipo("Equipo 1", "Equipo generado para " + partido.getTitulo(),
+                defaultInsignia, usuario);
+        Equipo equipo2 = servicioEquipo.crearEquipo("Equipo 2", "Equipo generado para " + partido.getTitulo(),
+                defaultInsignia, usuario);
 
         // Crear las relaciones PartidoEquipo
         PartidoEquipo partidoEquipo1 = new PartidoEquipo(partido, equipo1);
@@ -83,22 +86,30 @@ public class ServicioPartidoImpl implements ServicioPartido {
     }
 
     @Override
+    public Partido obtenerPorIdConJugadores(Long id) {
+        Partido partido = repoPartido.obtenerPorIdConJugadores(id);
+        if (partido == null) {
+            throw new PartidoNoEncontrado();
+        }
+        return partido;
+    }
+
+    @Override
     @Transactional
     public Partido anotarParticipante(Partido partido, Equipo equipo, Usuario usuario)
             throws YaExisteElParticipante, NoHayCupoEnPartido {
 
-        if (!partido.validarCupo()) {
-            throw new NoHayCupoEnPartido();
-        }
+        partido.validarCupo();
 
         EquipoJugador equipoJugador = servicioEquipoJugador.crearEquipoJugador(equipo, usuario);
         partido.agregarParticipante(equipoJugador);
+
         return partido;
     }
 
     @Override
     public void abandonarPartido(Long partidoId, Usuario usuario) {
-        Partido partido = obtenerPorId(partidoId);
+        Partido partido = obtenerPorIdConJugadores(partidoId);
         EquipoJugador equipoJugador = partido.buscarJugador(usuario.getId());
         servicioEquipoJugador.eliminarPorId(equipoJugador.getId());
     }
@@ -123,6 +134,7 @@ public class ServicioPartidoImpl implements ServicioPartido {
         List<Partido> partidos = repoPartido.listarPorParticipante(usuario.getId());
         return partidos != null ? partidos : java.util.Collections.emptyList();
     }
+    
     @Override
     public void actualizarPartido(Long id, String titulo, String descripcion, Usuario usuario)
             throws PermisosInsufficientes {
@@ -142,5 +154,16 @@ public class ServicioPartidoImpl implements ServicioPartido {
         }
         partido.setFechaFinalizacion(java.time.LocalDateTime.now());
         repoPartido.actualizar(partido);
+    }
+
+    @Override
+    public List<Partido> listarPorEquipoConInfoCancha(Equipo equipo) {
+        return repoPartido.listarPorEquipoConInfoCancha(equipo.getId());
+    }
+
+    @Override
+    public List<Partido> listarTodos(String busqueda, Zona filtroZona, Nivel filtroNivel) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'listarTodos'");
     }
 }

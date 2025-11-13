@@ -35,6 +35,17 @@
                 <div class="card-header">
                     <h4 class="mb-0" th:text="${usuarioAVer.nombre + ' ' + usuarioAVer.apellido}">Nombre Apellido</h4>
                     <small th:text="${usuarioAVer.email}">email@ejemplo.com</small>
+                    <div class="text-center mt-3">
+                        <h5 class="mb-0">
+                            <span th:if="${calificacionPromedioUsuario != null and calificacionPromedioUsuario > 0}">
+                                <strong>Calificación promedio:</strong>
+                                <span th:text="${#numbers.formatDecimal(calificacionPromedioUsuario, 1, 2)}" class="text-warning fw-bold">0.00</span>
+                            </span>
+                            <span th:if="${calificacionPromedioUsuario == null or calificacionPromedioUsuario == 0.0}">
+                                <strong>Sin calificaciones</strong>
+                            </span>
+                        </h5>
+                    </div>
                 </div>
                 <div class="card-body">
                     <p>
