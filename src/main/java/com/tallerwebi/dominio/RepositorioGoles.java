@@ -6,4 +6,5 @@ public interface RepositorioGoles {
     void guardar(Gol gol);
 
     List<Gol> buscarPorPartido(Partido partido);
+    
 }
