@@ -53,7 +53,7 @@ public class ControladorUsuario {
         this(servicioLogin, servicioUsuario, servicioAmistad, null, servicioCalificacion, servicioNotificacionDeUsuario,servicioGoles);
     }
 
-    @GetMapping("/ver/id/{id}")
+     @GetMapping("/ver/id/{id}")
     public String verPerfilDeOtroJugador(@PathVariable Long id, ModelMap modelo, HttpServletRequest request) {
         try {
             Usuario usuarioAVer = servicioLogin.buscarPorId(id);
@@ -62,8 +62,31 @@ public class ControladorUsuario {
                 return "redirect:/home";
             }
 
-        modelo.addAttribute("usuarioAVer", usuarioAVer);
-        return "perfilDeOtroJugador";
+        String usernameABuscar = (String) request.getSession().getAttribute("USERNAME");
+        if (usernameABuscar != null) {
+            Usuario usuarioActual = servicioUsuario.buscarPorUsername(usernameABuscar);
+            if (usuarioActual != null) {
+                if (usuarioAVer.getUsername().equals(usernameABuscar)) {
+                    return "redirect:/perfil";
+                }
+
+                Amistad amistad = servicioAmistad.buscarRelacionEntreUsuarios(usuarioActual.getId(), usuarioAVer.getId());
+                modelo.addAttribute("usuarioActual", usuarioActual);
+                modelo.addAttribute("amistad", amistad);
+                modelo.addAttribute("estadoAmistad", amistad != null ? amistad.getEstadoDeAmistad() : null);
+            }
+        }
+            Double calificacionPromedioUsuario = servicioCalificacion.calcularCalificacionPromedioUsuario(usuarioAVer.getId());
+            int golesTotalesUsuario=servicioGoles.devolverCantidadTotalDeGolesDelUsuario(usuarioAVer.getId());
+            Double golesPromedioUsuario=servicioGoles.devolverGolesPromedioPorPartidoDelUsuario(usuarioAVer.getId());
+            modelo.addAttribute("calificacionPromedioUsuario", calificacionPromedioUsuario);
+            modelo.addAttribute("golesPromedioUsuario", golesPromedioUsuario);
+            modelo.addAttribute("golesTotalesUsuario",golesTotalesUsuario);
+            modelo.addAttribute("usuarioAVer", usuarioAVer);
+            return "perfilDeOtroJugador";
+        } catch (UsuarioNoEncontradoException e) {
+            return "redirect:/home";
+        }
     }
 
     @GetMapping("/ver/username/{username}")
@@ -317,4 +340,3 @@ public class ControladorUsuario {
         }
 
     }
-}
