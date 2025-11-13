@@ -15,6 +15,8 @@ import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 import com.tallerwebi.dominio.ServicioPartido;
+import com.tallerwebi.dominio.ServicioCancha;
+import java.time.LocalDate;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,12 +29,14 @@ public class ControladorLogin {
     private ServicioLogin servicioLogin;
     private ServicioPartido servicioPartido;
     private ServicioFotoCancha servicioFotoCancha;
+    private ServicioCancha servicioCancha;
 
     @Autowired
-    public ControladorLogin(ServicioLogin servicioLogin, ServicioPartido servicioPartido, ServicioFotoCancha servicioFotoCancha) {
+    public ControladorLogin(ServicioLogin servicioLogin, ServicioPartido servicioPartido, ServicioFotoCancha servicioFotoCancha, ServicioCancha servicioCancha) {
         this.servicioLogin = servicioLogin;
         this.servicioPartido = servicioPartido;
         this.servicioFotoCancha = servicioFotoCancha;
+        this.servicioCancha = servicioCancha;
     }
 
     @RequestMapping("/login")
@@ -93,10 +97,16 @@ public class ControladorLogin {
         String busqueda = request.getParameter("busqueda");
         String zonaParam = request.getParameter("zona");
         String nivelParam = request.getParameter("nivel");
-        model.put("nivel",nivelParam);
-        model.put("zona",zonaParam);
-        model.put("busqueda",busqueda);
-          Zona zona = null;
+        String fechaParam = request.getParameter("fecha");
+        String canchaParam = request.getParameter("canchaId");
+
+        model.put("nivel", nivelParam);
+        model.put("zona", zonaParam);
+        model.put("busqueda", busqueda);
+        model.put("fecha", fechaParam);
+        model.put("canchaId", canchaParam != null ? canchaParam : "");
+
+        Zona zona = null;
         if (zonaParam != null && !zonaParam.isEmpty()) {
             zona = Zona.valueOf(zonaParam);
         }
@@ -104,9 +114,29 @@ public class ControladorLogin {
         if (nivelParam != null && !nivelParam.isEmpty()) {
             nivel = Nivel.valueOf(nivelParam);
         }
-        List<Partido> partidos = servicioPartido.listarTodos(busqueda, zona, nivel);
+        LocalDate fechaFiltro = null;
+        if (fechaParam != null && !fechaParam.isEmpty()) {
+            try {
+                fechaFiltro = LocalDate.parse(fechaParam);
+            } catch (Exception e) {
+                fechaFiltro = null;
+            }
+        }
+        Long canchaId = null;
+        if (canchaParam != null && !canchaParam.isEmpty()) {
+            try {
+                canchaId = Long.parseLong(canchaParam);
+            } catch (NumberFormatException e) {
+                canchaId = null;
+            }
+        }
+        List<Partido> partidos = servicioPartido.listarTodos(busqueda, zona, nivel, fechaFiltro, canchaId);
+        try {
+            model.put("canchas", servicioCancha.obtenerTodasLasCanchas());
+        } catch (Exception e) {
+            model.put("canchas", new java.util.ArrayList<>());
+        }
         List<FotoCancha> fotosCancha = servicioFotoCancha.insertarFotosAModelPartidos(partidos);
-        System.out.println(partidos);
         model.put("fotosCanchas", fotosCancha);
         model.put("partidos", partidos);
         model.put("currentPage", "home");

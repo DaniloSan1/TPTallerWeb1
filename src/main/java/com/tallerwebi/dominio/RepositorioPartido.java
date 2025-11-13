@@ -10,11 +10,14 @@ public interface RepositorioPartido {
 
     void guardar(Partido partido);
 
-    List<Partido> listar(String busqueda, Zona filtroZona, Nivel filtroNivel);
+    List<Partido> listar(String busqueda, Zona filtroZona, Nivel filtroNivel, java.time.LocalDate fechaFiltro, Long canchaId);
 
     List<Partido> listarPorCreador(Long idCreador);
+
+    List<Partido> listarPorParticipante(Long usuarioId);
 
     void actualizar(Partido partido);
 
     List<Partido> listarPorEquipoConInfoCancha(Long idEquipo);
+
 }

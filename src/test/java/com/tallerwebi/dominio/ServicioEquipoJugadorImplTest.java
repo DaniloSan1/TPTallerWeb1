@@ -2,6 +2,7 @@ package com.tallerwebi.dominio;
 
 import com.tallerwebi.dominio.excepcion.ParticipanteNoEncontrado;
 import com.tallerwebi.dominio.excepcion.YaExisteElParticipante;
+import com.tallerwebi.dominio.excepcion.PermisosInsufficientes;
 import com.tallerwebi.infraestructura.RepositorioEquipoJugadorImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -17,11 +18,13 @@ import java.util.List;
 public class ServicioEquipoJugadorImplTest {
     private ServicioEquipoJugador servicioEquipoJugadorImpl;
     private RepositorioEquipoJugador repositorioEquipoJugador;
+    private ServicioEquipo servicioEquipo;
 
     @BeforeEach
     public void init() {
         repositorioEquipoJugador = mock(RepositorioEquipoJugadorImpl.class);
-        servicioEquipoJugadorImpl = new ServicioEquipoJugadorImpl(repositorioEquipoJugador);
+        servicioEquipo = mock(ServicioEquipo.class);
+        servicioEquipoJugadorImpl = new ServicioEquipoJugadorImpl(repositorioEquipoJugador, servicioEquipo);
     }
 
     @Test
@@ -99,10 +102,11 @@ public class ServicioEquipoJugadorImplTest {
         List<EquipoJugador> jugadores = Arrays.asList(nuevoCapitan, capitanActual);
 
         when(repositorioEquipoJugador.buscarPorId(idNuevoCapitan)).thenReturn(nuevoCapitan);
+        when(servicioEquipo.esUsuarioCreador(equipo, creador)).thenReturn(true);
         when(repositorioEquipoJugador.buscarPorEquipo(equipo)).thenReturn(jugadores);
 
         // Act
-        servicioEquipoJugadorImpl.promoverCapitan(idNuevoCapitan);
+        servicioEquipoJugadorImpl.promoverCapitan(idNuevoCapitan, creador);
 
         // Assert
         verify(repositorioEquipoJugador).buscarPorId(idNuevoCapitan);
@@ -119,7 +123,7 @@ public class ServicioEquipoJugadorImplTest {
 
         // Act & Assert
         assertThrows(ParticipanteNoEncontrado.class, () -> {
-            servicioEquipoJugadorImpl.promoverCapitan(idInexistente);
+            servicioEquipoJugadorImpl.promoverCapitan(idInexistente, new Usuario());
         });
         verify(repositorioEquipoJugador).buscarPorId(idInexistente);
     }
@@ -150,5 +154,44 @@ public class ServicioEquipoJugadorImplTest {
 
         // Should not throw
         servicioEquipoJugadorImpl.validarQueNoExisteParticipanteEnEquipo(equipo, jugador);
+    }
+
+    @Test
+    public void queLanceExcepcionSiUsuarioNoEsCreadorAlPromoverCapitan() {
+        // Arrange
+        Long idNuevoCapitan = 1L;
+        Usuario creador = new Usuario();
+        Usuario otroUsuario = new Usuario();
+        Equipo equipo = new Equipo("Equipo Test", "Descripción", creador, java.time.LocalDateTime.now());
+        Usuario jugador1 = new Usuario();
+        EquipoJugador nuevoCapitan = new EquipoJugador(equipo, jugador1);
+        nuevoCapitan.setId(idNuevoCapitan);
+
+        when(repositorioEquipoJugador.buscarPorId(idNuevoCapitan)).thenReturn(nuevoCapitan);
+        when(servicioEquipo.esUsuarioCreador(equipo, otroUsuario)).thenReturn(false);
+
+        // Act & Assert
+        assertThrows(PermisosInsufficientes.class, () -> {
+            servicioEquipoJugadorImpl.promoverCapitan(idNuevoCapitan, otroUsuario);
+        });
+        verify(repositorioEquipoJugador).buscarPorId(idNuevoCapitan);
+    }
+
+    @Test
+    public void queSePuedaBuscarEquipoJugadoresPorEquipo() {
+        Usuario creador = new Usuario();
+        Equipo equipo = new Equipo("Equipo Test", "Descripción", creador, java.time.LocalDateTime.now());
+        Usuario jugador1 = new Usuario();
+        Usuario jugador2 = new Usuario();
+        List<EquipoJugador> equipoJugadoresEsperados = Arrays.asList(
+                new EquipoJugador(equipo, jugador1),
+                new EquipoJugador(equipo, jugador2));
+
+        when(repositorioEquipoJugador.buscarPorEquipo(equipo)).thenReturn(equipoJugadoresEsperados);
+
+        List<EquipoJugador> equipoJugadoresObtenidos = servicioEquipoJugadorImpl.buscarPorEquipo(equipo);
+
+        verify(repositorioEquipoJugador).buscarPorEquipo(equipo);
+        assertThat(equipoJugadoresObtenidos, equalTo(equipoJugadoresEsperados));
     }
 }

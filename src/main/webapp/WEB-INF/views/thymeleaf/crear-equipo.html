@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+    <head>
+        <meta charset="utf-8" />
+        <meta
+            name="viewport"
+            content="width=device-width, initial-scale=1, shrink-to-fit=no"
+        />
+
+        <title>Partidazo - Crear Equipo</title>
+
+        <link
+            rel="stylesheet"
+            th:href="@{/webjars/bootstrap/5.2.0/css/bootstrap.min.css}"
+        />
+
+        <link
+            rel="stylesheet"
+            href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200"
+        />
+        <link rel="stylesheet" th:href="@{/css/main.css}" />
+        <link rel="stylesheet" th:href="@{/css/jugador-simple.css}" />
+        <link rel="stylesheet" th:href="@{/css/equipo.css}" />
+    </head>
+
+    <body>
+        <!-- Include the navbar fragment -->
+        <div th:replace="~{fragments/navbar :: navbar}"></div>
+
+        <main role="main" class="container" style="padding-top: 135px">
+            <div class="container card">
+                <div class="card-header">
+                    <h1>Crear Equipo</h1>
+                </div>
+                <div class="card-body">
+                    <!-- Mensajes -->
+                    <div
+                        th:if="${error != null}"
+                        class="alert alert-danger w-100 mt-2"
+                        th:text="${error}"
+                    ></div>
+                    <div
+                        th:if="${success != null}"
+                        class="alert alert-success w-100 mt-2"
+                        th:text="${success}"
+                    ></div>
+
+                    <form
+                        th:action="@{/equipos/crear}"
+                        method="post"
+                        enctype="multipart/form-data"
+                    >
+                        <div class="mb-3">
+                            <label for="nombre" class="form-label"
+                                >Nombre del Equipo *</label
+                            >
+                            <input
+                                type="text"
+                                class="form-control"
+                                id="nombre"
+                                name="nombre"
+                                required
+                            />
+                        </div>
+                        <div class="mb-3">
+                            <label for="descripcion" class="form-label"
+                                >Descripción *</label
+                            >
+                            <textarea
+                                class="form-control"
+                                id="descripcion"
+                                name="descripcion"
+                                rows="3"
+                                required
+                            ></textarea>
+                        </div>
+                        <div class="mb-3">
+                            <label for="insignia" class="form-label"
+                                >Insignia *</label
+                            >
+                            <input
+                                type="file"
+                                class="form-control"
+                                id="insignia"
+                                name="insignia"
+                                accept="image/*"
+                                required
+                            />
+                        </div>
+                        <button type="submit" class="btn btn-primary">
+                            Crear Equipo
+                        </button>
+                        <a
+                            th:href="@{/equipos/mis-equipos}"
+                            class="btn btn-secondary"
+                            >Cancelar</a
+                        >
+                    </form>
+                </div>
+            </div>
+        </main>
+
+        <script th:src="@{/webjars/jquery/3.6.4/jquery.min.js}"></script>
+        <script
+            th:src="@{/webjars/bootstrap/5.2.0/js/bootstrap.bundle.min.js}"
+        ></script>
+        <script th:src="@{/webjars/popper.js/2.9.3/umd/popper.min.js}"></script>
+    </body>
+</html>

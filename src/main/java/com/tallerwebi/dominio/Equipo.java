@@ -30,6 +30,8 @@ public class Equipo {
     @OneToMany(mappedBy = "equipo", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private Set<PartidoEquipo> partidos = new HashSet<>();
 
+    @OneToMany(mappedBy = "equipo", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<InscripcionTorneo> inscripciones = new HashSet<>();
     // Constructor por defecto para JPA
     public Equipo() {
     }

@@ -36,4 +36,17 @@ public class ServicioGolesImpl implements ServicioGoles {
         // Actualizar goles por equipo
         servicioPartidoEquipo.actualizarGolesPorEquipo(partido);
     }
+
+    @Override
+    public int devolverCantidadTotalDeGolesDelUsuario(Long usuarioId){
+        int cantidad=0;
+        List<Gol>golesDelUsuario=repositorioGoles.buscarPorUsuario(usuarioId);
+        if(golesDelUsuario.isEmpty()){
+            return cantidad;
+        }
+        for(Gol gol : golesDelUsuario){
+            cantidad+=gol.getCantidad();
+        }
+        return cantidad;
+    }
 }

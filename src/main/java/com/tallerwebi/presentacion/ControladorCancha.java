@@ -93,12 +93,13 @@ public class ControladorCancha {
             Cancha cancha = servicioCancha.obtenerCanchaPorId(id);
             List<Horario> horarios = servicioHorario.obtenerPorCancha(cancha);
             List<ReseniaCancha> resniasCancha= servicioReseniaCancha.obtenerReseniasPorCancha(id);
+            List<FotoCancha> fotosCancha=servicioFotoCancha.obtenerFotosCancha(id);
             model.put("cancha", cancha);
             model.put("horarios", horarios);
             model.put("usuarioId", usuario.getId());
             model.put("calificacionPromedio", servicioReseniaCancha.calcularCalificacionPromedioCancha(id));
             model.put("resenias", resniasCancha);
-
+            model.put("fotosCancha", fotosCancha);
         } catch (Exception e) {
             model.put("error", e.getMessage());
         }

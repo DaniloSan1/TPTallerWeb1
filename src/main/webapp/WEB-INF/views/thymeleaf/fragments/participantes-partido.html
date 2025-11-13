@@ -4,7 +4,23 @@
     <body
         th:fragment="participantes-partido (idPartido, participantes, equipo, equipos, showDropdown)"
     >
-        <h4 class="w-100 mt-2" th:text="${equipo.nombre}"></h4>
+        <div class="d-flex flex-row align-items-center">
+            <h4
+                class="mt-2"
+                th:text="${equipo.nombre}"
+                style="width: calc(100% - 32px); border-bottom: 1px solid black"
+            ></h4>
+            <h4
+                class="d-flex align-items-center justify-content-center mt-2"
+                style="
+                    width: 32px;
+                    color: white;
+                    background-color: var(--primary-color);
+                    border-bottom: 1px solid black;
+                "
+                th:text="${equipo.goles}"
+            ></h4>
+        </div>
         <div class="alert alert-info" th:if="${#lists.isEmpty(participantes)}">
             No hay jugadores en este equipo aún
         </div>

@@ -20,6 +20,7 @@ import com.tallerwebi.dominio.Horario;
 import com.tallerwebi.dominio.Nivel;
 import com.tallerwebi.dominio.Partido;
 import com.tallerwebi.dominio.Reserva;
+import com.tallerwebi.dominio.ServicioAmistad;
 import com.tallerwebi.dominio.ServicioEquipo;
 import com.tallerwebi.dominio.ServicioEquipoJugador;
 import com.tallerwebi.dominio.ServicioFotoCancha;
@@ -56,6 +57,7 @@ public class ControladorPartidoTest {
     private ServicioUsuario servicioUsuarioMock;
     private ServicioFotoCancha servicioFotoCanchaMock;
     private ServicioSolicitudUnirse servicioSolicitudUnirse;
+    private ServicioAmistad servicioAmistadMock;
 
     @BeforeEach
     public void init() {
@@ -75,6 +77,7 @@ public class ControladorPartidoTest {
         usuarioMock = Mockito.mock(Usuario.class);
         redirectAttributesMock = Mockito.mock(RedirectAttributes.class);
         equipoMock = Mockito.mock(Equipo.class);
+        servicioAmistadMock= Mockito.mock(ServicioAmistad.class);
         when(requestMock.getSession()).thenReturn(sessionMock);
         when(requestMock.getHeader("referer")).thenReturn("/partidos/1");
 
@@ -143,7 +146,7 @@ public class ControladorPartidoTest {
         }
         controladorPartido = new ControladorPartido(servicioPartidoMock, servicioLoginMock, servicioHorarioMock,
                 servicioReservaMock, servicioUsuarioMock, servicioEquipoMock, servicioFotoCanchaMock, servicioGolesMock,
-                servicioEquipoJugadorMock, servicioSolicitudUnirse);
+                servicioEquipoJugadorMock, servicioSolicitudUnirse, servicioAmistadMock);
     }
 
     @Test
@@ -192,10 +195,10 @@ public class ControladorPartidoTest {
         Long partidoId = 1L;
         Mockito.when(sessionMock.getAttribute("EMAIL")).thenReturn("usuario1@email.com");
         Mockito.when(servicioLoginMock.buscarPorEmail("usuario1@email.com")).thenReturn(usuarioMock);
-        Mockito.doReturn(partidoMock).when(servicioPartidoMock).obtenerPorId(1L);
-        Mockito.doThrow(new PartidoNoEncontrado())
-                .when(servicioPartidoMock)
-                .anotarParticipante(Mockito.any(Partido.class), Mockito.any(Equipo.class), Mockito.any(Usuario.class));
+        Mockito.when(servicioPartidoMock.obtenerPorIdConJugadores(1L)).thenReturn(partidoMock);
+        Mockito.when(servicioPartidoMock.anotarParticipante(Mockito.any(Partido.class), Mockito.any(Equipo.class),
+                Mockito.any(Usuario.class)))
+                .thenThrow(new PartidoNoEncontrado());
 
         ModelAndView respuesta = controladorPartido.inscripcion(partidoId, 1L, requestMock, redirectAttributesMock);
         assertEquals("redirect:/partidos/1", respuesta.getViewName());
@@ -210,10 +213,10 @@ public class ControladorPartidoTest {
         Long partidoId = 1L;
         Mockito.when(sessionMock.getAttribute("EMAIL")).thenReturn("usuario1@email.com");
         Mockito.when(servicioLoginMock.buscarPorEmail("usuario1@email.com")).thenReturn(usuarioMock);
-        Mockito.doReturn(partidoMock).when(servicioPartidoMock).obtenerPorId(1L);
-        Mockito.doThrow(new NoHayCupoEnPartido())
-                .when(servicioPartidoMock)
-                .anotarParticipante(Mockito.any(Partido.class), Mockito.any(Equipo.class), Mockito.any(Usuario.class));
+        Mockito.when(servicioPartidoMock.obtenerPorIdConJugadores(1L)).thenReturn(partidoMock);
+        Mockito.when(servicioPartidoMock.anotarParticipante(Mockito.any(Partido.class), Mockito.any(Equipo.class),
+                Mockito.any(Usuario.class)))
+                .thenThrow(new NoHayCupoEnPartido());
 
         ModelAndView respuesta = controladorPartido.inscripcion(partidoId, 1L, requestMock, redirectAttributesMock);
         assertEquals("redirect:/partidos/1", respuesta.getViewName());
@@ -228,10 +231,10 @@ public class ControladorPartidoTest {
         Long partidoId = 1L;
         Mockito.when(sessionMock.getAttribute("EMAIL")).thenReturn("usuario1@email.com");
         Mockito.when(servicioLoginMock.buscarPorEmail("usuario1@email.com")).thenReturn(usuarioMock);
-        Mockito.doReturn(partidoMock).when(servicioPartidoMock).obtenerPorId(1L);
-        Mockito.doThrow(new YaExisteElParticipante())
-                .when(servicioPartidoMock)
-                .anotarParticipante(Mockito.any(Partido.class), Mockito.any(Equipo.class), Mockito.any(Usuario.class));
+        Mockito.when(servicioPartidoMock.obtenerPorIdConJugadores(1L)).thenReturn(partidoMock);
+        Mockito.when(servicioPartidoMock.anotarParticipante(Mockito.any(Partido.class), Mockito.any(Equipo.class),
+                Mockito.any(Usuario.class)))
+                .thenThrow(new YaExisteElParticipante());
 
         ModelAndView respuesta = controladorPartido.inscripcion(partidoId, 1L, requestMock, redirectAttributesMock);
         assertEquals("redirect:/partidos/1", respuesta.getViewName());
@@ -246,7 +249,7 @@ public class ControladorPartidoTest {
         Long partidoId = 1L;
         Mockito.when(sessionMock.getAttribute("EMAIL")).thenReturn("usuario1@email.com");
         Mockito.when(servicioLoginMock.buscarPorEmail("usuario1@email.com")).thenReturn(usuarioMock);
-        Mockito.doReturn(partidoMock).when(servicioPartidoMock).obtenerPorId(1L);
+        Mockito.when(servicioPartidoMock.obtenerPorIdConJugadores(1L)).thenReturn(partidoMock);
         Mockito.when(servicioPartidoMock.anotarParticipante(Mockito.any(Partido.class), Mockito.any(Equipo.class),
                 Mockito.any(Usuario.class))).thenReturn(partidoMock);
 
@@ -254,7 +257,7 @@ public class ControladorPartidoTest {
         assertEquals("redirect:/partidos/1", respuesta.getViewName());
 
         Mockito.verify(redirectAttributesMock).addFlashAttribute("success", "Te has unido al partido correctamente.");
-        Mockito.verify(servicioPartidoMock, Mockito.times(1)).anotarParticipante(Mockito.any(Partido.class),
+        Mockito.verify(servicioPartidoMock, Mockito.times(1)).anotarParticipante(Mockito.eq(partidoMock),
                 Mockito.any(Equipo.class), Mockito.any(Usuario.class));
     }
 

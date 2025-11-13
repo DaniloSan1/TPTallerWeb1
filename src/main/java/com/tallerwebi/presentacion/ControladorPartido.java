@@ -1,8 +1,10 @@
 package com.tallerwebi.presentacion;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.HashMap;
 import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,27 +25,18 @@ import com.tallerwebi.dominio.Partido;
 import com.tallerwebi.dominio.PartidoEquipo;
 import com.tallerwebi.dominio.ServicioEquipo;
 import com.tallerwebi.dominio.FotoCancha;
-import com.tallerwebi.dominio.Horario;
-import com.tallerwebi.dominio.Nivel;
-import com.tallerwebi.dominio.Partido;
-import com.tallerwebi.dominio.Reserva;
 import com.tallerwebi.dominio.ServicioFotoCancha;
 import com.tallerwebi.dominio.ServicioEquipoJugador;
 import com.tallerwebi.dominio.ServicioGoles;
 import com.tallerwebi.dominio.ServicioHorario;
 import com.tallerwebi.dominio.ServicioLogin;
 import com.tallerwebi.dominio.ServicioPartido;
+import com.tallerwebi.dominio.ServicioAmistad;
 import com.tallerwebi.dominio.ServicioReserva;
 import com.tallerwebi.dominio.ServicioSolicitudUnirse;
 import com.tallerwebi.presentacion.EquipoSimple;
 import com.tallerwebi.dominio.ServicioUsuario;
 import com.tallerwebi.dominio.Usuario;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.HashMap;
 
 @Controller
 @RequestMapping("/partidos")
@@ -58,13 +51,14 @@ public class ControladorPartido {
     private ServicioGoles servicioGoles;
     private ServicioEquipoJugador servicioEquipoJugador;
     private ServicioSolicitudUnirse servicioSolicitudUnirse;
+    private ServicioAmistad servicioAmistad;
 
     @Autowired
     public ControladorPartido(ServicioPartido servicio, ServicioLogin servicioLogin, ServicioHorario servicioHorario,
             ServicioReserva servicioReserva, ServicioUsuario servicioUsuario,
             ServicioEquipo servicioEquipo, ServicioFotoCancha servicioFotoCancha, ServicioGoles servicioGoles,
             ServicioEquipoJugador servicioEquipoJugador,
-            ServicioSolicitudUnirse servicioSolicitudUnirse) {
+            ServicioSolicitudUnirse servicioSolicitudUnirse, ServicioAmistad servicioAmistad) {
         this.servicio = servicio;
         this.servicioLogin = servicioLogin;
         this.servicioHorario = servicioHorario;
@@ -75,6 +69,7 @@ public class ControladorPartido {
         this.servicioGoles = servicioGoles;
         this.servicioEquipoJugador = servicioEquipoJugador;
         this.servicioSolicitudUnirse = servicioSolicitudUnirse;
+        this.servicioAmistad = servicioAmistad;
     }
 
     @GetMapping("/{id}")
@@ -86,10 +81,24 @@ public class ControladorPartido {
                 return new ModelAndView("redirect:/login");
             }
 
-            Usuario usuario = servicioLogin.buscarPorEmail(request.getSession().getAttribute("EMAIL").toString());
+            Usuario usuario = servicioLogin.buscarPorEmail(email);
             Partido partido = servicio.obtenerPorIdConJugadores(id);
 
             modelo.put("partido", new DetallePartido(partido, usuario));
+
+            // Obtener lista de amigos para el dropdown de invitaciones
+            List<com.tallerwebi.dominio.Amistad> relaciones = servicioAmistad.verAmigos(usuario.getId());
+            List<Usuario> amigos = new ArrayList<>();
+            if (relaciones != null) {
+                for (com.tallerwebi.dominio.Amistad a : relaciones) {
+                    if (a.getUsuario1() != null && a.getUsuario1().getId().equals(usuario.getId())) {
+                        amigos.add(a.getUsuario2());
+                    } else {
+                        amigos.add(a.getUsuario1());
+                    }
+                }
+            }
+            modelo.put("amigos", amigos);
 
             // Si en la URL viene un token como query param, procesamos la aceptación aquí
             String token = request.getParameter("token");
@@ -162,7 +171,7 @@ public class ControladorPartido {
                 return new ModelAndView("redirect:/login");
             }
 
-            Usuario usuario = servicioLogin.buscarPorEmail(request.getSession().getAttribute("EMAIL").toString());
+            Usuario usuario = servicioLogin.buscarPorEmail(email);
             Equipo equipo = servicioEquipo.buscarPorId(equipoId);
             Partido partido = servicio.obtenerPorIdConJugadores(id);
             partido = servicio.anotarParticipante(partido, equipo, usuario);
@@ -194,13 +203,35 @@ public class ControladorPartido {
     @GetMapping("/mios")
     public ModelAndView misPartidos(HttpServletRequest request, ModelMap model) {
         try {
-
             String email = (String) request.getSession().getAttribute("EMAIL");
             if (email == null)
                 return new ModelAndView("redirect:/login");
 
             Usuario usuario = servicioLogin.buscarPorEmail(email);
-            List<Partido> partidos = servicio.listarPorCreador(usuario);
+
+            // Obtener partidos creados por el usuario y los partidos a los que está unido
+            List<Partido> creados = servicio.listarPorCreador(usuario);
+            List<Partido> unidos = servicio.listarPorParticipante(usuario);
+
+            // Unir ambas listas evitando duplicados
+            java.util.Set<Long> ids = new java.util.HashSet<>();
+            List<Partido> partidos = new ArrayList<>();
+            if (creados != null) {
+                for (Partido p : creados) {
+                    if (p != null && p.getId() != null && !ids.contains(p.getId())) {
+                        ids.add(p.getId());
+                        partidos.add(p);
+                    }
+                }
+            }
+            if (unidos != null) {
+                for (Partido p : unidos) {
+                    if (p != null && p.getId() != null && !ids.contains(p.getId())) {
+                        ids.add(p.getId());
+                        partidos.add(p);
+                    }
+                }
+            }
 
             // Asegurar que fotosCanchas siempre esté en el modelo (puede ser lista vacía)
             List<FotoCancha> fotosCanchas = new ArrayList<>();
@@ -227,7 +258,7 @@ public class ControladorPartido {
                 return new ModelAndView("redirect:/login");
             }
             Usuario usuario = servicioLogin.buscarPorEmail(email);
-            Partido partido = servicio.obtenerPorId(id);
+            Partido partido = servicio.obtenerPorIdConJugadores(id);
             if (!partido.esCreador(email)) {
                 modelo.put("error", "No tienes permiso.");
                 return new ModelAndView("redirect:/partidos/" + id);

@@ -6,10 +6,16 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.stream.Collectors;
+
+import javax.transaction.Transactional;
 
 @Service
 public class ServicioUsuarioImpl implements ServicioUsuario {
     private final RepositorioUsuario repositorioUsuario;
+
+    @Autowired
+    private ServicioAmistad servicioAmistad;
 
     @Autowired
     public ServicioUsuarioImpl(RepositorioUsuario repositorioUsuario) {
@@ -55,5 +61,14 @@ public class ServicioUsuarioImpl implements ServicioUsuario {
     @Override
     public List<Usuario> filtrarPorUsername(String username) {
         return repositorioUsuario.filtrarPorUsername(username);
+    }
+
+    @Override
+    @Transactional
+    public List<Usuario> listarAmigosDeUsuario(Usuario usuario) {
+        List<Amistad> amistades = servicioAmistad.verAmigos(usuario.getId());
+        return amistades.stream()
+                .map(amistad -> amistad.getUsuario2())
+                .collect(Collectors.toList());
     }
 }

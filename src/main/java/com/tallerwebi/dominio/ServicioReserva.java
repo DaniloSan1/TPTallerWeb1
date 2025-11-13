@@ -9,4 +9,5 @@ public interface ServicioReserva {
     Reserva obtenerReservaPorId(Long id);
     List<Reserva> obtenerReservasPorUsuario(Usuario usuario);
     Boolean estaDisponible(Horario horario, LocalDateTime fechaReserva);
+    List<Reserva> obtenerReservasPorUsuarioTodas(Usuario usuario);
 }

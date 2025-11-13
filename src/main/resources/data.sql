@@ -121,17 +121,17 @@ INSERT INTO FotoCancha(id, cancha_id, url) VALUES
 (NULL, 3, 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSybeYob_2z8_yCnmRE0OMH8u-20u9H8_8bGQ&s'),
 (NULL, 4, 'https://lh3.googleusercontent.com/gps-cs-s/AG0ilSwZY0Jy7PTpxLmlPZQLMqjoGpx410gz8-rH28stBAofst9VRNT6uvOn72dqsx5B5eo_BHVB7WxZOwictFv2ygTIotXGkgIGdNFq4Zw2NHUf9YC658l-b98ATYwIbC_c2LID5B9vNg=s1360-w1360-h1020-rw'),
 (NULL, 5, 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRDNR9_AfwO6kKtHZWJsvQiZhl2hIkpdAPNxg&s'),
-(NULL, 6, 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR2yuiJDyLI93stVf9dBqBRFUKLE-ZhxAo4dw&s');
+(NULL, 6, 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR2yuiJDyLI93stVf9dBqBRFUKLE-ZhxAo4dw&s'),
+(NULL, 1, 'https://lh3.googleusercontent.com/p/AF1QipMbcsyuOvy0-4AlKYxTR7YeMH0TiMGzO_WV7mZ2=s1360-w1360-h1020-rw');
 
 -- Insert equipos for partidos
 INSERT INTO Equipo(id, nombre, creado_por_id, fechaCreacion, descripcion, insignia_url) VALUES
-(NULL, 'Equipo 1', (SELECT creador_id FROM Partido WHERE id = 1), NOW(), 'Equipo formado para el primer partido. Buscamos jugadores comprometidos y con ganas de pasarla bien.', 'https://www.ligaprofesional.ar/wp-content/uploads/2024/06/BOC-escudo.png'),
-(NULL, 'Equipo 2', (SELECT creador_id FROM Partido WHERE id = 1), NOW(), 'Segundo equipo del partido. Unidos por la pasión del fútbol.', 'https://www.ligaprofesional.ar/wp-content/uploads/2024/06/RIV-escudo.png'),
-(NULL, 'Equipo 1', (SELECT creador_id FROM Partido WHERE id = 2), NOW(), 'Equipo de nivel avanzado. Jugamos limpio y con estrategia.', 'https://www.ligaprofesional.ar/wp-content/uploads/2024/06/SLO-escudo.png'),
-(NULL, 'Equipo 2', (SELECT creador_id FROM Partido WHERE id = 2), NOW(), 'Buscamos la victoria siempre con fair play.', 'https://www.ligaprofesional.ar/wp-content/uploads/2024/06/RAC-escudo.png'),
-(NULL, 'Equipo 1', (SELECT creador_id FROM Partido WHERE id = 3), NOW(), 'Equipo nocturno. Nos gusta el fútbol bajo las estrellas.', 'https://www.ligaprofesional.ar/wp-content/uploads/2024/06/IND-escudo.png'),
-(NULL, 'Equipo 2', (SELECT creador_id FROM Partido WHERE id = 3), NOW(), 'Segundo equipo del partido nocturno. Juego limpio y diversión.', 'https://www.ligaprofesional.ar/wp-content/uploads/2024/06/VEL-escudo.png');
-
+(NULL, 'Equipo 1', (SELECT creador_id FROM Partido WHERE id = 1), NOW(), 'Equipo formado para el primer partido. Buscamos jugadores comprometidos y con ganas de pasarla bien.', 'https://taller-web-1-416711641372-us-east-2.s3.us-east-2.amazonaws.com/insignia-default.png'),
+(NULL, 'Equipo 2', (SELECT creador_id FROM Partido WHERE id = 1), NOW(), 'Segundo equipo del partido. Unidos por la pasión del fútbol.', 'https://taller-web-1-416711641372-us-east-2.s3.us-east-2.amazonaws.com/insignia-default.png'),
+(NULL, 'Equipo 1', (SELECT creador_id FROM Partido WHERE id = 2), NOW(), 'Equipo de nivel avanzado. Jugamos limpio y con estrategia.', 'https://taller-web-1-416711641372-us-east-2.s3.us-east-2.amazonaws.com/insignia-default.png'),
+(NULL, 'Equipo 2', (SELECT creador_id FROM Partido WHERE id = 2), NOW(), 'Buscamos la victoria siempre con fair play.', 'https://taller-web-1-416711641372-us-east-2.s3.us-east-2.amazonaws.com/insignia-default.png'),
+(NULL, 'Equipo 1', (SELECT creador_id FROM Partido WHERE id = 3), NOW(), 'Equipo nocturno. Nos gusta el fútbol bajo las estrellas.', 'https://taller-web-1-416711641372-us-east-2.s3.us-east-2.amazonaws.com/insignia-default.png'),
+(NULL, 'Equipo 2', (SELECT creador_id FROM Partido WHERE id = 3), NOW(), 'Segundo equipo del partido nocturno. Juego limpio y diversión.', 'https://taller-web-1-416711641372-us-east-2.s3.us-east-2.amazonaws.com/insignia-default.png');
 -- Insert partido_equipo
 INSERT INTO PartidoEquipo(id, partido_id, equipo_id, goles) VALUES
 (NULL, 1, (SELECT id FROM Equipo WHERE nombre = 'Equipo 1' AND creado_por_id = (SELECT creador_id FROM Partido WHERE id = 1)), 0),
@@ -153,8 +153,6 @@ INSERT INTO EquipoJugador(id, equipo_id, usuario_id, fecha_union, es_capitan) VA
 
 -- Insertar amistades
 INSERT INTO Amistad (usuario_1_id, usuario_2_id, estadoDeAmistad, fechaSolicitud) VALUES
--- John (1) y Jane (2) son amigos
-(1, 2, 'ACEPTADA', CURRENT_DATE()),
 -- Ricardo (3) y Bruno (4) son amigos
 (3, 4, 'ACEPTADA', CURRENT_DATE()),
 -- Carlos (5) y Maria (6) son amigos
@@ -163,8 +161,6 @@ INSERT INTO Amistad (usuario_1_id, usuario_2_id, estadoDeAmistad, fechaSolicitud
 (7, 8, 'PENDIENTE', CURRENT_DATE()),
 -- Luis (9) envió solicitud a Sofia (10)
 (9, 10, 'PENDIENTE', CURRENT_DATE()),
--- John (1) y Ricardo (3) son amigos
-(1, 3, 'ACEPTADA', CURRENT_DATE()),
 -- Jane (2) y Maria (6) son amigas
 (2, 6, 'ACEPTADA', CURRENT_DATE()),
 -- Bruno (4) y Carlos (5) son amigos
@@ -176,8 +172,6 @@ INSERT INTO Amistad (usuario_1_id, usuario_2_id, estadoDeAmistad, fechaSolicitud
 
 -- Más amistades para John (id = 1) — ahora John tiene varios amigos aceptados
 INSERT INTO Amistad (usuario_1_id, usuario_2_id, estadoDeAmistad, fechaSolicitud) VALUES
-	(1, 4, 'ACEPTADA', CURRENT_DATE()),
-	(1, 5, 'ACEPTADA', CURRENT_DATE()),
 	(1, 6, 'ACEPTADA', CURRENT_DATE()),
 	(1, 8, 'ACEPTADA', CURRENT_DATE()),
 	(1, 9, 'ACEPTADA', CURRENT_DATE()),
@@ -189,3 +183,20 @@ INSERT INTO Amistad (usuario_1_id, usuario_2_id, estadoDeAmistad, fechaSolicitud
 	(3, 1, 'PENDIENTE', CURRENT_DATE()),
 	(4, 1, 'PENDIENTE', CURRENT_DATE()),
 	(5, 1, 'PENDIENTE', CURRENT_DATE());
+
+-- Insertar varias solicitudes dirigidas a John (email: test@unlam.edu.ar)
+INSERT INTO SolicitudUnirse (partido_id, creador_id, token, emailDestino, estado, creada, vence) VALUES
+	(1, 2, 'token-john-1', 'test@unlam.edu.ar', 'PENDIENTE', NOW(), DATE_ADD(NOW(), INTERVAL 2 DAY)),
+	(2, 3, 'token-john-2', 'test@unlam.edu.ar', 'PENDIENTE', NOW(), DATE_ADD(NOW(), INTERVAL 2 DAY)),
+	(3, 4, 'token-john-3', 'test@unlam.edu.ar', 'PENDIENTE', NOW(), DATE_ADD(NOW(), INTERVAL 2 DAY)),
+	(1, 5, 'token-john-4', 'test@unlam.edu.ar', 'PENDIENTE', NOW(), DATE_ADD(NOW(), INTERVAL 2 DAY)),
+	(2, 6, 'token-john-5', 'test@unlam.edu.ar', 'PENDIENTE', NOW(), DATE_ADD(NOW(), INTERVAL 2 DAY));
+
+INSERT INTO Torneo (id, nombre, fecha, precio, estado, cancha_id, organizador_id) VALUES
+(1, 'Torneo Primavera', '2025-11-20', 5000, 'CONFIRMADO', 1, 1),
+(2, 'Torneo Verano', '2025-12-10', 7000, 'CONFIRMADO', 2, 2);
+
+INSERT INTO InscripcionTorneo (id, fechaInscripcion, torneo_id, equipo_id) VALUES
+(1, NOW(), 1, 1),
+(2, NOW(), 1, 2),
+(3, NOW(), 2, 3);

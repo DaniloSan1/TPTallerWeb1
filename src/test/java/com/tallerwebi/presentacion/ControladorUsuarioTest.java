@@ -1,6 +1,8 @@
 package com.tallerwebi.presentacion;
 
+import com.tallerwebi.dominio.*;
 import com.tallerwebi.dominio.ServicioAmistad;
+import com.tallerwebi.dominio.ServicioCalificacion;
 import com.tallerwebi.dominio.ServicioLogin;
 import com.tallerwebi.dominio.ServicioUsuario;
 import com.tallerwebi.dominio.Usuario;
@@ -15,30 +17,39 @@ import org.springframework.web.servlet.ModelAndView;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
+import java.util.ArrayList;
+
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalToIgnoringCase;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.*;
 
 public class ControladorUsuarioTest {
     private ServicioLogin servicioLoginMock;
     private ServicioUsuario servicioUsuarioMock;
     private ServicioAmistad servicioAmistadMock;
+    private ServicioNotificacionDeUsuario servicioNotificacionMock;
+    private ServicioGoles servicioGolesMock;
+    private ServicioCalificacion servicioCalificacionMock;
     private ControladorUsuario controladorUsuario;
     private Usuario usuarioMock;
     private HttpServletRequest httpServletRequestMock;
     private HttpSession sessionMock;
     private HttpServletRequest requestMock;
-
+    
     @BeforeEach
     public void init() {
         servicioLoginMock = mock(ServicioLogin.class);
         servicioUsuarioMock = mock(ServicioUsuario.class);
         servicioAmistadMock = mock(ServicioAmistad.class);
+        servicioCalificacionMock = mock(ServicioCalificacion.class);
+        servicioGolesMock=mock(ServicioGoles.class);
         sessionMock = mock(HttpSession.class);
         httpServletRequestMock = mock(HttpServletRequest.class);
-        controladorUsuario = new ControladorUsuario(servicioLoginMock, servicioUsuarioMock, servicioAmistadMock);
+        controladorUsuario = new ControladorUsuario(servicioLoginMock, servicioUsuarioMock, servicioAmistadMock, null, servicioCalificacionMock,servicioGolesMock);
 
         requestMock = mock(HttpServletRequest.class);
         usuarioMock = mock(Usuario.class);
@@ -55,6 +66,10 @@ public class ControladorUsuarioTest {
         when(httpServletRequestMock.getSession()).thenReturn(sessionMock);
         when(sessionMock.getAttribute("EMAIL")).thenReturn("usuario@test.com");
         when(servicioLoginMock.buscarPorEmail("usuario@test.com")).thenReturn(usuarioMock);
+        when(usuarioMock.getId()).thenReturn(1L);
+        when(servicioCalificacionMock.calcularCalificacionPromedioUsuario(1L)).thenReturn(4.5);
+        when(servicioAmistadMock.verAmigos(1L)).thenReturn(new ArrayList<>());
+        when(servicioAmistadMock.verSolicitudesPendientes(1L)).thenReturn(new ArrayList<>());
 
         ModelMap modelo = new ModelMap();
 

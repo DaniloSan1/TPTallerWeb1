@@ -8,4 +8,7 @@ public interface RepositorioCalificacion {
     public void guardarCalificacion(Calificacion calificacion);
     public List <Calificacion> obtenerPorPartido(Long idPartido);
     public Boolean existeCalificacion(Long calificadorId, Long calificadoId, Long partidoId);
+    public int contarCalificacionesDelUsuario(Long calificadoId);
+    public List<Calificacion>obtenerPorCalificado(Long calificadoId);
+    public List<Calificacion>obtenerPorCalificador(Long calificadorId);
 }

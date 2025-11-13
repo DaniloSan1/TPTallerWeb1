@@ -21,6 +21,7 @@ public class ControladorReservaTest {
     private ServicioHorario servicioHorario;
     private ServicioUsuario servicioUsuario;
     private ServicioPartido servicioPartido;
+    private ServicioLogin servicioLogin;
     private ServicioPago servicioPago;
     private ControladorReserva controlador;
 
@@ -35,8 +36,9 @@ public class ControladorReservaTest {
         servicioUsuario = mock(ServicioUsuario.class);
         servicioPartido = mock(ServicioPartido.class);
         servicioPago = mock(ServicioPago.class);
+        servicioLogin = mock(ServicioLogin.class);
 
-        controlador = new ControladorReserva(servicioReserva, servicioHorario, servicioUsuario, servicioPartido, servicioPago);
+        controlador = new ControladorReserva(servicioReserva, servicioHorario, servicioUsuario, servicioPartido, servicioLogin, servicioPago);
 
         cancha = new Cancha();
         cancha.setId(1L);

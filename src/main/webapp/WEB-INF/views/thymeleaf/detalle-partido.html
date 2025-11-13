@@ -222,8 +222,9 @@
                 </div>
                 <!-- Invitación -->
                 <div
-                    style="margin-top: 32px; display: none"
-                    th:if="${partido != null and (partido.yaParticipa or partido.esCreador)}"
+                    class="container card"
+                    style="margin-top: 32px"
+                    th:if="${partido != null}"
                 >
                     <div class="card-header">
                         <h2>&iexcl;Invita a tus amigos!</h2>
@@ -233,6 +234,7 @@
                             th:action="@{/solicitudes-partido/crear}"
                             method="post"
                             class="w-100"
+                            id="form-invitacion"
                         >
                             <input
                                 type="hidden"
@@ -240,23 +242,89 @@
                                 th:value="${partido.id}"
                             />
                             <div class="input-group mb-2">
-                                <input
-                                    class="form-control"
-                                    type="email"
-                                    name="emailDestino"
-                                    placeholder="Email del amigo"
+                                <select
+                                    class="form-select"
+                                    name="amigoId"
                                     required
-                                />
-                                <button class="btn btn-primary" type="submit">
-                                    Generar invitación
+                                >
+                                    <option value="">
+                                        Selecciona un amigo...
+                                    </option>
+                                    <option
+                                        th:each="amigo : ${amigos}"
+                                        th:value="${amigo.id}"
+                                        th:text="${amigo.nombre + ' ' + amigo.apellido + ' (' + amigo.username + ')'}"
+                                    ></option>
+                                </select>
+                                <button
+                                    class="btn btn-primary"
+                                    type="submit"
+                                    id="btn-generar-invitacion"
+                                >
+                                    Invitar
                                 </button>
                             </div>
-                            <small class="text-muted d-block mb-2"
-                                >Se enviará un link al email indicado. Si no
-                                está configurado el envío por SMTP te
-                                mostraremos el link aquí.</small
-                            >
+                            <small class="text-muted d-block mb-2">
+                                Solo puedes invitar a tus amigos. La invitación
+                                aparecerá en sus solicitudes.
+                            </small>
                         </form>
+                        <button
+                            class="btn btn-outline-secondary mt-2"
+                            type="button"
+                            id="btn-mostrar-link"
+                            data-bs-toggle="modal"
+                            data-bs-target="#modalLinkInvitacion"
+                        >
+                            Obtener link para compartir
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Modal Link Invitación -->
+                <div
+                    th:if="${partido != null}"
+                    class="modal fade"
+                    id="modalLinkInvitacion"
+                    tabindex="-1"
+                    aria-labelledby="modalLinkInvitacionLabel"
+                    aria-hidden="true"
+                >
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5
+                                    class="modal-title"
+                                    id="modalLinkInvitacionLabel"
+                                >
+                                    Link para compartir el partido
+                                </h5>
+                                <button
+                                    type="button"
+                                    class="btn-close"
+                                    data-bs-dismiss="modal"
+                                    aria-label="Cerrar"
+                                ></button>
+                            </div>
+                            <div class="modal-body">
+                                <div class="input-group">
+                                    <input
+                                        id="input-link-invitacion"
+                                        type="text"
+                                        class="form-control"
+                                        readonly
+                                        th:value="${#httpServletRequest.getScheme() + '://' + #httpServletRequest.getServerName() + (#httpServletRequest.getServerPort() == 80 || #httpServletRequest.getServerPort() == 443 ? '' : ':' + #httpServletRequest.getServerPort()) + '/spring/partidos/' + partido.id}"
+                                    />
+                                    <button
+                                        class="btn btn-outline-secondary"
+                                        type="button"
+                                        id="btn-copiar-link"
+                                    >
+                                        Copiar
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
                 <!-- Jugadores -->
@@ -367,5 +435,25 @@
         </script>
         <script type="module" th:src="@{/js/common.js}"></script>
         <script type="module" th:src="@{/js/participantes-partido.js}"></script>
+        <script>
+            // Copiar link al portapapeles
+            document.addEventListener("DOMContentLoaded", function () {
+                var btnCopiar = document.getElementById("btn-copiar-link");
+                if (btnCopiar) {
+                    btnCopiar.addEventListener("click", function () {
+                        var input = document.getElementById(
+                            "input-link-invitacion"
+                        );
+                        input.select();
+                        input.setSelectionRange(0, 99999);
+                        document.execCommand("copy");
+                        btnCopiar.innerText = "¡Copiado!";
+                        setTimeout(function () {
+                            btnCopiar.innerText = "Copiar";
+                        }, 1500);
+                    });
+                }
+            });
+        </script>
     </body>
 </html>

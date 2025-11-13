@@ -26,4 +26,21 @@ public class ServicioCalificacionImpl implements ServicioCalificacion{
     public List<Calificacion> obtenerCalificacionesPorPartido(Long partidoId) {
         return repositorioCalificacion.obtenerPorPartido(partidoId);
     }
+
+    @Override
+    public double calcularCalificacionPromedioUsuario(Long usuarioId){
+        int cantidadCalificaciones= repositorioCalificacion.contarCalificacionesDelUsuario(usuarioId);
+        if(cantidadCalificaciones==0){
+            return 0.0;
+        } 
+        Double sumaCalificaciones=0.0;
+        for(Calificacion calificacion : repositorioCalificacion.obtenerPorCalificado(usuarioId)){
+            sumaCalificaciones+=calificacion.getPuntuacion();
+        }
+        return sumaCalificaciones/cantidadCalificaciones;
+    }
+    @Override
+    public List<Calificacion>obtenerCalificacionesPorCalificador(Long usuarioId){
+        return repositorioCalificacion.obtenerPorCalificador(usuarioId);
+    } 
 }

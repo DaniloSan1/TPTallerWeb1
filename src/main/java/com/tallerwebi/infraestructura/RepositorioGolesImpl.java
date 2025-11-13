@@ -14,8 +14,12 @@ import java.util.List;
 @Transactional
 public class RepositorioGolesImpl implements RepositorioGoles {
 
+    private final SessionFactory sessionFactory;
+
     @Autowired
-    private SessionFactory sessionFactory;
+    public RepositorioGolesImpl(SessionFactory sessionFactory) {
+        this.sessionFactory = sessionFactory;
+    }
 
     @Override
     public void guardar(Gol gol) {
@@ -28,5 +32,15 @@ public class RepositorioGolesImpl implements RepositorioGoles {
                 .createQuery("FROM Gol WHERE partido = :partido", Gol.class)
                 .setParameter("partido", partido)
                 .list();
+    }
+
+    @Override
+    public List<Gol>buscarPorUsuario(Long usuarioId){
+        String hql ="SELECT DISTINCT g FROM Gol g JOIN g.equipoJugador e WHERE e.usuario.id = :usuarioId";
+        return sessionFactory
+        .getCurrentSession()
+        .createQuery(hql,Gol.class)
+        .setParameter("usuarioId", usuarioId)
+        .getResultList();
     }
 }
