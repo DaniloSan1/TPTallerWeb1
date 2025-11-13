@@ -6,7 +6,6 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import com.tallerwebi.dominio.Cancha;
-import com.tallerwebi.dominio.EquipoEnum;
 import com.tallerwebi.dominio.Horario;
 import com.tallerwebi.dominio.Nivel;
 import com.tallerwebi.dominio.Partido;

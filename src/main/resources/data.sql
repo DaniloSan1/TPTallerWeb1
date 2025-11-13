@@ -121,7 +121,8 @@ INSERT INTO FotoCancha(id, cancha_id, url) VALUES
 (NULL, 3, 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSybeYob_2z8_yCnmRE0OMH8u-20u9H8_8bGQ&s'),
 (NULL, 4, 'https://lh3.googleusercontent.com/gps-cs-s/AG0ilSwZY0Jy7PTpxLmlPZQLMqjoGpx410gz8-rH28stBAofst9VRNT6uvOn72dqsx5B5eo_BHVB7WxZOwictFv2ygTIotXGkgIGdNFq4Zw2NHUf9YC658l-b98ATYwIbC_c2LID5B9vNg=s1360-w1360-h1020-rw'),
 (NULL, 5, 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRDNR9_AfwO6kKtHZWJsvQiZhl2hIkpdAPNxg&s'),
-(NULL, 6, 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR2yuiJDyLI93stVf9dBqBRFUKLE-ZhxAo4dw&s');
+(NULL, 6, 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR2yuiJDyLI93stVf9dBqBRFUKLE-ZhxAo4dw&s'),
+(NULL, 1, 'https://lh3.googleusercontent.com/p/AF1QipMbcsyuOvy0-4AlKYxTR7YeMH0TiMGzO_WV7mZ2=s1360-w1360-h1020-rw');
 
 -- Insert equipos for partidos
 INSERT INTO Equipo(id, nombre, creado_por_id, fechaCreacion, descripcion, insignia_url) VALUES

@@ -1,327 +1,331 @@
 <!DOCTYPE html>
 <html lang="es" xmlns:th="http://www.thymeleaf.org">
-  <head>
+<head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Detalle de Cancha</title>
-
-    <link
-      rel="stylesheet"
-      th:href="@{/webjars/bootstrap/5.2.0/css/bootstrap.min.css}"
-    />
+    <link rel="stylesheet" th:href="@{/webjars/bootstrap/5.2.0/css/bootstrap.min.css}" />
     <link rel="stylesheet" th:href="@{/css/main.css}" />
     <link rel="stylesheet" th:href="@{/css/detalle-partido.css}" />
-    <link
-      rel="stylesheet"
-      href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&icon_names=location_on,schedule,paid"
-    />
-  </head>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&icon_names=location_on,schedule,paid" />
+</head>
 
-  <body>
-    <!-- Navbar -->
-    <div th:replace="~{fragments/navbar :: navbar}"></div>
+<body>
+<!-- Navbar -->
+<div th:replace="~{fragments/navbar :: navbar}"></div>
 
-    <main role="main" class="container" style="padding-top: 135px">
-      <!-- Mensajes de error o éxito -->
-      <div
-        th:if="${error != null && cancha == null}"
-        class="alert alert-danger text-center"
-        id="alertError"
-      >
+<main role="main" class="container" style="padding-top: 135px">
+
+    <!-- Mensajes de error o éxito -->
+    <div th:if="${error != null && cancha == null}" class="alert alert-danger text-center" id="alertError">
         <h4 th:text="${error}">La cancha solicitada no existe.</h4>
-      </div>
-      <div
-        th:if="${success != null}"
-        id="alertSuccess"
-        class="alert alert-success text-center"
-        th:text="${success}"
-      ></div>
-      <!-- Mensaje de error cuando la cancha existe (por ejemplo: ya reseñó esta cancha) -->
-      <div
-        th:if="${error != null and cancha != null}"
-        class="alert alert-danger text-center"
-        id="alertErrorCancha"
-      >
-        <h4 th:text="${error}"></h4>
-      </div>
+    </div>
 
-      <!-- Contenido principal -->
-      <div
-        th:if="${cancha != null}"
-        class="container d-flex flex-column justify-content-center width-100"
-      >
+    <div th:if="${success != null}" id="alertSuccess" class="alert alert-success text-center" th:text="${success}"></div>
+
+    <div th:if="${error != null and cancha != null}" class="alert alert-danger text-center" id="alertErrorCancha">
+        <h4 th:text="${error}"></h4>
+    </div>
+
+    <div th:if="${cancha != null}" class="container d-flex flex-column justify-content-center width-100">
+
         <!-- Título -->
         <div class="mainbox width-100" style="margin-top: 50px">
-          <div class="d-flex flex-column align-items-center mb-4">
-            <h1
-              class="w-100 mb-2 text-center"
-              th:text="${cancha.nombre}"
-              style="margin: 0 !important"
-            ></h1>
-            <h3 class="w-100 text-center text-secondary" style="margin: 0 !important">
-              Calificación promedio:
-              <span th:text="${calificacionPromedio != null and calificacionPromedio != 0.0 ? calificacionPromedio : 'Sin calificaciones'}"></span>
-            </h4>
-            <h4
-              id="direccion-cancha"
-              class="w-100 d-flex align-items-center justify-content-center gap-2"
-            >
-              <span class="material-symbols-outlined"></span>
-              <span th:text="${cancha.direccion}"></span>
-            </h4>
-            
-          </div>
-          <hr class="colorgraph" />
+            <div class="d-flex flex-column align-items-center mb-4">
+                <h1 class="w-100 mb-2 text-center" th:text="${cancha.nombre}"></h1>
+                <h3 class="w-100 text-center text-secondary">
+                    Calificación promedio:
+                    <span th:text="${calificacionPromedio != null and calificacionPromedio != 0.0 ? calificacionPromedio : 'Sin calificaciones'}"></span>
+                </h3>
+                <h4 id="direccion-cancha" class="w-100 d-flex align-items-center justify-content-center gap-2">
+                    <span class="material-symbols-outlined"></span>
+                    <span th:text="${cancha.direccion}"></span>
+                </h4>
+            </div>
+            <hr class="colorgraph" />
         </div>
 
-        <!-- Mapa + Detalles -->
-        <div
-          id="contendor-mapa-detalle"
-          class="d-flex flex-row flex-wrap align-items-center justify-content-center"
-        >
-          <iframe
-            id="map-iframe"
-            frameborder="0"
-            allowfullscreen
-            th:if="${cancha != null}"
-            th:src="'https://www.google.com/maps/embed/v1/place?key=AIzaSyCB2Jsk_wlMEsQ5phtgegFGXuNTlHB7YNY&q=' + ${#strings.replace(cancha.direccion, ' ', '+')}"
-          ></iframe>
+       
+<div id="contendor-mapa-detalle" class="d-flex flex-row flex-wrap align-items-center justify-content-center position-relative">
 
-          <div id="contenedor-detalle">
-            <div id="contenedor-detalle-info">
-              <div class="w-100 mb-2">
-                <strong>Zona:</strong>
-                <span th:text="${cancha.zona}"></span>
-              </div>
-
-              <div class="detalle-columna">
-                <div class="w-100">
-                  <strong>Tipo de suelo:</strong>
-                  <span th:text="${cancha.tipoSuelo}"></span>
+    <div class="position-relative" style="width: 700px; height: 400px; border-radius: 15px; overflow: hidden;">
+        
+       
+        <div id="canchaCarousel" class="carousel slide" data-bs-ride="carousel" style="width: 100%; height: 100%;">
+            <div class="carousel-inner">
+                <div th:each="foto, iterStat : ${fotosCancha}" 
+                     th:classappend="${iterStat.index == 0} ? 'active'" 
+                     class="carousel-item">
+                    <img th:src="@{${foto.url}}" 
+                         class="d-block w-100" 
+                         alt="Foto de la cancha" 
+                         style="object-fit: cover; height: 400px; cursor: pointer;"
+                         data-bs-toggle="modal" 
+                         data-bs-target="#fotoModal" 
+                         th:attr="data-foto-url=${foto.url}" />
                 </div>
-                <div class="w-100">
-                  <strong>Capacidad:</strong>
-                  <span th:text="${cancha.capacidad}"></span>
-                </div>
-              </div>
-
-              <div class="w-100 mt-2">
-                <strong>
-                  <span class="material-symbols-outlined align-middle"
-                    ></span
-                  >
-                  Precio por hora:
-                </strong>
-                <span th:text="${cancha.precio}"></span>
-              </div>
             </div>
-
-            <div
-              id="contenedor-detalle-acciones"
-              class="d-flex flex-column justify-content-center align-items-center mt-4 gap-1"
-            >
-              <a
-                th:href="@{/canchas-disponibles}"
-                class="btn btn-primary w-100"
-              >
-                Volver a la lista de canchas
-              </a>
-               <a
-                th:href="@{/reseniar-cancha/{canchaId}(canchaId=${cancha.id})}"
-                class="btn btn-success w-100"
-              >
-                Reseñar cancha
-              </a>
-            </div>
-          </div>
+            <button class="carousel-control-prev" type="button" data-bs-target="#canchaCarousel" data-bs-slide="prev">
+                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+            </button>
+            <button class="carousel-control-next" type="button" data-bs-target="#canchaCarousel" data-bs-slide="next">
+                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+            </button>
         </div>
 
-        <!-- Reseñas: carrusel simple que muestra una reseña a la vez -->
+       
+        <div style="position: absolute; bottom: 15px; right: 15px; width: 230px; height: 140px; border: 2px solid #ccc; border-radius: 10px; overflow: hidden; box-shadow: 0 0 10px rgba(0,0,0,0.3);">
+            <iframe id="map-iframe" frameborder="0" allowfullscreen
+                    th:if="${cancha != null}"
+                    th:src="'https://www.google.com/maps/embed/v1/place?key=AIzaSyCB2Jsk_wlMEsQ5phtgegFGXuNTlHB7YNY&q=' + ${#strings.replace(cancha.direccion, ' ', '+')}"
+                    style="width: 100%; height: 100%;">
+            </iframe>
+        </div>
+    </div>
+
+  
+    <div id="contenedor-detalle" class="ms-4 mt-3">
+        <div id="contenedor-detalle-info">
+            <div class="w-100 mb-2">
+                <strong>Zona:</strong> <span th:text="${cancha.zona}"></span>
+            </div>
+            <div class="detalle-columna">
+                <div class="w-100">
+                    <strong>Tipo de suelo:</strong> <span th:text="${cancha.tipoSuelo}"></span>
+                </div>
+                <div class="w-100">
+                    <strong>Capacidad:</strong> <span th:text="${cancha.capacidad}"></span>
+                </div>
+            </div>
+            <div class="w-100 mt-2">
+                <strong>Precio por hora:</strong> <span th:text="${cancha.precio}"></span>
+            </div>
+        </div>
+        <div id="contenedor-detalle-acciones" class="d-flex flex-column justify-content-center align-items-center mt-4 gap-1">
+            <a th:href="@{/canchas-disponibles}" class="btn btn-primary w-100">Volver a la lista</a>
+            <a th:href="@{/reseniar-cancha/{canchaId}(canchaId=${cancha.id})}" class="btn btn-success w-100">Reseñar cancha</a>
+        </div>
+    </div>
+</div>
+
+      
         <div id="contenedor-resenias" class="mt-4 w-100">
-          <h2 class="participantes-titulo">Reseñas</h2>
-          <hr class="colorgraph" />
-
-          <div th:if="${#lists.isEmpty(resenias)}" class="text-muted">No hay reseñas aún.</div>
-
+            <h2 class="participantes-titulo">Reseñas</h2>
+            <hr class="colorgraph" />
+            <div th:if="${#lists.isEmpty(resenias)}" class="text-muted">No hay reseñas aún.</div>
             <div th:if="${!#lists.isEmpty(resenias)}" class="d-flex align-items-center justify-content-center">
-            <button id="prevReview" class="btn btn-outline-secondary me-2" onclick="prevReview()">&laquo;</button>
-
-            <div id="reviewsContainer" style="max-width:720px; width:100%">
-              <div th:each="resenia, stat : ${resenias}" class="review-item card p-3 mb-2" th:attr="data-index=${stat.index}" style="display:none">
-                <div class="d-flex justify-content-between align-items-center mb-2">
-                  <strong th:text="${resenia.usuario != null ? (resenia.usuario.nombre != null ? resenia.usuario.nombre : resenia.usuario.username) : 'Anónimo'}">Usuario</strong>
-                  <span class="badge bg-primary rating-badge" th:attr="data-rating=${resenia.calificacion}" aria-label="Calificación de la reseña">5</span>
+                <button id="prevReview" class="btn btn-outline-secondary me-2" onclick="prevReview()">&laquo;</button>
+                <div id="reviewsContainer" style="max-width:720px; width:100%">
+                    <div th:each="resenia, stat : ${resenias}" class="review-item card p-3 mb-2"
+                         th:attr="data-index=${stat.index}" style="display:none">
+                        <div class="d-flex justify-content-between align-items-center mb-2">
+                            <strong th:text="${resenia.usuario != null ? (resenia.usuario.nombre != null ? resenia.usuario.nombre : resenia.usuario.username) : 'Anónimo'}">Usuario</strong>
+                            <span class="badge bg-primary rating-badge" th:attr="data-rating=${resenia.calificacion}"></span>
+                        </div>
+                        <p th:text="${resenia.comentario != null && resenia.comentario != '' ? resenia.comentario : 'Sin comentario'}"></p>
+                    </div>
                 </div>
-                <p th:text="${resenia.comentario != null && resenia.comentario != '' ? resenia.comentario : 'Sin comentario'}">Comentario</p>
-                <div class="text-end text-muted" style="font-size:0.9rem">#<span th:text="${stat.index + 1}"></span> de <span th:text="${#lists.size(resenias)}"></span></div>
-              </div>
+                <button id="nextReview" class="btn btn-outline-secondary ms-2" onclick="nextReview()">&raquo;</button>
             </div>
-
-            <button id="nextReview" class="btn btn-outline-secondary ms-2" onclick="nextReview()">&raquo;</button>
-          </div>
         </div>
 
-        <!-- Listado de horarios -->
+      
         <div id="contenedor-participantes" class="mt-5">
-          <h2 class="participantes-titulo">Horarios disponibles</h2>
-          <hr class="colorgraph" />
-            <div th:if="${#lists.isEmpty(horarios)}" class="text-muted">
-              No hay horarios disponibles.
-            </div>
+            <h2 class="participantes-titulo">Horarios disponibles</h2>
+            <hr class="colorgraph" />
+            <div th:if="${#lists.isEmpty(horarios)}" class="text-muted">No hay horarios disponibles.</div>
 
-            <!-- Wrapper limitado con altura y scroll interno; botón 'Mostrar más' para expandir -->
             <div th:if="${!#lists.isEmpty(horarios)}">
-              <div id="horariosWrapper" class="horarios-wrapper">
-                <ul class="list-group">
-                  <li
-                    class="list-group-item d-flex justify-content-between align-items-center"
-                    th:each="horario : ${horarios}"
-                  >
-                    <div>
-                      <strong th:switch="${horario.diaSemana}">
-                      <span th:case="${T(java.time.DayOfWeek).MONDAY}">Lunes</span>
-                      <span th:case="${T(java.time.DayOfWeek).TUESDAY}">Martes</span>
-                      <span th:case="${T(java.time.DayOfWeek).WEDNESDAY}">Miércoles</span>
-                      <span th:case="${T(java.time.DayOfWeek).THURSDAY}">Jueves</span>
-                      <span th:case="${T(java.time.DayOfWeek).FRIDAY}">Viernes</span>
-                      <span th:case="${T(java.time.DayOfWeek).SATURDAY}">Sábado</span>
-                      <span th:case="${T(java.time.DayOfWeek).SUNDAY}">Domingo</span>
-                      <span th:case="*">Desconocido</span>
-                    </strong>
-                      <span th:text="${horario.horaInicio}"></span> -
-                      <span th:text="${horario.horaFin}"></span>
-                    </div>
-                    <div>
-                      <button
-                        th:if="${horario.disponible}"
-                        class="btn btn-success btn-sm"
-                        th:onclick="'location.href=\'/spring/reserva/nueva?usuarioId=' + ${usuarioId} + '&horarioId=' + ${horario.id} + '\';'"
-                      >
-                        Reservar
-                      </button>
-                      <button
-                        th:if="${!horario.disponible}"
-                        class="btn btn-secondary btn-sm"
-                        disabled
-                      >
-                        No disponible
-                      </button>
-                    </div>
-                  </li>
-                </ul>
-              </div>
-
-              <div class="text-center mt-2">
-                <button id="toggleHorariosBtn" class="btn btn-link">Mostrar más</button>
-              </div>
+                <div id="horariosWrapper" class="horarios-wrapper">
+                    <ul class="list-group">
+                        <li class="list-group-item d-flex justify-content-between align-items-center"
+                            th:each="horario : ${horarios}">
+                            <div>
+                                <strong th:switch="${horario.diaSemana}">
+                                    <span th:case="${T(java.time.DayOfWeek).MONDAY}">Lunes</span>
+                                    <span th:case="${T(java.time.DayOfWeek).TUESDAY}">Martes</span>
+                                    <span th:case="${T(java.time.DayOfWeek).WEDNESDAY}">Miércoles</span>
+                                    <span th:case="${T(java.time.DayOfWeek).THURSDAY}">Jueves</span>
+                                    <span th:case="${T(java.time.DayOfWeek).FRIDAY}">Viernes</span>
+                                    <span th:case="${T(java.time.DayOfWeek).SATURDAY}">Sábado</span>
+                                    <span th:case="${T(java.time.DayOfWeek).SUNDAY}">Domingo</span>
+                                </strong>
+                                <span th:text="${horario.horaInicio}"></span> -
+                                <span th:text="${horario.horaFin}"></span>
+                            </div>
+                            <div>
+                                <button th:if="${horario.disponible}" class="btn btn-success btn-sm"
+                                        th:onclick="'location.href=\'/spring/reserva/nueva?usuarioId=' + ${usuarioId} + '&horarioId=' + ${horario.id} + '\';'">Reservar</button>
+                                <button th:if="${!horario.disponible}" class="btn btn-secondary btn-sm" disabled>No disponible</button>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+                <div class="text-center mt-2">
+                    <button id="toggleHorariosBtn" class="btn btn-link">Mostrar más</button>
+                </div>
             </div>
         </div>
-      </div>
-    </main>
 
-    <script
-      type="text/javascript"
-      th:src="@{/webjars/bootstrap/5.2.0/js/bootstrap.min.js}"
-    ></script>
+    </div>
+</main>
+
+
+<div class="modal fade" id="fotoModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content bg-transparent border-0">
+            <img id="modalFoto" src="" class="img-fluid rounded">
+        </div>
+    </div>
+</div>
+
+
+    <script type="text/javascript" th:src="@{/webjars/bootstrap/5.2.0/js/bootstrap.min.js}"></script>
     <script type="module" th:src="@{/js/common.js}"></script>
     <script>
-      // Carrusel simple de reseñas
-      let reviewIndex = 0;
+        document.addEventListener('click', function (e) {
+        if (e.target.matches('[data-foto-url]')) {
+          const imgUrl = e.target.getAttribute('data-foto-url');
+          document.getElementById('modalFoto').src = imgUrl;
+          }
+      });
+    </script>
+
+    <script>
     
+      function mostrarImagenModal(url) {
+        const modalImg = document.getElementById('imagenAmpliada');
+        modalImg.src = url;
+        const modal = new bootstrap.Modal(document.getElementById('modalImagen'));
+        modal.show();
+      }
+
+      
+      let reviewIndex = 0;
+
       function renderStars() {
-        const starEntity = '&#9733;'; 
-        const emptyEntity = '&#9734;';
-        const ratingElems = document.querySelectorAll('[data-rating]');
-        ratingElems.forEach(elem => {
-          const val = parseFloat(elem.getAttribute('data-rating'));
+        const starEntity = "&#9733;";
+        const emptyEntity = "&#9734;";
+        const ratingElems = document.querySelectorAll("[data-rating]");
+        ratingElems.forEach((elem) => {
+          const val = parseFloat(elem.getAttribute("data-rating"));
           if (isNaN(val) || val === 0) {
-            elem.style.color='gold';
-            elem.innerText = 'Sin calificaciones';
+            elem.style.color = "gold";
+            elem.innerText = "Sin calificaciones";
             return;
           }
           const rounded = Math.round(val);
-          let starsHtml = '';
+          let starsHtml = "";
           for (let i = 0; i < 5; i++) {
-            starsHtml += (i < rounded) ? starEntity : emptyEntity;
+            starsHtml += i < rounded ? starEntity : emptyEntity;
           }
-          elem.innerHTML = starsHtml + ' (' + rounded + ')';
-          elem.style.color = 'gold';
-          elem.style.fontSize = '1.2rem';
+          elem.innerHTML = starsHtml + " (" + rounded + ")";
+          elem.style.color = "gold";
+          elem.style.fontSize = "1.2rem";
         });
-        // elementos específicos con clase rating-badge: mostrar solo estrellas sin número
-        const badgeElems = document.querySelectorAll('.rating-badge');
-        badgeElems.forEach(b => {
-          const v = parseFloat(b.getAttribute('data-rating'));
+
+       
+        const badgeElems = document.querySelectorAll(".rating-badge");
+        badgeElems.forEach((b) => {
+          const v = parseFloat(b.getAttribute("data-rating"));
           if (isNaN(v) || v === 0) {
-            b.innerText = 'Sin';
+            b.innerText = "Sin";
             return;
           }
           const r = Math.round(v);
-          let s = '';
+          let s = "";
           for (let i = 0; i < r; i++) s += starEntity;
           for (let i = r; i < 5; i++) s += emptyEntity;
           b.innerHTML = s;
-          b.style.backgroundColor = '#0d6efd';
-          b.style.color = 'gold';
+          b.style.backgroundColor = "#0d6efd";
+          b.style.color = "gold";
         });
       }
+
       function showReview(i) {
-        const items = document.querySelectorAll('.review-item');
+        const items = document.querySelectorAll(".review-item");
         if (!items || items.length === 0) return;
         if (i < 0) i = 0;
         if (i > items.length - 1) i = items.length - 1;
         reviewIndex = i;
         items.forEach((it, idx) => {
-          it.style.display = idx === i ? 'block' : 'none';
+          it.style.display = idx === i ? "block" : "none";
         });
-        // deshabilitar botones si corresponde
-        const prev = document.getElementById('prevReview');
-        const next = document.getElementById('nextReview');
-        if (prev) prev.disabled = (i === 0);
-        if (next) next.disabled = (i === items.length - 1);
+
+        const prev = document.getElementById("prevReview");
+        const next = document.getElementById("nextReview");
+        if (prev) prev.disabled = i === 0;
+        if (next) next.disabled = i === items.length - 1;
       }
-      function nextReview() { showReview(reviewIndex + 1); }
-      function prevReview() { showReview(reviewIndex - 1); }
-      // Inicializar al cargar
-      document.addEventListener('DOMContentLoaded', function() {
-        const items = document.querySelectorAll('.review-item');
+
+      function nextReview() {
+        showReview(reviewIndex + 1);
+      }
+
+      function prevReview() {
+        showReview(reviewIndex - 1);
+      }
+
+      
+      document.addEventListener("DOMContentLoaded", function () {
+        const items = document.querySelectorAll(".review-item");
         renderStars();
         if (items && items.length > 0) {
           showReview(0);
         }
-        // Toggle 'Mostrar más' para la lista de horarios
-        const toggleBtn = document.getElementById('toggleHorariosBtn');
-        const wrapper = document.getElementById('horariosWrapper');
+
+       
+        const toggleBtn = document.getElementById("toggleHorariosBtn");
+        const wrapper = document.getElementById("horariosWrapper");
         if (toggleBtn && wrapper) {
-          toggleBtn.addEventListener('click', function(e) {
+          toggleBtn.addEventListener("click", function (e) {
             e.preventDefault();
-            const expanded = wrapper.classList.toggle('expanded');
-            toggleBtn.textContent = expanded ? 'Mostrar menos' : 'Mostrar más';
-            // Si está expandido quitar la restricción de max-height
+            const expanded = wrapper.classList.toggle("expanded");
+            toggleBtn.textContent = expanded ? "Mostrar menos" : "Mostrar más";
+
+            
             if (expanded) {
-              wrapper.style.maxHeight = 'none';
-              wrapper.style.overflowY = 'visible';
+              wrapper.style.maxHeight = "none";
+              wrapper.style.overflowY = "visible";
             } else {
-              wrapper.style.maxHeight = '300px';
-              wrapper.style.overflowY = 'auto';
+              wrapper.style.maxHeight = "300px";
+              wrapper.style.overflowY = "auto";
             }
           });
         }
       });
     </script>
+
     <style>
-      /* Limitar la altura de la lista de horarios para evitar un scroll largo en la página */
+  
       .horarios-wrapper {
-        max-height: 300px; /* ajustar según preferencia */
+        max-height: 300px;
+      
         overflow-y: auto;
       }
+
       .horarios-wrapper.expanded {
         max-height: none;
         overflow-y: visible;
       }
-      /* Mejorar el aspecto del botón link */
+
+     
       #toggleHorariosBtn {
         text-decoration: none;
+      }
+
+      
+
+      .mapa-flotante {
+        position: absolute;
+        bottom: 15px;
+        right: 15px;
+        width: 250px;
+        height: 180px;
+        border: 2px solid #fff;
+        border-radius: 10px;
+        overflow: hidden;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.4);
       }
     </style>
   </body>
