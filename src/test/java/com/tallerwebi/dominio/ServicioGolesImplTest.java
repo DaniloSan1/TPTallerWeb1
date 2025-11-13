@@ -14,13 +14,14 @@ public class ServicioGolesImplTest {
     private RepositorioGoles repositorioGoles;
     private ServicioPartido servicioPartido;
     private ServicioPartidoEquipo servicioPartidoEquipo;
+    private ServicioUsuario servicioUsuario;
 
     @BeforeEach
     public void init() {
         repositorioGoles = mock(RepositorioGoles.class);
         servicioPartido = mock(ServicioPartido.class);
         servicioPartidoEquipo = mock(ServicioPartidoEquipo.class);
-        servicioGoles = new ServicioGolesImpl(repositorioGoles, servicioPartido, servicioPartidoEquipo);
+        servicioGoles = new ServicioGolesImpl(repositorioGoles, servicioPartido, servicioPartidoEquipo,servicioUsuario);
     }
 
     @Test

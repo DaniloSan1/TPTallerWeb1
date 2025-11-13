@@ -16,13 +16,15 @@ public class ServicioGolesImpl implements ServicioGoles {
     private ServicioPartido servicioPartido;
 
     private ServicioPartidoEquipo servicioPartidoEquipo;
+    private ServicioUsuario servicioUsuario;
 
     @Autowired
     public ServicioGolesImpl(RepositorioGoles repositorioGoles, ServicioPartido servicioPartido,
-            ServicioPartidoEquipo servicioPartidoEquipo) {
+            ServicioPartidoEquipo servicioPartidoEquipo,ServicioUsuario servicioUsuario) {
         this.repositorioGoles = repositorioGoles;
         this.servicioPartido = servicioPartido;
         this.servicioPartidoEquipo = servicioPartidoEquipo;
+        this.servicioUsuario=servicioUsuario;
     }
 
     @Override
@@ -48,5 +50,30 @@ public class ServicioGolesImpl implements ServicioGoles {
             cantidad+=gol.getCantidad();
         }
         return cantidad;
+    }
+
+    @Override
+    public Double devolverGolesPromedioPorPartidoDelUsuario(Long usuarioId) {
+    Double cantidadPromedio = 0.0;
+
+    Usuario usuario = servicioUsuario.buscarPorId(usuarioId);
+    List<Gol> golesDelUsuario = repositorioGoles.buscarPorUsuario(usuarioId);
+    List<Partido> partidos = servicioPartido.listarPorParticipante(usuario);
+
+    int partidosJugados = partidos.size();
+
+    if (golesDelUsuario.isEmpty() || partidosJugados == 0) {
+        return cantidadPromedio;
+    }
+
+    int cantidadGolesTotales = 0;
+    for (Gol gol : golesDelUsuario) {
+        cantidadGolesTotales += gol.getCantidad();
+    }
+
+   
+    cantidadPromedio = (double) cantidadGolesTotales / partidosJugados;
+
+    return cantidadPromedio;
     }
 }

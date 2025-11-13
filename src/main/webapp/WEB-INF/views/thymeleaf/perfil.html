@@ -89,6 +89,10 @@
                         <strong>Goles Totales:</strong>
                         <span th:text="${golesTotales}"></span>
                     </p>
+                    <p>
+                        <strong>Goles en promedio por partido:</strong>
+                        <span th:text="${golesPromedio}"></span>
+                    </p>
                 </div>
                 <div class="card-footer text-end d-flex justify-content-between">
                     <form th:action="@{/perfil/editar}" method="get" class="d-inline">

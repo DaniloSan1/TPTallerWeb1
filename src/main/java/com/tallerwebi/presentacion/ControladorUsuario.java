@@ -78,7 +78,9 @@ public class ControladorUsuario {
         }
             Double calificacionPromedioUsuario = servicioCalificacion.calcularCalificacionPromedioUsuario(usuarioAVer.getId());
             int golesTotalesUsuario=servicioGoles.devolverCantidadTotalDeGolesDelUsuario(usuarioAVer.getId());
+            Double golesPromedioUsuario=servicioGoles.devolverGolesPromedioPorPartidoDelUsuario(usuarioAVer.getId());
             modelo.addAttribute("calificacionPromedioUsuario", calificacionPromedioUsuario);
+            modelo.addAttribute("golesPromedioUsuario", golesPromedioUsuario);
             modelo.addAttribute("golesTotalesUsuario",golesTotalesUsuario);
             modelo.addAttribute("usuarioAVer", usuarioAVer);
             return "perfilDeOtroJugador";
@@ -104,7 +106,9 @@ public class ControladorUsuario {
         Amistad amistad = servicioAmistad.buscarRelacionEntreUsuarios(usuarioActual.getId(), usuarioAVer.getId());
         Double calificacionPromedioUsuario = servicioCalificacion.calcularCalificacionPromedioUsuario(usuarioAVer.getId());
         int golesTotalesUsuario=servicioGoles.devolverCantidadTotalDeGolesDelUsuario(usuarioAVer.getId());
+        Double golesPromedioUsuario=servicioGoles.devolverGolesPromedioPorPartidoDelUsuario(usuarioAVer.getId());
         modelo.addAttribute("golesTotalesUsuario",golesTotalesUsuario);
+        modelo.addAttribute("golesPromedioUsuario", golesPromedioUsuario);
         modelo.addAttribute("calificacionPromedioUsuario", calificacionPromedioUsuario);
         modelo.addAttribute("usuarioAVer", usuarioAVer);
         modelo.addAttribute("usuarioActual", usuarioActual);
@@ -127,8 +131,10 @@ public class ControladorUsuario {
             // Calificación promedio
             Double calificacionPromedio = servicioCalificacion.calcularCalificacionPromedioUsuario(usuario.getId());
             int golesTotales=servicioGoles.devolverCantidadTotalDeGolesDelUsuario(usuario.getId());
+            Double golesPromedio=servicioGoles.devolverGolesPromedioPorPartidoDelUsuario(usuario.getId());
             modelo.addAttribute("golesTotales", golesTotales);
             modelo.addAttribute("calificacionPromedio", calificacionPromedio);
+            modelo.addAttribute("golesPromedio", golesPromedio);
 
             // Amigos
             List<Amistad> relaciones = servicioAmistad.verAmigos(usuario.getId());
