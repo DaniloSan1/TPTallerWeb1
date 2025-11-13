@@ -39,4 +39,8 @@ public class ServicioCalificacionImpl implements ServicioCalificacion{
         }
         return sumaCalificaciones/cantidadCalificaciones;
     }
+    @Override
+    public List<Calificacion>obtenerCalificacionesPorCalificador(Long usuarioId){
+        return repositorioCalificacion.obtenerPorCalificador(usuarioId);
+    } 
 }

@@ -13,8 +13,10 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import com.tallerwebi.dominio.Calificacion;
 import com.tallerwebi.dominio.Cancha;
 import com.tallerwebi.dominio.ReseniaCancha;
+import com.tallerwebi.dominio.ServicioCalificacion;
 import com.tallerwebi.dominio.ServicioCancha;
 import com.tallerwebi.dominio.ServicioReseniaCancha;
 import com.tallerwebi.dominio.ServicioUsuario;
@@ -25,10 +27,12 @@ public class ControladorReseniaCancha {
     private final ServicioReseniaCancha servicioReseniaCancha;
     private final ServicioCancha servicioCancha;
     private final ServicioUsuario servicioUsuario;
-    public ControladorReseniaCancha(ServicioReseniaCancha servicioReseniaCancha,ServicioCancha servicioCancha,ServicioUsuario servicioUsuario) {
+    private final ServicioCalificacion servicioCalificacion;
+    public ControladorReseniaCancha(ServicioReseniaCancha servicioReseniaCancha,ServicioCancha servicioCancha,ServicioUsuario servicioUsuario,ServicioCalificacion servicioCalificacion) {
         this.servicioReseniaCancha = servicioReseniaCancha;
         this.servicioCancha=servicioCancha;
         this.servicioUsuario=servicioUsuario;
+        this.servicioCalificacion=servicioCalificacion;
     }
 
     @GetMapping("/reseniar-cancha/{canchaId}")
@@ -68,7 +72,7 @@ public class ControladorReseniaCancha {
         @RequestParam("calificacion") Integer calificacion,
         @RequestParam(value = "descripcion", required = false) String descripcion,
         ModelMap model,
-        HttpServletRequest request) {
+        HttpServletRequest request, RedirectAttributes redirectAttributes) {
 
         String email = (String) request.getSession().getAttribute("EMAIL");
         Usuario usuario = servicioUsuario.buscarPorEmail(email);
@@ -76,18 +80,26 @@ public class ControladorReseniaCancha {
         servicioReseniaCancha.agregarReseniaCancha(
             new ReseniaCancha(calificacion, descripcion, usuario, cancha));
 
+        redirectAttributes.addFlashAttribute("success", "Reseña creada correctamente");
         return new ModelAndView("redirect:/cancha/" + canchaId);
         }   
     
     @GetMapping("/historial-reviews/{usuarioId}")
+        
         public ModelAndView verHistorial(@PathVariable Long usuarioId, HttpServletRequest request){
+        String email = (String) request.getSession().getAttribute("EMAIL");
+            if (email == null) {
+                return new ModelAndView("redirect:/login");
+            }    
         ModelAndView modelAndView= new ModelAndView();
-        Usuario usuario=servicioUsuario.buscarPorEmail((String)request.getSession().getAttribute("EMAIL"));
+        Usuario usuario=servicioUsuario.buscarPorEmail(email);
         if(usuarioId !=usuario.getId()){
             return new ModelAndView("redirect:/perfil/");
         }
         List<ReseniaCancha> resenias =servicioReseniaCancha.obtenerReseniasPorUsuario(usuarioId);
+        List<Calificacion> calificaciones=servicioCalificacion.obtenerCalificacionesPorCalificador(usuarioId);
         modelAndView.addObject("resenias", resenias);
+        modelAndView.addObject("calificaciones", calificaciones);
         modelAndView.setViewName("historial-resenias");
         return modelAndView;
     }
@@ -134,7 +146,7 @@ public class ControladorReseniaCancha {
         @RequestParam("reseniaId") Long reseniaId,
         @RequestParam("calificacion") Integer calificacion,
         @RequestParam(value = "descripcion", required = false) String descripcion,
-        HttpServletRequest request) {
+        HttpServletRequest request,RedirectAttributes redirectAttributes) {
 
         String email = (String) request.getSession().getAttribute("EMAIL");
         Usuario usuario = servicioUsuario.buscarPorEmail(email);
@@ -147,7 +159,7 @@ public class ControladorReseniaCancha {
             reseniaAEditar.setCalificacion(calificacion);
             reseniaAEditar.setComentario(descripcion);
             servicioReseniaCancha.editarReseniaCancha(reseniaAEditar);
-
+            redirectAttributes.addFlashAttribute("success", "Reseña editada correctamente");
             return new ModelAndView("redirect:/cancha/" + reseniaAEditar.getCancha().getId());
             
         } catch (IllegalArgumentException e) {

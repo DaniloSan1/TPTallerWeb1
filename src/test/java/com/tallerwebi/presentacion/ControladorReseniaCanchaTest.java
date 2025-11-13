@@ -29,6 +29,8 @@ class ControladorReseniaCanchaTest {
     @Mock
     private ServicioUsuario servicioUsuarioMock;
     @Mock
+    private ServicioCalificacion servicioCalificacion;
+    @Mock
     private HttpServletRequest requestMock;
     @Mock
     private HttpSession sessionMock;
@@ -121,7 +123,7 @@ class ControladorReseniaCanchaTest {
 
         ModelMap model = new ModelMap();
 
-        ModelAndView mav = controlador.guardarResenia(canchaId, 5, "Excelente!", model, requestMock);
+        ModelAndView mav = controlador.guardarResenia(canchaId, 5, "Excelente!", model, requestMock,redirectAttributesMock);
 
         assertThat(mav.getViewName(), is("redirect:/cancha/" + canchaId));
         verify(servicioReseniaCanchaMock).agregarReseniaCancha(any(ReseniaCancha.class));
@@ -140,6 +142,7 @@ class ControladorReseniaCanchaTest {
         when(sessionMock.getAttribute("EMAIL")).thenReturn(email);
         when(servicioUsuarioMock.buscarPorEmail(email)).thenReturn(usuario);
         when(servicioReseniaCanchaMock.obtenerReseniasPorUsuario(usuarioId)).thenReturn(resenias);
+        
 
         ModelAndView mav = controlador.verHistorial(usuarioId, requestMock);
 
@@ -230,7 +233,7 @@ class ControladorReseniaCanchaTest {
         when(servicioUsuarioMock.buscarPorEmail(email)).thenReturn(usuario);
         when(servicioReseniaCanchaMock.obtenerReseniaCanchaPorId(reseniaId)).thenReturn(resenia);
 
-        ModelAndView mav = controlador.actualizarResenia(reseniaId, 4, "Buen estado", requestMock);
+        ModelAndView mav = controlador.actualizarResenia(reseniaId, 4, "Buen estado", requestMock,redirectAttributesMock);
 
         assertThat(mav.getViewName(), is("redirect:/cancha/" + cancha.getId()));
         verify(servicioReseniaCanchaMock).editarReseniaCancha(resenia);
@@ -251,7 +254,7 @@ class ControladorReseniaCanchaTest {
         when(servicioUsuarioMock.buscarPorEmail(email)).thenReturn(usuarioSesion);
         when(servicioReseniaCanchaMock.obtenerReseniaCanchaPorId(reseniaId)).thenReturn(resenia);
 
-        ModelAndView mav = controlador.actualizarResenia(reseniaId, 5, "No aplica", requestMock);
+        ModelAndView mav = controlador.actualizarResenia(reseniaId, 5, "No aplica", requestMock,redirectAttributesMock);
 
         assertThat(mav.getViewName(), is("redirect:/perfil"));
         verify(servicioReseniaCanchaMock, never()).editarReseniaCancha(any());
