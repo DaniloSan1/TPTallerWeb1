@@ -11,5 +11,6 @@ public interface ServicioNotificacionDeUsuario {
     public void marcarComoLeida(Long id);
     public void eliminarNotificacion(Long id);
     public NotificacionDeUsuario obtenerNotificacionPorId(Long id);
+    public String marcarComoLeidaYObtenerUsername(Long id);
 
 }

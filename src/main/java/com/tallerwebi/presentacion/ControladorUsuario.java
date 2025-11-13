@@ -329,26 +329,19 @@ public class ControladorUsuario {
         }
 
         @PostMapping("/notificaciones/marcar-como-leida")
-        public String marcarComoLeidaYRedirigir(@RequestParam Long idNotificacion, HttpServletRequest request) {
-            NotificacionDeUsuario notificacion = servicioNotificacionDeUsuario.obtenerNotificacionPorId(idNotificacion);
-            if (notificacion != null) {
-                servicioNotificacionDeUsuario.marcarComoLeida(idNotificacion);
+        public String marcarComoLeidaYRedirigir(@RequestParam Long idNotificacion) {
 
-                // Extraer el nombre de usuario del mensaje (asumiendo formato fijo)
-                String mensaje = notificacion.getMensaje();
-                String username = null;
-                if (mensaje != null && mensaje.contains("El usuario")) {
-                    try {
-                        username = mensaje.split("El usuario")[1].split("te ha enviado")[0].trim();
-                    } catch (Exception ignored) {
-                    }
-                }
+            String username = servicioNotificacionDeUsuario
+                .marcarComoLeidaYObtenerUsername(idNotificacion);
 
-                if (username != null) {
-                    return "redirect:/perfil/ver/username/" + username;
-                }
+            if (username != null) {
+                return "redirect:/perfil/ver/username/" + username;
             }
+
             return "redirect:/perfil/notificaciones";
         }
+        }
 
-    }
+
+
+
