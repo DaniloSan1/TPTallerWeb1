@@ -20,11 +20,33 @@ public class ServicioAmistadImpl implements ServicioAmistad {
     public void enviarSolicitud(Long idRemitente, Long idReceptor) {
         Usuario remitente = repositorioUsuario.buscarPorId(idRemitente);
         Usuario receptor = repositorioUsuario.buscarPorId(idReceptor);
-
-        Amistad existente = repositorioAmistad.buscarPorUsuarios(remitente, receptor);
-        if (existente == null) {
-            repositorioAmistad.guardar(new Amistad(remitente, receptor));
+        // Buscar relación en ambas direcciones
+        Amistad existenteDirecta = repositorioAmistad.buscarPorUsuarios(remitente, receptor);
+        if (existenteDirecta != null) {
+            // Si existe y fue rechazada, permitir reenviar
+            if (existenteDirecta.getEstadoDeAmistad() == EstadoDeAmistad.RECHAZADA) {
+                existenteDirecta.setEstadoDeAmistad(EstadoDeAmistad.PENDIENTE);
+                existenteDirecta.setFechaSolicitud(java.time.LocalDate.now());
+            }
+            return;
         }
+
+        // Revisar si existe una solicitud en sentido inverso (el receptor ya envió una solicitud al remitente)
+        Amistad existenteInversa = repositorioAmistad.buscarPorUsuarios(receptor, remitente);
+        if (existenteInversa != null) {
+            if (existenteInversa.getEstadoDeAmistad() == EstadoDeAmistad.PENDIENTE) {
+                // Aceptar la solicitud pendiente del otro usuario
+                existenteInversa.setEstadoDeAmistad(EstadoDeAmistad.ACEPTADA);
+            } else if (existenteInversa.getEstadoDeAmistad() == EstadoDeAmistad.RECHAZADA) {
+                // Si el otro la rechazó previamente, volver a ponerla como pendiente
+                existenteInversa.setEstadoDeAmistad(EstadoDeAmistad.PENDIENTE);
+                existenteInversa.setFechaSolicitud(java.time.LocalDate.now());
+            }
+            return;
+        }
+
+        // No existe relación previa: crear nueva solicitud
+        repositorioAmistad.guardar(new Amistad(remitente, receptor));
     }
 
     @Override

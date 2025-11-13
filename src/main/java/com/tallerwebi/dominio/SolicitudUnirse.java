@@ -4,15 +4,18 @@ import javax.persistence.*;
 import java.time.LocalDateTime;
 
 @Entity
+@Table(name = "SolicitudUnirse")
 public class SolicitudUnirse {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @ManyToOne(optional = false, fetch = FetchType.LAZY)
+    @JoinColumn(name = "partido_id")
     private Partido partido;
 
     @ManyToOne(optional = false, fetch = FetchType.LAZY)
+    @JoinColumn(name = "creador_id")
     private Usuario creador; 
 
     @Column(nullable = false)

@@ -11,6 +11,11 @@ import java.util.List;
 @Service("servicioCancha")
 public class ServicioCanchaImpl implements ServicioCancha {
 
+    @Override
+    public List<Cancha> obtenerTodasLasCanchas() {
+        return repositorioCancha.obtenerTodasLasCanchas();
+    }
+
     private final RepositorioCancha repositorioCancha;
 
     public ServicioCanchaImpl(RepositorioCancha repositorioCancha) {

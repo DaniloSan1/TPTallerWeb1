@@ -71,11 +71,10 @@ public class ServicioInscripcionImpl implements ServicioInscripcion {
 
         List<InscripcionTorneo> inscripciones = inscripcionRepo.buscarPorTorneo(torneo.getId());
 
-        // 🔥 Evita LazyInitializationException
+        //Evita LazyInitializationException
         for (InscripcionTorneo inscripcion : inscripciones) {
             Hibernate.initialize(inscripcion.getEquipo());
             Hibernate.initialize(inscripcion.getEquipo().getJugadores());
-            // Si también necesitás acceder al usuario del jugador
             inscripcion.getEquipo().getJugadores()
                     .forEach(ej -> Hibernate.initialize(ej.getUsuario()));
         }

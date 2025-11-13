@@ -82,7 +82,6 @@ public class ControladorTorneo {
             torneo.setCancha(cancha);
             torneo.setOrganizador(organizador);
 
-            // Crear torneo en servicio (validaciones de disponibilidad y precio)
             Torneo torneoCreado = servicioTorneo.crearTorneo(torneo);
 
             // Generar preferencia de pago en MercadoPago

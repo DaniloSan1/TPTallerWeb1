@@ -51,4 +51,15 @@ public class RepositorioSolicitudUnirseImpl implements RepositorioSolicitudUnirs
         return query.list();
     }
 
+    @Override
+    public List<SolicitudUnirse> listarPendientesPorEmailDestino(String emailDestino) {
+        final Session session = sessionFactory.getCurrentSession();
+        // Usar JOIN FETCH para inicializar creador y partido y evitar LazyInitializationException en la view
+        String hql = "FROM SolicitudUnirse s JOIN FETCH s.creador JOIN FETCH s.partido WHERE s.emailDestino = :emailDestino AND s.estado = :estado";
+        var query = session.createQuery(hql, SolicitudUnirse.class);
+        query.setParameter("emailDestino", emailDestino);
+        query.setParameter("estado", EstadoSolicitud.PENDIENTE);
+        return query.list();
+    }
+
 }
