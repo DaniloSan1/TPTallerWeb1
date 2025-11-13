@@ -53,7 +53,7 @@ public class ControladorUsuario {
         this(servicioLogin, servicioUsuario, servicioAmistad, null, servicioCalificacion, servicioNotificacionDeUsuario,servicioGoles);
     }
 
-    @GetMapping("/ver/id/{id}")
+     @GetMapping("/ver/id/{id}")
     public String verPerfilDeOtroJugador(@PathVariable Long id, ModelMap modelo, HttpServletRequest request) {
         try {
             Usuario usuarioAVer = servicioLogin.buscarPorId(id);
@@ -78,7 +78,9 @@ public class ControladorUsuario {
         }
             Double calificacionPromedioUsuario = servicioCalificacion.calcularCalificacionPromedioUsuario(usuarioAVer.getId());
             int golesTotalesUsuario=servicioGoles.devolverCantidadTotalDeGolesDelUsuario(usuarioAVer.getId());
+            Double golesPromedioUsuario=servicioGoles.devolverGolesPromedioPorPartidoDelUsuario(usuarioAVer.getId());
             modelo.addAttribute("calificacionPromedioUsuario", calificacionPromedioUsuario);
+            modelo.addAttribute("golesPromedioUsuario", golesPromedioUsuario);
             modelo.addAttribute("golesTotalesUsuario",golesTotalesUsuario);
             modelo.addAttribute("usuarioAVer", usuarioAVer);
             return "perfilDeOtroJugador";
@@ -102,10 +104,7 @@ public class ControladorUsuario {
         }
 
         Amistad amistad = servicioAmistad.buscarRelacionEntreUsuarios(usuarioActual.getId(), usuarioAVer.getId());
-        Double calificacionPromedioUsuario = servicioCalificacion.calcularCalificacionPromedioUsuario(usuarioAVer.getId());
-        int golesTotalesUsuario=servicioGoles.devolverCantidadTotalDeGolesDelUsuario(usuarioAVer.getId());
-        modelo.addAttribute("golesTotalesUsuario",golesTotalesUsuario);
-        modelo.addAttribute("calificacionPromedioUsuario", calificacionPromedioUsuario);
+
         modelo.addAttribute("usuarioAVer", usuarioAVer);
         modelo.addAttribute("usuarioActual", usuarioActual);
         modelo.addAttribute("amistad", amistad);
@@ -124,25 +123,19 @@ public class ControladorUsuario {
             Usuario usuario = servicioLogin.buscarPorEmail(email);
             modelo.addAttribute("usuario", usuario);
 
-            // Calificación promedio
-            Double calificacionPromedio = servicioCalificacion.calcularCalificacionPromedioUsuario(usuario.getId());
-            int golesTotales=servicioGoles.devolverCantidadTotalDeGolesDelUsuario(usuario.getId());
-            modelo.addAttribute("golesTotales", golesTotales);
-            modelo.addAttribute("calificacionPromedio", calificacionPromedio);
-
-            // Amigos
-            List<Amistad> relaciones = servicioAmistad.verAmigos(usuario.getId());
-            List<Usuario> amigos = new ArrayList<>();
-            if (relaciones != null) {
-                for (Amistad a : relaciones) {
-                    if (a.getUsuario1() != null && a.getUsuario1().getId().equals(usuario.getId())) {
-                        amigos.add(a.getUsuario2());
-                    } else {
-                        amigos.add(a.getUsuario1());
+                // Obtener amigos
+                List<Amistad> relaciones = servicioAmistad.verAmigos(usuario.getId());
+                List<Usuario> amigos = new ArrayList<>();
+                if (relaciones != null) {
+                    for (Amistad a : relaciones) {
+                        if (a.getUsuario1() != null && a.getUsuario1().getId().equals(usuario.getId())) {
+                            amigos.add(a.getUsuario2());
+                        } else {
+                            amigos.add(a.getUsuario1());
+                        }
                     }
                 }
-            }
-            modelo.addAttribute("amigos", amigos);
+                modelo.addAttribute("amigos", amigos);
 
             // Solicitudes pendientes (amistad + invitaciones a partidos)
             List<Amistad> solicitudesPendientes = servicioAmistad.verSolicitudesPendientes(usuario.getId());
@@ -347,5 +340,3 @@ public class ControladorUsuario {
         }
 
     }
-
-
