@@ -258,7 +258,7 @@ public class ControladorPartido {
                 return new ModelAndView("redirect:/login");
             }
             Usuario usuario = servicioLogin.buscarPorEmail(email);
-            Partido partido = servicio.obtenerPorId(id);
+            Partido partido = servicio.obtenerPorIdConJugadores(id);
             if (!partido.esCreador(email)) {
                 modelo.put("error", "No tienes permiso.");
                 return new ModelAndView("redirect:/partidos/" + id);
