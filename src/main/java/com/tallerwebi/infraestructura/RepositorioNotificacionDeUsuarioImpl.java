@@ -49,6 +49,12 @@ public class RepositorioNotificacionDeUsuarioImpl implements RepositorioNotifica
     public NotificacionDeUsuario obtenerNotificacion(Long id) {
         return sessionFactory.getCurrentSession().get(NotificacionDeUsuario.class, id);
     }
+
+    @Override
+    public void actualizar(NotificacionDeUsuario notificacion) {
+        sessionFactory.getCurrentSession().update(notificacion);
+    }
+
 }
 
 

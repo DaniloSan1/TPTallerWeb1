@@ -42,4 +42,26 @@ public class ServicioNotificacionDeUsuarioImpl implements ServicioNotificacionDe
     public NotificacionDeUsuario obtenerNotificacionPorId(Long id) {
     return repositorioNotificacion.obtenerNotificacion(id);
     }
+
+    @Override
+    public String marcarComoLeidaYObtenerUsername(Long idNotificacion) {
+
+        NotificacionDeUsuario notificacion = repositorioNotificacion.obtenerNotificacion(idNotificacion);
+        if (notificacion == null)
+            return null;
+
+        // Marcar como leída
+        notificacion.setLeida(true);
+        repositorioNotificacion.actualizar(notificacion);
+
+        // Extraer username del mensaje
+        String mensaje = notificacion.getMensaje();
+        if (mensaje != null && mensaje.contains("El usuario") && mensaje.contains("te ha enviado")) {
+            try {
+                return mensaje.split("El usuario")[1].split("te ha enviado")[0].trim();
+            } catch (Exception ignored) { }
+        }
+
+        return null;
+    }
 }
