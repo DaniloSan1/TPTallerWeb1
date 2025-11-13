@@ -143,7 +143,7 @@ public class ControladorPartidoTest {
         }
         controladorPartido = new ControladorPartido(servicioPartidoMock, servicioLoginMock, servicioHorarioMock,
                 servicioReservaMock, servicioUsuarioMock, servicioEquipoMock, servicioFotoCanchaMock, servicioGolesMock,
-                servicioEquipoJugadorMock, servicioSolicitudUnirse);
+                servicioEquipoJugadorMock, servicioSolicitudUnirse, null);
     }
 
     @Test

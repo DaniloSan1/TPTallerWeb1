@@ -33,8 +33,8 @@ public class ServicioPartidoImpl implements ServicioPartido {
     }
 
     @Override
-    public List<Partido> listarTodos(String busqueda, Zona filtroZona, Nivel filtroNivel) {
-        return repoPartido.listar(busqueda, filtroZona, filtroNivel);
+    public List<Partido> listarTodos(String busqueda, Zona filtroZona, Nivel filtroNivel, java.time.LocalDate fechaFiltro, Long canchaId) {
+        return repoPartido.listar(busqueda, filtroZona, filtroNivel, fechaFiltro, canchaId);
     }
 
     @Override
@@ -127,6 +127,15 @@ public class ServicioPartidoImpl implements ServicioPartido {
     }
 
     @Override
+    public List<Partido> listarPorParticipante(Usuario usuario) {
+        if (usuario == null || usuario.getId() == null) {
+            return java.util.Collections.emptyList();
+        }
+        List<Partido> partidos = repoPartido.listarPorParticipante(usuario.getId());
+        return partidos != null ? partidos : java.util.Collections.emptyList();
+    }
+    
+    @Override
     public void actualizarPartido(Long id, String titulo, String descripcion, Usuario usuario)
             throws PermisosInsufficientes {
         Partido partido = obtenerPorId(id);
@@ -150,5 +159,11 @@ public class ServicioPartidoImpl implements ServicioPartido {
     @Override
     public List<Partido> listarPorEquipoConInfoCancha(Equipo equipo) {
         return repoPartido.listarPorEquipoConInfoCancha(equipo.getId());
+    }
+
+    @Override
+    public List<Partido> listarTodos(String busqueda, Zona filtroZona, Nivel filtroNivel) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'listarTodos'");
     }
 }

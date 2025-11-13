@@ -4,15 +4,13 @@ import com.tallerwebi.dominio.*;
 import com.tallerwebi.dominio.excepcion.UsernameExistenteException;
 import com.tallerwebi.dominio.excepcion.UsuarioNoEncontradoException;
 
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Controller;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
-import java.io.IOException;
 import java.util.List;
 import java.util.ArrayList;
 
@@ -22,105 +20,138 @@ public class ControladorUsuario {
     private ServicioUsuario servicioUsuario;
     private ServicioLogin servicioLogin;
     private ServicioAmistad servicioAmistad;
-    private ServicioNotificacionDeUsuario servicioNotificacionDeUsuario;
+    private ServicioSolicitudUnirse servicioSolicitudUnirse;
     private ServicioCalificacion servicioCalificacion;
+    private ServicioNotificacionDeUsuario servicioNotificacionDeUsuario;
 
-        public ControladorUsuario(ServicioLogin servicioLogin, ServicioUsuario servicioUsuario,
-            ServicioAmistad servicioAmistad, ServicioNotificacionDeUsuario servicioNotificacionDeUsuario, ServicioCalificacion servicioCalificacion) {
-            this.servicioLogin = servicioLogin;
-            this.servicioUsuario = servicioUsuario;
-            this.servicioAmistad = servicioAmistad;
-            this.servicioNotificacionDeUsuario = servicioNotificacionDeUsuario;
-            this.servicioCalificacion = servicioCalificacion;
-        }
+    // Single constructor with all dependencies to avoid ambiguity during injection
+    @Autowired
+    public ControladorUsuario(ServicioLogin servicioLogin,
+                              ServicioUsuario servicioUsuario,
+                              ServicioAmistad servicioAmistad,
+                              ServicioSolicitudUnirse servicioSolicitudUnirse,
+                              ServicioCalificacion servicioCalificacion,
+                              ServicioNotificacionDeUsuario servicioNotificacionDeUsuario) {
+        this.servicioLogin = servicioLogin;
+        this.servicioUsuario = servicioUsuario;
+        this.servicioAmistad = servicioAmistad;
+        this.servicioSolicitudUnirse = servicioSolicitudUnirse;
+        this.servicioCalificacion = servicioCalificacion;
+        this.servicioNotificacionDeUsuario = servicioNotificacionDeUsuario;
+    }
 
-
+    // Backwards-compatible constructor used in tests or contexts where ServicioNotificacionDeUsuario
+    // isn't provided (keeps the original parameter order used by existing tests)
+    public ControladorUsuario(ServicioLogin servicioLogin,
+                              ServicioUsuario servicioUsuario,
+                              ServicioAmistad servicioAmistad,
+                              ServicioNotificacionDeUsuario servicioNotificacionDeUsuario,
+                              ServicioCalificacion servicioCalificacion) {
+        // Keep servicioSolicitudUnirse as null for backwards compatibility
+        this(servicioLogin, servicioUsuario, servicioAmistad, null, servicioCalificacion, servicioNotificacionDeUsuario);
+    }
 
     @GetMapping("/ver/id/{id}")
-        public String verPerfilDeOtroJugador (@PathVariable Long id, ModelMap modelo){
-            try {
-                Usuario usuarioAVer = servicioLogin.buscarPorId(id);
-
-                if (usuarioAVer == null) {
-                    return "redirect:/home";
-                }
-
-                Double calificacionPromedioUsuario = servicioCalificacion
-                    .calcularCalificacionPromedioUsuario(usuarioAVer.getId());
-                modelo.addAttribute("calificacionPromedioUsuario", calificacionPromedioUsuario);
-                modelo.addAttribute("usuarioAVer", usuarioAVer);
-                return "perfilDeOtroJugador";
-            } catch (UsuarioNoEncontradoException e) {
-                return "redirect:/home";
-            }
-        }
-
-        @GetMapping("/ver/username/{username}")
-        public String verPerfilDeOtroJugador (@PathVariable String username, ModelMap modelo, HttpServletRequest request)
-        {
-            Usuario usuarioAVer = servicioLogin.buscarPorUsername(username);
+    public String verPerfilDeOtroJugador(@PathVariable Long id, ModelMap modelo, HttpServletRequest request) {
+        try {
+            Usuario usuarioAVer = servicioLogin.buscarPorId(id);
 
             if (usuarioAVer == null) {
                 return "redirect:/home";
             }
 
-            String usernameABuscar = (String) request.getSession().getAttribute("USERNAME");
+        String usernameABuscar = (String) request.getSession().getAttribute("USERNAME");
+        if (usernameABuscar != null) {
             Usuario usuarioActual = servicioUsuario.buscarPorUsername(usernameABuscar);
-            if (usuarioAVer.getUsername().equals(usernameABuscar)) {
-                return "redirect:/perfil";
-            }
+            if (usuarioActual != null) {
+                if (usuarioAVer.getUsername().equals(usernameABuscar)) {
+                    return "redirect:/perfil";
+                }
 
-            Amistad amistad = servicioAmistad.buscarRelacionEntreUsuarios(usuarioActual.getId(), usuarioAVer.getId());
-            Double calificacionPromedioUsuario = servicioCalificacion
-                .calcularCalificacionPromedioUsuario(usuarioAVer.getId());
+                Amistad amistad = servicioAmistad.buscarRelacionEntreUsuarios(usuarioActual.getId(), usuarioAVer.getId());
+                modelo.addAttribute("usuarioActual", usuarioActual);
+                modelo.addAttribute("amistad", amistad);
+                modelo.addAttribute("estadoAmistad", amistad != null ? amistad.getEstadoDeAmistad() : null);
+            }
+        }
+            Double calificacionPromedioUsuario = servicioCalificacion.calcularCalificacionPromedioUsuario(usuarioAVer.getId());
             modelo.addAttribute("calificacionPromedioUsuario", calificacionPromedioUsuario);
             modelo.addAttribute("usuarioAVer", usuarioAVer);
-            modelo.addAttribute("usuarioActual", usuarioActual);
-            modelo.addAttribute("amistad", amistad);
-            modelo.addAttribute("estadoAmistad", amistad != null ? amistad.getEstadoDeAmistad() : null);
-
             return "perfilDeOtroJugador";
+        } catch (UsuarioNoEncontradoException e) {
+            return "redirect:/home";
+        }
+    }
+
+    @GetMapping("/ver/username/{username}")
+    public String verPerfilDeOtroJugador(@PathVariable String username, ModelMap modelo, HttpServletRequest request) {
+        Usuario usuarioAVer = servicioLogin.buscarPorUsername(username);
+
+        if (usuarioAVer == null) {
+            return "redirect:/home";
         }
 
-        @GetMapping
-        public String perfil (ModelMap modelo, HttpServletRequest request){
-            String email = (String) request.getSession().getAttribute("EMAIL");
-            if (email != null) {
-                try {
-                    Usuario usuario = servicioLogin.buscarPorEmail(email);
-                    modelo.addAttribute("usuario", usuario);
+        String usernameABuscar = (String) request.getSession().getAttribute("USERNAME");
+        Usuario usuarioActual = servicioUsuario.buscarPorUsername(usernameABuscar);
+        if (usuarioAVer.getUsername().equals(usernameABuscar)) {
+            return "redirect:/perfil";
+        }
 
-                    // Obtener calificación promedio del usuario
-                    Double calificacionPromedio = servicioCalificacion.calcularCalificacionPromedioUsuario(usuario.getId());
-                    modelo.addAttribute("calificacionPromedio", calificacionPromedio);
+        Amistad amistad = servicioAmistad.buscarRelacionEntreUsuarios(usuarioActual.getId(), usuarioAVer.getId());
+        Double calificacionPromedioUsuario = servicioCalificacion.calcularCalificacionPromedioUsuario(usuarioAVer.getId());
+        modelo.addAttribute("calificacionPromedioUsuario", calificacionPromedioUsuario);
+        modelo.addAttribute("usuarioAVer", usuarioAVer);
+        modelo.addAttribute("usuarioActual", usuarioActual);
+        modelo.addAttribute("amistad", amistad);
+        modelo.addAttribute("estadoAmistad", amistad != null ? amistad.getEstadoDeAmistad() : null);
 
-                    // Obtener amigos
-                    List<Amistad> relaciones = servicioAmistad.verAmigos(usuario.getId());
-                    List<Usuario> amigos = new ArrayList<>();
-                    if (relaciones != null) {
-                        for (Amistad a : relaciones) {
-                            if (a.getUsuario1() != null && a.getUsuario1().getId().equals(usuario.getId())) {
-                                amigos.add(a.getUsuario2());
-                            } else {
-                                amigos.add(a.getUsuario1());
-                            }
-                        }
-                    }
-                    modelo.addAttribute("amigos", amigos);
-
-                    // Obtener cantidad de solicitudes pendientes
-                    List<Amistad> solicitudesPendientes = servicioAmistad.verSolicitudesPendientes(usuario.getId());
-                    modelo.addAttribute("solicitudesPendientes",
-                        solicitudesPendientes != null ? solicitudesPendientes.size() : 0);
-
-                    modelo.put("currentPage", "perfil");
-                    return "perfil";
-                } catch (UsuarioNoEncontradoException e) {
-                    return "redirect:/login";
-                }
-            }
+        return "perfilDeOtroJugador";
+    }
+    @GetMapping
+    public String perfil(ModelMap modelo, HttpServletRequest request) {
+        String email = (String) request.getSession().getAttribute("EMAIL");
+        if (email == null) {
             return "redirect:/login";
         }
+
+        try {
+            Usuario usuario = servicioLogin.buscarPorEmail(email);
+            modelo.addAttribute("usuario", usuario);
+
+            // Calificación promedio
+            Double calificacionPromedio = servicioCalificacion.calcularCalificacionPromedioUsuario(usuario.getId());
+            modelo.addAttribute("calificacionPromedio", calificacionPromedio);
+
+            // Amigos
+            List<Amistad> relaciones = servicioAmistad.verAmigos(usuario.getId());
+            List<Usuario> amigos = new ArrayList<>();
+            if (relaciones != null) {
+                for (Amistad a : relaciones) {
+                    if (a.getUsuario1() != null && a.getUsuario1().getId().equals(usuario.getId())) {
+                        amigos.add(a.getUsuario2());
+                    } else {
+                        amigos.add(a.getUsuario1());
+                    }
+                }
+            }
+            modelo.addAttribute("amigos", amigos);
+
+            // Solicitudes pendientes (amistad + invitaciones a partidos)
+            List<Amistad> solicitudesPendientes = servicioAmistad.verSolicitudesPendientes(usuario.getId());
+            List<SolicitudUnirse> invitacionesPartidoPendientes = new ArrayList<>();
+            if (servicioSolicitudUnirse != null) {
+                invitacionesPartidoPendientes = servicioSolicitudUnirse.listarPendientesPorEmailDestino(email);
+            }
+            int cantidadAmistad = solicitudesPendientes != null ? solicitudesPendientes.size() : 0;
+            int cantidadInvitaciones = invitacionesPartidoPendientes != null ? invitacionesPartidoPendientes.size() : 0;
+            modelo.addAttribute("solicitudesPendientes", cantidadAmistad + cantidadInvitaciones);
+
+            modelo.put("currentPage", "perfil");
+            return "perfil";
+        } catch (UsuarioNoEncontradoException e) {
+            return "redirect:/login";
+        }
+    }
 
         @GetMapping("/logout")
         public ModelAndView logout (HttpServletRequest request){
@@ -243,18 +274,23 @@ public class ControladorUsuario {
                 return "redirect:/login";
             }
         }
-
         @GetMapping("/solicitudes")
-        public String verSolicitudesAmistad (ModelMap modelo, HttpServletRequest request){
+        public String verSolicitudes(ModelMap modelo, HttpServletRequest request) {
             try {
                 String email = (String) request.getSession().getAttribute("EMAIL");
-                if (email == null)
+                if (email == null) {
                     return "redirect:/login";
+                }
 
                 Usuario usuario = servicioLogin.buscarPorEmail(email);
-                List<Amistad> solicitudesPendientes = servicioAmistad.verSolicitudesPendientes(usuario.getId());
-                modelo.addAttribute("solicitudesPendientes", solicitudesPendientes);
 
+                List<Amistad> solicitudesAmistadPendientes = servicioAmistad.verSolicitudesPendientes(usuario.getId());
+                List<SolicitudUnirse> invitacionesPartidoPendientes = servicioSolicitudUnirse.listarPendientesPorEmailDestino(email);
+
+                modelo.addAttribute("solicitudesAmistadPendientes", solicitudesAmistadPendientes);
+                modelo.addAttribute("invitacionesPartidoPendientes", invitacionesPartidoPendientes);
+
+                // La plantilla existente se llama `solicitudes-amistad.html`, retornar ese nombre
                 return "solicitudes-amistad";
             } catch (UsuarioNoEncontradoException e) {
                 return "redirect:/login";
@@ -262,8 +298,11 @@ public class ControladorUsuario {
         }
 
         @GetMapping("/notificaciones")
-        public String verNotificaciones (ModelMap modelo, HttpServletRequest request) throws UsuarioNoEncontradoException {
+        public String verNotificaciones(ModelMap modelo, HttpServletRequest request) throws UsuarioNoEncontradoException {
             String email = (String) request.getSession().getAttribute("EMAIL");
+            if (email == null) {
+                return "redirect:/login";
+            }
             Usuario usuario = servicioLogin.buscarPorEmail(email);
             List<NotificacionDeUsuario> notificaciones = servicioNotificacionDeUsuario.obtenerListaDeNotificaciones(usuario);
             modelo.addAttribute("notificaciones", notificaciones);
@@ -271,23 +310,25 @@ public class ControladorUsuario {
         }
 
         @PostMapping("/notificaciones/eliminar")
-        public String eliminarNotificacion (@RequestParam Long idNotificacion){
+        public String eliminarNotificacion(@RequestParam Long idNotificacion) {
             servicioNotificacionDeUsuario.eliminarNotificacion(idNotificacion);
             return "redirect:/perfil/notificaciones";
         }
 
         @PostMapping("/notificaciones/marcar-como-leida")
-        public String marcarComoLeidaYRedirigir (@RequestParam Long idNotificacion, HttpServletRequest request){
+        public String marcarComoLeidaYRedirigir(@RequestParam Long idNotificacion, HttpServletRequest request) {
             NotificacionDeUsuario notificacion = servicioNotificacionDeUsuario.obtenerNotificacionPorId(idNotificacion);
             if (notificacion != null) {
                 servicioNotificacionDeUsuario.marcarComoLeida(idNotificacion);
 
                 // Extraer el nombre de usuario del mensaje (asumiendo formato fijo)
                 String mensaje = notificacion.getMensaje();
-                // Ejemplo de mensaje: "El usuario sofia te ha enviado una solicitud de amistad."
                 String username = null;
                 if (mensaje != null && mensaje.contains("El usuario")) {
-                    username = mensaje.split("El usuario")[1].split("te ha enviado")[0].trim();
+                    try {
+                        username = mensaje.split("El usuario")[1].split("te ha enviado")[0].trim();
+                    } catch (Exception ignored) {
+                    }
                 }
 
                 if (username != null) {
@@ -296,5 +337,7 @@ public class ControladorUsuario {
             }
             return "redirect:/perfil/notificaciones";
         }
+
     }
+
 

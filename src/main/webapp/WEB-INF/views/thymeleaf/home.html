@@ -95,6 +95,27 @@
                 CENTRO
               </option>
             </select>
+            <!-- Filtro por fecha -->
+            <input
+              type="date"
+              name="fecha"
+              class="form-control bg-light border-0 rounded-pill"
+              style="max-width: 220px"
+              th:value="${fecha}"
+              onchange="this.form.submit()"
+            />
+            <!-- Filtro por cancha -->
+            <select
+              class="form-select bg-light border-0 rounded-pill"
+              name="canchaId"
+              style="max-width: 220px"
+              onchange="this.form.submit()"
+            >
+              <option value="">Todas las canchas</option>
+              <option th:each="cancha : ${canchas}" th:value="${cancha.id}" th:text="${cancha.nombre}"
+                th:selected="${canchaId != null and canchaId != '' and #strings.toString(canchaId) == #strings.toString(cancha.id)}">
+              </option>
+            </select>
             <!-- Filtro por nivel -->
             <select
               class="form-select bg-light border-0 rounded-pill"

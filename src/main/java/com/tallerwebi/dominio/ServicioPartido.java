@@ -18,13 +18,17 @@ public interface ServicioPartido {
         Partido crearDesdeReserva(Reserva nuevaReserva, String titulo, String descripcion, Nivel nivel,
                         int cupoMaximo, Usuario usuario);
 
+       List<Partido> listarTodos(String busqueda, Zona filtroZona, Nivel filtroNivel, java.time.LocalDate fechaFiltro, Long canchaId);
+        
+       public void actualizarPartido(Long id, String titulo, String descripcion, Usuario usuario);
+
+        List<Partido> listarPorParticipante(Usuario usuario);
+
+       public void finalizarPartido(Partido partido, Usuario usuario) throws PermisosInsufficientes;
+
         List<Partido> listarTodos(String busqueda, Zona filtroZona, Nivel filtroNivel);
 
-        void actualizarPartido(Long id, String titulo, String descripcion, Usuario usuario);
-
         List<Partido> listarPorCreador(Usuario usuario);
-
-        void finalizarPartido(Partido partido, Usuario usuario) throws PermisosInsufficientes;
 
         List<Partido> listarPorEquipoConInfoCancha(Equipo equipo);
 

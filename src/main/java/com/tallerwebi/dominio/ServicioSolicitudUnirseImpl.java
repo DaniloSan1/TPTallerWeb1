@@ -9,6 +9,8 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 
+
+
 @Service
 @Transactional
 public class ServicioSolicitudUnirseImpl implements ServicioSolicitudUnirse {
@@ -109,12 +111,35 @@ public class ServicioSolicitudUnirseImpl implements ServicioSolicitudUnirse {
             return MensajeResultado.error("La invitación ha expirado.");
         }
 
-        // Aquí podrías agregar lógica para añadir al usuario al partido
+        // Intentamos unir al usuario al partido automáticamente.
+        try {
+            Partido partido = solicitud.getPartido();
 
-        solicitud.setEstado(EstadoSolicitud.ACEPTADA);
-        repo.guardar(solicitud);
+            // Elegir el equipo con menos jugadores disponible
+            PartidoEquipo equipoDestino = partido.getEquipos().stream()
+                    .min((a, b) -> Integer.compare(a.getJugadores().size(), b.getJugadores().size()))
+                    .orElse(null);
 
-        return MensajeResultado.ok("Has aceptado la invitación al partido.");
+            if (equipoDestino == null) {
+                return MensajeResultado.error("No se pudo encontrar un equipo para unirte en este partido.");
+            }
+
+            // Usar el servicio de partido para anotar al participante (verifica cupo y duplicados)
+            try {
+                servicioPartido.anotarParticipante(partido, equipoDestino.getEquipo(), quienAcepta);
+            } catch (Exception ex) {
+                // Excepciones posibles: YaExisteElParticipante, NoHayCupoEnPartido, etc.
+                return MensajeResultado.error("No se pudo unir al partido: " + ex.getMessage());
+            }
+
+            solicitud.setEstado(EstadoSolicitud.ACEPTADA);
+            repo.guardar(solicitud);
+
+            return MensajeResultado.ok("Has aceptado la invitación al partido.");
+        } catch (Exception e) {
+            // Evitar que un error secundario impida procesar la invitación
+            return MensajeResultado.error("Error al procesar la aceptación: " + e.getMessage());
+        }
     }
 
     @Override
@@ -122,5 +147,10 @@ public class ServicioSolicitudUnirseImpl implements ServicioSolicitudUnirse {
     public List<SolicitudUnirse> listarPorPartido(Long partidoId) {
         var partido = servicioPartido.obtenerPorId(partidoId);
         return repo.listarPorPartidoYEstado(partido, EstadoSolicitud.PENDIENTE);
+    }
+
+    @Override
+    public List<SolicitudUnirse> listarPendientesPorEmailDestino(String emailDestino) {
+        return repo.listarPendientesPorEmailDestino(emailDestino);
     }
 }

@@ -14,7 +14,7 @@
 <body>
     <div th:replace="~{fragments/navbar :: navbar}"></div>
 
-    <main role="main" class="container mt-5">
+    <main role="main" class="container mt-5 py-4" style="padding-top: 40px; margin-top: 80px;">
         <div class="row justify-content-center">
             <div class="col-md-8">
                 <div class="card shadow">
@@ -23,31 +23,64 @@
                     </div>
                     
                     <div class="card-body">
-                        <div class="text-muted text-center" th:if="${#lists.isEmpty(solicitudesPendientes)}">
-                            No tienes solicitudes de amistad pendientes.
-                        </div>
-
-                        <div class="list-group" th:if="${!#lists.isEmpty(solicitudesPendientes)}">
-                            <div class="list-group-item py-3" th:each="solicitud : ${solicitudesPendientes}">
-                                <div class="d-flex align-items-center">
-                                    <div class="flex-grow-1">
-                                        <h5 class="mb-1" th:text="${solicitud.usuario1.nombre + ' ' + solicitud.usuario1.apellido}">Nombre Apellido</h5>
-                                        <div class="d-flex justify-content-between align-items-center">
-                                            <small class="text-muted" th:text="${solicitud.usuario1.email}">email@ejemplo.com</small>
-                                            <small class="text-muted">Solicitado el: <span th:text="${solicitud.fechaSolicitud}">2025-11-06</span></small>
+                        <!-- Solicitudes de amistad -->
+                        <div class="mb-4">
+                            <h5>Solicitudes de amistad pendientes</h5>
+                            <div class="text-muted text-center" th:if="${#lists.isEmpty(solicitudesAmistadPendientes)}">
+                                No tienes solicitudes de amistad pendientes.
+                            </div>
+                            <div class="list-group" th:if="${!#lists.isEmpty(solicitudesAmistadPendientes)}">
+                                <div class="list-group-item py-3" th:each="solicitud : ${solicitudesAmistadPendientes}">
+                                    <div class="d-flex align-items-center">
+                                        <div class="flex-grow-1">
+                                            <h6 class="mb-1" th:text="${solicitud.usuario1.nombre + ' ' + solicitud.usuario1.apellido}">Nombre Apellido</h6>
+                                            <div class="d-flex justify-content-between align-items-center">
+                                                <small class="text-muted" th:text="${solicitud.usuario1.email}">email@ejemplo.com</small>
+                                                <small class="text-muted">Solicitado el: <span th:text="${solicitud.fechaSolicitud}">2025-11-06</span></small>
+                                            </div>
+                                        </div>
+                                        <div class="ms-3 d-flex">
+                                            <form th:action="@{/perfil/amistad/aceptar/{idAmistad}(idAmistad=${solicitud.idAmistad})}" method="post" class="me-2">
+                                                <button type="submit" class="btn btn-success">
+                                                    <i class="bi bi-check-lg"></i> Aceptar
+                                                </button>
+                                            </form>
+                                            <form th:action="@{/perfil/amistad/rechazar/{idAmistad}(idAmistad=${solicitud.idAmistad})}" method="post">
+                                                <button type="submit" class="btn btn-outline-danger">
+                                                    <i class="bi bi-x-lg"></i> Rechazar
+                                                </button>
+                                            </form>
                                         </div>
                                     </div>
-                                    <div class="ms-3 d-flex">
-                                        <form th:action="@{/perfil/amistad/aceptar/{idAmistad}(idAmistad=${solicitud.idAmistad})}" method="post" class="me-2">
-                                            <button type="submit" class="btn btn-success">
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Invitaciones a partidos -->
+                        <div>
+                            <h5>Invitaciones a partidos pendientes</h5>
+                            <div class="text-muted text-center" th:if="${#lists.isEmpty(invitacionesPartidoPendientes)}">
+                                No tienes invitaciones a partidos pendientes.
+                            </div>
+                            <div class="list-group" th:if="${!#lists.isEmpty(invitacionesPartidoPendientes)}">
+                                <div class="list-group-item py-3" th:each="inv : ${invitacionesPartidoPendientes}">
+                                    <div class="d-flex align-items-center">
+                                        <div class="flex-grow-1">
+                                            <h6 class="mb-1">Invitación a partido</h6>
+                                            <div class="d-flex justify-content-between align-items-center">
+                                                <small class="text-muted">De: <span th:text="${inv.creador.nombre + ' ' + inv.creador.apellido}">Nombre Apellido</span></small>
+                                                <small class="text-muted">Partido ID: <span th:text="${inv.partido.id}">0</span></small>
+                                            </div>
+                                            <div>
+                                                <small class="text-muted">Invitado como: <span th:text="${inv.emailDestino}">email@ejemplo.com</span></small>
+                                            </div>
+                                        </div>
+                                        <div class="ms-3 d-flex">
+                                            <a th:href="@{'/solicitudes-partido/' + ${inv.token}}" class="btn btn-success me-2">
                                                 <i class="bi bi-check-lg"></i> Aceptar
-                                            </button>
-                                        </form>
-                                        <form th:action="@{/perfil/amistad/rechazar/{idAmistad}(idAmistad=${solicitud.idAmistad})}" method="post">
-                                            <button type="submit" class="btn btn-outline-danger">
-                                                <i class="bi bi-x-lg"></i> Rechazar
-                                            </button>
-                                        </form>
+                                            </a>
+                                            <!-- No se implementa rechazo para invitaciones de partido por ahora -->
+                                        </div>
                                     </div>
                                 </div>
                             </div>

@@ -8,7 +8,9 @@ public interface ServicioSolicitudUnirse {
     MensajeResultado aceptarPorToken(String token, Usuario quienAcepta);
 
     List<SolicitudUnirse> listarPorPartido(Long partidoId);
-    
+
+    List<SolicitudUnirse> listarPendientesPorEmailDestino(String emailDestino);
+
     class MensajeResultado {
         public final boolean ok;
         public final String mensaje;

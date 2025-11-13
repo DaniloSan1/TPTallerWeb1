@@ -47,7 +47,7 @@ public class ControladorUsuarioTest {
         servicioCalificacionMock = mock(ServicioCalificacion.class);
         sessionMock = mock(HttpSession.class);
         httpServletRequestMock = mock(HttpServletRequest.class);
-        controladorUsuario = new ControladorUsuario(servicioLoginMock,servicioUsuarioMock,servicioAmistadMock, servicioNotificacionMock,servicioCalificacionMock);
+        controladorUsuario = new ControladorUsuario(servicioLoginMock, servicioUsuarioMock, servicioAmistadMock, null, servicioCalificacionMock);
 
         requestMock = mock(HttpServletRequest.class);
         usuarioMock = mock(Usuario.class);

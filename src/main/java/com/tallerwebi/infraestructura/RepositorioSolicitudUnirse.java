@@ -13,4 +13,6 @@ public interface RepositorioSolicitudUnirse {
     Optional<SolicitudUnirse> buscarPorToken(String token);
 
     List<SolicitudUnirse> listarPorPartidoYEstado(Partido partido, EstadoSolicitud estado);
+
+    List<SolicitudUnirse> listarPendientesPorEmailDestino(String emailDestino);
 }

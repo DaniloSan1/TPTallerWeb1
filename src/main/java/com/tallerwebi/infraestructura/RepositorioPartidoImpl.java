@@ -32,7 +32,6 @@ public class RepositorioPartidoImpl implements RepositorioPartido {
         final Session session = sessionFactory.getCurrentSession();
         return session.get(Partido.class, id, LockMode.PESSIMISTIC_WRITE);
     }
-
     @Override
     public Partido obtenerPorIdConJugadores(Long id) {
         final Session session = sessionFactory.getCurrentSession();
@@ -49,7 +48,7 @@ public class RepositorioPartidoImpl implements RepositorioPartido {
     }
 
     @Override
-    public List<Partido> listar(String busqueda, Zona filtroZona, Nivel filtroNivel) {
+    public List<Partido> listar(String busqueda, Zona filtroZona, Nivel filtroNivel, java.time.LocalDate fechaFiltro, Long canchaId) {
         final Session session = sessionFactory.getCurrentSession();
         String hql = "SELECT DISTINCT p " +
                 "FROM Partido p " +
@@ -66,6 +65,12 @@ public class RepositorioPartidoImpl implements RepositorioPartido {
         if (busqueda != null && !busqueda.isEmpty()) {
             hql += " AND p.titulo LIKE :busqueda ";
         }
+        if (canchaId != null && canchaId > 0) {
+            hql += " AND c.id = :canchaId";
+        }
+        if (fechaFiltro != null) {
+            hql += " AND r.fechaReserva >= :fechaStart AND r.fechaReserva < :fechaEnd";
+        }
         var query = session.createQuery(hql, Partido.class);
         if (filtroZona != null) {
             query.setParameter("zona", filtroZona);
@@ -75,6 +80,15 @@ public class RepositorioPartidoImpl implements RepositorioPartido {
         }
         if (busqueda != null && !busqueda.isEmpty()) {
             query.setParameter("busqueda", "%" + busqueda + "%");
+        }
+        if (canchaId != null && canchaId > 0) {
+            query.setParameter("canchaId", canchaId);
+        }
+        if (fechaFiltro != null) {
+            java.time.LocalDateTime start = fechaFiltro.atStartOfDay();
+            java.time.LocalDateTime end = start.plusDays(1);
+            query.setParameter("fechaStart", start);
+            query.setParameter("fechaEnd", end);
         }
         return query.list();
     }
@@ -95,6 +109,20 @@ public class RepositorioPartidoImpl implements RepositorioPartido {
         query.setParameter("idCreador", idCreador);
         return query.list();
     }
+
+   @Override
+   public List<Partido> listarPorParticipante(Long usuarioId) {
+       final Session session = sessionFactory.getCurrentSession();
+       // Buscamos partidos donde el usuario forma parte de alguno de los equipos
+       String hql = "SELECT DISTINCT p FROM Partido p " +
+               "JOIN p.equipos pe " +
+               "JOIN pe.equipo e " +
+               "JOIN e.jugadores ej " +
+               "WHERE ej.usuario.id = :usuarioId";
+       var query = session.createQuery(hql, Partido.class);
+       query.setParameter("usuarioId", usuarioId);
+       return query.list();
+   }
 
     @Override
     public void actualizar(Partido p) {
