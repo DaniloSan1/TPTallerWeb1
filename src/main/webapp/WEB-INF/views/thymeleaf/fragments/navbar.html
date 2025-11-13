@@ -17,10 +17,14 @@
                         th:classappend="${currentPage == 'home'} ? 'active' : ''">Partidos disponibles</a>
                     <a class="nav-link text-white" th:href="@{/canchas-disponibles}"
                         th:classappend="${currentPage == 'canchas-disponibles'} ? 'active' : ''">Canchas disponibles</a>
+                    <a class="nav-link text-white" th:href="@{/torneos/listar}"
+                        th:classappend="${currentPage == 'torneos-disponibles'} ? 'active' : ''">Torneos disponibles</a>
                     <a class="nav-link text-white" th:href="@{/partidos/mios}"
                         th:classappend="${currentPage == 'mis-partidos'} ? 'active' : ''">Mis partidos</a>
                     <a class="nav-link text-white" th:href="@{/equipos/mis-equipos}"
                         th:classappend="${currentPage == 'mis-equipos'} ? 'active' : ''">Mis Equipos</a>
+                    <a class="nav-link text-white" th:href="@{/reserva/mis-reservas}"
+                        th:classappend="${currentPage == 'mis-reservas'} ? 'active' : ''">Mis Reservas</a>
                     <a class="nav-link text-white" th:href="@{/perfil}"
                         th:classappend="${currentPage == 'perfil'} ? 'active' : ''">Mi perfil</a>
                 </div>

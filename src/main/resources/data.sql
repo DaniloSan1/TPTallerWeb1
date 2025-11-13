@@ -126,13 +126,12 @@ INSERT INTO FotoCancha(id, cancha_id, url) VALUES
 
 -- Insert equipos for partidos
 INSERT INTO Equipo(id, nombre, creado_por_id, fechaCreacion, descripcion, insignia_url) VALUES
-(NULL, 'Equipo 1', (SELECT creador_id FROM Partido WHERE id = 1), NOW(), 'Equipo formado para el primer partido. Buscamos jugadores comprometidos y con ganas de pasarla bien.', 'https://www.ligaprofesional.ar/wp-content/uploads/2024/06/BOC-escudo.png'),
-(NULL, 'Equipo 2', (SELECT creador_id FROM Partido WHERE id = 1), NOW(), 'Segundo equipo del partido. Unidos por la pasión del fútbol.', 'https://www.ligaprofesional.ar/wp-content/uploads/2024/06/RIV-escudo.png'),
-(NULL, 'Equipo 1', (SELECT creador_id FROM Partido WHERE id = 2), NOW(), 'Equipo de nivel avanzado. Jugamos limpio y con estrategia.', 'https://www.ligaprofesional.ar/wp-content/uploads/2024/06/SLO-escudo.png'),
-(NULL, 'Equipo 2', (SELECT creador_id FROM Partido WHERE id = 2), NOW(), 'Buscamos la victoria siempre con fair play.', 'https://www.ligaprofesional.ar/wp-content/uploads/2024/06/RAC-escudo.png'),
-(NULL, 'Equipo 1', (SELECT creador_id FROM Partido WHERE id = 3), NOW(), 'Equipo nocturno. Nos gusta el fútbol bajo las estrellas.', 'https://www.ligaprofesional.ar/wp-content/uploads/2024/06/IND-escudo.png'),
-(NULL, 'Equipo 2', (SELECT creador_id FROM Partido WHERE id = 3), NOW(), 'Segundo equipo del partido nocturno. Juego limpio y diversión.', 'https://www.ligaprofesional.ar/wp-content/uploads/2024/06/VEL-escudo.png');
-
+(NULL, 'Equipo 1', (SELECT creador_id FROM Partido WHERE id = 1), NOW(), 'Equipo formado para el primer partido. Buscamos jugadores comprometidos y con ganas de pasarla bien.', 'https://taller-web-1-416711641372-us-east-2.s3.us-east-2.amazonaws.com/insignia-default.png'),
+(NULL, 'Equipo 2', (SELECT creador_id FROM Partido WHERE id = 1), NOW(), 'Segundo equipo del partido. Unidos por la pasión del fútbol.', 'https://taller-web-1-416711641372-us-east-2.s3.us-east-2.amazonaws.com/insignia-default.png'),
+(NULL, 'Equipo 1', (SELECT creador_id FROM Partido WHERE id = 2), NOW(), 'Equipo de nivel avanzado. Jugamos limpio y con estrategia.', 'https://taller-web-1-416711641372-us-east-2.s3.us-east-2.amazonaws.com/insignia-default.png'),
+(NULL, 'Equipo 2', (SELECT creador_id FROM Partido WHERE id = 2), NOW(), 'Buscamos la victoria siempre con fair play.', 'https://taller-web-1-416711641372-us-east-2.s3.us-east-2.amazonaws.com/insignia-default.png'),
+(NULL, 'Equipo 1', (SELECT creador_id FROM Partido WHERE id = 3), NOW(), 'Equipo nocturno. Nos gusta el fútbol bajo las estrellas.', 'https://taller-web-1-416711641372-us-east-2.s3.us-east-2.amazonaws.com/insignia-default.png'),
+(NULL, 'Equipo 2', (SELECT creador_id FROM Partido WHERE id = 3), NOW(), 'Segundo equipo del partido nocturno. Juego limpio y diversión.', 'https://taller-web-1-416711641372-us-east-2.s3.us-east-2.amazonaws.com/insignia-default.png');
 -- Insert partido_equipo
 INSERT INTO PartidoEquipo(id, partido_id, equipo_id, goles) VALUES
 (NULL, 1, (SELECT id FROM Equipo WHERE nombre = 'Equipo 1' AND creado_por_id = (SELECT creador_id FROM Partido WHERE id = 1)), 0),
@@ -190,3 +189,11 @@ INSERT INTO Amistad (usuario_1_id, usuario_2_id, estadoDeAmistad, fechaSolicitud
 	(3, 1, 'PENDIENTE', CURRENT_DATE()),
 	(4, 1, 'PENDIENTE', CURRENT_DATE()),
 	(5, 1, 'PENDIENTE', CURRENT_DATE());
+INSERT INTO Torneo (id, nombre, fecha, precio, estado, cancha_id, organizador_id) VALUES
+(1, 'Torneo Primavera', '2025-11-20', 5000, 'CONFIRMADO', 1, 1),
+(2, 'Torneo Verano', '2025-12-10', 7000, 'CONFIRMADO', 2, 2);
+
+INSERT INTO InscripcionTorneo (id, fechaInscripcion, torneo_id, equipo_id) VALUES
+(1, NOW(), 1, 1),
+(2, NOW(), 1, 2),
+(3, NOW(), 2, 3);

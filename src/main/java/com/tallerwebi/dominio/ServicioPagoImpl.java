@@ -57,7 +57,7 @@ public class ServicioPagoImpl implements ServicioPago {
             PreferenceRequest preferenceRequest = PreferenceRequest.builder()
                     .items(items)
                     .backUrls(backUrlsRequest)
-                    //.autoReturn("all")
+                    .autoReturn("all")
                     .build();
 
             System.out.println("Creando preferencia MercadoPago: " + titulo + " | Monto: " + monto);
@@ -87,6 +87,18 @@ public class ServicioPagoImpl implements ServicioPago {
     public void guardarPago(Reserva reserva, Usuario usuario, String preferenciaId, Double monto) {
         Pago pago = new Pago();
         pago.setReserva(reserva);
+        pago.setUsuario(usuario);
+        pago.setPreferenciaId(preferenciaId);
+        pago.setMonto(monto);
+        pago.setEstado("Pendiente");
+        pago.setFechaCreacion(LocalDateTime.now());
+        repositorioPago.guardarPago(pago);
+    }
+
+    @Override
+    public void guardarPagoTorneo(Torneo torneo, Usuario usuario, String preferenciaId, Double monto) {
+        Pago pago = new Pago();
+        pago.setTorneo(torneo);
         pago.setUsuario(usuario);
         pago.setPreferenciaId(preferenciaId);
         pago.setMonto(monto);

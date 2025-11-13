@@ -151,4 +151,22 @@ public class ServicioEquipoJugadorImplTest {
         // Should not throw
         servicioEquipoJugadorImpl.validarQueNoExisteParticipanteEnEquipo(equipo, jugador);
     }
+
+    @Test
+    public void queSePuedaBuscarEquipoJugadoresPorEquipo() {
+        Usuario creador = new Usuario();
+        Equipo equipo = new Equipo("Equipo Test", "Descripción", creador, java.time.LocalDateTime.now());
+        Usuario jugador1 = new Usuario();
+        Usuario jugador2 = new Usuario();
+        List<EquipoJugador> equipoJugadoresEsperados = Arrays.asList(
+                new EquipoJugador(equipo, jugador1),
+                new EquipoJugador(equipo, jugador2));
+
+        when(repositorioEquipoJugador.buscarPorEquipo(equipo)).thenReturn(equipoJugadoresEsperados);
+
+        List<EquipoJugador> equipoJugadoresObtenidos = servicioEquipoJugadorImpl.buscarPorEquipo(equipo);
+
+        verify(repositorioEquipoJugador).buscarPorEquipo(equipo);
+        assertThat(equipoJugadoresObtenidos, equalTo(equipoJugadoresEsperados));
+    }
 }

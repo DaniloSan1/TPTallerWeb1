@@ -99,6 +99,9 @@
             </div>
             <div class="w-100 mt-2">
                 <strong>Precio por hora:</strong> <span th:text="${cancha.precio}"></span>
+              <a th:href="@{/torneos/crear/{canchaId}(canchaId=${cancha.id})}" class="btn btn-warning w-100">
+                Organizar torneo
+              </a>
             </div>
         </div>
         <div id="contenedor-detalle-acciones" class="d-flex flex-column justify-content-center align-items-center mt-4 gap-1">

@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="utf-8" />
+  <title th:text="${torneo.nombre}">Detalle Torneo</title>
+  <link rel="stylesheet" th:href="@{/webjars/bootstrap/5.2.0/css/bootstrap.min.css}" />
+  <link rel="stylesheet" th:href="@{/css/main.css}" />
+  <link rel="stylesheet" th:href="@{/css/detalle-partido.css}" />
+</head>
+
+<body>
+  <div th:replace="~{fragments/navbar :: navbar}"></div>
+
+  <main class="container" style="padding-top: 135px">
+
+    <!-- Mensajes -->
+    <div th:if="${mensajeExito}" class="alert alert-success" th:text="${mensajeExito}"></div>
+    <div th:if="${mensajeError}" class="alert alert-danger" th:text="${mensajeError}"></div>
+
+    <!-- Datos del torneo -->
+    <div class="card mb-4">
+      <div class="card-header text-center">
+        <h1 th:text="${torneo.nombre}"></h1>
+        <h5 class="text-muted">
+          <span th:text="${torneo.fecha}"></span> |
+          <span th:text="${cancha.nombre}"></span>
+        </h5>
+      </div>
+      <div class="card-body">
+        <p><strong>Organizador:</strong> <span th:text="${torneo.organizador.nombre}"></span></p>
+        <p><strong>Precio:</strong> $<span th:text="${torneo.precio}"></span></p>
+        <p><strong>Estado:</strong> <span th:text="${torneo.estado}"></span></p>
+      </div>
+    </div>
+
+    <!-- Equipos inscritos -->
+    <div class="card mt-3" th:if="${inscripciones != null}">
+      <div class="card-header">
+        <h3>Equipos inscriptos</h3>
+      </div>
+
+      <div class="card-body">
+        <div th:if="${inscripciones.isEmpty()}">
+          <p class="text-muted">Aún no hay equipos inscriptos en este torneo.</p>
+        </div>
+
+        <div th:each="inscripcion : ${inscripciones}" class="border rounded p-3 mb-3">
+          <h5 class="mb-1" th:text="${inscripcion.equipo.nombre}"></h5>
+          <p class="mb-2 text-muted" th:text="${inscripcion.equipo.descripcion}"></p>
+
+          <ul class="list-unstyled ms-3">
+            <li th:each="ej : ${inscripcion.equipo.jugadores}"
+                th:text="${ej.usuario.nombre}"></li>
+          </ul>
+
+          <p class="mt-2">
+            <strong>Fecha inscripción:</strong>
+            <span th:text="${inscripcion.fechaInscripcion}"></span>
+          </p>
+
+          <!-- Botón de cancelar inscripción -->
+          <form th:if="${usuarioPerteneceAEquipo != null and usuarioPerteneceAEquipo.id == inscripcion.equipo.id}"
+                th:action="@{/torneos/disponible/{torneoId}/cancelar/{inscripcionId}(torneoId=${torneo.id}, inscripcionId=${inscripcion.id})}"
+                method="post"
+                class="mt-2">
+            <button type="submit" class="btn btn-danger btn-sm">Cancelar inscripción</button>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <!-- Formulario para inscribirse -->
+    <div class="card mt-4">
+      <div class="card-header">
+        <h3>Inscribir equipo</h3>
+      </div>
+      <div class="card-body">
+        <form th:action="@{/torneos/disponible/{torneoId}/inscribir(torneoId=${torneo.id})}"
+              method="post"
+              class="d-flex gap-2">
+          <select name="equipoId" class="form-select w-75" required>
+            <option value="" disabled selected>Selecciona un equipo</option>
+            <option th:each="equipo : ${equiposDisponibles}"
+                    th:value="${equipo.id}"
+                    th:text="${equipo.nombre}"></option>
+          </select>
+          <button type="submit" class="btn btn-primary">Inscribir</button>
+        </form>
+      </div>
+    </div>
+
+  </main>
+
+  <script type="text/javascript" th:src="@{/webjars/bootstrap/5.2.0/js/bootstrap.bundle.min.js}"></script>
+</body>
+</html>

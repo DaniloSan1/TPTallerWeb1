@@ -59,8 +59,11 @@ public class ServicioPartidoImpl implements ServicioPartido {
         repoPartido.guardar(partido);
 
         // Crear dos equipos por defecto
-        Equipo equipo1 = servicioEquipo.crearEquipo("Equipo 1", "Equipo generado para " + partido.getTitulo(), usuario);
-        Equipo equipo2 = servicioEquipo.crearEquipo("Equipo 2", "Equipo generado para " + partido.getTitulo(), usuario);
+        String defaultInsignia = "https://www.ligaprofesional.ar/wp-content/uploads/2024/06/BOC-escudo.png";
+        Equipo equipo1 = servicioEquipo.crearEquipo("Equipo 1", "Equipo generado para " + partido.getTitulo(),
+                defaultInsignia, usuario);
+        Equipo equipo2 = servicioEquipo.crearEquipo("Equipo 2", "Equipo generado para " + partido.getTitulo(),
+                defaultInsignia, usuario);
 
         // Crear las relaciones PartidoEquipo
         PartidoEquipo partidoEquipo1 = new PartidoEquipo(partido, equipo1);

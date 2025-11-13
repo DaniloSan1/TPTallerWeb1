@@ -16,6 +16,8 @@ import org.springframework.web.servlet.ModelAndView;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
+import java.util.ArrayList;
+
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalToIgnoringCase;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -43,7 +45,8 @@ public class ControladorUsuarioTest {
         servicioCalificacionMock = mock(ServicioCalificacion.class);
         sessionMock = mock(HttpSession.class);
         httpServletRequestMock = mock(HttpServletRequest.class);
-        controladorUsuario = new ControladorUsuario(servicioLoginMock, servicioUsuarioMock, servicioAmistadMock, servicioCalificacionMock);
+        controladorUsuario = new ControladorUsuario(servicioLoginMock, servicioUsuarioMock, servicioAmistadMock,
+                servicioCalificacionMock);
 
         requestMock = mock(HttpServletRequest.class);
         usuarioMock = mock(Usuario.class);
@@ -60,6 +63,10 @@ public class ControladorUsuarioTest {
         when(httpServletRequestMock.getSession()).thenReturn(sessionMock);
         when(sessionMock.getAttribute("EMAIL")).thenReturn("usuario@test.com");
         when(servicioLoginMock.buscarPorEmail("usuario@test.com")).thenReturn(usuarioMock);
+        when(usuarioMock.getId()).thenReturn(1L);
+        when(servicioCalificacionMock.calcularCalificacionPromedioUsuario(1L)).thenReturn(4.5);
+        when(servicioAmistadMock.verAmigos(1L)).thenReturn(new ArrayList<>());
+        when(servicioAmistadMock.verSolicitudesPendientes(1L)).thenReturn(new ArrayList<>());
 
         ModelMap modelo = new ModelMap();
 

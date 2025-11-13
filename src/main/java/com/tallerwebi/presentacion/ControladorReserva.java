@@ -3,6 +3,9 @@ package com.tallerwebi.presentacion;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.List;
+
+import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -24,6 +27,7 @@ public class ControladorReserva {
     private final ServicioHorario servicioHorario;
     private final ServicioUsuario servicioUsuario;
     private final ServicioPartido servicioPartido;
+    private final ServicioLogin servicioLogin;
     private final ServicioPago servicioPago;
 
     @Value("${mercadopago.public.key}")
@@ -34,11 +38,13 @@ public class ControladorReserva {
             ServicioHorario servicioHorario,
             ServicioUsuario servicioUsuario,
             ServicioPartido servicioPartido,
+            ServicioLogin servicioLogin,
             ServicioPago servicioPago) {
         this.servicioReserva = servicioReserva;
         this.servicioHorario = servicioHorario;
         this.servicioUsuario = servicioUsuario;
         this.servicioPartido = servicioPartido;
+        this.servicioLogin = servicioLogin;
         this.servicioPago = servicioPago;
     }
     @GetMapping("/nueva")
@@ -57,6 +63,25 @@ public class ControladorReserva {
 
         return "reservaForm";
     }
+    @GetMapping("/mis-reservas")
+    public ModelAndView mostrarMisReservas(HttpServletRequest request) {
+        ModelMap model = new ModelMap();
+        try {
+            String email = (String) request.getSession().getAttribute("EMAIL");
+            if (email == null) {
+                return new ModelAndView("redirect:/login");
+            }
+
+            Usuario usuario = servicioLogin.buscarPorEmail(request.getSession().getAttribute("EMAIL").toString());
+            List<Reserva> reservas = servicioReserva.obtenerReservasPorUsuarioTodas(usuario);
+            model.put("reservas", reservas);
+            model.put("currentPage", "mis-reservas");
+        } catch (Exception e) {
+            model.put("error", e.getMessage());
+        }
+        return new ModelAndView("mis-reservas", model);
+    }
+
     @PostMapping("/crear")
     public ModelAndView crearReserva(
             @RequestParam Long horarioId,
