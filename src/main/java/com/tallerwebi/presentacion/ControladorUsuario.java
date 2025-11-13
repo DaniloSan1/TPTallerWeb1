@@ -53,7 +53,7 @@ public class ControladorUsuario {
         this(servicioLogin, servicioUsuario, servicioAmistad, null, servicioCalificacion, servicioNotificacionDeUsuario,servicioGoles);
     }
 
-    @GetMapping("/ver/id/{id}")
+     @GetMapping("/ver/id/{id}")
     public String verPerfilDeOtroJugador(@PathVariable Long id, ModelMap modelo, HttpServletRequest request) {
         try {
             Usuario usuarioAVer = servicioLogin.buscarPorId(id);
@@ -147,8 +147,7 @@ public class ControladorUsuario {
                         amigos.add(a.getUsuario1());
                     }
                 }
-            }
-            modelo.addAttribute("amigos", amigos);
+                modelo.addAttribute("amigos", amigos);}
 
             // Solicitudes pendientes (amistad + invitaciones a partidos)
             List<Amistad> solicitudesPendientes = servicioAmistad.verSolicitudesPendientes(usuario.getId());
@@ -353,5 +352,3 @@ public class ControladorUsuario {
         }
 
     }
-
-
