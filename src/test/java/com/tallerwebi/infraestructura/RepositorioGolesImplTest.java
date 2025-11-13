@@ -152,79 +152,90 @@ public class RepositorioGolesImplTest {
         assertTrue(goles.contains(gol2));
     }
 
-    @Test
+   @Test
     @Transactional
     @Rollback
-    public void queCuandoBuscoLosGolesDeUnUsuarioSoloMeTraigaEsos(){
-        Usuario usuario = new Usuario("nombre", "password", "email@test.com", "username");
-        usuario.setId(1L);
-        sessionFactory.getCurrentSession().save(usuario);
+    public void queCuandoBuscoLosGolesDeUnUsuarioSoloMeTraigaEsos() {
+ 
+    Usuario usuario1 = new Usuario("nombre", "password", "email@test.com", "username");
+    Usuario usuario2 = new Usuario("nombre2", "password", "emailardo@test.com", "username2");
 
-        Usuario usuario2 = new Usuario("nombre2", "password", "emailardo@test.com", "username2");
-        usuario2.setId(2L);
-        sessionFactory.getCurrentSession().save(usuario2);
+    sessionFactory.getCurrentSession().save(usuario1);
+    sessionFactory.getCurrentSession().save(usuario2);
 
+   
+    Cancha cancha = new Cancha();
+    cancha.setNombre("Cancha Test");
+    cancha.setDireccion("Dirección Test");
+    cancha.setCapacidad(10);
+    cancha.setPrecio(100.0);
+    cancha.setTipoSuelo("Césped");
+    cancha.setZona(Zona.CENTRO);
+    sessionFactory.getCurrentSession().save(cancha);
 
-        Cancha cancha = new Cancha();
-        cancha.setNombre("Cancha Test");
-        cancha.setDireccion("Dirección Test");
-        cancha.setCapacidad(10);
-        cancha.setPrecio(100.0);
-        cancha.setTipoSuelo("Césped");
-        cancha.setZona(Zona.CENTRO);
-        sessionFactory.getCurrentSession().save(cancha);
+  
+    Horario horario = new Horario();
+    horario.setCancha(cancha);
+    horario.setDiaSemana(java.time.DayOfWeek.MONDAY);
+    horario.setHoraInicio(java.time.LocalTime.of(10, 0));
+    horario.setHoraFin(java.time.LocalTime.of(12, 0));
+    horario.setDisponible(true);
+    sessionFactory.getCurrentSession().save(horario);
 
-        Horario horario = new Horario();
-        horario.setCancha(cancha);
-        horario.setDiaSemana(java.time.DayOfWeek.MONDAY);
-        horario.setHoraInicio(java.time.LocalTime.of(10, 0));
-        horario.setHoraFin(java.time.LocalTime.of(12, 0));
-        horario.setDisponible(true);
-        sessionFactory.getCurrentSession().save(horario);
+    
+    Reserva reserva = new Reserva();
+    reserva.setUsuario(usuario1);
+    reserva.setHorario(horario);
+    reserva.setFechaReserva(LocalDateTime.now().plusDays(1));
+    reserva.setActiva(true);
+    sessionFactory.getCurrentSession().save(reserva);
 
-        Reserva reserva = new Reserva();
-        reserva.setUsuario(usuario);
-        reserva.setHorario(horario);
-        reserva.setFechaReserva(LocalDateTime.now().plusDays(1));
-        reserva.setActiva(true);
-        sessionFactory.getCurrentSession().save(reserva);
+   
+    Equipo equipo = new Equipo("Equipo Test", "Descripción", usuario1, LocalDateTime.now());
+    sessionFactory.getCurrentSession().save(equipo);
 
-        Equipo equipo = new Equipo("Equipo Test", "Descripción", usuario, LocalDateTime.now());
-        sessionFactory.getCurrentSession().save(equipo);
+   
+    EquipoJugador jugador1 = new EquipoJugador();
+    jugador1.setUsuario(usuario1);
+    jugador1.setEquipo(equipo);
+    jugador1.setFechaUnion(LocalDateTime.now());
+    sessionFactory.getCurrentSession().save(jugador1);
 
-        EquipoJugador equipoJugador = new EquipoJugador();
-        equipoJugador.setUsuario(usuario);
-        equipoJugador.setEquipo(equipo);
-        equipoJugador.setFechaUnion(LocalDateTime.now());
-        sessionFactory.getCurrentSession().save(equipoJugador);
+    EquipoJugador jugador2 = new EquipoJugador();
+    jugador2.setUsuario(usuario2);
+    jugador2.setEquipo(equipo);
+    jugador2.setFechaUnion(LocalDateTime.now());
+    sessionFactory.getCurrentSession().save(jugador2);
 
-        EquipoJugador equipoJugador2 = new EquipoJugador();
-        equipoJugador2.setUsuario(usuario2);
-        equipoJugador2.setEquipo(equipo);
-        equipoJugador2.setFechaUnion(LocalDateTime.now());
-        sessionFactory.getCurrentSession().save(equipoJugador2);
+    
+    Partido partido = new Partido();
+    partido.setTitulo("Partido Test");
+    partido.setCreador(usuario1);
+    partido.setReserva(reserva);
+    partido.setCupoMaximo(10);
+    sessionFactory.getCurrentSession().save(partido);
 
-        Partido partido = new Partido();
-        partido.setTitulo("Partido Test");
-        partido.setCreador(usuario);
-        partido.setReserva(reserva);
-        partido.setCupoMaximo(10);
-        sessionFactory.getCurrentSession().save(partido);
+    
+    Gol gol1 = new Gol(partido, jugador1, 1);
+    Gol gol2 = new Gol(partido, jugador2, 2);
+    Gol gol3 = new Gol(partido, jugador1, 5);
 
-        Gol gol1 = new Gol(partido, equipoJugador, 1);
-        Gol gol2 = new Gol(partido, equipoJugador2, 2);
-        Gol gol3 = new Gol(partido, equipoJugador, 5);
-        repositorioGoles.guardar(gol1);
-        repositorioGoles.guardar(gol2);
-        repositorioGoles.guardar(gol3);
-        sessionFactory.getCurrentSession().flush();
+    sessionFactory.getCurrentSession().save(gol1);
+    sessionFactory.getCurrentSession().save(gol2);
+    sessionFactory.getCurrentSession().save(gol3);
 
-        List<Gol>golesUsuario=repositorioGoles.buscarPorUsuario(1L);
-         assertThat(golesUsuario.size(), equalTo(2));
-        assertTrue(golesUsuario.contains(gol1));
-        assertFalse(golesUsuario.contains(gol2));
-        assertTrue(golesUsuario.contains(gol3));
-    }
+   
+    sessionFactory.getCurrentSession().flush();
+
+    
+    List<Gol> golesUsuario1 = repositorioGoles.buscarPorUsuario(usuario1.getId());
+
+    
+    assertThat(golesUsuario1.size(), equalTo(2));
+    assertTrue(golesUsuario1.contains(gol1));
+    assertTrue(golesUsuario1.contains(gol3));
+    assertFalse(golesUsuario1.contains(gol2));
+}
 
 
 }
