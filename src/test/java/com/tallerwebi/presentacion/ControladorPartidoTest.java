@@ -20,6 +20,7 @@ import com.tallerwebi.dominio.Horario;
 import com.tallerwebi.dominio.Nivel;
 import com.tallerwebi.dominio.Partido;
 import com.tallerwebi.dominio.Reserva;
+import com.tallerwebi.dominio.ServicioAmistad;
 import com.tallerwebi.dominio.ServicioEquipo;
 import com.tallerwebi.dominio.ServicioEquipoJugador;
 import com.tallerwebi.dominio.ServicioFotoCancha;
@@ -56,6 +57,7 @@ public class ControladorPartidoTest {
     private ServicioUsuario servicioUsuarioMock;
     private ServicioFotoCancha servicioFotoCanchaMock;
     private ServicioSolicitudUnirse servicioSolicitudUnirse;
+    private ServicioAmistad servicioAmistadMock;
 
     @BeforeEach
     public void init() {
@@ -75,6 +77,7 @@ public class ControladorPartidoTest {
         usuarioMock = Mockito.mock(Usuario.class);
         redirectAttributesMock = Mockito.mock(RedirectAttributes.class);
         equipoMock = Mockito.mock(Equipo.class);
+        servicioAmistadMock= Mockito.mock(ServicioAmistad.class);
         when(requestMock.getSession()).thenReturn(sessionMock);
         when(requestMock.getHeader("referer")).thenReturn("/partidos/1");
 
@@ -143,7 +146,7 @@ public class ControladorPartidoTest {
         }
         controladorPartido = new ControladorPartido(servicioPartidoMock, servicioLoginMock, servicioHorarioMock,
                 servicioReservaMock, servicioUsuarioMock, servicioEquipoMock, servicioFotoCanchaMock, servicioGolesMock,
-                servicioEquipoJugadorMock, servicioSolicitudUnirse, null);
+                servicioEquipoJugadorMock, servicioSolicitudUnirse, servicioAmistadMock);
     }
 
     @Test

@@ -29,6 +29,8 @@ class ControladorReseniaCanchaTest {
     @Mock
     private ServicioUsuario servicioUsuarioMock;
     @Mock
+    private ServicioCalificacion servicioCalificacion;
+    @Mock
     private HttpServletRequest requestMock;
     @Mock
     private HttpSession sessionMock;
@@ -140,6 +142,7 @@ class ControladorReseniaCanchaTest {
         when(sessionMock.getAttribute("EMAIL")).thenReturn(email);
         when(servicioUsuarioMock.buscarPorEmail(email)).thenReturn(usuario);
         when(servicioReseniaCanchaMock.obtenerReseniasPorUsuario(usuarioId)).thenReturn(resenias);
+        
 
         ModelAndView mav = controlador.verHistorial(usuarioId, requestMock);
 

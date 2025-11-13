@@ -85,9 +85,14 @@ public class ControladorReseniaCancha {
         }   
     
     @GetMapping("/historial-reviews/{usuarioId}")
+        
         public ModelAndView verHistorial(@PathVariable Long usuarioId, HttpServletRequest request){
+        String email = (String) request.getSession().getAttribute("EMAIL");
+            if (email == null) {
+                return new ModelAndView("redirect:/login");
+            }    
         ModelAndView modelAndView= new ModelAndView();
-        Usuario usuario=servicioUsuario.buscarPorEmail((String)request.getSession().getAttribute("EMAIL"));
+        Usuario usuario=servicioUsuario.buscarPorEmail(email);
         if(usuarioId !=usuario.getId()){
             return new ModelAndView("redirect:/perfil/");
         }
