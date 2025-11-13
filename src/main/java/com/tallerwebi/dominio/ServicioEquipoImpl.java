@@ -71,6 +71,14 @@ public class ServicioEquipoImpl implements ServicioEquipo {
     }
 
     @Override
+    public boolean esUsuarioCreador(Equipo equipo, Usuario usuario) {
+        if (equipo == null || equipo.getCreadoPor() == null || usuario == null) {
+            return false;
+        }
+        return equipo.getCreadoPor().getId().equals(usuario.getId());
+    }
+
+    @Override
     public Equipo buscarPorIdYUsuario(Long equipoId, Usuario usuario) throws EquipoNoEncontrado {
         Equipo equipo = repositorioEquipo.buscarPorIdYUsuario(equipoId, usuario);
         if (equipo == null) {
@@ -83,9 +91,11 @@ public class ServicioEquipoImpl implements ServicioEquipo {
     public List<Equipo> listarTodos() {
         return repositorioEquipo.listarTodos();
     }
+
     public Equipo buscarEquipoDelUsuario(Usuario usuario) {
         return repositorioEquipo.buscarEquipoDelUsuario(usuario);
     }
+
     public List<Equipo> buscarEquiposPorUsuario(Usuario usuario) {
         return repositorioEquipo.buscarEquiposPorUsuario(usuario);
     }
