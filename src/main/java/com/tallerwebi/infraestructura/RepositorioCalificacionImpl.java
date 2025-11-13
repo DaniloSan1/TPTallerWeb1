@@ -58,4 +58,12 @@ public class RepositorioCalificacionImpl implements RepositorioCalificacion {
         .setParameter("calificadoId", calificadoId)
         .getResultList();
     }
+    
+    @Override 
+    public List<Calificacion>obtenerPorCalificador(Long calificadorId){
+        String hql ="FROM Calificacion c WHERE c.calificador.id = :calificadorId";
+        return sessionFactory.getCurrentSession().createQuery(hql,Calificacion.class)
+        .setParameter("calificadorId", calificadorId)
+        .getResultList(); 
+    }
 }

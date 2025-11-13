@@ -13,8 +13,10 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import com.tallerwebi.dominio.Calificacion;
 import com.tallerwebi.dominio.Cancha;
 import com.tallerwebi.dominio.ReseniaCancha;
+import com.tallerwebi.dominio.ServicioCalificacion;
 import com.tallerwebi.dominio.ServicioCancha;
 import com.tallerwebi.dominio.ServicioReseniaCancha;
 import com.tallerwebi.dominio.ServicioUsuario;
@@ -25,10 +27,12 @@ public class ControladorReseniaCancha {
     private final ServicioReseniaCancha servicioReseniaCancha;
     private final ServicioCancha servicioCancha;
     private final ServicioUsuario servicioUsuario;
-    public ControladorReseniaCancha(ServicioReseniaCancha servicioReseniaCancha,ServicioCancha servicioCancha,ServicioUsuario servicioUsuario) {
+    private final ServicioCalificacion servicioCalificacion;
+    public ControladorReseniaCancha(ServicioReseniaCancha servicioReseniaCancha,ServicioCancha servicioCancha,ServicioUsuario servicioUsuario,ServicioCalificacion servicioCalificacion) {
         this.servicioReseniaCancha = servicioReseniaCancha;
         this.servicioCancha=servicioCancha;
         this.servicioUsuario=servicioUsuario;
+        this.servicioCalificacion=servicioCalificacion;
     }
 
     @GetMapping("/reseniar-cancha/{canchaId}")
@@ -88,7 +92,9 @@ public class ControladorReseniaCancha {
             return new ModelAndView("redirect:/perfil/");
         }
         List<ReseniaCancha> resenias =servicioReseniaCancha.obtenerReseniasPorUsuario(usuarioId);
+        List<Calificacion> calificaciones=servicioCalificacion.obtenerCalificacionesPorCalificador(usuarioId);
         modelAndView.addObject("resenias", resenias);
+        modelAndView.addObject("calificaciones", calificaciones);
         modelAndView.setViewName("historial-resenias");
         return modelAndView;
     }
