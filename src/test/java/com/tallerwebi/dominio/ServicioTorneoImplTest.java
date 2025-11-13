@@ -120,6 +120,7 @@ public class ServicioTorneoImplTest {
 
     @Test
     void alListarTorneosDisponibles_DeberiaFiltrarPorFechaActual() {
+        torneo.setEstado("CONFIRMADO");
         when(repositorioTorneo.torneoFuturo(any(LocalDate.class))).thenReturn(List.of(torneo));
 
         List<Torneo> resultado = servicioTorneo.listarTorneosDisponibles();
