@@ -27,12 +27,7 @@
         <main
             role="main"
             class="container"
-            style="
-                padding-top: 135px;
-                height: 100vh;
-                display: flex;
-                flex-direction: column;
-            "
+            style="height: 100vh; display: flex; flex-direction: column"
         >
             <div class="container card">
                 <div
@@ -119,5 +114,7 @@
         <script
             th:src="@{/webjars/bootstrap/5.2.0/js/bootstrap.bundle.min.js}"
         ></script>
+        <!-- Include the footer fragment -->
+        <footer th:replace="~{fragments/footer :: footer}"></footer>
     </body>
 </html>

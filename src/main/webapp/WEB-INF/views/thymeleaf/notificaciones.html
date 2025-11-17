@@ -1,48 +1,83 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-<head>
-    <title>Notificaciones</title>
-    <link rel="stylesheet" th:href="@{/webjars/bootstrap/5.2.0/css/bootstrap.min.css}">
-    <link rel="stylesheet" th:href="@{/css/main.css}" />
-</head>
-<body>
-<div th:replace="~{fragments/navbar :: navbar}"></div>
-<br class="mt-5">
-<br class="mt-5">
-<br class="mt-5">
-<div class="container mt-5">
-    <h2>Notificaciones</h2>
+    <head>
+        <title>Notificaciones</title>
+        <link
+            rel="stylesheet"
+            th:href="@{/webjars/bootstrap/5.2.0/css/bootstrap.min.css}"
+        />
+        <link rel="stylesheet" th:href="@{/css/main.css}" />
+    </head>
+    <body>
+        <div th:replace="~{fragments/navbar :: navbar}"></div>
+        <main role="main" class="container">
+            <br class="mt-5" />
+            <br class="mt-5" />
+            <br class="mt-5" />
+            <div class="container mt-5">
+                <h2>Notificaciones</h2>
 
-    <div th:if="${notificaciones == null or notificaciones.isEmpty()}">
-        <p>No tienes notificaciones.</p>
-    </div>
+                <div
+                    th:if="${notificaciones == null or notificaciones.isEmpty()}"
+                >
+                    <p>No tienes notificaciones.</p>
+                </div>
 
-    <ul class="list-group mt-3" th:if="${notificaciones != null and !notificaciones.isEmpty()}">
-        <li th:each="n : ${notificaciones}"
-            th:classappend="${n.leida} ? 'list-group-item' : 'list-group-item list-group-item-info'"
-            class="d-flex justify-content-between align-items-center">
+                <ul
+                    class="list-group mt-3"
+                    th:if="${notificaciones != null and !notificaciones.isEmpty()}"
+                >
+                    <li
+                        th:each="n : ${notificaciones}"
+                        th:classappend="${n.leida} ? 'list-group-item' : 'list-group-item list-group-item-info'"
+                        class="d-flex justify-content-between align-items-center"
+                    >
+                        <div>
+                            <span th:text="${n.mensaje}"></span>
+                        </div>
 
-            <div>
-                <span th:text="${n.mensaje}"></span>
+                        <div class="btn-group">
+                            <form
+                                th:action="@{/perfil/notificaciones/marcar-como-leida}"
+                                method="post"
+                                style="display: inline"
+                            >
+                                <input
+                                    type="hidden"
+                                    name="idNotificacion"
+                                    th:value="${n.id}"
+                                />
+                                <button
+                                    type="submit"
+                                    class="btn btn-sm btn-primary"
+                                >
+                                    Ver solicitud
+                                </button>
+                            </form>
+
+                            <form
+                                th:action="@{/perfil/notificaciones/eliminar}"
+                                method="post"
+                                style="display: inline"
+                            >
+                                <input
+                                    type="hidden"
+                                    name="idNotificacion"
+                                    th:value="${n.id}"
+                                />
+                                <button
+                                    type="submit"
+                                    class="btn btn-sm btn-danger ms-2"
+                                >
+                                    Eliminar
+                                </button>
+                            </form>
+                        </div>
+                    </li>
+                </ul>
             </div>
-
-            <div class="btn-group">
-                <form th:action="@{/perfil/notificaciones/marcar-como-leida}" method="post" style="display:inline;">
-                    <input type="hidden" name="idNotificacion" th:value="${n.id}">
-                    <button type="submit" class="btn btn-sm btn-primary">Ver solicitud</button>
-                </form>
-
-                <form th:action="@{/perfil/notificaciones/eliminar}" method="post" style="display:inline;">
-                    <input type="hidden" name="idNotificacion" th:value="${n.id}">
-                    <button type="submit" class="btn btn-sm btn-danger ms-2">Eliminar</button>
-                </form>
-            </div>
-        </li>
-    </ul>
-</div>
-
-
-
-
-</body>
+        </main>
+        <!-- Include the footer fragment -->
+        <footer th:replace="~{fragments/footer :: footer}"></footer>
+    </body>
 </html>

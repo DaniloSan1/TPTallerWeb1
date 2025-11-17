@@ -1,169 +1,244 @@
 <!DOCTYPE html>
 <html lang="es" xmlns:th="http://www.thymeleaf.org">
-<head>
-    <meta charset="utf-8" />
-    <meta
+    <head>
+        <meta charset="utf-8" />
+        <meta
             name="viewport"
             content="width=device-width, initial-scale=1, shrink-to-fit=no"
-    />
-    <title>Mi perfil</title>
+        />
+        <title>Mi perfil</title>
 
-    <!-- Bootstrap core CSS -->
-    <link
+        <!-- Bootstrap core CSS -->
+        <link
             rel="stylesheet"
             th:href="@{/webjars/bootstrap/5.2.0/css/bootstrap.min.css}"
-    />
-    <link rel="stylesheet" th:href="@{/css/main.css}" />
-    <link rel="stylesheet" th:href="@{/css/perfil.css}" />
+        />
+        <link rel="stylesheet" th:href="@{/css/main.css}" />
+        <link rel="stylesheet" th:href="@{/css/perfil.css}" />
+    </head>
 
-</head>
+    <body>
+        <div th:replace="~{fragments/navbar :: navbar}"></div>
 
-<body>
+        <div class="profile-header">
+            <div class="profile-avatar"></div>
+        </div>
 
-<div th:replace="~{fragments/navbar :: navbar}"></div>
-
-
-<div class="profile-header">
-    <div class="profile-avatar"></div>
-</div>
-
-
-<main role="main" class="container">
-    <div class="row justify-content-center">
-        <div class="col-md-6">
-            <div class="card shadow profile-card">
-                <div class="card-header">
-                    <div class="d-flex justify-content-between align-items-center mb-3">
-                        <div>
-                            <h4 class="mb-0" th:text="${usuario.nombre + ' ' + usuario.apellido}">Nombre Apellido</h4>
-                            <small th:text="${usuario.email}">email@ejemplo.com</small>
+        <main role="main" class="container">
+            <div class="row justify-content-center">
+                <div class="col-md-6">
+                    <div class="card shadow profile-card">
+                        <div class="card-header">
+                            <div
+                                class="d-flex justify-content-between align-items-center mb-3"
+                            >
+                                <div>
+                                    <h4
+                                        class="mb-0"
+                                        th:text="${usuario.nombre + ' ' + usuario.apellido}"
+                                    >
+                                        Nombre Apellido
+                                    </h4>
+                                    <small th:text="${usuario.email}"
+                                        >email@ejemplo.com</small
+                                    >
+                                </div>
+                                <!-- Botón de solicitudes con badge -->
+                                <a
+                                    th:href="@{/perfil/solicitudes}"
+                                    class="btn btn-outline-primary position-relative"
+                                >
+                                    Solicitudes
+                                    <span
+                                        th:if="${solicitudesPendientes > 0}"
+                                        class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger"
+                                        th:text="${solicitudesPendientes}"
+                                    >
+                                        2
+                                    </span>
+                                </a>
+                                <a
+                                    th:href="@{/historial-reviews/{id}(id=${usuario.id})}"
+                                    class="btn btn-outline-primary position-relative"
+                                >
+                                    Historial de reseñas
+                                </a>
+                            </div>
+                            <!-- Calificación promedio al final del header azul -->
+                            <div class="text-center">
+                                <h5 class="mb-0">
+                                    <span
+                                        th:if="${calificacionPromedio != null and calificacionPromedio > 0}"
+                                    >
+                                        <strong>Calificación promedio:</strong>
+                                        <span
+                                            th:text="${#numbers.formatDecimal(calificacionPromedio, 1, 2)}"
+                                            class="text-gold fw-bold"
+                                            >0.00</span
+                                        >
+                                    </span>
+                                    <span
+                                        th:if="${calificacionPromedio == null or calificacionPromedio == 0.0}"
+                                    >
+                                        <strong>Sin calificaciones</strong>
+                                    </span>
+                                </h5>
+                            </div>
                         </div>
-                        <!-- Botón de solicitudes con badge -->
-                        <a th:href="@{/perfil/solicitudes}" class="btn btn-outline-primary position-relative">
-                            Solicitudes
-                            <span th:if="${solicitudesPendientes > 0}" 
-                                  class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger"
-                                  th:text="${solicitudesPendientes}">
-                                2
-                            </span>
-                        </a>
-                        <a th:href="@{/historial-reviews/{id}(id=${usuario.id})}" class="btn btn-outline-primary position-relative">
-                            Historial de reseñas
-                        </a>
-                    </div>
-                    <!-- Calificación promedio al final del header azul -->
-                    <div class="text-center">
-                        <h5 class="mb-0">
-                            <span th:if="${calificacionPromedio != null and calificacionPromedio > 0}">
-                                <strong>Calificación promedio:</strong>
-                                <span th:text="${#numbers.formatDecimal(calificacionPromedio, 1, 2)}" class="text-gold fw-bold">0.00</span>
-                            </span>
-                            <span th:if="${calificacionPromedio == null or calificacionPromedio == 0.0}">
-                                <strong>Sin calificaciones</strong>
-                            </span>
-                        </h5>
-                    </div>
-                </div>
-                <div class="card-body">
-                    <p>
-                        <strong>Nombre:</strong>
-                        <span th:text="${usuario.nombre}"></span>
-                    </p>
-                    <p>
-                        <strong>Apellido:</strong>
-                        <span th:text="${usuario.apellido}"></span>
-                    </p>
-                    <p>
-                        <strong>Username:</strong>
-                        <span th:text="${usuario.username}"></span>
-                    </p>
-                    <p>
-                        <strong>Email:</strong>
-                        <span th:text="${usuario.email}"></span>
-                    </p>
-                    <p>
-                        <strong>Posición favorita:</strong>
-                        <span th:text="${usuario.posicionFavorita}"></span>
-                    </p>
-                     <p>
-                        <strong>Goles Totales:</strong>
-                        <span th:text="${golesTotales}"></span>
-                    </p>
-                    <p>
-                        <strong>Goles en promedio por partido:</strong>
-                        <span th:text="${golesPromedio}"></span>
-                    </p>
-                </div>
-                <div class="card-footer text-end d-flex justify-content-between">
-                    <form th:action="@{/perfil/editar}" method="get" class="d-inline">
-                        <button type="submit" class="btn btn-primary btn-lg">
-                            Editar perfil
-                        </button>
-                    </form>
+                        <div class="card-body">
+                            <p>
+                                <strong>Nombre:</strong>
+                                <span th:text="${usuario.nombre}"></span>
+                            </p>
+                            <p>
+                                <strong>Apellido:</strong>
+                                <span th:text="${usuario.apellido}"></span>
+                            </p>
+                            <p>
+                                <strong>Username:</strong>
+                                <span th:text="${usuario.username}"></span>
+                            </p>
+                            <p>
+                                <strong>Email:</strong>
+                                <span th:text="${usuario.email}"></span>
+                            </p>
+                            <p>
+                                <strong>Posición favorita:</strong>
+                                <span
+                                    th:text="${usuario.posicionFavorita}"
+                                ></span>
+                            </p>
+                            <p>
+                                <strong>Goles Totales:</strong>
+                                <span th:text="${golesTotales}"></span>
+                            </p>
+                            <p>
+                                <strong>Goles en promedio por partido:</strong>
+                                <span th:text="${golesPromedio}"></span>
+                            </p>
+                        </div>
+                        <div
+                            class="card-footer text-end d-flex justify-content-between"
+                        >
+                            <form
+                                th:action="@{/perfil/editar}"
+                                method="get"
+                                class="d-inline"
+                            >
+                                <button
+                                    type="submit"
+                                    class="btn btn-primary btn-lg"
+                                >
+                                    Editar perfil
+                                </button>
+                            </form>
 
-                    <a th:href="@{/login}" class="btn btn-logout btn-lg text-white">
-                        Cerrar sesión
-                    </a>
+                            <a
+                                th:href="@{/login}"
+                                class="btn btn-logout btn-lg text-white"
+                            >
+                                Cerrar sesión
+                            </a>
+                        </div>
+                    </div>
                 </div>
             </div>
-        </div>
-    </div>
-    <div class="d-flex justify-content-center mt-4">
-        <div class="text-center">
-            <h4 class="mb-3 fw-bold">Agregar amigo</h4>
+            <div class="d-flex justify-content-center mt-4">
+                <div class="text-center">
+                    <h4 class="mb-3 fw-bold">Agregar amigo</h4>
 
-            <div class="position-relative d-inline-block">
-                <form th:action="@{/perfil/buscar}" method="get"
-                      id="searchForm"
-                      class="d-flex align-items-center p-2 bg-white border rounded shadow"
-                      style="width: 280px; z-index: 1050;">
-                    <input type="search" name="username" id="username" class="form-control me-2"
-                           placeholder="Buscar usuario..." required>
-                    <button type="submit" class="btn btn-primary">
-                        <i class="bi bi-search"></i>
-                    </button>
-                </form>
+                    <div class="position-relative d-inline-block">
+                        <form
+                            th:action="@{/perfil/buscar}"
+                            method="get"
+                            id="searchForm"
+                            class="d-flex align-items-center p-2 bg-white border rounded shadow"
+                            style="width: 280px; z-index: 1050"
+                        >
+                            <input
+                                type="search"
+                                name="username"
+                                id="username"
+                                class="form-control me-2"
+                                placeholder="Buscar usuario..."
+                                required
+                            />
+                            <button type="submit" class="btn btn-primary">
+                                <i class="bi bi-search"></i>
+                            </button>
+                        </form>
+                    </div>
+                </div>
             </div>
-        </div>
-    </div>
-<!-- Tus amigos -->
-<div class="container mt-4">
-    <h5 class="text-center mb-3">Tus amigos</h5>
+            <!-- Tus amigos -->
+            <div class="container mt-4">
+                <h5 class="text-center mb-3">Tus amigos</h5>
 
-    <div class="text-muted text-center" th:if="${#lists.isEmpty(amigos)}">
-        Aún no agregaste amigos.
-    </div>
-
-    <div th:if="${!#lists.isEmpty(amigos)}">
-        <div class="friends-list">
-        <ul class="list-group">
-            <li class="list-group-item d-flex justify-content-between align-items-center" th:each="amigo : ${amigos}">
-                <div>
-                    <strong th:text="${amigo.nombre + ' ' + amigo.apellido}">Nombre Apellido</strong>
-                    <div class="small text-muted" th:text="${amigo.email}">email@example.com</div>
+                <div
+                    class="text-muted text-center"
+                    th:if="${#lists.isEmpty(amigos)}"
+                >
+                    Aún no agregaste amigos.
                 </div>
-                <div>
-                    <a th:href="@{/perfil/ver/id/{id}(id=${amigo.id})}" class="btn btn-primary btn-sm me-2">Ver perfil</a>
-                    <form th:action="@{/perfil/amigos/eliminar}" method="post" class="d-inline">
-                        <input type="hidden" name="amigoId" th:value="${amigo.id}" />
-                        <button class="btn btn-outline-danger btn-sm">Quitar</button>
-                    </form>
+
+                <div th:if="${!#lists.isEmpty(amigos)}">
+                    <div class="friends-list">
+                        <ul class="list-group">
+                            <li
+                                class="list-group-item d-flex justify-content-between align-items-center"
+                                th:each="amigo : ${amigos}"
+                            >
+                                <div>
+                                    <strong
+                                        th:text="${amigo.nombre + ' ' + amigo.apellido}"
+                                        >Nombre Apellido</strong
+                                    >
+                                    <div
+                                        class="small text-muted"
+                                        th:text="${amigo.email}"
+                                    >
+                                        email@example.com
+                                    </div>
+                                </div>
+                                <div>
+                                    <a
+                                        th:href="@{/perfil/ver/id/{id}(id=${amigo.id})}"
+                                        class="btn btn-primary btn-sm me-2"
+                                        >Ver perfil</a
+                                    >
+                                    <form
+                                        th:action="@{/perfil/amigos/eliminar}"
+                                        method="post"
+                                        class="d-inline"
+                                    >
+                                        <input
+                                            type="hidden"
+                                            name="amigoId"
+                                            th:value="${amigo.id}"
+                                        />
+                                        <button
+                                            class="btn btn-outline-danger btn-sm"
+                                        >
+                                            Quitar
+                                        </button>
+                                    </form>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
                 </div>
-            </li>
-        </ul>
-        </div>
-    </div>
-</div>
+            </div>
 
-
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
-
-
-</main>
-<script
-        type="text/javascript"
-        th:src="@{/webjars/bootstrap/5.2.0/js/bootstrap.bundle.min.js}"
-></script>
-</body>
+            <link
+                rel="stylesheet"
+                href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css"
+            />
+        </main>
+        <script
+            type="text/javascript"
+            th:src="@{/webjars/bootstrap/5.2.0/js/bootstrap.bundle.min.js}"
+        ></script>
+        <!-- Include the footer fragment -->
+        <footer th:replace="~{fragments/footer :: footer}"></footer>
+    </body>
 </html>
-
