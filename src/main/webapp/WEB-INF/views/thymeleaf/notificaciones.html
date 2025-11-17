@@ -1,126 +1,80 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-    <head>
-        <title>Notificaciones</title>
-        <link
-            rel="stylesheet"
-            th:href="@{/webjars/bootstrap/5.2.0/css/bootstrap.min.css}"
-        />
-        <link rel="stylesheet" th:href="@{/css/main.css}" />
-    </head>
-    <body>
-        <div th:replace="~{fragments/navbar :: navbar}"></div>
-        <main role="main" class="container">
-            <br class="mt-5" />
-            <br class="mt-5" />
-            <br class="mt-5" />
-            <div class="container mt-5">
-                <h2>Notificaciones</h2>
 
-                <div
-                    th:if="${notificaciones == null or notificaciones.isEmpty()}"
-                >
-                    <p>No tienes notificaciones.</p>
-                </div>
+<head>
+    <title>Notificaciones</title>
+    <link rel="stylesheet" th:href="@{/webjars/bootstrap/5.2.0/css/bootstrap.min.css}" />
+    <link rel="stylesheet" th:href="@{/css/main.css}" />
+</head>
 
-                <ul
-                    class="list-group mt-3"
-                    th:if="${notificaciones != null and !notificaciones.isEmpty()}"
-                >
-                    <li
-                        th:each="n : ${notificaciones}"
-                        th:classappend="${n.leida} ? 'list-group-item' : 'list-group-item list-group-item-info'"
-                        class="d-flex justify-content-between align-items-center"
-                    >
-                        <div>
-                            <span th:text="${n.mensaje}"></span>
-                        </div>
+<body>
+<div th:replace="~{fragments/navbar :: navbar}"></div>
 
-                        <div class="btn-group">
-                            <form
-                                th:action="@{/perfil/notificaciones/marcar-como-leida}"
-                                method="post"
-                                style="display: inline"
-                            >
-                                <input
-                                    type="hidden"
-                                    name="idNotificacion"
-                                    th:value="${n.id}"
-                                />
-                                <button
-                                    type="submit"
-                                    class="btn btn-sm btn-primary"
-                                >
-                                    Ver solicitud
-                                </button>
-                            </form>
+<main role="main" class="container mt-5">
 
-                            <form
-                                th:action="@{/perfil/notificaciones/eliminar}"
-                                method="post"
-                                style="display: inline"
-                            >
-                                <input
-                                    type="hidden"
-                                    name="idNotificacion"
-                                    th:value="${n.id}"
-                                />
-                                <button
-                                    type="submit"
-                                    class="btn btn-sm btn-danger ms-2"
-                                >
-                                    Eliminar
-                                </button>
-                            </form>
-                        </div>
-                    </li>
-                </ul>
+    <h2 class="mt-5">Notificaciones</h2>
+
+    <!-- Si no hay notificaciones -->
+    <div th:if="${notificaciones == null or notificaciones.isEmpty()}">
+        <p>No tienes notificaciones.</p>
+    </div>
+
+    <!-- Lista de notificaciones -->
+    <ul class="list-group mt-3"
+        th:if="${notificaciones != null and !notificaciones.isEmpty()}">
+
+        <li th:each="n : ${notificaciones}"
+            th:classappend="${n.leida} ? 'list-group-item' : 'list-group-item list-group-item-info'"
+            class="d-flex justify-content-between align-items-center">
+
+            <!-- Mensaje principal -->
+            <div>
+                <span th:text="${n.mensaje}"></span>
             </div>
 
+            <!-- Botones de la derecha -->
             <div class="btn-group">
 
-                <!-- Si es una solicitud de amistad -->
+                <!-- SOLICITUD DE AMISTAD -->
                 <div th:if="${n.tipoDeNotificacion == T(com.tallerwebi.dominio.NotificacionEnum).SOLICITUD_AMISTAD}">
 
-
-                <form th:action="@{/perfil/notificaciones/marcar-como-leida}" method="post" style="display:inline;">
-                        <input type="hidden" name="idNotificacion" th:value="${n.id}">
+                    <form th:action="@{/perfil/notificaciones/marcar-como-leida}" method="post" style="display:inline;">
+                        <input type="hidden" name="idNotificacion" th:value="${n.id}" />
                         <button type="submit" class="btn btn-sm btn-primary">Ver solicitud</button>
                     </form>
 
                     <form th:action="@{/perfil/notificaciones/eliminar}" method="post" style="display:inline;">
-                        <input type="hidden" name="idNotificacion" th:value="${n.id}">
+                        <input type="hidden" name="idNotificacion" th:value="${n.id}" />
                         <button type="submit" class="btn btn-sm btn-danger ms-2">Eliminar</button>
                     </form>
 
                 </div>
 
-                <!-- Si se aceptó la solicitud -->
+                <!-- SOLICITUD ACEPTADA -->
                 <div th:if="${n.tipoDeNotificacion == T(com.tallerwebi.dominio.NotificacionEnum).SOLICITUD_ACEPTADA}">
 
-
-                <form th:action="@{/perfil/notificaciones/marcar-como-leida}" method="post" style="display:inline;">
-                        <input type="hidden" name="idNotificacion" th:value="${n.id}">
+                    <form th:action="@{/perfil/notificaciones/marcar-como-leida}" method="post" style="display:inline;">
+                        <input type="hidden" name="idNotificacion" th:value="${n.id}" />
                         <button type="submit" class="btn btn-sm btn-success">Ver perfil</button>
                     </form>
 
                     <form th:action="@{/perfil/notificaciones/eliminar}" method="post" style="display:inline;">
-                        <input type="hidden" name="idNotificacion" th:value="${n.id}">
+                        <input type="hidden" name="idNotificacion" th:value="${n.id}" />
                         <button type="submit" class="btn btn-sm btn-danger ms-2">Eliminar</button>
                     </form>
 
                 </div>
 
+                <!-- INVITACIÓN A PARTIDO -->
                 <div th:if="${n.tipoDeNotificacion == T(com.tallerwebi.dominio.NotificacionEnum).INVITACION_PARTIDO}">
 
-
                     <form th:action="@{/perfil/notificaciones/marcar-como-leida}" method="post" style="display:inline;">
-                        <input type="hidden" name="idNotificacion" th:value="${n.id}">
+                        <input type="hidden" name="idNotificacion" th:value="${n.id}" />
                         <button type="submit" class="btn btn-sm btn-primary">Ver partido</button>
                     </form>
 
                     <form th:action="@{/perfil/notificaciones/eliminar}" method="post" style="display:inline;">
-                        <input type="hidden" name="idNotificacion" th:value="${n.id}">
+                        <input type="hidden" name="idNotificacion" th:value="${n.id}" />
                         <button type="submit" class="btn btn-sm btn-danger ms-2">Eliminar</button>
                     </form>
 
@@ -129,14 +83,12 @@
             </div>
 
         </li>
+
     </ul>
-</div>
 
+</main>
 
-
-        </main>
-        <!-- Include the footer fragment -->
-        <footer th:replace="~{fragments/footer :: footer}"></footer>
+<footer th:replace="~{fragments/footer :: footer}"></footer>
 
 </body>
 </html>
