@@ -12,4 +12,5 @@ public interface RepositorioNotificacion {
     public void eliminarNotificacion(NotificacionDeUsuario notificacionDeUsuario);
     public NotificacionDeUsuario obtenerNotificacion(Long id);
     public void actualizar(NotificacionDeUsuario notificacionDeUsuario);
+    public Integer contarNoLeidas(Long idUsuario);
 }

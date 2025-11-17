@@ -95,4 +95,9 @@ public class ServicioAmistadImpl implements ServicioAmistad {
         }
     }
 
+    @Override
+    public Amistad buscarAmistadPorId(Long idAmistad) {
+    return repositorioAmistad.buscarPorId(idAmistad);
+    }
+
 }

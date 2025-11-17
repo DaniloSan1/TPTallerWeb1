@@ -15,15 +15,18 @@ private Boolean leida = false;
 
 private LocalDate fecha;
 
+private NotificacionEnum tipoDeNotificacion;
+
 @ManyToOne
 @JoinColumn(name = "usuario_id", nullable = false)
     private Usuario usuario; //el que recibe la notificacion
 
     public NotificacionDeUsuario() {}
 
-    public NotificacionDeUsuario(Usuario usuario, String mensaje) {
+    public NotificacionDeUsuario(Usuario usuario, String mensaje, NotificacionEnum tipoDeNotificacion) {
         this.mensaje = mensaje;
         this.usuario = usuario;
+        this.tipoDeNotificacion = tipoDeNotificacion;
     }
 
     public Long getId() {
@@ -64,5 +67,13 @@ private LocalDate fecha;
 
     public void setMensaje(String mensaje) {
         this.mensaje = mensaje;
+    }
+
+    public NotificacionEnum getTipoDeNotificacion() {
+        return tipoDeNotificacion;
+    }
+
+    public  void setTipoDeNotificacion(NotificacionEnum tipoDeNotificacion) {
+        this.tipoDeNotificacion = tipoDeNotificacion;
     }
 }

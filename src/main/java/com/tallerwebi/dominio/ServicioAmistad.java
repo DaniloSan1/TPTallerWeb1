@@ -20,4 +20,6 @@ public interface ServicioAmistad {
 
     public void eliminarAmistad(Long idAmistad);
 
+    public Amistad buscarAmistadPorId(Long idAmistad);
+
 }

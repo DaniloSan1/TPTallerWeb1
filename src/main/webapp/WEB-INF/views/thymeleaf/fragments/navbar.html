@@ -25,8 +25,14 @@
                         th:classappend="${currentPage == 'mis-equipos'} ? 'active' : ''">Mis Equipos</a>
                     <a class="nav-link text-white" th:href="@{/reserva/mis-reservas}"
                         th:classappend="${currentPage == 'mis-reservas'} ? 'active' : ''">Mis Reservas</a>
-                    <a class="nav-link text-white" th:href="@{/perfil/notificaciones}"
-                       th:classappend="${currentPage == 'mis-equipos'} ? 'active' : ''">Mis notificaciones</a>
+                    <a class="nav-link text-white" th:href="@{/perfil/notificaciones}">
+                        Mis notificaciones
+                        <span th:if="${notificacionesNoLeidas != null and notificacionesNoLeidas > 0}"
+                              class="badge bg-danger ms-1">
+                            <span th:text="${notificacionesNoLeidas}"></span>
+                        </span>
+                    </a>
+
                     <a class="nav-link text-white" th:href="@{/perfil}"
                         th:classappend="${currentPage == 'perfil'} ? 'active' : ''">Mi perfil</a>
                 </div>
