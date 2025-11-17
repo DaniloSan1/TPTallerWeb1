@@ -247,7 +247,7 @@ public class ControladorUsuario {
                 if (remitente != null) {
                     servicioAmistad.enviarSolicitud(remitente.getId(), idReceptor);
                     String mensaje = "El usuario " + remitente.getUsername() + " te ha enviado una solicitud de amistad."; //crea el msj para la noti
-                    servicioNotificacionDeUsuario.crearNotificacion(receptor, mensaje); //crea la noti
+                    servicioNotificacionDeUsuario.crearNotificacion(receptor, mensaje, NotificacionEnum.SOLICITUD_AMISTAD); //crea la noti
 
                 }
 
@@ -258,8 +258,13 @@ public class ControladorUsuario {
         }
 
         @PostMapping("/amistad/aceptar/{idAmistad}")
-        public String aceptarSolicitud (@PathVariable Long idAmistad){
+        public String aceptarSolicitud (@PathVariable Long idAmistad, HttpServletRequest request){
+            String email = (String) request.getSession().getAttribute("EMAIL");
+            Usuario usuarioQueAceptaSolicitud = servicioUsuario.buscarPorEmail(email);
+            Amistad amistad = servicioAmistad.buscarAmistadPorId(idAmistad);
             servicioAmistad.aceptarSolicitud(idAmistad);
+            String mensaje = "El usuario " + usuarioQueAceptaSolicitud.getUsername() + " ha aceptado tu solicitud de amistad!";
+            servicioNotificacionDeUsuario.crearNotificacion(amistad.getUsuario1(),mensaje, NotificacionEnum.SOLICITUD_ACEPTADA);
             return "redirect:/perfil/solicitudes";
         }
 
