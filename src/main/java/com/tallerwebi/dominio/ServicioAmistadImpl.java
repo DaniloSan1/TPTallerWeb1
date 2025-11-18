@@ -38,9 +38,7 @@ public class ServicioAmistadImpl implements ServicioAmistad {
                 // Aceptar la solicitud pendiente del otro usuario
                 existenteInversa.setEstadoDeAmistad(EstadoDeAmistad.ACEPTADA);
             } else if (existenteInversa.getEstadoDeAmistad() == EstadoDeAmistad.RECHAZADA) {
-                // Si el otro la rechazó previamente, volver a ponerla como pendiente
-                existenteInversa.setEstadoDeAmistad(EstadoDeAmistad.PENDIENTE);
-                existenteInversa.setFechaSolicitud(java.time.LocalDate.now());
+                repositorioAmistad.guardar(new Amistad(remitente, receptor));
             }
             return;
         }
