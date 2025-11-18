@@ -33,11 +33,6 @@ public class ServicioPartidoImpl implements ServicioPartido {
     }
 
     @Override
-    public List<Partido> listarTodos(String busqueda, Zona filtroZona, Nivel filtroNivel, java.time.LocalDate fechaFiltro, Long canchaId) {
-        return repoPartido.listar(busqueda, filtroZona, filtroNivel, fechaFiltro, canchaId);
-    }
-
-    @Override
     public Partido crearDesdeReserva(Reserva nuevaReserva, String titulo, String descripcion, Nivel nivel,
             int cupoMaximo, Usuario usuario) {
 
@@ -161,9 +156,13 @@ public class ServicioPartidoImpl implements ServicioPartido {
         return repoPartido.listarPorEquipoConInfoCancha(equipo.getId());
     }
 
-    @Override
-    public List<Partido> listarTodos(String busqueda, Zona filtroZona, Nivel filtroNivel) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'listarTodos'");
+     @Override
+    public List<Partido> listarTodos(String busqueda, Zona filtroZona, Nivel filtroNivel, java.time.LocalDate fechaFiltro, Long canchaId) {
+        return repoPartido.listar(busqueda, filtroZona, filtroNivel, fechaFiltro, canchaId);
     }
+
+     @Override
+     public List<Partido> listarTodos(String busqueda, Zona filtroZona, Nivel filtroNivel) {
+            return repoPartido.listar(busqueda, filtroZona, filtroNivel, null, null);
+     }
 }

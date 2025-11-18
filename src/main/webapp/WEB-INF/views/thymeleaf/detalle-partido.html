@@ -173,6 +173,16 @@
                                         Abandonar partido
                                     </button>
                                 </form>
+                                <!-- Botón Google Calendar -->
+                                <a
+                                    class="btn btn-outline-success w-100"
+                                    th:href="'https://calendar.google.com/calendar/render?action=TEMPLATE&text=' + ${partido.titulo} + '&details=' + ${partido.descripcion} + '&location=' + ${partido.cancha} + '&dates=' + ${partido.fechaGoogleCalendar}"
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    th:if="${!partido.finalizado}"
+                                >
+                                    Agendar en Google Calendar
+                                </a>
                                 <button
                                     id="btn-editar"
                                     class="btn btn-primary w-100"
