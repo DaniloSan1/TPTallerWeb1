@@ -22,8 +22,8 @@
 
         <div class="profile-header">
             <div
-                class="profile-avatar"  
-                th:style="'background: url(' + ${usuario.fotoPerfil} + ') center/cover no-repeat;'"
+                class="profile-avatar"
+                th:style="'background: url(' + ${usuario.fotoPerfil != null ? usuario.fotoPerfil : '../assets/avatar.png'} + ') center/cover no-repeat;'"
             ></div>
         </div>
 

@@ -24,38 +24,20 @@
         <div class="alert alert-info" th:if="${#lists.isEmpty(participantes)}">
             No hay jugadores en este equipo aún
         </div>
-        <ul
+        <div
             th:if="${!#lists.isEmpty(participantes)}"
             id="listado-participantes"
             class="list-group"
         >
-            <li
-                class="participante-item"
+            <div
+                class="position-relative"
                 th:each="participante : ${participantes}"
             >
-                <span class="profile-avatar">
-                    <span
-                        th:if="${participante.esCapitan}"
-                        class="captain-shield material-symbols-outlined"
-                        >chess_queen</span
-                    >
-                </span>
-                <div class="d-flex flex-column">
-                    <strong
-                        class="w-100"
-                        th:text="${participante.nombreCompleto}"
-                    ></strong>
-                    <span
-                        class="w-100"
-                        th:text="${participante.posicionFavorita}"
-                    ></span>
-                    <span
-                        class="w-100"
-                        th:text="${participante.fechaUnion}"
-                    ></span>
-                </div>
+                <div
+                    th:replace="~{fragments/jugador-simple :: jugador-simple (jugador=${participante})}"
+                ></div>
                 <!-- Dropdown -->
-                <div class="dropdown">
+                <div class="dropdown position-absolute top-0 end-0">
                     <button
                         class="btn btn-light dropdown-toggle"
                         type="button"
@@ -127,8 +109,8 @@
                         </li>
                     </ul>
                 </div>
-            </li>
-        </ul>
+            </div>
+        </div>
         <!-- Modal Asignar Equipo -->
         <div
             class="modal fade"

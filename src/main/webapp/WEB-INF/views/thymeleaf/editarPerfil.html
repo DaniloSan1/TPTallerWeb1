@@ -12,25 +12,11 @@
     </head>
 
     <body>
-        <div class="container mt-4">
-            <h2 class="text-center mb-4">Editar Perfil</h2>
+        <!-- Include the navbar fragment -->
+        <div th:replace="~{fragments/navbar :: navbar}"></div>
 
-            <div class="profile-header" style="margin-bottom: 5rem">
-                <label
-                    for="avatarUpload"
-                    class="profile-avatar mt-5"
-                    th:style="'background-image: url(' + ${usuario.fotoPerfil != null ? usuario.fotoPerfil : '/assets/avatar.png'} + ')'"
-                >
-                    <input
-                        type="file"
-                        id="avatarUpload"
-                        name="fotoPerfil"
-                        accept="image/*"
-                        onchange="previewImage(event)"
-                        hidden
-                    />
-                </label>
-            </div>
+        <div class="main container mt-4">
+            <h2 class="text-center mb-4">Editar Perfil</h2>
 
             <div th:if="${error}" class="alert alert-danger mt-3" role="alert">
                 <span th:text="${error}"></span>
@@ -40,9 +26,35 @@
                 th:action="@{/perfil/editar}"
                 th:object="${usuario}"
                 method="post"
+                enctype="multipart/form-data"
                 class="card p-4 shadow mt-5"
             >
                 <input type="hidden" th:field="*{id}" />
+
+                <div class="mb-3">
+                    <label for="avatarUpload" class="form-label"
+                        >Foto de Perfil:</label
+                    >
+                    <input
+                        type="file"
+                        id="avatarUpload"
+                        name="fotoPerfil"
+                        accept="image/*"
+                        class="form-control"
+                    />
+                    <div class="mt-2">
+                        <small class="text-muted">Avatar actual:</small><br />
+                        <img
+                            th:src="${usuario.fotoPerfil != null ? usuario.fotoPerfil : '../assets/avatar.png'}"
+                            alt="Avatar actual"
+                            style="
+                                max-height: 100px;
+                                max-width: 100px;
+                                border-radius: 50%;
+                            "
+                        />
+                    </div>
+                </div>
 
                 <div class="mb-3">
                     <label>Nombre:</label>
@@ -115,12 +127,17 @@
 
         <script>
             function previewImage(event) {
-                const avatar = document.querySelector(".profile-avatar");
                 const file = event.target.files[0];
                 if (file) {
                     const reader = new FileReader();
                     reader.onload = function (e) {
-                        avatar.style.backgroundImage = `url(${e.target.result})`;
+                        // Update the preview image in the form
+                        const previewImg = document.querySelector(
+                            'img[alt="Avatar actual"]'
+                        );
+                        if (previewImg) {
+                            previewImg.src = e.target.result;
+                        }
                     };
                     reader.readAsDataURL(file);
                 }
