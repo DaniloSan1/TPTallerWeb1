@@ -6,8 +6,6 @@
     border-radius: 50%;
     border: 2px solid var(--primary-color);
     margin: 0.5rem;
-    background: url("../assets/avatar.png")
-    center/cover no-repeat;
     position: relative;
 }
 

@@ -22,8 +22,6 @@
     border: 4px solid white;
     position: absolute;
     bottom: -65px;
-    background: url("../assets/avatar.png")
-    center/cover no-repeat;
 }
 
 .profile-card {
