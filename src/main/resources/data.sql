@@ -192,9 +192,9 @@ INSERT INTO SolicitudUnirse (partido_id, creador_id, token, emailDestino, estado
 	(1, 5, 'token-john-4', 'test@unlam.edu.ar', 'PENDIENTE', NOW(), DATE_ADD(NOW(), INTERVAL 2 DAY)),
 	(2, 6, 'token-john-5', 'test@unlam.edu.ar', 'PENDIENTE', NOW(), DATE_ADD(NOW(), INTERVAL 2 DAY));
 
-INSERT INTO Torneo (id, nombre, fecha, precio, estado, cancha_id, organizador_id) VALUES
-(1, 'Torneo Primavera', '2025-11-20', 5000, 'CONFIRMADO', 1, 1),
-(2, 'Torneo Verano', '2025-12-10', 7000, 'CONFIRMADO', 2, 2);
+INSERT INTO Torneo (id, nombre, fecha, finalizado, precio, estado, cancha_id, ganador_id, goleador_id, organizador_id) VALUES
+(1, 'Torneo Primavera', '2025-11-20', 0, 5000, 'CONFIRMADO', 1, null, null, 1),
+(2, 'Torneo Verano', '2025-12-10', 0, 7000, 'CONFIRMADO', 2, null, null, 2);
 
 INSERT INTO InscripcionTorneo (id, fechaInscripcion, torneo_id, equipo_id) VALUES
 (1, NOW(), 1, 1),

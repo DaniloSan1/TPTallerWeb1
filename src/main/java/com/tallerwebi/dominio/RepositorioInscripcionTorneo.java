@@ -7,4 +7,5 @@ public interface RepositorioInscripcionTorneo {
     InscripcionTorneo buscarPorId(Long id);
     void eliminar(InscripcionTorneo inscripcionTorneo);
     List<InscripcionTorneo> buscarPorTorneo(Long idTorneo);
+    List<InscripcionTorneo> listarInscripcionesPorTorneo(Long torneoId);
 }

@@ -50,8 +50,75 @@
                         <strong>Estado:</strong>
                         <span th:text="${torneo.estado}"></span>
                     </p>
+                    <div th:if="${torneo.finalizado}">
+                    <p>
+                        <strong> Ganador:</strong>
+                        <span th:text="${torneo.ganador.nombre}"></span>
+                    </p>
+                </div>
+                <div th:if="${torneo.finalizado}">
+                    <p>
+                        <strong> Goleador:</strong>
+                        <span th:text="${torneo.goleador.nombre}"></span>
+                    </p>
+                </div>
                 </div>
             </div>
+            <div th:if="${usuario != null and torneo.organizador.id == usuario.id and !torneo.finalizado}">
+    <button class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#modalFinalizar">
+        Finalizar torneo
+    </button>
+</div>
+
+<!-- Modal Finalizar Torneo -->
+<div class="modal fade" id="modalFinalizar" tabindex="-1" aria-labelledby="modalFinalizarLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+
+            <!-- Header -->
+            <div class="modal-header">
+                <h5 class="modal-title" id="modalFinalizarLabel">Finalizar Torneo</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+
+            <!-- Body -->
+            <div class="modal-body">
+
+                <form th:action="@{/torneos/finalizar/{id}(id=${torneo.id})}" method="post" id="formFinalizar">
+
+                    <label class="form-label">Equipo ganador</label>
+                    <select name="ganadorId" class="form-select mb-3">
+                        <option th:each="insc : ${inscripciones}"
+                                th:value="${insc.equipo.id}"
+                                th:text="${insc.equipo.nombre}">
+                        </option>
+                    </select>
+
+                    <label class="form-label">Goleador</label>
+                    <select name="goleadorId" class="form-select mb-3">
+                        <th:block th:each="insc : ${inscripciones}">
+                            <th:block th:each="ej : ${insc.equipo.jugadores}">
+                                <option th:value="${ej.usuario.id}"
+                                        th:text="${ej.usuario.nombre}">
+                                </option>
+                            </th:block>
+                        </th:block>
+                    </select>
+
+                </form>
+
+            </div>
+
+            <!-- Footer -->
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                <button type="submit" form="formFinalizar" class="btn btn-success">Finalizar torneo</button>
+            </div>
+
+        </div>
+    </div>
+</div>
+
 
             <!-- Equipos inscritos -->
             <div class="card mt-3" th:if="${inscripciones != null}">
@@ -107,7 +174,6 @@
                     </div>
                 </div>
             </div>
-
             <!-- Formulario para inscribirse -->
             <div class="card mt-4">
                 <div class="card-header">
@@ -145,6 +211,39 @@
             type="text/javascript"
             th:src="@{/webjars/bootstrap/5.2.0/js/bootstrap.bundle.min.js}"
         ></script>
+        <script th:if="${torneo.finalizado}">
+    window.TORNEO_FINALIZADO = true;
+</script>
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+
+    // Si el torneo está finalizado → deshabilitar todo
+    if (window.TORNEO_FINALIZADO === true) {
+
+        console.log("Torneo finalizado → deshabilitando botones en la vista...");
+
+        // Todos los botones
+        document.querySelectorAll("button").forEach(btn => {
+            btn.disabled = true;
+        });
+
+        // Todos los inputs, selects y textareas
+        document.querySelectorAll("input, select, textarea").forEach(el => {
+            el.disabled = true;
+        });
+
+        // Además, prevenir apertura del modal
+        const modalElement = document.getElementById("modalFinalizar");
+        if (modalElement) {
+            modalElement.classList.remove("show");
+            modalElement.style.display = "none";
+        }
+    }
+
+});
+</script>
+
         <!-- Include the footer fragment -->
         <footer th:replace="~{fragments/footer :: footer}"></footer>
     </body>

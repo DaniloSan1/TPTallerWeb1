@@ -143,6 +143,7 @@ public String verTorneoDisponible(@PathVariable Long id,
     Usuario usuario;
     try {
         usuario = servicioLogin.buscarPorEmail(email);
+        model.put("usuario", usuario);
         Equipo equipoDelUsuario = servicioEquipo.buscarEquipoDelUsuario(usuario);
         List<Equipo> equiposDisponibles = servicioEquipo.buscarEquiposPorUsuario(usuario);
         model.put("usuarioPerteneceAEquipo", equipoDelUsuario);
@@ -178,6 +179,9 @@ public String verTorneoDisponible(@PathVariable Long id,
     model.put("inscripciones", inscripciones);
     model.put("yaInscripto", yaInscripto);
     model.put("inscripcionId", inscripcionId);
+    model.put("ganador", torneo.getGanador());
+    model.put("goleador", torneo.getGoleador());
+
     return "TorneoDisponibleDetalle";
 }
 
@@ -246,6 +250,21 @@ public String cancelarInscripcion(@PathVariable Long torneoId,
     }
 
     return "redirect:/torneos/disponible/" + torneoId;
+}
+@PostMapping("/finalizar/{id}")
+public String finalizarTorneo(@PathVariable Long id,
+                              @RequestParam Long ganadorId,
+                              @RequestParam Long goleadorId,
+                              RedirectAttributes redirectAttributes) {
+
+    try {
+        servicioTorneo.finalizarTorneo(id, ganadorId, goleadorId);
+        redirectAttributes.addFlashAttribute("mensajeExito", "Torneo finalizado correctamente.");
+    } catch (Exception e) {
+        redirectAttributes.addFlashAttribute("mensajeError", e.getMessage());
+    }
+
+    return "redirect:/torneos/disponible/" + id;
 }
 
 }

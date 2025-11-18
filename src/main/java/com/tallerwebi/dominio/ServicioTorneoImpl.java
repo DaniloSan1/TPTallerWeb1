@@ -16,12 +16,18 @@ public class ServicioTorneoImpl implements ServicioTorneo {
 
     private final RepositorioTorneo repositorioTorneo;
     private final RepositorioReserva repositorioReserva;
+    private final RepositorioEquipo repositorioEquipo;
+    private final RepositorioUsuario repositorioUsuario;
 
     @Autowired
     public ServicioTorneoImpl(RepositorioTorneo repositorioTorneo,
-                              RepositorioReserva repositorioReserva) {
+                              RepositorioReserva repositorioReserva,
+                              RepositorioEquipo repositorioEquipo,
+                              RepositorioUsuario repositorioUsuario) {
         this.repositorioTorneo = repositorioTorneo;
         this.repositorioReserva = repositorioReserva;
+        this.repositorioEquipo = repositorioEquipo;
+        this.repositorioUsuario = repositorioUsuario;
     }
 
     @Override
@@ -85,4 +91,30 @@ public class ServicioTorneoImpl implements ServicioTorneo {
     public boolean existeTorneoEnFecha(Cancha cancha, LocalDate fecha) {
         return repositorioTorneo.existeCanchaYFecha(cancha, fecha);
     }
+    @Override
+public void finalizarTorneo(Long torneoId, Long ganadorId, Long goleadorId) {
+
+    Torneo torneo = repositorioTorneo.porId(torneoId);
+    if (torneo == null) {
+        throw new RuntimeException("El torneo no existe.");
+    }
+
+    if (torneo.isFinalizado()) {
+        throw new RuntimeException("El torneo ya fue finalizado.");
+    }
+
+    Equipo ganador = repositorioEquipo.buscarPorId(ganadorId);
+    Usuario goleador = repositorioUsuario.buscarPorId(goleadorId);
+
+    if (ganador == null || goleador == null) {
+        throw new RuntimeException("Datos inválidos para finalizar el torneo.");
+    }
+
+    torneo.setGanador(ganador);
+    torneo.setGoleador(goleador);
+    torneo.setFinalizado(true);
+    torneo.setEstado("FINALIZADO");
+
+    repositorioTorneo.actualizarTorneo(torneo);
+}
 }
