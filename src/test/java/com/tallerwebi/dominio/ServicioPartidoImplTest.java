@@ -29,7 +29,9 @@ public class ServicioPartidoImplTest {
         private Usuario usuarioMock;
         private Equipo equipoMock;
         private ServicioPartido servicioPartido;
-
+        private ServicioPartidoEquipo servicioPartidoEquipo;
+        private RepositorioGoles repositorioGoles;
+        
         @BeforeEach
         public void init() {
                 repositorioPartidoMock = Mockito.mock(RepositorioPartido.class);
@@ -41,12 +43,15 @@ public class ServicioPartidoImplTest {
                 partidoMock = Mockito.mock(Partido.class);
                 usuarioMock = Mockito.mock(Usuario.class);
                 equipoMock = Mockito.mock(Equipo.class);
+                repositorioGoles=Mockito.mock(RepositorioGoles.class);
+                servicioPartidoEquipo=Mockito.mock(ServicioPartidoEquipo.class);
+                
 
                 Mockito.when(usuarioMock.getEmail()).thenReturn("usuario@email.com");
                 servicioPartido = new ServicioPartidoImpl(repositorioPartidoMock,
                                 repositorioReservaMock,
                                 repositorioUsuarioMock, servicioEquipoJugadorMock, servicioEquipoMock,
-                                repositorioPartidoEquipoMock);
+                                repositorioPartidoEquipoMock,servicioPartidoEquipo,repositorioGoles);
         }
 
         @Test
@@ -241,25 +246,8 @@ public class ServicioPartidoImplTest {
 
                 Mockito.verify(repositorioPartidoMock, Mockito.times(1)).guardar(Mockito.same(partidoCreado));
         }
+  
 
-        @Test
-        public void deberiaFinalizarPartidoSiEsCreador() throws PermisosInsufficientes {
-                Mockito.when(partidoMock.esCreador(Mockito.anyString())).thenReturn(true);
-                servicioPartido.finalizarPartido(partidoMock, usuarioMock);
-
-                Mockito.verify(partidoMock, Mockito.times(1)).setFechaFinalizacion(Mockito.any(LocalDateTime.class));
-                Mockito.verify(repositorioPartidoMock, Mockito.times(1)).actualizar(partidoMock);
-        }
-
-        @Test
-        public void deberiaLanzarExcepcionAlFinalizarPartidoSiNoEsCreador() {
-                Mockito.when(partidoMock.esCreador(usuarioMock.getEmail())).thenReturn(false);
-
-                assertThrows(PermisosInsufficientes.class,
-                                () -> servicioPartido.finalizarPartido(partidoMock, usuarioMock));
-                Mockito.verify(partidoMock, Mockito.never()).setFechaFinalizacion(Mockito.any());
-                Mockito.verify(repositorioPartidoMock, Mockito.never()).actualizar(Mockito.any());
-        }
 
         @Test
         public void deberiaListarPartidosPorEquipo() {

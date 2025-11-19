@@ -30,7 +30,6 @@ public class ServicioGolesImpl implements ServicioGoles {
     @Override
     @Transactional
     public void registrarGoles(Partido partido, List<Gol> goles, Usuario usuario) {
-        servicioPartido.finalizarPartido(partido, usuario);
 
         for (Gol gol : goles) {
             repositorioGoles.guardar(gol);
@@ -58,7 +57,7 @@ public class ServicioGolesImpl implements ServicioGoles {
 
     Usuario usuario = servicioUsuario.buscarPorId(usuarioId);
     List<Gol> golesDelUsuario = repositorioGoles.buscarPorUsuario(usuarioId);
-    List<Partido> partidos = servicioPartido.listarPorParticipante(usuario);
+    List<Partido> partidos = servicioPartido.partidosTerminadosDelUsuario(usuarioId);
 
     int partidosJugados = partidos.size();
 

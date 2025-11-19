@@ -35,6 +35,10 @@ public class Partido {
     @Column(name = "fecha_finalizacion")
     private LocalDateTime fechaFinalizacion;
 
+    @ManyToOne
+    @JoinColumn(name = "equipo_ganador_id")
+    private Equipo equipoGanador;
+
     // Constructor por defecto para JPA
     public Partido() {
     }
@@ -204,5 +208,13 @@ public class Partido {
 
     public boolean getFinalizado() {
         return fechaFinalizacion != null;
+    }
+
+    public Equipo getEquipoGanador() {
+    return equipoGanador;
+    }
+
+    public void setEquipoGanador(Equipo equipoGanador) {
+    this.equipoGanador = equipoGanador;
     }
 }

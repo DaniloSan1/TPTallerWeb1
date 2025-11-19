@@ -20,4 +20,9 @@ public interface RepositorioPartido {
 
     List<Partido> listarPorEquipoConInfoCancha(Long idEquipo);
 
+    List<Partido> partidosTerminadosDelUsuario(Long usuarioId);
+
+     List<Partido> partidosGanadosDelUsuario(Long usuarioId);
+
+
 }

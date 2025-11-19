@@ -24,6 +24,7 @@ public class ControladorUsuario {
     private ServicioCalificacion servicioCalificacion;
     private ServicioNotificacionDeUsuario servicioNotificacionDeUsuario;
     private ServicioGoles servicioGoles;
+    private ServicioPartido servicioPartido;
 
     // Single constructor with all dependencies to avoid ambiguity during injection
     @Autowired
@@ -32,7 +33,7 @@ public class ControladorUsuario {
                               ServicioAmistad servicioAmistad,
                               ServicioSolicitudUnirse servicioSolicitudUnirse,
                               ServicioCalificacion servicioCalificacion,
-                              ServicioNotificacionDeUsuario servicioNotificacionDeUsuario,ServicioGoles servicioGoles) {
+                              ServicioNotificacionDeUsuario servicioNotificacionDeUsuario,ServicioGoles servicioGoles,ServicioPartido servicioPartido) {
         this.servicioLogin = servicioLogin;
         this.servicioUsuario = servicioUsuario;
         this.servicioAmistad = servicioAmistad;
@@ -40,6 +41,7 @@ public class ControladorUsuario {
         this.servicioCalificacion = servicioCalificacion;
         this.servicioNotificacionDeUsuario = servicioNotificacionDeUsuario;
         this.servicioGoles=servicioGoles;
+        this.servicioPartido=servicioPartido;
     }
 
     // Backwards-compatible constructor used in tests or contexts where ServicioNotificacionDeUsuario
@@ -48,9 +50,9 @@ public class ControladorUsuario {
                               ServicioUsuario servicioUsuario,
                               ServicioAmistad servicioAmistad,
                               ServicioNotificacionDeUsuario servicioNotificacionDeUsuario,
-                              ServicioCalificacion servicioCalificacion,ServicioGoles servicioGoles) {
+                              ServicioCalificacion servicioCalificacion,ServicioGoles servicioGoles,ServicioPartido servicioPartido) {
         // Keep servicioSolicitudUnirse as null for backwards compatibility
-        this(servicioLogin, servicioUsuario, servicioAmistad, null, servicioCalificacion, servicioNotificacionDeUsuario,servicioGoles);
+        this(servicioLogin, servicioUsuario, servicioAmistad, null, servicioCalificacion, servicioNotificacionDeUsuario,servicioGoles,servicioPartido);
     }
 
     @GetMapping("/ver/id/{id}")
@@ -79,6 +81,10 @@ public class ControladorUsuario {
             Double calificacionPromedioUsuario = servicioCalificacion.calcularCalificacionPromedioUsuario(usuarioAVer.getId());
             int golesTotalesUsuario=servicioGoles.devolverCantidadTotalDeGolesDelUsuario(usuarioAVer.getId());
             Double golesPromedioUsuario=servicioGoles.devolverGolesPromedioPorPartidoDelUsuario(usuarioAVer.getId());
+            int partidosJugadosUsuario=servicioPartido.partidosTerminadosDelUsuario(usuarioAVer.getId()).size();
+            int partidosGanadosUsuario=servicioPartido.partidosGanadosDelUsuario(usuarioAVer.getId()).size();
+            modelo.addAttribute("partidosJugadosUsuario", partidosJugadosUsuario);
+            modelo.addAttribute("partidosGanadosUsuario", partidosGanadosUsuario);
             modelo.addAttribute("calificacionPromedioUsuario", calificacionPromedioUsuario);
             modelo.addAttribute("golesPromedioUsuario", golesPromedioUsuario);
             modelo.addAttribute("golesTotalesUsuario",golesTotalesUsuario);
@@ -107,6 +113,10 @@ public class ControladorUsuario {
         Double calificacionPromedioUsuario = servicioCalificacion.calcularCalificacionPromedioUsuario(usuarioAVer.getId());
         int golesTotalesUsuario=servicioGoles.devolverCantidadTotalDeGolesDelUsuario(usuarioAVer.getId());
         Double golesPromedioUsuario=servicioGoles.devolverGolesPromedioPorPartidoDelUsuario(usuarioAVer.getId());
+        int partidosJugadosUsuario=servicioPartido.partidosTerminadosDelUsuario(usuarioAVer.getId()).size();
+        int partidosGanadosUsuario=servicioPartido.partidosGanadosDelUsuario(usuarioAVer.getId()).size();
+        modelo.addAttribute("partidosJugadosUsuario",partidosJugadosUsuario);
+        modelo.addAttribute("partidosGanadosUsuario", partidosGanadosUsuario);
         modelo.addAttribute("golesTotalesUsuario",golesTotalesUsuario);
         modelo.addAttribute("golesPromedioUsuario", golesPromedioUsuario);
         modelo.addAttribute("calificacionPromedioUsuario", calificacionPromedioUsuario);
@@ -132,6 +142,10 @@ public class ControladorUsuario {
             Double calificacionPromedio = servicioCalificacion.calcularCalificacionPromedioUsuario(usuario.getId());
             int golesTotales=servicioGoles.devolverCantidadTotalDeGolesDelUsuario(usuario.getId());
             Double golesPromedio=servicioGoles.devolverGolesPromedioPorPartidoDelUsuario(usuario.getId());
+            int partidosJugados=servicioPartido.partidosTerminadosDelUsuario(usuario.getId()).size();
+            int partidosGanados=servicioPartido.partidosGanadosDelUsuario(usuario.getId()).size();
+            modelo.addAttribute("partidosJugados", partidosJugados);
+            modelo.addAttribute("partidosGanados", partidosGanados);
             modelo.addAttribute("golesTotales", golesTotales);
             modelo.addAttribute("calificacionPromedio", calificacionPromedio);
             modelo.addAttribute("golesPromedio", golesPromedio);

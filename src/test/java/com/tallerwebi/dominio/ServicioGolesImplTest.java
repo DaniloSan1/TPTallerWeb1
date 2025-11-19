@@ -55,7 +55,6 @@ public class ServicioGolesImplTest {
         servicioGoles.registrarGoles(partido, goles, usuario);
 
         // Assert
-        verify(servicioPartido).finalizarPartido(partido, usuario);
         verify(repositorioGoles, times(2)).guardar(any(Gol.class));
         verify(servicioPartidoEquipo).actualizarGolesPorEquipo(partido);
     }

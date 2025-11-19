@@ -32,6 +32,7 @@ public class ControladorUsuarioTest {
     private ServicioUsuario servicioUsuarioMock;
     private ServicioAmistad servicioAmistadMock;
     private ServicioNotificacionDeUsuario servicioNotificacionMock;
+    private ServicioPartido servicioPartidoMock;
     private ServicioGoles servicioGolesMock;
     private ServicioCalificacion servicioCalificacionMock;
     private ControladorUsuario controladorUsuario;
@@ -47,9 +48,10 @@ public class ControladorUsuarioTest {
         servicioAmistadMock = mock(ServicioAmistad.class);
         servicioCalificacionMock = mock(ServicioCalificacion.class);
         servicioGolesMock=mock(ServicioGoles.class);
+        servicioPartidoMock=mock(ServicioPartido.class);
         sessionMock = mock(HttpSession.class);
         httpServletRequestMock = mock(HttpServletRequest.class);
-        controladorUsuario = new ControladorUsuario(servicioLoginMock, servicioUsuarioMock, servicioAmistadMock, null, servicioCalificacionMock,servicioGolesMock);
+        controladorUsuario = new ControladorUsuario(servicioLoginMock, servicioUsuarioMock, servicioAmistadMock, null, servicioCalificacionMock,servicioGolesMock,servicioPartidoMock);
 
         requestMock = mock(HttpServletRequest.class);
         usuarioMock = mock(Usuario.class);
