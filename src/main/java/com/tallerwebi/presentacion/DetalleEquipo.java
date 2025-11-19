@@ -16,8 +16,10 @@ public class DetalleEquipo {
     private String descripcion;
     private LocalDate fechaCreacion;
     private String insigniaUrl;
+    private Long creadorId;
     private List<DetalleParticipante> listaJugadores;
     private List<DetallePartidoLista> listaPartidos;
+    private String tipo;
 
     public DetalleEquipo(Equipo equipo, List<Partido> partidos, List<EquipoJugador> jugadores, Usuario usuario) {
         this.id = equipo.getId();
@@ -25,10 +27,12 @@ public class DetalleEquipo {
         this.descripcion = equipo.getDescripcion();
         this.fechaCreacion = equipo.getFechaCreacion().toLocalDate();
         this.insigniaUrl = equipo.getInsigniaUrl();
+        this.creadorId = equipo.getCreadoPor().getId();
         listaJugadores = jugadores.stream().map(DetalleParticipante::new)
                 .collect(Collectors.toList());
         listaPartidos = partidos.stream()
                 .map(partido -> new DetallePartidoLista(partido, usuario)).collect(Collectors.toList());
+        this.tipo = equipo.getTipo().toString();
 
     }
 
@@ -52,11 +56,19 @@ public class DetalleEquipo {
         return insigniaUrl;
     }
 
+    public Long getCreadorId() {
+        return creadorId;
+    }
+
     public List<DetalleParticipante> getListaJugadores() {
         return listaJugadores;
     }
 
     public List<DetallePartidoLista> getListaPartidos() {
         return listaPartidos;
+    }
+
+    public String getTipo() {
+        return tipo;
     }
 }

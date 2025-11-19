@@ -11,4 +11,6 @@ public interface RepositorioNotificacion {
     public void marcarComoLeida(Long id);
     public void eliminarNotificacion(NotificacionDeUsuario notificacionDeUsuario);
     public NotificacionDeUsuario obtenerNotificacion(Long id);
+    public void actualizar(NotificacionDeUsuario notificacionDeUsuario);
+    public Integer contarNoLeidas(Long idUsuario);
 }

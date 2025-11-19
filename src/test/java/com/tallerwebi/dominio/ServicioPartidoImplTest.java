@@ -228,6 +228,15 @@ public class ServicioPartidoImplTest {
 
                 Usuario usuarioCreadorPartido = new Usuario("mora", "123", "mora@unlam.edu.ar", "usernameMora");
 
+                Equipo equipo1Mock = Mockito.mock(Equipo.class);
+                Equipo equipo2Mock = Mockito.mock(Equipo.class);
+                Mockito.when(servicioEquipoMock.crearEquipo("Equipo 1", "Equipo generado para Título X",
+                                "https://www.ligaprofesional.ar/wp-content/uploads/2024/06/BOC-escudo.png", usuarioCreadorPartido, TipoEquipo.PUBLICO))
+                                .thenReturn(equipo1Mock);
+                Mockito.when(servicioEquipoMock.crearEquipo("Equipo 2", "Equipo generado para Título X",
+                                "https://www.ligaprofesional.ar/wp-content/uploads/2024/06/BOC-escudo.png", usuarioCreadorPartido, TipoEquipo.PUBLICO))
+                                .thenReturn(equipo2Mock);
+
                 Partido partidoCreado = servicioPartido.crearDesdeReserva(
                                 reserva,
                                 "Título X",

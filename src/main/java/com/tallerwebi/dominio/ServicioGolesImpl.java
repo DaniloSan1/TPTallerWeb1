@@ -50,7 +50,7 @@ public class ServicioGolesImpl implements ServicioGoles {
         }
         return cantidad;
     }
-
+    
     @Override
     public Double devolverGolesPromedioPorPartidoDelUsuario(Long usuarioId) {
     Double cantidadPromedio = 0.0;

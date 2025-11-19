@@ -14,6 +14,7 @@ public class DetalleParticipante {
     private String equipo;
     private LocalDateTime fechaUnion;
     private boolean esCapitan;
+    private String fotoPerfilUrl;
 
     public DetalleParticipante(EquipoJugador equipoJugador) {
         this.id = equipoJugador.getId();
@@ -25,6 +26,7 @@ public class DetalleParticipante {
         this.fechaUnion = equipoJugador.getFechaUnion();
         this.username = equipoJugador.getUsuario().getUsername();
         this.esCapitan = equipoJugador.isEsCapitan();
+        this.fotoPerfilUrl = equipoJugador.getUsuario().getFotoPerfil();
     }
 
     public Long getId() {
@@ -61,5 +63,9 @@ public class DetalleParticipante {
 
     public boolean isEsCapitan() {
         return esCapitan;
+    }
+
+    public String getFotoPerfilUrl() {
+        return fotoPerfilUrl;
     }
 }

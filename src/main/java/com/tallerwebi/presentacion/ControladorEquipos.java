@@ -8,6 +8,7 @@ import com.tallerwebi.dominio.ServicioEquipoJugador;
 import com.tallerwebi.dominio.ServicioImagenes;
 import com.tallerwebi.dominio.ServicioLogin;
 import com.tallerwebi.dominio.ServicioPartido;
+import com.tallerwebi.dominio.TipoEquipo;
 import com.tallerwebi.dominio.Usuario;
 import com.tallerwebi.dominio.excepcion.EquipoNoEncontrado;
 import com.tallerwebi.dominio.excepcion.PermisosInsufficientes;
@@ -239,8 +240,8 @@ public class ControladorEquipos {
             }
 
             // Create equipo
-            Equipo equipo = servicioEquipo.crearEquipo(nombre.trim(), descripcion.trim(), insigniaUrl, usuario);
-
+            Equipo equipo = servicioEquipo.crearEquipo(nombre.trim(), descripcion.trim(), insigniaUrl, usuario, TipoEquipo.PRIVADO);
+            servicioEquipoJugador.crearEquipoJugador(equipo, usuario); // Agregar creador como jugador
             redirectAttributes.addFlashAttribute("success", "Equipo creado exitosamente");
             return "redirect:/equipos/" + equipo.getId();
         } catch (UsuarioNoEncontradoException e) {

@@ -113,7 +113,6 @@ public class RepositorioPartidoImpl implements RepositorioPartido {
    @Override
    public List<Partido> listarPorParticipante(Long usuarioId) {
        final Session session = sessionFactory.getCurrentSession();
-       // Buscamos partidos donde el usuario forma parte de alguno de los equipos
        String hql = "SELECT DISTINCT p FROM Partido p " +
                "JOIN p.equipos pe " +
                "JOIN pe.equipo e " +

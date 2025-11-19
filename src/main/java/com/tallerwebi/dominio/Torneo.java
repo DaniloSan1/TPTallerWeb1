@@ -18,6 +18,14 @@ public class Torneo {
 
     private LocalDate fecha; // el torneo ocupa un día completo
 
+    @OneToOne
+    private Equipo ganador;
+
+    @OneToOne
+    private Usuario goleador;
+
+    private Boolean finalizado = false;
+    
     @ManyToOne
     @JoinColumn(name = "cancha_id", nullable = false)
     private Cancha cancha;
@@ -78,5 +86,23 @@ public class Torneo {
     }
     public void setOrganizador(Usuario organizador) { 
         this.organizador = organizador; 
+    }
+    public Boolean isFinalizado() { 
+        return finalizado; 
+    }
+    public void setFinalizado(Boolean finalizado) { 
+        this.finalizado = finalizado; 
+    }
+    public Equipo getGanador() { 
+        return ganador; 
+    }
+    public void setGanador(Equipo ganador) { 
+        this.ganador = ganador; 
+    }
+    public Usuario getGoleador() { 
+        return goleador; 
+    }
+    public void setGoleador(Usuario goleador) { 
+        this.goleador = goleador; 
     }
 }

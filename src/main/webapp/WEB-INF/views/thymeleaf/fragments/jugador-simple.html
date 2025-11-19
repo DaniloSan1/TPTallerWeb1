@@ -2,25 +2,25 @@
 <html lang="es" xmlns:th="http://www.thymeleaf.org">
     <head> </head>
     <body th:fragment="jugador-simple (jugador)">
-        <div class="card">
+        <div class="card p-2">
             <div class="d-flex">
                 <div
                     class="d-flex flex-column justify-content-between align-items-center"
                 >
-                    <span class="avatar-jugador"></span>
-
                     <span
-                        id="chapita-capitan"
-                        th:if="${jugador.esCapitan}"
-                        class="material-symbols-outlined p-1"
-                        >label_important</span
-                    >
+                        class="avatar-jugador"
+                        th:style="'background: url(' + ${jugador.fotoPerfilUrl != null ? jugador.fotoPerfilUrl : '../assets/avatar.png'} + ') center/cover no-repeat;'"
+                    ></span>
                 </div>
                 <div class="detalle-jugador">
-                    <h5
-                        class="card-title d-flex align-items-center justify-content-between"
-                    >
+                    <h5 class="card-title d-flex align-items-center">
                         <span th:text="${jugador.nombreCompleto}"></span>
+                        <span
+                            id="chapita-capitan"
+                            th:if="${jugador.esCapitan}"
+                            class="material-symbols-outlined p-1"
+                            >label_important</span
+                        >
                     </h5>
                     <ul class="list-group list-group-flush">
                         <li

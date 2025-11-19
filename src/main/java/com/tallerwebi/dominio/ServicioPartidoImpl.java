@@ -43,11 +43,6 @@ public class ServicioPartidoImpl implements ServicioPartido {
     }
 
     @Override
-    public List<Partido> listarTodos(String busqueda, Zona filtroZona, Nivel filtroNivel, java.time.LocalDate fechaFiltro, Long canchaId) {
-        return repoPartido.listar(busqueda, filtroZona, filtroNivel, fechaFiltro, canchaId);
-    }
-
-    @Override
     public Partido crearDesdeReserva(Reserva nuevaReserva, String titulo, String descripcion, Nivel nivel,
             int cupoMaximo, Usuario usuario) {
 
@@ -71,9 +66,9 @@ public class ServicioPartidoImpl implements ServicioPartido {
         // Crear dos equipos por defecto
         String defaultInsignia = "https://www.ligaprofesional.ar/wp-content/uploads/2024/06/BOC-escudo.png";
         Equipo equipo1 = servicioEquipo.crearEquipo("Equipo 1", "Equipo generado para " + partido.getTitulo(),
-                defaultInsignia, usuario);
+                defaultInsignia, usuario, TipoEquipo.PUBLICO);
         Equipo equipo2 = servicioEquipo.crearEquipo("Equipo 2", "Equipo generado para " + partido.getTitulo(),
-                defaultInsignia, usuario);
+                defaultInsignia, usuario, TipoEquipo.PUBLICO);
 
         // Crear las relaciones PartidoEquipo
         PartidoEquipo partidoEquipo1 = new PartidoEquipo(partido, equipo1);
@@ -225,10 +220,9 @@ public class ServicioPartidoImpl implements ServicioPartido {
         return repoPartido.listarPorEquipoConInfoCancha(equipo.getId());
     }
 
-    @Override
-    public List<Partido> listarTodos(String busqueda, Zona filtroZona, Nivel filtroNivel) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'listarTodos'");
+     @Override
+    public List<Partido> listarTodos(String busqueda, Zona filtroZona, Nivel filtroNivel, java.time.LocalDate fechaFiltro, Long canchaId) {
+        return repoPartido.listar(busqueda, filtroZona, filtroNivel, fechaFiltro, canchaId);
     }
 
     @Override
@@ -241,4 +235,8 @@ public class ServicioPartidoImpl implements ServicioPartido {
         return repoPartido.partidosGanadosDelUsuario(usuarioId);
     }
 
+     @Override
+     public List<Partido> listarTodos(String busqueda, Zona filtroZona, Nivel filtroNivel) {
+            return repoPartido.listar(busqueda, filtroZona, filtroNivel, null, null);
+     }
 }

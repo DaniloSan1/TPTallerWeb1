@@ -1,5 +1,21 @@
 body {
-    background-color: #f0f2f5;
+    background-color: #e8e9ef;
+}
+
+main {
+    padding-top: 2rem;
+    padding-bottom: 2rem;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+footer {
+    background-color: #0b0e25;
+    color: white;
+    padding: 2rem 0;
+    text-align: center;
+    margin-top: auto;
 }
 
 :root {

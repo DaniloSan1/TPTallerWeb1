@@ -1,18 +1,16 @@
 
 .avatar-jugador {
     background-color: #f7f7f7 !important;
-    width: 3rem;
-    height: 3rem;
+    width: 6rem;
+    height: 6rem;
     border-radius: 50%;
     border: 2px solid var(--primary-color);
     margin: 0.5rem;
-    background: url("../assets/avatar.png")
-    center/cover no-repeat;
     position: relative;
 }
 
 .detalle-jugador {
-    width: calc(100% - 3rem);
+    width: calc(100% - 6rem);
     padding: 0.5rem;
 }
 

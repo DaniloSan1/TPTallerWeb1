@@ -1,83 +1,150 @@
 <!DOCTYPE html>
 <html lang="es" xmlns:th="http://www.thymeleaf.org">
-<head>
-    <meta charset="utf-8">
-    <title>Editar perfil</title>
-    <link rel="stylesheet" th:href="@{/webjars/bootstrap/5.2.0/css/bootstrap.min.css}">
-    <link rel="stylesheet" th:href="@{/css/main.css}" />
-    <link rel="stylesheet" th:href="@{/css/perfil.css}" />
-</head>
+    <head>
+        <meta charset="utf-8" />
+        <title>Editar perfil</title>
+        <link
+            rel="stylesheet"
+            th:href="@{/webjars/bootstrap/5.2.0/css/bootstrap.min.css}"
+        />
+        <link rel="stylesheet" th:href="@{/css/main.css}" />
+        <link rel="stylesheet" th:href="@{/css/perfil.css}" />
+    </head>
 
-<body>
+    <body>
+        <!-- Include the navbar fragment -->
+        <div th:replace="~{fragments/navbar :: navbar}"></div>
 
-<div class="container mt-4">
-    <h2 class="text-center mb-4">Editar Perfil</h2>
+        <div class="main container mt-4">
+            <h2 class="text-center mb-4">Editar Perfil</h2>
 
-    <div class="profile-header" style="margin-bottom: 5rem;">
-        <label for="avatarUpload" class="profile-avatar mt-5"
-               th:style="'background-image: url(' + ${usuario.fotoPerfil != null ? usuario.fotoPerfil : '/assets/avatar.png'} + ')'">
-            <input type="file" id="avatarUpload" name="fotoPerfil" accept="image/*" onchange="previewImage(event)" hidden>
-        </label>
-    </div>
+            <div th:if="${error}" class="alert alert-danger mt-3" role="alert">
+                <span th:text="${error}"></span>
+            </div>
 
+            <form
+                th:action="@{/perfil/editar}"
+                th:object="${usuario}"
+                method="post"
+                enctype="multipart/form-data"
+                class="card p-4 shadow mt-5"
+            >
+                <input type="hidden" th:field="*{id}" />
 
-    <div th:if="${error}" class="alert alert-danger mt-3" role="alert">
-        <span th:text="${error}"></span>
-    </div>
+                <div class="mb-3">
+                    <label for="avatarUpload" class="form-label"
+                        >Foto de Perfil:</label
+                    >
+                    <input
+                        type="file"
+                        id="avatarUpload"
+                        name="fotoPerfil"
+                        accept="image/*"
+                        class="form-control"
+                    />
+                    <div class="mt-2">
+                        <small class="text-muted">Avatar actual:</small><br />
+                        <img
+                            th:src="${usuario.fotoPerfil != null ? usuario.fotoPerfil : '../assets/avatar.png'}"
+                            alt="Avatar actual"
+                            style="
+                                max-height: 100px;
+                                max-width: 100px;
+                                border-radius: 50%;
+                            "
+                        />
+                    </div>
+                </div>
 
+                <div class="mb-3">
+                    <label>Nombre:</label>
+                    <input
+                        type="text"
+                        th:field="*{nombre}"
+                        class="form-control editable"
+                    />
+                </div>
 
-    <form th:action="@{/perfil/editar}" th:object="${usuario}" method="post" class="card p-4 shadow mt-5">
-        <input type="hidden" th:field="*{id}" />
+                <div class="mb-3">
+                    <label>Apellido:</label>
+                    <input
+                        type="text"
+                        th:field="*{apellido}"
+                        class="form-control editable"
+                    />
+                </div>
 
-        <div class="mb-3">
-            <label>Nombre:</label>
-            <input type="text" th:field="*{nombre}" class="form-control editable">
+                <div class="mb-3">
+                    <label>Username:</label>
+                    <input
+                        type="text"
+                        th:field="*{username}"
+                        class="form-control editable"
+                    />
+                </div>
+
+                <div class="mb-3">
+                    <label for="posicion_favorita" class="form-label"
+                        >Posición Favorita:</label
+                    >
+                    <select
+                        class="form-select editable"
+                        th:field="*{posicionFavorita}"
+                        id="posicion_favorita"
+                        required
+                    >
+                        <option value="" disabled>
+                            Seleccione su posición favorita
+                        </option>
+                        <option value="Delantero">Delantero</option>
+                        <option value="Mediocampista">Mediocampista</option>
+                        <option value="Defensa">Defensa</option>
+                        <option value="Arquero">Arquero</option>
+                    </select>
+                </div>
+
+                <div class="mt-3 d-flex justify-content-between">
+                    <button
+                        type="submit"
+                        id="guardarBtn"
+                        class="btn btn-success"
+                    >
+                        Guardar cambios
+                    </button>
+                    <a
+                        href="/spring/perfil"
+                        id="cancelar"
+                        class="btn btn-danger"
+                        >Cancelar</a
+                    >
+                </div>
+            </form>
         </div>
 
-        <div class="mb-3">
-            <label>Apellido:</label>
-            <input type="text" th:field="*{apellido}" class="form-control editable">
-        </div>
+        <script
+            th:src="@{/webjars/bootstrap/5.2.0/js/bootstrap.bundle.min.js}"
+        ></script>
 
-        <div class="mb-3">
-            <label>Username:</label>
-            <input type="text" th:field="*{username}" class="form-control editable">
-        </div>
+        <script>
+            function previewImage(event) {
+                const file = event.target.files[0];
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = function (e) {
+                        // Update the preview image in the form
+                        const previewImg = document.querySelector(
+                            'img[alt="Avatar actual"]'
+                        );
+                        if (previewImg) {
+                            previewImg.src = e.target.result;
+                        }
+                    };
+                    reader.readAsDataURL(file);
+                }
+            }
+        </script>
 
-        <div class="mb-3">
-            <label for="posicion_favorita" class="form-label">Posición Favorita:</label>
-            <select class="form-select editable" th:field="*{posicionFavorita}" id="posicion_favorita" required>
-                <option value="" disabled>Seleccione su posición favorita</option>
-                <option value="Delantero">Delantero</option>
-                <option value="Mediocampista">Mediocampista</option>
-                <option value="Defensa">Defensa</option>
-                <option value="Arquero">Arquero</option>
-            </select>
-        </div>
-
-        <div class="mt-3 d-flex justify-content-between">
-            <button type="submit" id="guardarBtn" class="btn btn-success">Guardar cambios</button>
-            <a href="/spring/perfil" id="cancelar" class="btn btn-danger">Cancelar</a>
-        </div>
-    </form>
-</div>
-
-<script th:src="@{/webjars/bootstrap/5.2.0/js/bootstrap.bundle.min.js}"></script>
-
-
-<script>
-    function previewImage(event) {
-        const avatar = document.querySelector('.profile-avatar');
-        const file = event.target.files[0];
-        if (file) {
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                avatar.style.backgroundImage = `url(${e.target.result})`;
-            };
-            reader.readAsDataURL(file);
-        }
-    }
-</script>
-
-</body>
+        <!-- Include the footer fragment -->
+        <footer th:replace="~{fragments/footer :: footer}"></footer>
+    </body>
 </html>

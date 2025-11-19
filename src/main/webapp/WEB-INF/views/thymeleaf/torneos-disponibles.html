@@ -1,62 +1,134 @@
 <!DOCTYPE html>
 <html lang="es" xmlns:th="http://www.thymeleaf.org">
-<head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
-  <title>Torneos disponibles</title>
+    <head>
+        <meta charset="utf-8" />
+        <meta
+            name="viewport"
+            content="width=device-width, initial-scale=1, shrink-to-fit=no"
+        />
+        <title>Torneos disponibles</title>
 
-  <link rel="stylesheet" th:href="@{/webjars/bootstrap/5.2.0/css/bootstrap.min.css}" />
-  <link rel="stylesheet" th:href="@{/css/main.css}" />
-</head>
-<body>
-  <!-- Navbar -->
-  <div th:replace="~{fragments/navbar :: navbar}"></div>
+        <link
+            rel="stylesheet"
+            th:href="@{/webjars/bootstrap/5.2.0/css/bootstrap.min.css}"
+        />
+        <link rel="stylesheet" th:href="@{/css/main.css}" />
+    </head>
+    <body>
+        <!-- Navbar -->
+        <div th:replace="~{fragments/navbar :: navbar}"></div>
 
-  <main role="main" class="container" style="padding-top: 135px; height: 100vh; display: flex; flex-direction: column;">
-    <div th:if="${mensajeExito}" class="alert alert-success" th:text="${mensajeExito}"></div>
-    <div th:if="${mensajeError}" class="alert alert-danger" th:text="${mensajeError}"></div>
+        <main
+            role="main"
+            class="container"
+            style="height: 100vh; display: flex; flex-direction: column"
+        >
+            <div
+                th:if="${mensajeExito}"
+                class="alert alert-success"
+                th:text="${mensajeExito}"
+            ></div>
+            <div
+                th:if="${mensajeError}"
+                class="alert alert-danger"
+                th:text="${mensajeError}"
+            ></div>
 
-    <div class="container card">
-      <div class="d-flex align-items-center justify-content-between mb-3 card-header">
-        <h1 class="mb-2">Torneos disponibles</h1>
-      </div>
-
-      <!-- Contenedor scrollable para las tarjetas -->
-      <div style="flex: 1; overflow-y: auto; padding: 1rem">
-        <!-- Estado vacío -->
-        <div class="alert alert-info" role="alert" th:if="${#lists.isEmpty(torneos)}">
-          No hay torneos por el momento.
-        </div>
-
-        <!-- Grilla de tarjetas -->
-        <div class="row g-3" th:if="${!#lists.isEmpty(torneos)}">
-          <div class="col-12 col-sm-6 col-lg-3" th:each="t : ${torneos}">
-            <a th:href="@{|/torneos/disponible/${t.id}|}" class="text-decoration-none" style="color: inherit">
-              <div class="card h-100"
-                   style="position: relative; cursor: pointer; transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;"
-                   onmouseover="this.style.transform='translateY(-5px)'; this.style.boxShadow='0 4px 15px rgba(0,0,0,0.2)';"
-                   onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 1px 3px rgba(0,0,0,0.12)';">
-                <div class="card-body d-flex flex-column">
-                  <h5 class="card-title" th:text="${t.nombre}">Nombre del torneo</h5>
-                  <ul class="list-unstyled small mb-3">
-                    <li><strong>Fecha:</strong> <span th:text="${t.fecha}"></span></li>
-                    <li><strong>Cancha:</strong> <span th:text="${t.cancha.nombre}"></span></li>
-                    <li><strong>Precio:</strong> $<span th:text="${t.precio}"></span></li>
-                    <li><strong>Estado:</strong> <span th:text="${t.estado}"></span></li>
-                  </ul>
+            <div class="container card">
+                <div
+                    class="d-flex align-items-center justify-content-between mb-3 card-header"
+                >
+                    <h1 class="mb-2">Torneos disponibles</h1>
                 </div>
-                <div class="card-footer card-footer-chips">
-                  <span class="chip chip-zona" th:text="${t.cancha.zona}">Zona</span>
-                  <span class="chip chip-nivel">Torneo</span>
-                </div>
-              </div>
-            </a>
-          </div>
-        </div>
-      </div>
-    </div>
-  </main>
 
-  <script th:src="@{/webjars/bootstrap/5.2.0/js/bootstrap.bundle.min.js}"></script>
-</body>
+                <!-- Contenedor scrollable para las tarjetas -->
+                <div style="flex: 1; overflow-y: auto; padding: 1rem">
+                    <!-- Estado vacío -->
+                    <div
+                        class="alert alert-info"
+                        role="alert"
+                        th:if="${#lists.isEmpty(torneos)}"
+                    >
+                        No hay torneos por el momento.
+                    </div>
+
+                    <!-- Grilla de tarjetas -->
+                    <div class="row g-3" th:if="${!#lists.isEmpty(torneos)}">
+                        <div
+                            class="col-12 col-sm-6 col-lg-3"
+                            th:each="t : ${torneos}"
+                        >
+                            <a
+                                th:href="@{|/torneos/disponible/${t.id}|}"
+                                class="text-decoration-none"
+                                style="color: inherit"
+                            >
+                                <div
+                                    class="card h-100"
+                                    style="
+                                        position: relative;
+                                        cursor: pointer;
+                                        transition: transform 0.2s ease-in-out,
+                                            box-shadow 0.2s ease-in-out;
+                                    "
+                                    onmouseover="this.style.transform='translateY(-5px)'; this.style.boxShadow='0 4px 15px rgba(0,0,0,0.2)';"
+                                    onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 1px 3px rgba(0,0,0,0.12)';"
+                                >
+                                    <div class="card-body d-flex flex-column">
+                                        <h5
+                                            class="card-title"
+                                            th:text="${t.nombre}"
+                                        >
+                                            Nombre del torneo
+                                        </h5>
+                                        <ul class="list-unstyled small mb-3">
+                                            <li>
+                                                <strong>Fecha:</strong>
+                                                <span
+                                                    th:text="${t.fecha}"
+                                                ></span>
+                                            </li>
+                                            <li>
+                                                <strong>Cancha:</strong>
+                                                <span
+                                                    th:text="${t.cancha.nombre}"
+                                                ></span>
+                                            </li>
+                                            <li>
+                                                <strong>Precio:</strong> $<span
+                                                    th:text="${t.precio}"
+                                                ></span>
+                                            </li>
+                                            <li>
+                                                <strong>Estado:</strong>
+                                                <span
+                                                    th:text="${t.estado}"
+                                                ></span>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                    <div class="card-footer card-footer-chips">
+                                        <span
+                                            class="chip chip-zona"
+                                            th:text="${t.cancha.zona}"
+                                            >Zona</span
+                                        >
+                                        <span class="chip chip-nivel"
+                                            >Torneo</span
+                                        >
+                                    </div>
+                                </div>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <!-- Include the footer fragment -->
+        <footer th:replace="~{fragments/footer :: footer}"></footer>
+        <script
+            th:src="@{/webjars/bootstrap/5.2.0/js/bootstrap.bundle.min.js}"
+        ></script>
+    </body>
 </html>

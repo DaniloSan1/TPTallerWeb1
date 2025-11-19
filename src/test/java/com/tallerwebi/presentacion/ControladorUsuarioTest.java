@@ -6,14 +6,14 @@ import com.tallerwebi.dominio.ServicioCalificacion;
 import com.tallerwebi.dominio.ServicioLogin;
 import com.tallerwebi.dominio.ServicioUsuario;
 import com.tallerwebi.dominio.Usuario;
+import com.tallerwebi.dominio.excepcion.ErrorSubiendoImagenException;
 import com.tallerwebi.dominio.excepcion.UsuarioNoEncontradoException;
 import com.tallerwebi.presentacion.ControladorUsuario;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.springframework.ui.Model;
 import org.springframework.ui.ModelMap;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
@@ -35,12 +35,14 @@ public class ControladorUsuarioTest {
     private ServicioPartido servicioPartidoMock;
     private ServicioGoles servicioGolesMock;
     private ServicioCalificacion servicioCalificacionMock;
+    private ServicioImagenes servicioImagenesMock;
     private ControladorUsuario controladorUsuario;
     private Usuario usuarioMock;
     private HttpServletRequest httpServletRequestMock;
     private HttpSession sessionMock;
     private HttpServletRequest requestMock;
-    
+    private MultipartFile multipartFileMock;
+
     @BeforeEach
     public void init() {
         servicioLoginMock = mock(ServicioLogin.class);
@@ -54,6 +56,7 @@ public class ControladorUsuarioTest {
         controladorUsuario = new ControladorUsuario(servicioLoginMock, servicioUsuarioMock, servicioAmistadMock, null, servicioCalificacionMock,servicioGolesMock,servicioPartidoMock);
 
         requestMock = mock(HttpServletRequest.class);
+        multipartFileMock = mock(MultipartFile.class);
         usuarioMock = mock(Usuario.class);
         when(usuarioMock.getEmail()).thenReturn("usuario@test.com");
         when(usuarioMock.getNombre()).thenReturn("NombreTest");
@@ -124,7 +127,7 @@ public class ControladorUsuarioTest {
 
         ModelMap modelo = new ModelMap();
 
-        String vista = controladorUsuario.guardarCambios(usuarioEditado, requestMock, modelo);
+        String vista = controladorUsuario.guardarCambios(usuarioEditado, multipartFileMock, requestMock, modelo);
 
         assertEquals("redirect:/perfil", vista);
         assertEquals("nuevoUser", usuarioEnSesion.getUsername());
@@ -154,11 +157,84 @@ public class ControladorUsuarioTest {
         when(requestMock.getSession()).thenReturn(sessionMock);
         ModelMap modelo = new ModelMap();
 
-        String vista = controladorUsuario.guardarCambios(usuarioEditado, requestMock, modelo);
+        String vista = controladorUsuario.guardarCambios(usuarioEditado, multipartFileMock, requestMock, modelo);
 
         assertEquals("editarPerfil", vista);
         assertTrue(modelo.containsKey("error"));
         assertTrue(modelo.get("error").toString().toLowerCase().contains("username"));
+        verify(servicioUsuarioMock, never()).modificarUsuario(any());
+    }
+
+    @Test
+    public void queActualiceLaFotoDePerfilCuandoSeSubeUnaImagen()
+            throws UsuarioNoEncontradoException, ErrorSubiendoImagenException {
+        Usuario usuarioEnSesion = new Usuario();
+        usuarioEnSesion.setId(1L);
+        usuarioEnSesion.setEmail("user@example.com");
+        usuarioEnSesion.setUsername("viejoUser");
+        usuarioEnSesion.setFotoPerfil("url-vieja");
+
+        Usuario usuarioEditado = new Usuario();
+        usuarioEditado.setId(1L);
+        usuarioEditado.setUsername("nuevoUser");
+        usuarioEditado.setNombre("NuevoNombre");
+        usuarioEditado.setApellido("NuevoApellido");
+        usuarioEditado.setPosicionFavorita("Delantero");
+
+        when(requestMock.getSession()).thenReturn(sessionMock);
+        when(sessionMock.getAttribute("EMAIL")).thenReturn("user@example.com");
+        when(servicioLoginMock.buscarPorEmail("user@example.com")).thenReturn(usuarioEnSesion);
+        when(servicioUsuarioMock.buscarPorUsername("nuevoUser")).thenReturn(null);
+        when(multipartFileMock.isEmpty()).thenReturn(false);
+        when(servicioImagenesMock.subirImagen(multipartFileMock)).thenReturn("url-nueva");
+
+        ModelMap modelo = new ModelMap();
+
+        String vista = controladorUsuario.guardarCambios(usuarioEditado, multipartFileMock, requestMock, modelo);
+
+        assertEquals("redirect:/perfil", vista);
+        assertEquals("nuevoUser", usuarioEnSesion.getUsername());
+        assertEquals("NuevoNombre", usuarioEnSesion.getNombre());
+        assertEquals("NuevoApellido", usuarioEnSesion.getApellido());
+        assertEquals("Delantero", usuarioEnSesion.getPosicionFavorita());
+        assertEquals("url-nueva", usuarioEnSesion.getFotoPerfil());
+        verify(servicioImagenesMock).subirImagen(multipartFileMock);
+        verify(servicioUsuarioMock).modificarUsuario(usuarioEnSesion);
+    }
+
+    @Test
+    public void queMuestreErrorCuandoFallaLaSubidaDeImagen()
+            throws UsuarioNoEncontradoException, ErrorSubiendoImagenException {
+        Usuario usuarioEnSesion = new Usuario();
+        usuarioEnSesion.setId(1L);
+        usuarioEnSesion.setEmail("user@example.com");
+        usuarioEnSesion.setUsername("viejoUser");
+        usuarioEnSesion.setFotoPerfil("url-vieja");
+
+        Usuario usuarioEditado = new Usuario();
+        usuarioEditado.setId(1L);
+        usuarioEditado.setUsername("nuevoUser");
+        usuarioEditado.setNombre("NuevoNombre");
+        usuarioEditado.setApellido("NuevoApellido");
+        usuarioEditado.setPosicionFavorita("Delantero");
+
+        when(requestMock.getSession()).thenReturn(sessionMock);
+        when(sessionMock.getAttribute("EMAIL")).thenReturn("user@example.com");
+        when(servicioLoginMock.buscarPorEmail("user@example.com")).thenReturn(usuarioEnSesion);
+        when(servicioUsuarioMock.buscarPorUsername("nuevoUser")).thenReturn(null);
+        when(multipartFileMock.isEmpty()).thenReturn(false);
+        when(servicioImagenesMock.subirImagen(multipartFileMock))
+                .thenThrow(new ErrorSubiendoImagenException("Error al subir imagen"));
+
+        ModelMap modelo = new ModelMap();
+
+        String vista = controladorUsuario.guardarCambios(usuarioEditado, multipartFileMock, requestMock, modelo);
+
+        assertEquals("editarPerfil", vista);
+        assertTrue(modelo.containsKey("error"));
+        assertEquals("Error al subir imagen", modelo.get("error"));
+        assertEquals(usuarioEditado, modelo.get("usuario"));
+        verify(servicioImagenesMock).subirImagen(multipartFileMock);
         verify(servicioUsuarioMock, never()).modificarUsuario(any());
     }
 }

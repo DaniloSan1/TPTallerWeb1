@@ -1,15 +1,15 @@
 -- Insert additional users
 INSERT INTO Usuario(id, nombre, apellido, email, username, password, rol, activo, posicionFavorita, fotoPerfil) VALUES
-(NULL, 'John', 'Doe', 'test@unlam.edu.ar', 'admin', 'test', 'ADMIN', TRUE, 'DELANTERO', NULL),
-(NULL, 'Jane', 'Doe', 'jane@unlam.edu.ar', 'janedoe', 'password', 'ROLE_USER', TRUE, 'DEFENSOR', NULL),
-(NULL, 'Ricardo', 'Tapia', 'participante1@example.com', 'ricardo', 'password', 'ROLE_USER', TRUE, 'MEDIOCAMPISTA', NULL),
-(NULL, 'Bruno', 'Diaz', 'email@example.com', 'bruno', 'password', 'ROLE_USER', TRUE, 'PORTERO', NULL),
-(NULL, 'Carlos', 'Garcia', 'carlos.garcia@example.com', 'carlos', 'password', 'ROLE_USER', TRUE, 'DELANTERO', NULL),
-(NULL, 'Maria', 'Lopez', 'maria.lopez@example.com', 'maria', 'password', 'ROLE_USER', TRUE, 'DEFENSOR', NULL),
-(NULL, 'Pedro', 'Martinez', 'pedro.martinez@example.com', 'pedro', 'password', 'ROLE_USER', TRUE, 'MEDIOCAMPISTA', NULL),
-(NULL, 'Ana', 'Rodriguez', 'ana.rodriguez@example.com', 'ana', 'password', 'ROLE_USER', TRUE, 'PORTERO', NULL),
-(NULL, 'Luis', 'Hernandez', 'luis.hernandez@example.com', 'luis', 'password', 'ROLE_USER', TRUE, 'DELANTERO', NULL),
-(NULL, 'Sofia', 'Fernandez', 'sofia.fernandez@example.com', 'sofia', 'password', 'ROLE_USER', TRUE, 'DEFENSOR', NULL);
+(NULL, 'John', 'Doe', 'test@unlam.edu.ar', 'admin', 'test', 'ADMIN', TRUE, 'DELANTERO', 'https://taller-web-1-416711641372-us-east-2.s3.us-east-2.amazonaws.com/ejemplos/pibardo1.jpg'),
+(NULL, 'Jane', 'Doe', 'jane@unlam.edu.ar', 'janedoe', 'password', 'ROLE_USER', TRUE, 'DEFENSOR', 'https://taller-web-1-416711641372-us-east-2.s3.us-east-2.amazonaws.com/ejemplos/pibarda1.jpg'),
+(NULL, 'Ricardo', 'Tapia', 'participante1@example.com', 'ricardo', 'password', 'ROLE_USER', TRUE, 'MEDIOCAMPISTA','https://taller-web-1-416711641372-us-east-2.s3.us-east-2.amazonaws.com/ejemplos/ricardo-tapia.png'),
+(NULL, 'Bruno', 'Diaz', 'email@example.com', 'bruno', 'password', 'ROLE_USER', TRUE, 'PORTERO', 'https://taller-web-1-416711641372-us-east-2.s3.us-east-2.amazonaws.com/ejemplos/bruno.png'),
+(NULL, 'Carlos', 'Garcia', 'carlos.garcia@example.com', 'carlos', 'password', 'ROLE_USER', TRUE, 'DELANTERO', 'https://taller-web-1-416711641372-us-east-2.s3.us-east-2.amazonaws.com/ejemplos/pibardo2.jpg'),
+(NULL, 'Maria', 'Lopez', 'maria.lopez@example.com', 'maria', 'password', 'ROLE_USER', TRUE, 'DEFENSOR', 'https://taller-web-1-416711641372-us-east-2.s3.us-east-2.amazonaws.com/ejemplos/pibarda2.jpg'),
+(NULL, 'Pedro', 'Martinez', 'pedro.martinez@example.com', 'pedro', 'password', 'ROLE_USER', TRUE, 'MEDIOCAMPISTA', 'https://taller-web-1-416711641372-us-east-2.s3.us-east-2.amazonaws.com/ejemplos/pibardo3.jpg'),
+(NULL, 'Ana', 'Rodriguez', 'ana.rodriguez@example.com', 'ana', 'password', 'ROLE_USER', TRUE, 'PORTERO', 'https://taller-web-1-416711641372-us-east-2.s3.us-east-2.amazonaws.com/ejemplos/pibarda3.jpg'),
+(NULL, 'Luis', 'Hernandez', 'luis.hernandez@example.com', 'luis', 'password', 'ROLE_USER', TRUE, 'DELANTERO', 'https://taller-web-1-416711641372-us-east-2.s3.us-east-2.amazonaws.com/ejemplos/pibardo4.jpg'),
+(NULL, 'Sofia', 'Fernandez', 'sofia.fernandez@example.com', 'sofia', 'password', 'ROLE_USER', TRUE, 'DEFENSOR', 'https://taller-web-1-416711641372-us-east-2.s3.us-east-2.amazonaws.com/ejemplos/pibarda4.jpg');
 
 -- Insert fields
 INSERT INTO Cancha(id, nombre, capacidad, direccion, zona, precio, tipoSuelo) VALUES
@@ -125,13 +125,13 @@ INSERT INTO FotoCancha(id, cancha_id, url) VALUES
 (NULL, 1, 'https://lh3.googleusercontent.com/p/AF1QipMbcsyuOvy0-4AlKYxTR7YeMH0TiMGzO_WV7mZ2=s1360-w1360-h1020-rw');
 
 -- Insert equipos for partidos
-INSERT INTO Equipo(id, nombre, creado_por_id, fechaCreacion, descripcion, insignia_url) VALUES
-(NULL, 'Equipo 1', (SELECT creador_id FROM Partido WHERE id = 1), NOW(), 'Equipo formado para el primer partido. Buscamos jugadores comprometidos y con ganas de pasarla bien.', 'https://taller-web-1-416711641372-us-east-2.s3.us-east-2.amazonaws.com/insignia-default.png'),
-(NULL, 'Equipo 2', (SELECT creador_id FROM Partido WHERE id = 1), NOW(), 'Segundo equipo del partido. Unidos por la pasión del fútbol.', 'https://taller-web-1-416711641372-us-east-2.s3.us-east-2.amazonaws.com/insignia-default.png'),
-(NULL, 'Equipo 1', (SELECT creador_id FROM Partido WHERE id = 2), NOW(), 'Equipo de nivel avanzado. Jugamos limpio y con estrategia.', 'https://taller-web-1-416711641372-us-east-2.s3.us-east-2.amazonaws.com/insignia-default.png'),
-(NULL, 'Equipo 2', (SELECT creador_id FROM Partido WHERE id = 2), NOW(), 'Buscamos la victoria siempre con fair play.', 'https://taller-web-1-416711641372-us-east-2.s3.us-east-2.amazonaws.com/insignia-default.png'),
-(NULL, 'Equipo 1', (SELECT creador_id FROM Partido WHERE id = 3), NOW(), 'Equipo nocturno. Nos gusta el fútbol bajo las estrellas.', 'https://taller-web-1-416711641372-us-east-2.s3.us-east-2.amazonaws.com/insignia-default.png'),
-(NULL, 'Equipo 2', (SELECT creador_id FROM Partido WHERE id = 3), NOW(), 'Segundo equipo del partido nocturno. Juego limpio y diversión.', 'https://taller-web-1-416711641372-us-east-2.s3.us-east-2.amazonaws.com/insignia-default.png');
+INSERT INTO Equipo(id, nombre, creado_por_id, fechaCreacion, descripcion, insignia_url, tipo) VALUES
+(NULL, 'Equipo 1', (SELECT creador_id FROM Partido WHERE id = 1), NOW(), 'Equipo formado para el primer partido. Buscamos jugadores comprometidos y con ganas de pasarla bien.', 'https://taller-web-1-416711641372-us-east-2.s3.us-east-2.amazonaws.com/insignia-default.png', 'PUBLICO'),
+(NULL, 'Equipo 2', (SELECT creador_id FROM Partido WHERE id = 1), NOW(), 'Segundo equipo del partido. Unidos por la pasión del fútbol.', 'https://taller-web-1-416711641372-us-east-2.s3.us-east-2.amazonaws.com/insignia-default.png', 'PUBLICO'),
+(NULL, 'Equipo 1', (SELECT creador_id FROM Partido WHERE id = 2), NOW(), 'Equipo de nivel avanzado. Jugamos limpio y con estrategia.', 'https://taller-web-1-416711641372-us-east-2.s3.us-east-2.amazonaws.com/insignia-default.png', 'PUBLICO'),
+(NULL, 'Equipo 2', (SELECT creador_id FROM Partido WHERE id = 2), NOW(), 'Buscamos la victoria siempre con fair play.', 'https://taller-web-1-416711641372-us-east-2.s3.us-east-2.amazonaws.com/insignia-default.png', 'PUBLICO'),
+(NULL, 'Equipo 1', (SELECT creador_id FROM Partido WHERE id = 3), NOW(), 'Equipo nocturno. Nos gusta el fútbol bajo las estrellas.', 'https://taller-web-1-416711641372-us-east-2.s3.us-east-2.amazonaws.com/insignia-default.png', 'PUBLICO'),
+(NULL, 'Equipo 2', (SELECT creador_id FROM Partido WHERE id = 3), NOW(), 'Segundo equipo del partido nocturno. Juego limpio y diversión.', 'https://taller-web-1-416711641372-us-east-2.s3.us-east-2.amazonaws.com/insignia-default.png', 'PUBLICO');
 -- Insert partido_equipo
 INSERT INTO PartidoEquipo(id, partido_id, equipo_id, goles) VALUES
 (NULL, 1, (SELECT id FROM Equipo WHERE nombre = 'Equipo 1' AND creado_por_id = (SELECT creador_id FROM Partido WHERE id = 1)), 0),
@@ -192,11 +192,17 @@ INSERT INTO SolicitudUnirse (partido_id, creador_id, token, emailDestino, estado
 	(1, 5, 'token-john-4', 'test@unlam.edu.ar', 'PENDIENTE', NOW(), DATE_ADD(NOW(), INTERVAL 2 DAY)),
 	(2, 6, 'token-john-5', 'test@unlam.edu.ar', 'PENDIENTE', NOW(), DATE_ADD(NOW(), INTERVAL 2 DAY));
 
-INSERT INTO Torneo (id, nombre, fecha, precio, estado, cancha_id, organizador_id) VALUES
-(1, 'Torneo Primavera', '2025-11-20', 5000, 'CONFIRMADO', 1, 1),
-(2, 'Torneo Verano', '2025-12-10', 7000, 'CONFIRMADO', 2, 2);
+INSERT INTO Torneo (id, nombre, fecha, finalizado, precio, estado, cancha_id, ganador_id, goleador_id, organizador_id) VALUES
+(1, 'Torneo Primavera', '2025-11-20', 0, 5000, 'CONFIRMADO', 1, null, null, 1),
+(2, 'Torneo Verano', '2025-12-10', 0, 7000, 'CONFIRMADO', 2, null, null, 2);
+
+-- Insert equipos for torneos
+INSERT INTO Equipo(id, nombre, creado_por_id, fechaCreacion, descripcion, insignia_url, tipo) VALUES
+(NULL, 'Equipo Torneo A', 2, NOW(), 'Equipo privado para el Torneo Primavera. Jugadores experimentados.', 'https://taller-web-1-416711641372-us-east-2.s3.us-east-2.amazonaws.com/insignia-default.png', 'PRIVADO'),
+(NULL, 'Equipo Torneo B', 3, NOW(), 'Equipo privado para el Torneo Primavera. Buscamos diversión y buen juego.', 'https://taller-web-1-416711641372-us-east-2.s3.us-east-2.amazonaws.com/insignia-default.png', 'PRIVADO'),
+(NULL, 'Equipo Torneo C', 4, NOW(), 'Equipo privado para el Torneo Verano. Pasión por el fútbol.', 'https://taller-web-1-416711641372-us-east-2.s3.us-east-2.amazonaws.com/insignia-default.png', 'PRIVADO');
 
 INSERT INTO InscripcionTorneo (id, fechaInscripcion, torneo_id, equipo_id) VALUES
-(1, NOW(), 1, 1),
-(2, NOW(), 1, 2),
-(3, NOW(), 2, 3);
+(1, NOW(), 1, 7),
+(2, NOW(), 1, 8),
+(3, NOW(), 1, 9);

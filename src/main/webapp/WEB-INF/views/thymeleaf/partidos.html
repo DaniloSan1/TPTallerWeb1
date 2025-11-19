@@ -1,69 +1,94 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="es">
-<head>
-  <meta charset="utf-8" />
-  <title>Partidos — Buscar por zona y nivel</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <link rel="stylesheet" href=".../partidos.css" />
-</head>
-<body>
-  <div class="app">
-    <header class="header">
-      <div class="wrap header-grid">
-        <div class="logo">Logo</div>
-        <div class="sport">Deporte</div>
-        <div class="user">User</div>
-      </div>
-    </header>
+    <head>
+        <meta charset="utf-8" />
+        <title>Partidos — Buscar por zona y nivel</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <link rel="stylesheet" href=".../partidos.css" />
+    </head>
+    <body>
+        <div class="app">
+            <header class="header">
+                <div class="wrap header-grid">
+                    <div class="logo">Logo</div>
+                    <div class="sport">Deporte</div>
+                    <div class="user">User</div>
+                </div>
+            </header>
 
-    <main class="wrap content">
-      <h1 class="title">Partidos pendientes</h1>
+            <main class="wrap content">
+                <h1 class="title">Partidos pendientes</h1>
 
-      <form class="match-card" id="filtros" action="#" method="get">
-        <div class="match-grid">
-          <section class="match-col">
-            <h3 class="label">Zona</h3>
-            <select class="value" name="zona" id="zona">
-              <option value="">Todas</option>
-              <option value="NORTE">NORTE</option>
-              <option value="SUR">SUR</option>
-              <option value="OESTE">OESTE</option>
-              <option value="ESTE">ESTE</option>
-              <option value="CENTRO">CENTRO</option>
-            </select>
-          </section>
+                <form class="match-card" id="filtros" action="#" method="get">
+                    <div class="match-grid">
+                        <section class="match-col">
+                            <h3 class="label">Zona</h3>
+                            <select class="value" name="zona" id="zona">
+                                <option value="">Todas</option>
+                                <option value="NORTE">NORTE</option>
+                                <option value="SUR">SUR</option>
+                                <option value="OESTE">OESTE</option>
+                                <option value="ESTE">ESTE</option>
+                                <option value="CENTRO">CENTRO</option>
+                            </select>
+                        </section>
 
-          <section class="match-col">
-            <h3 class="label">Nivel</h3>
-            <select class="value" name="nivel" id="nivel">
-              <option value="">Todos</option>
-              <option value="PRINCIPIANTE">PRINCIPIANTE</option>
-              <option value="INTERMEDIO">INTERMEDIO</option>
-              <option value="AVANZADO">AVANZADO</option>
-            </select>
-          </section>
+                        <section class="match-col">
+                            <h3 class="label">Nivel</h3>
+                            <select class="value" name="nivel" id="nivel">
+                                <option value="">Todos</option>
+                                <option value="PRINCIPIANTE">
+                                    PRINCIPIANTE
+                                </option>
+                                <option value="INTERMEDIO">INTERMEDIO</option>
+                                <option value="AVANZADO">AVANZADO</option>
+                            </select>
+                        </section>
 
-          <section class="match-col">
-            <h3 class="label">Opciones</h3>
-            <label class="value" style="display:flex;align-items:center;gap:.5rem;">
-              <input type="checkbox" name="soloConCupo" id="soloConCupo" checked>
-              Solo con cupo
-            </label>
-          </section>
+                        <section class="match-col">
+                            <h3 class="label">Opciones</h3>
+                            <label
+                                class="value"
+                                style="
+                                    display: flex;
+                                    align-items: center;
+                                    gap: 0.5rem;
+                                "
+                            >
+                                <input
+                                    type="checkbox"
+                                    name="soloConCupo"
+                                    id="soloConCupo"
+                                    checked
+                                />
+                                Solo con cupo
+                            </label>
+                        </section>
+                    </div>
+
+                    <div
+                        style="
+                            margin-top: 16px;
+                            display: flex;
+                            gap: 12px;
+                            justify-content: flex-end;
+                        "
+                    >
+                        <button class="btn" type="reset">Limpiar</button>
+                        <button class="btn primary" type="submit">
+                            Buscar
+                        </button>
+                    </div>
+                </form>
+            </main>
+
+            <nav class="bottom-bar" aria-label="Acciones">
+                <a href="#" class="btn primary">Unirse a partido</a>
+                <a href="#" class="btn">Reserva</a>
+                <a href="#" class="btn">Amigos</a>
+            </nav>
         </div>
-
-        <div style="margin-top:16px; display:flex; gap:12px; justify-content:flex-end;">
-          <button class="btn" type="reset">Limpiar</button>
-          <button class="btn primary" type="submit">Buscar</button>
-        </div>
-      </form>
-    </main>
-
-    <nav class="bottom-bar" aria-label="Acciones">
-      <a href="#" class="btn primary">Unirse a partido</a>
-      <a href="#" class="btn">Reserva</a>
-      <a href="#" class="btn">Amigos</a>
-    </nav>
-  </div>
-</body>
+        <!-- Include the footer fragment -->
+        <footer th:replace="~{fragments/footer :: footer}"></footer>
+    </body>
 </html>

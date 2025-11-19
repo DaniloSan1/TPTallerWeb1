@@ -42,15 +42,12 @@ public class ServicioSolicitudUnirseImpl implements ServicioSolicitudUnirse {
         solicitud.setEmailDestino(emailDestino);
         solicitud.setToken(UUID.randomUUID().toString());
         solicitud.setCreada(LocalDateTime.now());
-        solicitud.setVence(LocalDateTime.now().plusDays(7)); // vence en 7 días
+        solicitud.setVence(LocalDateTime.now().plusDays(7));
         solicitud.setEstado(EstadoSolicitud.PENDIENTE);
 
         repo.guardar(solicitud);
 
-        // Construimos el link público hacia la página de aceptación
         String link = System.getProperty("app.baseurl", "http://localhost:8080/spring") + "/solicitudes-partido/" + solicitud.getToken();
-
-        // Intentamos enviar el email si hay configuración SMTP disponible (propiedades del sistema)
         try {
             String host = System.getProperty("mail.smtp.host");
             if (host != null && !host.isEmpty()) {
@@ -84,12 +81,9 @@ public class ServicioSolicitudUnirseImpl implements ServicioSolicitudUnirse {
                 javax.mail.Transport.send(message);
             }
         } catch (Exception e) {
-            // No queremos fallar la creación por un error de envío de correo. Solo lo logueamos.
             System.err.println("No se pudo enviar el email de invitación: " + e.getMessage());
             e.printStackTrace();
         }
-
-        // Devolvemos el link público (no sólo el token) para que el controlador pueda mostrarlo al usuario
         return link;
     }
 
@@ -110,12 +104,9 @@ public class ServicioSolicitudUnirseImpl implements ServicioSolicitudUnirse {
             repo.guardar(solicitud);
             return MensajeResultado.error("La invitación ha expirado.");
         }
-
-        // Intentamos unir al usuario al partido automáticamente.
         try {
             Partido partido = solicitud.getPartido();
 
-            // Elegir el equipo con menos jugadores disponible
             PartidoEquipo equipoDestino = partido.getEquipos().stream()
                     .min((a, b) -> Integer.compare(a.getJugadores().size(), b.getJugadores().size()))
                     .orElse(null);
@@ -123,12 +114,9 @@ public class ServicioSolicitudUnirseImpl implements ServicioSolicitudUnirse {
             if (equipoDestino == null) {
                 return MensajeResultado.error("No se pudo encontrar un equipo para unirte en este partido.");
             }
-
-            // Usar el servicio de partido para anotar al participante (verifica cupo y duplicados)
             try {
                 servicioPartido.anotarParticipante(partido, equipoDestino.getEquipo(), quienAcepta);
             } catch (Exception ex) {
-                // Excepciones posibles: YaExisteElParticipante, NoHayCupoEnPartido, etc.
                 return MensajeResultado.error("No se pudo unir al partido: " + ex.getMessage());
             }
 
@@ -137,7 +125,6 @@ public class ServicioSolicitudUnirseImpl implements ServicioSolicitudUnirse {
 
             return MensajeResultado.ok("Has aceptado la invitación al partido.");
         } catch (Exception e) {
-            // Evitar que un error secundario impida procesar la invitación
             return MensajeResultado.error("Error al procesar la aceptación: " + e.getMessage());
         }
     }

@@ -12,11 +12,12 @@ public class ServicioNotificacionDeUsuarioImpl implements ServicioNotificacionDe
         this.repositorioNotificacion = repositorioNotificacion;
     }
 
+
     @Override
-    public void crearNotificacion(Usuario usuario, String mensaje) {
-    NotificacionDeUsuario notificacionDeUsuario = new NotificacionDeUsuario(usuario, mensaje);
-    notificacionDeUsuario.setFecha(LocalDate.now());
-    repositorioNotificacion.guardar(notificacionDeUsuario);
+    public void crearNotificacion(Usuario usuario, String mensaje, NotificacionEnum tipoDeNotificacion) {
+        NotificacionDeUsuario notificacionDeUsuario = new NotificacionDeUsuario(usuario, mensaje, tipoDeNotificacion);
+        notificacionDeUsuario.setFecha(LocalDate.now());
+        repositorioNotificacion.guardar(notificacionDeUsuario);
     }
 
     @Override
@@ -42,4 +43,45 @@ public class ServicioNotificacionDeUsuarioImpl implements ServicioNotificacionDe
     public NotificacionDeUsuario obtenerNotificacionPorId(Long id) {
     return repositorioNotificacion.obtenerNotificacion(id);
     }
+
+    @Override
+    public String marcarComoLeidaYObtenerUsername(Long idNotificacion) {
+
+        NotificacionDeUsuario notificacion = repositorioNotificacion.obtenerNotificacion(idNotificacion);
+        if (notificacion == null)
+            return null;
+
+        // Marcar como leída
+        notificacion.setLeida(true);
+        repositorioNotificacion.actualizar(notificacion);
+
+        // Según el tipo de notificación
+        NotificacionEnum tipo = notificacion.getTipoDeNotificacion();
+
+        // PARA SOLICITUD DE AMISTAD
+        if (tipo == NotificacionEnum.SOLICITUD_AMISTAD) {
+            // mensaje esperado: "El usuario X te ha enviado una solicitud"
+            String mensaje = notificacion.getMensaje();
+            try {
+                return mensaje.split("El usuario")[1].split("te ha enviado")[0].trim();
+            } catch (Exception ignored) {}
+        }
+
+        // PARA SOLICITUD ACEPTADA
+        if (tipo == NotificacionEnum.SOLICITUD_ACEPTADA) {
+            // mensaje esperado: "El usuario X ha aceptado tu solicitud"
+            String mensaje = notificacion.getMensaje();
+            try {
+                return mensaje.split("El usuario")[1].split("ha aceptado")[0].trim();
+            } catch (Exception ignored) {}
+        }
+
+        return null;
+    }
+
+    @Override
+    public Integer contarNoLeidas(Long idUsuario) {
+        return repositorioNotificacion.contarNoLeidas(idUsuario);
+    }
+
 }

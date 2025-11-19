@@ -1,96 +1,250 @@
 <!DOCTYPE html>
 <html lang="es" xmlns:th="http://www.thymeleaf.org">
-<head>
-  <meta charset="utf-8" />
-  <title th:text="${torneo.nombre}">Detalle Torneo</title>
-  <link rel="stylesheet" th:href="@{/webjars/bootstrap/5.2.0/css/bootstrap.min.css}" />
-  <link rel="stylesheet" th:href="@{/css/main.css}" />
-  <link rel="stylesheet" th:href="@{/css/detalle-partido.css}" />
-</head>
+    <head>
+        <meta charset="utf-8" />
+        <title th:text="${torneo.nombre}">Detalle Torneo</title>
+        <link
+            rel="stylesheet"
+            th:href="@{/webjars/bootstrap/5.2.0/css/bootstrap.min.css}"
+        />
+        <link rel="stylesheet" th:href="@{/css/main.css}" />
+        <link rel="stylesheet" th:href="@{/css/detalle-partido.css}" />
+    </head>
 
-<body>
-  <div th:replace="~{fragments/navbar :: navbar}"></div>
+    <body>
+        <div th:replace="~{fragments/navbar :: navbar}"></div>
 
-  <main class="container" style="padding-top: 135px">
+        <main class="container" style="padding-top: 135px">
+            <!-- Mensajes -->
+            <div
+                th:if="${mensajeExito}"
+                class="alert alert-success"
+                th:text="${mensajeExito}"
+            ></div>
+            <div
+                th:if="${mensajeError}"
+                class="alert alert-danger"
+                th:text="${mensajeError}"
+            ></div>
 
-    <!-- Mensajes -->
-    <div th:if="${mensajeExito}" class="alert alert-success" th:text="${mensajeExito}"></div>
-    <div th:if="${mensajeError}" class="alert alert-danger" th:text="${mensajeError}"></div>
+            <!-- Datos del torneo -->
+            <div class="card mb-4">
+                <div class="card-header text-center">
+                    <h1 th:text="${torneo.nombre}"></h1>
+                    <h5 class="text-muted">
+                        <span th:text="${torneo.fecha}"></span> |
+                        <span th:text="${cancha.nombre}"></span>
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <p>
+                        <strong>Organizador:</strong>
+                        <span th:text="${torneo.organizador.nombre}"></span>
+                    </p>
+                    <p>
+                        <strong>Precio:</strong> $<span
+                            th:text="${torneo.precio}"
+                        ></span>
+                    </p>
+                    <p>
+                        <strong>Estado:</strong>
+                        <span th:text="${torneo.estado}"></span>
+                    </p>
+                    <div th:if="${torneo.finalizado}">
+                    <p>
+                        <strong> Ganador:</strong>
+                        <span th:text="${torneo.ganador.nombre}"></span>
+                    </p>
+                </div>
+                <div th:if="${torneo.finalizado}">
+                    <p>
+                        <strong> Goleador:</strong>
+                        <span th:text="${torneo.goleador.nombre}"></span>
+                    </p>
+                </div>
+                </div>
+            </div>
+            <div th:if="${usuario != null and torneo.organizador.id == usuario.id and !torneo.finalizado}">
+    <button class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#modalFinalizar">
+        Finalizar torneo
+    </button>
+</div>
 
-    <!-- Datos del torneo -->
-    <div class="card mb-4">
-      <div class="card-header text-center">
-        <h1 th:text="${torneo.nombre}"></h1>
-        <h5 class="text-muted">
-          <span th:text="${torneo.fecha}"></span> |
-          <span th:text="${cancha.nombre}"></span>
-        </h5>
-      </div>
-      <div class="card-body">
-        <p><strong>Organizador:</strong> <span th:text="${torneo.organizador.nombre}"></span></p>
-        <p><strong>Precio:</strong> $<span th:text="${torneo.precio}"></span></p>
-        <p><strong>Estado:</strong> <span th:text="${torneo.estado}"></span></p>
-      </div>
-    </div>
+<!-- Modal Finalizar Torneo -->
+<div class="modal fade" id="modalFinalizar" tabindex="-1" aria-labelledby="modalFinalizarLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
 
-    <!-- Equipos inscritos -->
-    <div class="card mt-3" th:if="${inscripciones != null}">
-      <div class="card-header">
-        <h3>Equipos inscriptos</h3>
-      </div>
+            <!-- Header -->
+            <div class="modal-header">
+                <h5 class="modal-title" id="modalFinalizarLabel">Finalizar Torneo</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
 
-      <div class="card-body">
-        <div th:if="${inscripciones.isEmpty()}">
-          <p class="text-muted">Aún no hay equipos inscriptos en este torneo.</p>
+            <!-- Body -->
+            <div class="modal-body">
+
+                <form th:action="@{/torneos/finalizar/{id}(id=${torneo.id})}" method="post" id="formFinalizar">
+
+                    <label class="form-label">Equipo ganador</label>
+                    <select name="ganadorId" class="form-select mb-3">
+                        <option th:each="insc : ${inscripciones}"
+                                th:value="${insc.equipo.id}"
+                                th:text="${insc.equipo.nombre}">
+                        </option>
+                    </select>
+
+                    <label class="form-label">Goleador</label>
+                    <select name="goleadorId" class="form-select mb-3">
+                        <th:block th:each="insc : ${inscripciones}">
+                            <th:block th:each="ej : ${insc.equipo.jugadores}">
+                                <option th:value="${ej.usuario.id}"
+                                        th:text="${ej.usuario.nombre}">
+                                </option>
+                            </th:block>
+                        </th:block>
+                    </select>
+
+                </form>
+
+            </div>
+
+            <!-- Footer -->
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                <button type="submit" form="formFinalizar" class="btn btn-success">Finalizar torneo</button>
+            </div>
+
         </div>
-
-        <div th:each="inscripcion : ${inscripciones}" class="border rounded p-3 mb-3">
-          <h5 class="mb-1" th:text="${inscripcion.equipo.nombre}"></h5>
-          <p class="mb-2 text-muted" th:text="${inscripcion.equipo.descripcion}"></p>
-
-          <ul class="list-unstyled ms-3">
-            <li th:each="ej : ${inscripcion.equipo.jugadores}"
-                th:text="${ej.usuario.nombre}"></li>
-          </ul>
-
-          <p class="mt-2">
-            <strong>Fecha inscripción:</strong>
-            <span th:text="${inscripcion.fechaInscripcion}"></span>
-          </p>
-
-          <!-- Botón de cancelar inscripción -->
-          <form th:if="${usuarioPerteneceAEquipo != null and usuarioPerteneceAEquipo.id == inscripcion.equipo.id}"
-                th:action="@{/torneos/disponible/{torneoId}/cancelar/{inscripcionId}(torneoId=${torneo.id}, inscripcionId=${inscripcion.id})}"
-                method="post"
-                class="mt-2">
-            <button type="submit" class="btn btn-danger btn-sm">Cancelar inscripción</button>
-          </form>
-        </div>
-      </div>
     </div>
+</div>
 
-    <!-- Formulario para inscribirse -->
-    <div class="card mt-4">
-      <div class="card-header">
-        <h3>Inscribir equipo</h3>
-      </div>
-      <div class="card-body">
-        <form th:action="@{/torneos/disponible/{torneoId}/inscribir(torneoId=${torneo.id})}"
-              method="post"
-              class="d-flex gap-2">
-          <select name="equipoId" class="form-select w-75" required>
-            <option value="" disabled selected>Selecciona un equipo</option>
-            <option th:each="equipo : ${equiposDisponibles}"
-                    th:value="${equipo.id}"
-                    th:text="${equipo.nombre}"></option>
-          </select>
-          <button type="submit" class="btn btn-primary">Inscribir</button>
-        </form>
-      </div>
-    </div>
 
-  </main>
+            <!-- Equipos inscritos -->
+            <div class="card mt-3" th:if="${inscripciones != null}">
+                <div class="card-header">
+                    <h3>Equipos inscriptos</h3>
+                </div>
 
-  <script type="text/javascript" th:src="@{/webjars/bootstrap/5.2.0/js/bootstrap.bundle.min.js}"></script>
-</body>
+                <div class="card-body">
+                    <div th:if="${inscripciones.isEmpty()}">
+                        <p class="text-muted">
+                            Aún no hay equipos inscriptos en este torneo.
+                        </p>
+                    </div>
+
+                    <div
+                        th:each="inscripcion : ${inscripciones}"
+                        class="border rounded p-3 mb-3"
+                    >
+                        <h5
+                            class="mb-1"
+                            th:text="${inscripcion.equipo.nombre}"
+                        ></h5>
+                        <p
+                            class="mb-2 text-muted"
+                            th:text="${inscripcion.equipo.descripcion}"
+                        ></p>
+
+                        <ul class="list-unstyled ms-3">
+                            <li
+                                th:each="ej : ${inscripcion.equipo.jugadores}"
+                                th:text="${ej.usuario.nombre}"
+                            ></li>
+                        </ul>
+
+                        <p class="mt-2">
+                            <strong>Fecha inscripción:</strong>
+                            <span
+                                th:text="${inscripcion.fechaInscripcion}"
+                            ></span>
+                        </p>
+
+                        <!-- Botón de cancelar inscripción -->
+                        <form
+                            th:if="${usuarioPerteneceAEquipo != null and usuarioPerteneceAEquipo.id == inscripcion.equipo.id}"
+                            th:action="@{/torneos/disponible/{torneoId}/cancelar/{inscripcionId}(torneoId=${torneo.id}, inscripcionId=${inscripcion.id})}"
+                            method="post"
+                            class="mt-2"
+                        >
+                            <button type="submit" class="btn btn-danger btn-sm">
+                                Cancelar inscripción
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            <!-- Formulario para inscribirse -->
+            <div class="card mt-4">
+                <div class="card-header">
+                    <h3>Inscribir equipo</h3>
+                </div>
+                <div class="card-body">
+                    <form
+                        th:action="@{/torneos/disponible/{torneoId}/inscribir(torneoId=${torneo.id})}"
+                        method="post"
+                        class="d-flex gap-2"
+                    >
+                        <select
+                            name="equipoId"
+                            class="form-select w-75"
+                            required
+                        >
+                            <option value="" disabled selected>
+                                Selecciona un equipo
+                            </option>
+                            <option
+                                th:each="equipo : ${equiposDisponibles}"
+                                th:value="${equipo.id}"
+                                th:text="${equipo.nombre}"
+                            ></option>
+                        </select>
+                        <button type="submit" class="btn btn-primary">
+                            Inscribir
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </main>
+
+        <script
+            type="text/javascript"
+            th:src="@{/webjars/bootstrap/5.2.0/js/bootstrap.bundle.min.js}"
+        ></script>
+        <script th:if="${torneo.finalizado}">
+    window.TORNEO_FINALIZADO = true;
+</script>
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+
+    // Si el torneo está finalizado → deshabilitar todo
+    if (window.TORNEO_FINALIZADO === true) {
+
+        console.log("Torneo finalizado → deshabilitando botones en la vista...");
+
+        // Todos los botones
+        document.querySelectorAll("button").forEach(btn => {
+            btn.disabled = true;
+        });
+
+        // Todos los inputs, selects y textareas
+        document.querySelectorAll("input, select, textarea").forEach(el => {
+            el.disabled = true;
+        });
+
+        // Además, prevenir apertura del modal
+        const modalElement = document.getElementById("modalFinalizar");
+        if (modalElement) {
+            modalElement.classList.remove("show");
+            modalElement.style.display = "none";
+        }
+    }
+
+});
+</script>
+
+        <!-- Include the footer fragment -->
+        <footer th:replace="~{fragments/footer :: footer}"></footer>
+    </body>
 </html>

@@ -1,52 +1,77 @@
 <!DOCTYPE html>
 <html lang="es" xmlns:th="http://www.thymeleaf.org">
-<head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
-  <title>Mis Reservas</title>
+    <head>
+        <meta charset="utf-8" />
+        <meta
+            name="viewport"
+            content="width=device-width, initial-scale=1, shrink-to-fit=no"
+        />
+        <title>Mis Reservas</title>
 
-  <link rel="stylesheet" th:href="@{/webjars/bootstrap/5.2.0/css/bootstrap.min.css}" />
-  <link rel="stylesheet" th:href="@{/css/main.css}" />
-</head>
-<body>
-  <!-- Navbar -->
-  <div th:replace="~{fragments/navbar :: navbar}"></div>
+        <link
+            rel="stylesheet"
+            th:href="@{/webjars/bootstrap/5.2.0/css/bootstrap.min.css}"
+        />
+        <link rel="stylesheet" th:href="@{/css/main.css}" />
+    </head>
+    <body>
+        <!-- Navbar -->
+        <div th:replace="~{fragments/navbar :: navbar}"></div>
 
-  <main role="main" class="container" style="padding-top: 135px; min-height: 100vh;">
-    <div class="container card">
-      <div class="d-flex align-items-center justify-content-between mb-3 card-header">
-        <h1 class="mb-2">Mis reservas</h1>
-      </div>
+        <main role="main" class="container" style="min-height: 100vh">
+            <div class="container card">
+                <div
+                    class="d-flex align-items-center justify-content-between mb-3 card-header"
+                >
+                    <h1 class="mb-2">Mis reservas</h1>
+                </div>
 
-      <div class="card-body">
-        <!-- Estado vacío -->
-        <div class="alert alert-info text-center" th:if="${#lists.isEmpty(reservas)}">
-          No tenés reservas registradas.
-        </div>
+                <div class="card-body">
+                    <!-- Estado vacío -->
+                    <div
+                        class="alert alert-info text-center"
+                        th:if="${#lists.isEmpty(reservas)}"
+                    >
+                        No tenés reservas registradas.
+                    </div>
 
-        <!-- Tabla de reservas -->
-        <div th:if="${!#lists.isEmpty(reservas)}">
-          <table class="table table-striped">
-            <thead>
-              <tr>
-                <th>Cancha</th>
-                <th>Fecha</th>
-                <th>Estado</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr th:each="reserva : ${reservas}">
-                <td th:text="${reserva.horario.cancha.nombre}">Cancha 1</td>
-                <td th:text="${reserva.fechaReserva}">01/01/2025</td>
-                <td th:text="${reserva.activa ? 'Activa' : 'Cancelada'}">Activa</td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-      </div>
-    </div>
-  </main>
+                    <!-- Tabla de reservas -->
+                    <div th:if="${!#lists.isEmpty(reservas)}">
+                        <table class="table table-striped">
+                            <thead>
+                                <tr>
+                                    <th>Cancha</th>
+                                    <th>Fecha</th>
+                                    <th>Estado</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr th:each="reserva : ${reservas}">
+                                    <td
+                                        th:text="${reserva.horario.cancha.nombre}"
+                                    >
+                                        Cancha 1
+                                    </td>
+                                    <td th:text="${reserva.fechaReserva}">
+                                        01/01/2025
+                                    </td>
+                                    <td
+                                        th:text="${reserva.activa ? 'Activa' : 'Cancelada'}"
+                                    >
+                                        Activa
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </main>
 
-  <script th:src="@{/webjars/bootstrap/5.2.0/js/bootstrap.bundle.min.js}"></script>
-</body>
+        <script
+            th:src="@{/webjars/bootstrap/5.2.0/js/bootstrap.bundle.min.js}"
+        ></script>
+        <!-- Include the footer fragment -->
+        <footer th:replace="~{fragments/footer :: footer}"></footer>
+    </body>
 </html>

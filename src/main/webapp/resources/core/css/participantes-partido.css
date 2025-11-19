@@ -20,17 +20,6 @@
     position: relative;
 }
 
-.captain-shield {
-    position: absolute;
-    top: -27px;
-    left: 50%;
-    transform: translateX(-50%);
-    border-radius: 50%;
-    padding: 2px;
-    font-size: 2rem;
-    color: var(--secondary-color);
-}
-
 #contenedor-participantes {
     margin-top: 2rem;
     margin-bottom: 2rem;
@@ -41,12 +30,14 @@
     max-height: 400px;
     display: flex;
     flex-direction: row;
+    justify-content: flex-start;
+    align-items: center;
     flex-wrap: wrap;
     gap: 0.5rem;
     padding: 0.5rem;
     border-top: none !important;
     border-bottom: none !important;
-}
+}                                                               
 
 @media (min-width: 768px) {
     .participante-item {

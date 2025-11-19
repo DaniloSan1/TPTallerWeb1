@@ -1,3 +1,4 @@
+
 package com.tallerwebi.presentacion;
 
 import java.time.LocalDateTime;
@@ -143,9 +144,18 @@ public class DetallePartido {
         return finalizado;
     }
 
+
     public List<DetalleParticipante> getParticipantes() {
         return equipos.stream()
                 .flatMap(equipo -> equipo.getParticipantes().stream())
                 .collect(Collectors.toList());
+    }
+
+    public String getFechaGoogleCalendar() {
+        if (fecha == null) return "";
+        java.time.format.DateTimeFormatter formatter = java.time.format.DateTimeFormatter.ofPattern("yyyyMMdd'T'HHmmss'Z'");
+        String inicio = fecha.format(formatter);
+        String fin = fecha.plusHours(1).format(formatter);
+        return inicio + "/" + fin;
     }
 }

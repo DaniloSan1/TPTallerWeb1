@@ -49,6 +49,26 @@ public class RepositorioNotificacionDeUsuarioImpl implements RepositorioNotifica
     public NotificacionDeUsuario obtenerNotificacion(Long id) {
         return sessionFactory.getCurrentSession().get(NotificacionDeUsuario.class, id);
     }
+
+    @Override
+    public void actualizar(NotificacionDeUsuario notificacion) {
+        sessionFactory.getCurrentSession().update(notificacion);
+    }
+
+    @Override
+    public Integer contarNoLeidas(Long idUsuario) {
+        String hql = "SELECT COUNT(n) FROM NotificacionDeUsuario n " +
+            "WHERE n.usuario.id = :idUsuario AND n.leida = false";
+
+        Long resultado = sessionFactory.getCurrentSession()
+            .createQuery(hql, Long.class)
+            .setParameter("idUsuario", idUsuario)
+            .uniqueResult();
+
+        return resultado != null ? resultado.intValue() : 0;
+    }
+
+
 }
 
 

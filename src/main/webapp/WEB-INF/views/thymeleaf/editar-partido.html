@@ -110,5 +110,7 @@
             th:src="@{/webjars/bootstrap/5.2.0/js/bootstrap.bundle.min.js}"
         ></script>
         <script type="module" th:src="@{/js/common.js}"></script>
+        <!-- Include the footer fragment -->
+        <footer th:replace="~{fragments/footer :: footer}"></footer>
     </body>
 </html>
