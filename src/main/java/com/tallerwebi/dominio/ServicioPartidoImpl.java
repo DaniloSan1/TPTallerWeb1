@@ -56,9 +56,9 @@ public class ServicioPartidoImpl implements ServicioPartido {
         // Crear dos equipos por defecto
         String defaultInsignia = "https://www.ligaprofesional.ar/wp-content/uploads/2024/06/BOC-escudo.png";
         Equipo equipo1 = servicioEquipo.crearEquipo("Equipo 1", "Equipo generado para " + partido.getTitulo(),
-                defaultInsignia, usuario);
+                defaultInsignia, usuario, TipoEquipo.PUBLICO);
         Equipo equipo2 = servicioEquipo.crearEquipo("Equipo 2", "Equipo generado para " + partido.getTitulo(),
-                defaultInsignia, usuario);
+                defaultInsignia, usuario, TipoEquipo.PUBLICO);
 
         // Crear las relaciones PartidoEquipo
         PartidoEquipo partidoEquipo1 = new PartidoEquipo(partido, equipo1);

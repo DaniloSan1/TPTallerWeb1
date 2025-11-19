@@ -32,7 +32,7 @@ public class ServicioEquipoImplTest {
         String descripcion = "Descripción del equipo";
         String insigniaUrl = "http://example.com/insignia.png";
 
-        Equipo equipoCreado = servicioEquipoImpl.crearEquipo(nombreEquipo, descripcion, insigniaUrl, creador);
+        Equipo equipoCreado = servicioEquipoImpl.crearEquipo(nombreEquipo, descripcion, insigniaUrl, creador, TipoEquipo.PRIVADO);
 
         verify(repositorioEquipo).guardar(any(Equipo.class));
         assertThat(equipoCreado.getNombre(), equalTo(nombreEquipo));
@@ -44,7 +44,7 @@ public class ServicioEquipoImplTest {
     @Test
     public void queSePuedaBuscarUnEquipoPorId() throws EquipoNoEncontrado {
         Long id = 1L;
-        Equipo equipoEsperado = new Equipo("Equipo Test", "Descripción", new Usuario(), java.time.LocalDateTime.now());
+        Equipo equipoEsperado = new Equipo("Equipo Test", "Descripción", new Usuario(), java.time.LocalDateTime.now(), TipoEquipo.PRIVADO);
         equipoEsperado.setId(id);
 
         when(repositorioEquipo.buscarPorId(id)).thenReturn(equipoEsperado);
