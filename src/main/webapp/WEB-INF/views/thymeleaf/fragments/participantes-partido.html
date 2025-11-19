@@ -4,12 +4,17 @@
     <body
         th:fragment="participantes-partido (idPartido, participantes, equipo, equipos, showDropdown)"
     >
-        <div class="d-flex flex-row align-items-center">
-            <h4
-                class="mt-2"
-                th:text="${equipo.nombre}"
-                style="width: calc(100% - 32px); border-bottom: 1px solid black"
-            ></h4>
+        <div
+            class="d-flex flex-row align-items-center justify-content-between gap-2"
+            style="border-bottom: 1px solid black"
+        >
+            <h4 class="mt-2 flex-grow-1" th:text="${equipo.nombre}"></h4>
+            <a
+                class="btn btn-sm btn-outline-primary ms-2"
+                th:if="${showDropdown}"
+                th:href="@{/equipos/{id}/editar(id=${equipo.id})}"
+                >Editar</a
+            >
             <h4
                 class="d-flex align-items-center justify-content-center mt-2"
                 style="
