@@ -1,6 +1,5 @@
 -- Insert additional users
 INSERT INTO Usuario(id, nombre, apellido, email, username, password, rol, activo, posicionFavorita, fotoPerfil) VALUES
-(NULL, 'Admin', 'Admin', 'admin@unlam.edu.ar', 'admin', 'test', 'ADMIN', TRUE, 'DELANTERO', 'https://taller-web-1-416711641372-us-east-2.s3.us-east-2.amazonaws.com/ejemplos/pibardo1.jpg'),
 (NULL, 'John', 'Doe', 'test@unlam.edu.ar', 'john', 'test', 'ROLE_USER', TRUE, 'DELANTERO', 'https://taller-web-1-416711641372-us-east-2.s3.us-east-2.amazonaws.com/ejemplos/pibardo1.jpg'),
 (NULL, 'Jane', 'Doe', 'jane@unlam.edu.ar', 'janedoe', 'password', 'ROLE_USER', TRUE, 'DEFENSOR', 'https://taller-web-1-416711641372-us-east-2.s3.us-east-2.amazonaws.com/ejemplos/pibarda1.jpg'),
 (NULL, 'Ricardo', 'Tapia', 'participante1@example.com', 'ricardo', 'password', 'ROLE_USER', TRUE, 'MEDIOCAMPISTA','https://taller-web-1-416711641372-us-east-2.s3.us-east-2.amazonaws.com/ejemplos/ricardo-tapia.png'),
@@ -10,7 +9,8 @@ INSERT INTO Usuario(id, nombre, apellido, email, username, password, rol, activo
 (NULL, 'Pedro', 'Martinez', 'pedro.martinez@example.com', 'pedro', 'password', 'ROLE_USER', TRUE, 'MEDIOCAMPISTA', 'https://taller-web-1-416711641372-us-east-2.s3.us-east-2.amazonaws.com/ejemplos/pibardo3.jpg'),
 (NULL, 'Ana', 'Rodriguez', 'ana.rodriguez@example.com', 'ana', 'password', 'ROLE_USER', TRUE, 'PORTERO', 'https://taller-web-1-416711641372-us-east-2.s3.us-east-2.amazonaws.com/ejemplos/pibarda3.jpg'),
 (NULL, 'Luis', 'Hernandez', 'luis.hernandez@example.com', 'luis', 'password', 'ROLE_USER', TRUE, 'DELANTERO', 'https://taller-web-1-416711641372-us-east-2.s3.us-east-2.amazonaws.com/ejemplos/pibardo4.jpg'),
-(NULL, 'Sofia', 'Fernandez', 'sofia.fernandez@example.com', 'sofia', 'password', 'ROLE_USER', TRUE, 'DEFENSOR', 'https://taller-web-1-416711641372-us-east-2.s3.us-east-2.amazonaws.com/ejemplos/pibarda4.jpg');
+(NULL, 'Sofia', 'Fernandez', 'sofia.fernandez@example.com', 'sofia', 'password', 'ROLE_USER', TRUE, 'DEFENSOR', 'https://taller-web-1-416711641372-us-east-2.s3.us-east-2.amazonaws.com/ejemplos/pibarda4.jpg'),
+(NULL, 'Admin', 'Admin', 'admin@unlam.edu.ar', 'admin', 'test', 'ADMIN', TRUE, 'DELANTERO', 'https://taller-web-1-416711641372-us-east-2.s3.us-east-2.amazonaws.com/ejemplos/pibardo1.jpg');
 
 -- Insert fields
 INSERT INTO Cancha(id, nombre, capacidad, direccion, zona, precio, tipoSuelo) VALUES
