@@ -27,25 +27,25 @@ public class ControladorUsuario {
     private ServicioCalificacion servicioCalificacion;
     private ServicioNotificacionDeUsuario servicioNotificacionDeUsuario;
     private ServicioGoles servicioGoles;
+    private ServicioPartido servicioPartido;
     private ServicioImagenes servicioImagenes;
 
     // Single constructor with all dependencies to avoid ambiguity during injection
     @Autowired
     public ControladorUsuario(ServicioLogin servicioLogin,
-            ServicioUsuario servicioUsuario,
-            ServicioAmistad servicioAmistad,
-            ServicioSolicitudUnirse servicioSolicitudUnirse,
-            ServicioCalificacion servicioCalificacion,
-            ServicioNotificacionDeUsuario servicioNotificacionDeUsuario,
-            ServicioGoles servicioGoles,
-            ServicioImagenes servicioImagenes) {
+                              ServicioUsuario servicioUsuario,
+                              ServicioAmistad servicioAmistad,
+                              ServicioSolicitudUnirse servicioSolicitudUnirse,
+                              ServicioCalificacion servicioCalificacion,
+                              ServicioNotificacionDeUsuario servicioNotificacionDeUsuario,ServicioGoles servicioGoles,ServicioPartido servicioPartido,ServicioImagenes servicioImagenes) {
         this.servicioLogin = servicioLogin;
         this.servicioUsuario = servicioUsuario;
         this.servicioAmistad = servicioAmistad;
         this.servicioSolicitudUnirse = servicioSolicitudUnirse;
         this.servicioCalificacion = servicioCalificacion;
         this.servicioNotificacionDeUsuario = servicioNotificacionDeUsuario;
-        this.servicioGoles = servicioGoles;
+        this.servicioGoles=servicioGoles;
+        this.servicioPartido=servicioPartido;
         this.servicioImagenes = servicioImagenes;
     }
 
@@ -53,15 +53,12 @@ public class ControladorUsuario {
     // ServicioNotificacionDeUsuario
     // isn't provided (keeps the original parameter order used by existing tests)
     public ControladorUsuario(ServicioLogin servicioLogin,
-            ServicioUsuario servicioUsuario,
-            ServicioAmistad servicioAmistad,
-            ServicioNotificacionDeUsuario servicioNotificacionDeUsuario,
-            ServicioCalificacion servicioCalificacion,
-            ServicioGoles servicioGoles,
-            ServicioImagenes servicioImagenes) {
+                              ServicioUsuario servicioUsuario,
+                              ServicioAmistad servicioAmistad,
+                              ServicioNotificacionDeUsuario servicioNotificacionDeUsuario,
+                              ServicioCalificacion servicioCalificacion,ServicioGoles servicioGoles,ServicioPartido servicioPartido,ServicioImagenes servicioImagenes) {
         // Keep servicioSolicitudUnirse as null for backwards compatibility
-        this(servicioLogin, servicioUsuario, servicioAmistad, null, servicioCalificacion, servicioNotificacionDeUsuario,
-                servicioGoles, servicioImagenes);
+        this(servicioLogin, servicioUsuario, servicioAmistad, null, servicioCalificacion, servicioNotificacionDeUsuario,servicioGoles,servicioPartido,servicioImagenes);
     }
 
     @GetMapping("/ver/id/{id}")
@@ -88,10 +85,15 @@ public class ControladorUsuario {
                     modelo.addAttribute("estadoAmistad", amistad != null ? amistad.getEstadoDeAmistad() : null);
                 }
             }
-            Double calificacionPromedioUsuario = servicioCalificacion
-                    .calcularCalificacionPromedioUsuario(usuarioAVer.getId());
-            int golesTotalesUsuario = servicioGoles.devolverCantidadTotalDeGolesDelUsuario(usuarioAVer.getId());
-            Double golesPromedioUsuario = servicioGoles.devolverGolesPromedioPorPartidoDelUsuario(usuarioAVer.getId());
+            Double calificacionPromedioUsuario = servicioCalificacion.calcularCalificacionPromedioUsuario(usuarioAVer.getId());
+            int golesTotalesUsuario=servicioGoles.devolverCantidadTotalDeGolesDelUsuario(usuarioAVer.getId());
+            Double golesPromedioUsuario=servicioGoles.devolverGolesPromedioPorPartidoDelUsuario(usuarioAVer.getId());
+            int partidosJugadosUsuario=servicioPartido.partidosTerminadosDelUsuario(usuarioAVer.getId()).size();
+            int partidosGanadosUsuario=servicioPartido.partidosGanadosDelUsuario(usuarioAVer.getId()).size();
+            List<Calificacion> calificacionesUsuario=servicioCalificacion.obtenerCalificacionesPorCalificado(usuarioAVer.getId());
+            modelo.addAttribute("calificacionesUsuario", calificacionesUsuario);
+            modelo.addAttribute("partidosJugadosUsuario", partidosJugadosUsuario);
+            modelo.addAttribute("partidosGanadosUsuario", partidosGanadosUsuario);
             modelo.addAttribute("calificacionPromedioUsuario", calificacionPromedioUsuario);
             modelo.addAttribute("golesPromedioUsuario", golesPromedioUsuario);
             modelo.addAttribute("golesTotalesUsuario", golesTotalesUsuario);
@@ -117,11 +119,16 @@ public class ControladorUsuario {
         }
 
         Amistad amistad = servicioAmistad.buscarRelacionEntreUsuarios(usuarioActual.getId(), usuarioAVer.getId());
-        Double calificacionPromedioUsuario = servicioCalificacion
-                .calcularCalificacionPromedioUsuario(usuarioAVer.getId());
-        int golesTotalesUsuario = servicioGoles.devolverCantidadTotalDeGolesDelUsuario(usuarioAVer.getId());
-        Double golesPromedioUsuario = servicioGoles.devolverGolesPromedioPorPartidoDelUsuario(usuarioAVer.getId());
-        modelo.addAttribute("golesTotalesUsuario", golesTotalesUsuario);
+        Double calificacionPromedioUsuario = servicioCalificacion.calcularCalificacionPromedioUsuario(usuarioAVer.getId());
+        int golesTotalesUsuario=servicioGoles.devolverCantidadTotalDeGolesDelUsuario(usuarioAVer.getId());
+        Double golesPromedioUsuario=servicioGoles.devolverGolesPromedioPorPartidoDelUsuario(usuarioAVer.getId());
+        int partidosJugadosUsuario=servicioPartido.partidosTerminadosDelUsuario(usuarioAVer.getId()).size();
+        int partidosGanadosUsuario=servicioPartido.partidosGanadosDelUsuario(usuarioAVer.getId()).size();
+        List<Calificacion> calificacionesUsuario=servicioCalificacion.obtenerCalificacionesPorCalificado(usuarioAVer.getId());
+        modelo.addAttribute("calificacionesUsuario", calificacionesUsuario);
+        modelo.addAttribute("partidosJugadosUsuario",partidosJugadosUsuario);
+        modelo.addAttribute("partidosGanadosUsuario", partidosGanadosUsuario);
+        modelo.addAttribute("golesTotalesUsuario",golesTotalesUsuario);
         modelo.addAttribute("golesPromedioUsuario", golesPromedioUsuario);
         modelo.addAttribute("calificacionPromedioUsuario", calificacionPromedioUsuario);
         modelo.addAttribute("usuarioAVer", usuarioAVer);
@@ -145,8 +152,14 @@ public class ControladorUsuario {
 
             // Calificación promedio
             Double calificacionPromedio = servicioCalificacion.calcularCalificacionPromedioUsuario(usuario.getId());
-            int golesTotales = servicioGoles.devolverCantidadTotalDeGolesDelUsuario(usuario.getId());
-            Double golesPromedio = servicioGoles.devolverGolesPromedioPorPartidoDelUsuario(usuario.getId());
+            int golesTotales=servicioGoles.devolverCantidadTotalDeGolesDelUsuario(usuario.getId());
+            Double golesPromedio=servicioGoles.devolverGolesPromedioPorPartidoDelUsuario(usuario.getId());
+            int partidosJugados=servicioPartido.partidosTerminadosDelUsuario(usuario.getId()).size();
+            int partidosGanados=servicioPartido.partidosGanadosDelUsuario(usuario.getId()).size();
+            List<Calificacion> calificaciones=servicioCalificacion.obtenerCalificacionesPorCalificado(usuario.getId());
+            modelo.addAttribute("calificaciones", calificaciones);
+            modelo.addAttribute("partidosJugados", partidosJugados);
+            modelo.addAttribute("partidosGanados", partidosGanados);
             modelo.addAttribute("golesTotales", golesTotales);
             modelo.addAttribute("calificacionPromedio", calificacionPromedio);
             modelo.addAttribute("golesPromedio", golesPromedio);
@@ -280,7 +293,7 @@ public class ControladorUsuario {
                                                                                                                        // para
                                                                                                                        // la
                                                                                                                        // noti
-                servicioNotificacionDeUsuario.crearNotificacion(receptor, mensaje, NotificacionEnum.SOLICITUD_AMISTAD); // crea
+                servicioNotificacionDeUsuario.crearNotificacion(receptor, mensaje, NotificacionEnum.SOLICITUD_AMISTAD,null); // crea
                                                                                                                         // la
                                                                                                                         // noti
 
@@ -301,7 +314,7 @@ public class ControladorUsuario {
         String mensaje = "El usuario " + usuarioQueAceptaSolicitud.getUsername()
                 + " ha aceptado tu solicitud de amistad!";
         servicioNotificacionDeUsuario.crearNotificacion(amistad.getUsuario1(), mensaje,
-                NotificacionEnum.SOLICITUD_ACEPTADA);
+                NotificacionEnum.SOLICITUD_ACEPTADA,null);
         return "redirect:/perfil/solicitudes";
     }
 
@@ -377,13 +390,49 @@ public class ControladorUsuario {
     @PostMapping("/notificaciones/marcar-como-leida")
     public String marcarComoLeidaYRedirigir(@RequestParam Long idNotificacion) {
 
+        NotificacionDeUsuario n = servicioNotificacionDeUsuario.obtenerNotificacionPorId(idNotificacion);
+
+        if (n == null)
+            return "redirect:/perfil/notificaciones";
+
+        // Si es invitación a partido → redirigir al partido
+        if (n.getTipoDeNotificacion() == NotificacionEnum.INVITACION_PARTIDO) {
+
+            Long partidoId = servicioNotificacionDeUsuario
+                .marcarComoLeidaYObtenerIdDePartido(idNotificacion);
+
+            if (partidoId != null) {
+                return "redirect:/partidos/" + partidoId;
+            }
+
+            return "redirect:/perfil/notificaciones";
+        }
+
         String username = servicioNotificacionDeUsuario
-                .marcarComoLeidaYObtenerUsername(idNotificacion);
+            .marcarComoLeidaYObtenerUsername(idNotificacion);
 
         if (username != null) {
             return "redirect:/perfil/ver/username/" + username;
         }
 
         return "redirect:/perfil/notificaciones";
+    }
+
+
+    @GetMapping("/notificaciones/no-leidas")
+    public String verNoLeidas(ModelMap modelo, HttpServletRequest request) throws UsuarioNoEncontradoException {
+        String email = (String) request.getSession().getAttribute("EMAIL");
+        if (email == null) {
+            return "redirect:/login";
+        }
+
+        Usuario usuario = servicioLogin.buscarPorEmail(email);
+
+        List<NotificacionDeUsuario> noLeidas =
+            servicioNotificacionDeUsuario.obtenerListaDeNotificacionesNoLeidas(usuario);
+
+        modelo.addAttribute("notificaciones", noLeidas);
+        modelo.addAttribute("soloNoLeidas", true); // para marcar como activo el tab en el html
+        return "notificaciones";
     }
 }

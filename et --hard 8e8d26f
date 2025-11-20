@@ -1,0 +1,138 @@
+[33m021a533[m[33m ([m[1;36mHEAD -> [m[1;32mrama-Damian[m[33m, [m[1;31morigin/rama-Damian[m[33m)[m Merge remote-tracking branch 'origin/develop' into rama-Damian
+[33m8e8d26f[m partidos ganados
+[33me7cc55d[m[33m ([m[1;31morigin/develop[m[33m, [m[1;32mdevelop[m[33m)[m Agregar la posibilidad de editar equipo desde detalle de partido
+[33me24af32[m Agregar tipo de partido. Publico y Privado.
+[33m5de5527[m Update RepositorioTorneoImpl.java
+[33m164b33a[m Arreglar icono de capitán en la tarjeta de jugador
+[33mec3064c[m Agregar foto de perfil y arreglar estilos de participantes
+[33mdacea2b[m Agregar foto de perfil dinámica para usuarios y jugadores
+[33m534ef85[m agrego finalizacion de torneo
+[33m86b08ea[m Merge rama_danilo into develop
+[33m53542f7[m[33m ([m[1;31morigin/rama_danilo[m[33m, [m[1;32mrama_danilo[m[33m)[m Integracion con google calendar
+[33mcdf8cd2[m Fix notificaciones
+[33m23d0d0c[m Merge branch 'develop' of github.com:DaniloSan1/TPTallerWeb1 into develop
+[33m1ba66ec[m agregar footer
+[33mb464aca[m Add notificacion de solicitud aceptada, fix test ControladorLoginTest, Add Contador de notificaciones no leidas
+[33m4884148[m Merge remote-tracking branch 'origin/master' into develop
+[33m0c48069[m Merge remote-tracking branch 'origin/master' into develop
+[33m7ee53f6[m[33m ([m[1;31morigin/master[m[33m, [m[1;31morigin/HEAD[m[33m, [m[1;32mmaster[m[33m)[m Merge branch 'develop'
+[33m5fa7f71[m Validacion en servicio y no controlador
+[33mc272171[m Develop (#30)
+[33mabe7e08[m Merge remote-tracking branch 'origin/master' into develop
+[33m2aa33d4[m arreglo torneo
+[33m86bf7e2[m Merge branch 'develop' of github.com:DaniloSan1/TPTallerWeb1 into develop
+[33m4e6e211[m Prevenir que usuario creador se elimine de equipo
+[33m7bd5e21[m listar torneo
+[33maf0d3c4[m Agregar creador del equipo como jugador al crear un nuevo equipo
+[33m13c7e64[m correccion html
+[33m9bab0b7[m cambio codigo controlador
+[33m8434856[m Develop (#29)
+[33meb74f45[m arreglo controlador
+[33mba418b6[m Merge remote-tracking branch 'origin/master' into develop
+[33m6eb3987[m goles promedio por partido
+[33m8c6ad10[m Develop (#28)
+[33m739a7d4[m arreglos test
+[33m75ba462[m Merge remote-tracking branch 'origin/develop' into rama-Damian
+[33m1c78675[m mostrar goles totales de los usuarios
+[33m73b32c1[m Merge branch 'develop' of github.com:DaniloSan1/TPTallerWeb1 into develop
+[33m6fa22b2[m Mostrar goles en partido
+[33m293e497[m Merge branch 'develop' of https://github.com/DaniloSan1/TPTallerWeb1 into develop
+[33mcf9834f[m arreglos tests
+[33m07957d1[m Update DockerfileSQL.ejemplo
+[33mf195e4f[m Merge remote-tracking branch 'origin/develop' into rama-Damian
+[33m17a2eaa[m Agregar la posibilidad de promover a capitán y eliminar jugadores desde la vista del equipo
+[33m0ecaa4b[m calificaciones de jugadores en hiorial
+[33m3d3ed43[m Merge remote-tracking branch 'origin/develop' into rama-Damian
+[33m39679d3[m mensajes success de reseñas
+[33m920e7fc[m Merge branch 'rama_danilo' into develop
+[33m0433df1[m Merge conflict resolution: fix ControladorUsuario, ControladorSolicitudUnirse, ControladorPartido, RepositorioPartidoImpl and cleanups
+[33mb8e17f9[m feature torneo
+[33m09d24fa[m Invitar amigo al parrtido + fixes
+[33m9cfd367[m Agregue Notificaciones, lista de notificaciones de solicitudes de amistad (por ahora), eliminar notificaciones, ver las solicitudesd desde las notificaciones
+[33m294b7a7[m Merge remote-tracking branch 'origin/develop' into rama-Damian
+[33me508673[m fotos de cancha
+[33md74bc2a[m Merge branch 'develop' into rama_danilo
+[33mce59f69[m funcion torneo
+[33mccddfb8[m Feature/moficiar equipo (#26)
+[33m6c2f187[m Agregar jugador al equipo (#25)
+[33m10eae69[m Arreglar pruebas unitarias en ControladorUsuarioTest
+[33m43a4ab1[m agrego torneo
+[33m2cd6958[m Merge branch 'develop' into rama_danilo
+[33m009764f[m Feature/editar equipo (#24)
+[33mb173e4d[m agrego torneo
+[33m9f637b1[m merge
+[33m53a00d7[m merge
+[33m2d5ba52[m Merge branch 'develop' into rama_danilo
+[33m633b302[m agrego metodo buscar por cancha y fecha
+[33m4017819[m Feature/editar equipo (#23)
+[33m328dcf8[m .
+[33maca24fd[m arreglos menores
+[33m1dd1f7b[m Tests ReseniaCancha
+[33m0530263[m calificacion promedio jugador en su perfil
+[33m6260db5[m Merge remote-tracking branch 'origin/develop' into rama-Damian
+[33mfaccee6[m arreglos
+[33medf0567[m resenias
+[33m87c3bfb[m Feature/editar equipo (#22)
+[33mf34e8cb[m Merge remote-tracking branch 'origin/master' into develop
+[33mdc1ceae[m Feature/editar equipo (#20)
+[33me83f8cd[m agrego mis reservas
+[33m49d7166[m agrego mis reservas
+[33mb262a0d[m Develop (#19)
+[33m2829445[m Merge remote-tracking branch 'origin/master' into develop
+[33m9a25c04[m Ocultar sección de invitar amigos
+[33m2f9e846[m Develop (#18)
+[33mf7d4917[m Merge remote-tracking branch 'origin/master' into develop
+[33m76b4004[m Cambiar la imagen base de OpenJDK 11 a Eclipse Temurin 11 en DockerfileJetty
+[33m8de3fad[m Merge branch 'develop' of https://github.com/DaniloSan1/TPTallerWeb1 into develop
+[33mec98e61[m aceptar solicitudes
+[33mcf5c140[m Merge remote-tracking branch 'origin/develop' into rama-Damian
+[33ma207b1e[m cambios horarios
+[33m76c3a32[m Merge branch 'develop' of https://github.com/DaniloSan1/TPTallerWeb1 into develop
+[33m7ea72fb[m Listado de amigos y eliminar amigos
+[33m10e0dd1[m Configurar utf-8 en Thymeleaf
+[33macf1371[m Merge remote-tracking branch 'origin/develop' into rama-Damian
+[33m799bdc0[m cambi html minusculo
+[33ma8d1f36[m Merge remote-tracking branch 'origin/develop' into rama-Damian
+[33mf70ef37[m Agregue funcionalidad de busqueda de usuarios por username, enviar solicitud de amistad
+[33m0103080[m Mejoras de Reseñas
+[33m6eff634[m Arreglar envío de idPartido al modal de calificación de jugadores
+[33m9659689[m Arreglar diseño de la sección de invitaciones en el detalle del partido
+[33m53498da[m Arreglar tests unitarios despues de agregar nuevos servicios al controlador de partido
+[33m169724f[m cambio merge
+[33m1d71659[m Merge remote-tracking branch 'origin/develop' into rama-Damian
+[33m46f82aa[m InicioReseniasCanchas
+[33md197d51[m agrego test de calificacion
+[33m53ec42e[m Solicitud/invitacion  para unirse al partido
+[33m03474a2[m Merge rama_danilo into develop
+[33m7fc2c90[m mis partidos arreglado
+[33m37f5cfe[m Merge remote-tracking branch 'origin/develop' into rama_danilo
+[33mbc5f12c[m Merge remote-tracking branch 'origin/develop' into rama_danilo
+[33m5a83325[m Merge remote-tracking branch 'origin/develop' into rama_danilo
+[33m3572075[m partido test
+[33m4908959[m mis partidos
+[33m5c9aa89[m Merge branch 'rama_danilo' into develop
+[33m8da2145[m Agregar la vista de "Mis Equipos" (#17)
+[33m57cdb65[m Feature/finilizar partido (#16)
+[33mf48a8cd[m Agregar botón para finalizar partido (#15)
+[33m230f3ab[m Merge branch 'rama_danilo' of https://github.com/DaniloSan1/TPTallerWeb1 into rama_danilo
+[33mbb9719f[m feature/calificacion
+[33m932b427[m Feature/asignar capitan (#14)
+[33m213467b[m arreglo foto mis partidos
+[33mb62c1b7[m Agrego vista Mis Partidos y fix de imágenes
+[33m81501e0[m Merge remote-tracking branch 'origin/develop' into rama-Damian
+[33mfa2a306[m Feature/modificar equipo (#13)
+[33m31690fa[m Merge branch 'rama_danilo' of https://github.com/DaniloSan1/TPTallerWeb1 into rama_danilo
+[33m8e6700f[m Vista mis partidos
+[33maa042c3[m Feature/modificar equipo (#12)
+[33mf0f41b0[m agrego repositorio de calificacion
+[33ma8eafd7[m agrego Servicio de calificacion por jugador
+[33m356a6c6[m agrego Servicio de calificacion por jugador
+[33ma107dd1[m agrego backUrl nGrok
+[33m4d73e39[m Merge remote-tracking branch 'origin/develop' into rama-Damian
+[33m6e53826[m Tests arreglados
+[33m6c86a9e[m Tests (algunos todavia fallan)
+[33m230eb0c[m tests nuevos
+[33m44017ea[m Develop (#11)
+[33ma7c22c5[m Merge remote-tracking branch 'origin/master' into develop
+[33m40f88ef[m Agregue funcionalidad de editarPerfil
+[33m35bb672[m Develop (#

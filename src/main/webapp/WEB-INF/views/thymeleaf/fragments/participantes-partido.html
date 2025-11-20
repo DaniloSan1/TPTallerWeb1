@@ -6,13 +6,19 @@
     >
         <div
             class="d-flex flex-row align-items-center justify-content-between gap-2"
-            style="border-bottom: 1px solid black"
+            style="border-bottom: 1px solid black; min-height: 100px"
         >
+            <img
+                th:src="${equipo.insigniaUrl != null ? equipo.insigniaUrl : 'https://taller-web-1-416711641372-us-east-2.s3.us-east-2.amazonaws.com/insignia-default.png'}"
+                alt="Insignia del equipo"
+                class="img-fluid"
+                style="max-height: 4rem; max-width: 4rem; object-fit: contain"
+            />
             <h4 class="mt-2 flex-grow-1" th:text="${equipo.nombre}"></h4>
             <a
                 class="btn btn-sm btn-outline-primary ms-2"
                 th:if="${showDropdown}"
-                th:href="@{/equipos/{id}/editar(id=${equipo.id})}"
+                th:href="@{/equipos/{id}/editar(id=${equipo.idEquipo})}"
                 >Editar</a
             >
             <h4
@@ -35,14 +41,17 @@
             class="list-group"
         >
             <div
-                class="position-relative"
+                class="position-relative participante-item"
                 th:each="participante : ${participantes}"
             >
                 <div
                     th:replace="~{fragments/jugador-simple :: jugador-simple (jugador=${participante})}"
                 ></div>
                 <!-- Dropdown -->
-                <div class="dropdown position-absolute top-0 end-0">
+                <div
+                    class="dropdown position-absolute"
+                    style="top: 2px !important; right: 2px !important"
+                >
                     <button
                         class="btn btn-light dropdown-toggle"
                         type="button"
@@ -151,7 +160,7 @@
                             >
                                 <option
                                     th:each="equipo : ${equipos}"
-                                    th:value="${equipo.id}"
+                                    th:value="${equipo.idEquipo}"
                                     th:text="${equipo.nombre}"
                                 ></option>
                             </select>
@@ -242,22 +251,27 @@
                             <h5 class="modal-title">Calificar jugador</h5>
                         </div>
                         <div class="modal-body">
-                            <label class="form-label">Puntuación</label>
-                            <select name="puntuacion" class="form-select mb-2">
-                                <option value="1">⭐</option>
-                                <option value="2">⭐⭐</option>
-                                <option value="3">⭐⭐⭐</option>
-                                <option value="4">⭐⭐⭐⭐</option>
-                                <option value="5">⭐⭐⭐⭐⭐</option>
-                            </select>
-                            <label class="form-label"
-                                >Comentario (opcional)</label
-                            >
-                            <input
-                                type="text"
-                                name="comentario"
-                                class="form-control"
-                            />
+                                <label class="form-label fw-bold">Calificación:</label>
+                                <div class="star-rating mb-2">
+                                    <input type="radio" id="star5_modal" name="puntuacion" value="5" required />
+                                    <label for="star5_modal" title="5 estrellas">&#9733;</label>
+
+                                    <input type="radio" id="star4_modal" name="puntuacion" value="4" />
+                                    <label for="star4_modal" title="4 estrellas">&#9733;</label>
+
+                                    <input type="radio" id="star3_modal" name="puntuacion" value="3" />
+                                    <label for="star3_modal" title="3 estrellas">&#9733;</label>
+
+                                    <input type="radio" id="star2_modal" name="puntuacion" value="2" />
+                                    <label for="star2_modal" title="2 estrellas">&#9733;</label>
+
+                                    <input type="radio" id="star1_modal" name="puntuacion" value="1" />
+                                    <label for="star1_modal" title="1 estrella">&#9733;</label>
+                                </div>
+                            <div class="mb-3">
+                                <label class="form-label">Comentario (opcional)</label>
+                                <input type="text" name="comentario" class="form-control" />
+                            </div>
                         </div>
                         <div class="modal-footer">
                             <button
@@ -275,6 +289,28 @@
                 </div>
             </div>
         </div>
+        <style>
+            .star-rating {
+                direction: rtl;
+                display: inline-flex;
+                font-size: 1.6rem;
+                cursor: pointer;
+            }
+            .star-rating input {
+                display: none;
+            }
+            .star-rating label {
+                color: lightgray;
+                padding: 0 0.1rem;
+            }
+            .star-rating input:checked ~ label {
+                color: gold;
+            }
+            .star-rating label:hover,
+            .star-rating label:hover ~ label {
+                color: gold;
+            }
+        </style>
 
         <!-- Modal Promover Capitán -->
         <div

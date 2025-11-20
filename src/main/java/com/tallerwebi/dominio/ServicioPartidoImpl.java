@@ -1,11 +1,16 @@
 package com.tallerwebi.dominio;
 
+import java.time.LocalDateTime;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.tallerwebi.dominio.excepcion.EquipoNoEncontrado;
 import com.tallerwebi.dominio.excepcion.NoHayCupoEnPartido;
 import com.tallerwebi.dominio.excepcion.PartidoNoEncontrado;
 import com.tallerwebi.dominio.excepcion.PermisosInsufficientes;
@@ -19,17 +24,23 @@ public class ServicioPartidoImpl implements ServicioPartido {
     private final ServicioEquipoJugador servicioEquipoJugador;
     private final ServicioEquipo servicioEquipo;
     private final RepositorioPartidoEquipo repoPartidoEquipo;
+    private final ServicioPartidoEquipo servicioPartidoEquipo;
+    private final RepositorioGoles repositorioGoles;
 
     @Autowired
     public ServicioPartidoImpl(RepositorioPartido repoPartido, RepositorioReserva repoReserva,
             RepositorioUsuario repoUsuario, ServicioEquipoJugador servicioEquipoJugador, ServicioEquipo servicioEquipo,
-            RepositorioPartidoEquipo repoPartidoEquipo) {
+            RepositorioPartidoEquipo repoPartidoEquipo, ServicioPartidoEquipo servicioPartidoEquipo,
+            RepositorioGoles repoGoles) {
         this.repoPartido = repoPartido;
         this.repoReserva = repoReserva;
         this.repoUsuario = repoUsuario;
         this.servicioEquipoJugador = servicioEquipoJugador;
         this.servicioEquipo = servicioEquipo;
         this.repoPartidoEquipo = repoPartidoEquipo;
+        this.servicioPartidoEquipo = servicioPartidoEquipo;
+        this.repositorioGoles = repoGoles;
+
     }
 
     @Override
@@ -54,7 +65,7 @@ public class ServicioPartidoImpl implements ServicioPartido {
         repoPartido.guardar(partido);
 
         // Crear dos equipos por defecto
-        String defaultInsignia = "https://www.ligaprofesional.ar/wp-content/uploads/2024/06/BOC-escudo.png";
+        String defaultInsignia = "https://taller-web-1-416711641372-us-east-2.s3.us-east-2.amazonaws.com/insignia-default.png";
         Equipo equipo1 = servicioEquipo.crearEquipo("Equipo 1", "Equipo generado para " + partido.getTitulo(),
                 defaultInsignia, usuario, TipoEquipo.PUBLICO);
         Equipo equipo2 = servicioEquipo.crearEquipo("Equipo 2", "Equipo generado para " + partido.getTitulo(),
@@ -129,7 +140,7 @@ public class ServicioPartidoImpl implements ServicioPartido {
         List<Partido> partidos = repoPartido.listarPorParticipante(usuario.getId());
         return partidos != null ? partidos : java.util.Collections.emptyList();
     }
-    
+
     @Override
     public void actualizarPartido(Long id, String titulo, String descripcion, Usuario usuario)
             throws PermisosInsufficientes {
@@ -143,12 +154,66 @@ public class ServicioPartidoImpl implements ServicioPartido {
     }
 
     @Override
-    public void finalizarPartido(Partido partido, Usuario usuario) throws PermisosInsufficientes {
-        if (!partido.esCreador(usuario.getEmail())) {
-            throw new PermisosInsufficientes();
+    @Transactional
+    public void finalizarPartido(Partido partido, List<Gol> goles, Usuario usuario) {
+
+        Partido partidobdd = repoPartido.porId(partido.getId());
+        if (partidobdd == null) {
+            throw new RuntimeException("El partido con ID " + partido.getId() + " no fue encontrado.");
         }
-        partido.setFechaFinalizacion(java.time.LocalDateTime.now());
-        repoPartido.actualizar(partido);
+
+        if (goles != null && !goles.isEmpty()) {
+            for (Gol g : goles) {
+                g.setPartido(partidobdd);
+                repositorioGoles.guardar(g);
+            }
+            servicioPartidoEquipo.actualizarGolesPorEquipo(partidobdd);
+        }
+
+        Map<Long, Integer> golesPorEquipo = new HashMap<>();
+        Equipo equipoGanador = null;
+        int maxGoles = -1;
+        int cantidadMaximos = 0;
+        Long equipoGanadorId = null;
+
+        if (goles != null) {
+            for (Gol g : goles) {
+                Equipo equipo = g.getEquipoJugador().getEquipo();
+                if (equipo != null) {
+                    Long equipoId = equipo.getId();
+                    int cantidad = g.getCantidad();
+                    golesPorEquipo.merge(equipoId, cantidad, Integer::sum);
+                }
+            }
+        }
+
+        for (Map.Entry<Long, Integer> entry : golesPorEquipo.entrySet()) {
+            int totalGoles = entry.getValue();
+
+            if (totalGoles > maxGoles) {
+                maxGoles = totalGoles;
+                cantidadMaximos = 1;
+                equipoGanadorId = entry.getKey();
+            } else if (totalGoles == maxGoles && maxGoles > -1) {
+                cantidadMaximos++;
+            }
+        }
+
+        // CORRECCIÓN: Buscamos el objeto Equipo por ID usando el servicio
+        if (cantidadMaximos == 1 && equipoGanadorId != null) {
+            try {
+                equipoGanador = servicioEquipo.buscarPorId(equipoGanadorId);
+            } catch (EquipoNoEncontrado ignored) {
+                // Si falla la búsqueda (EquipoNoEncontrado), el ganador sigue siendo null
+            }
+        } else {
+            equipoGanador = null;
+        }
+
+        partidobdd.setEquipoGanador(equipoGanador);
+        partidobdd.setFechaFinalizacion(LocalDateTime.now());
+
+        repoPartido.actualizar(partidobdd);
     }
 
     @Override
@@ -156,13 +221,24 @@ public class ServicioPartidoImpl implements ServicioPartido {
         return repoPartido.listarPorEquipoConInfoCancha(equipo.getId());
     }
 
-     @Override
-    public List<Partido> listarTodos(String busqueda, Zona filtroZona, Nivel filtroNivel, java.time.LocalDate fechaFiltro, Long canchaId) {
+    @Override
+    public List<Partido> listarTodos(String busqueda, Zona filtroZona, Nivel filtroNivel,
+            java.time.LocalDate fechaFiltro, Long canchaId) {
         return repoPartido.listar(busqueda, filtroZona, filtroNivel, fechaFiltro, canchaId);
     }
 
-     @Override
-     public List<Partido> listarTodos(String busqueda, Zona filtroZona, Nivel filtroNivel) {
-            return repoPartido.listar(busqueda, filtroZona, filtroNivel, null, null);
-     }
+    @Override
+    public List<Partido> partidosTerminadosDelUsuario(Long usuarioId) {
+        return repoPartido.partidosTerminadosDelUsuario(usuarioId);
+    }
+
+    @Override
+    public List<Partido> partidosGanadosDelUsuario(Long usuarioId) {
+        return repoPartido.partidosGanadosDelUsuario(usuarioId);
+    }
+
+    @Override
+    public List<Partido> listarTodos(String busqueda, Zona filtroZona, Nivel filtroNivel) {
+        return repoPartido.listar(busqueda, filtroZona, filtroNivel, null, null);
+    }
 }

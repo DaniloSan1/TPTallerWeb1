@@ -1,5 +1,6 @@
 package com.tallerwebi.dominio;
 
+import com.tallerwebi.dominio.excepcion.UsuarioNoEncontradoException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -17,14 +18,18 @@ public class ServicioSolicitudUnirseImpl implements ServicioSolicitudUnirse {
 
     private final RepositorioSolicitudUnirse repo;
     private final ServicioPartido servicioPartido;
+    private final ServicioNotificacionDeUsuario servicioNotificacionDeUsuario;
+    private final ServicioLogin servicioLogin;
 
-    public ServicioSolicitudUnirseImpl(RepositorioSolicitudUnirse repo, ServicioPartido servicioPartido) {
+    public ServicioSolicitudUnirseImpl(RepositorioSolicitudUnirse repo, ServicioPartido servicioPartido, ServicioNotificacionDeUsuario servicioNotificacionDeUsuario, ServicioLogin servicioLogin) {
         this.repo = repo;
         this.servicioPartido = servicioPartido;
+        this.servicioNotificacionDeUsuario = servicioNotificacionDeUsuario;
+        this.servicioLogin = servicioLogin;
     }
 
     @Override
-    public String crearInvitacion(Long partidoId, Usuario creador, String emailDestino) {
+    public String crearInvitacion(Long partidoId, Usuario creador, String emailDestino) throws UsuarioNoEncontradoException {
         // verifica que el creador sea el creador del partido
         var partido = servicioPartido.obtenerPorId(partidoId);
         // Permitimos enviar invitaciones si eres el creador o si ya te uniste al partido
@@ -46,6 +51,12 @@ public class ServicioSolicitudUnirseImpl implements ServicioSolicitudUnirse {
         solicitud.setEstado(EstadoSolicitud.PENDIENTE);
 
         repo.guardar(solicitud);
+
+        Usuario usuarioReceptor = servicioLogin.buscarPorEmail(emailDestino);
+
+        String mensaje = "El usuario " + creador.getUsername() + " te ha invitado a un partido.";
+        servicioNotificacionDeUsuario.crearNotificacion(usuarioReceptor, mensaje, NotificacionEnum.INVITACION_PARTIDO, partidoId);
+
 
         String link = System.getProperty("app.baseurl", "http://localhost:8080/spring") + "/solicitudes-partido/" + solicitud.getToken();
         try {

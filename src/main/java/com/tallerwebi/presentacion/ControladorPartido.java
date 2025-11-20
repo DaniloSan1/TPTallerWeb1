@@ -1,6 +1,7 @@
 package com.tallerwebi.presentacion;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -296,31 +297,51 @@ public class ControladorPartido {
     }
 
     @PostMapping("/{id}/finalizar-partido")
-    public String procesarFinalizarPartido(@PathVariable long id,
-            @RequestParam List<Long> equipoJugadorIds,
-            @RequestParam List<Integer> cantidades,
-            HttpServletRequest request, RedirectAttributes redirectAttributes) {
-        try {
-            String email = (String) request.getSession().getAttribute("EMAIL");
-            if (email == null) {
-                return "redirect:/login";
-            }
-            Usuario usuario = servicioLogin.buscarPorEmail(email);
-            Partido partido = servicio.obtenerPorId(id);
-            if (!partido.esCreador(email)) {
-                redirectAttributes.addFlashAttribute("error", "No tienes permiso.");
-                return "redirect:/partidos/" + id;
-            }
-            List<Gol> goles = new ArrayList<>();
-            for (int i = 0; i < equipoJugadorIds.size(); i++) {
-                EquipoJugador equipoJugador = servicioEquipoJugador.buscarPorId(equipoJugadorIds.get(i));
-                goles.add(new Gol(partido, equipoJugador, cantidades.get(i)));
-            }
-            servicioGoles.registrarGoles(partido, goles, usuario);
-            redirectAttributes.addFlashAttribute("success", "Partido finalizado correctamente.");
-        } catch (Exception e) {
-            redirectAttributes.addFlashAttribute("error", "Error al finalizar el partido.");
+public String procesarFinalizarPartido(@PathVariable long id,
+        @RequestParam(required = false) List<Long> equipoJugadorIds,
+        @RequestParam(required = false) List<Integer> cantidades,
+        HttpServletRequest request, RedirectAttributes redirectAttributes) {
+    try {
+        String email = (String) request.getSession().getAttribute("EMAIL");
+        if (email == null) {
+            redirectAttributes.addFlashAttribute("error", "Necesitas iniciar sesión.");
+            return "redirect:/login";
         }
-        return "redirect:/partidos/" + id;
+
+        Usuario usuario = servicioLogin.buscarPorEmail(email);
+        Partido partido = servicio.obtenerPorId(id);
+
+        if (partido == null || !partido.esCreador(email)) {
+            redirectAttributes.addFlashAttribute("error", "Partido no encontrado o no tienes permiso.");
+            return "redirect:/partidos/" + id;
+        }
+
+        List<Gol> goles = new ArrayList<>();
+        
+        if (equipoJugadorIds != null && cantidades != null && equipoJugadorIds.size() == cantidades.size()) {
+            
+            for (int i = 0; i < equipoJugadorIds.size(); i++) {
+                Long idJugador = equipoJugadorIds.get(i);
+                Integer cantidadGoles = cantidades.get(i);
+
+                if (idJugador != null && cantidadGoles != null && cantidadGoles > 0) {
+                    EquipoJugador equipoJugador = servicioEquipoJugador.buscarPorId(idJugador);
+                    if (equipoJugador != null) {
+                        goles.add(new Gol(partido, equipoJugador, cantidadGoles));
+                    }
+                }
+            }
+        }
+
+        // Se llama solo a ServicioPartido, que ahora guarda los goles y finaliza el partido en una sola transacción.
+        servicio.finalizarPartido(partido, goles, usuario);
+
+        redirectAttributes.addFlashAttribute("success", "Partido finalizado correctamente.");
+
+    } catch (Exception e) {
+        e.printStackTrace(); 
+        redirectAttributes.addFlashAttribute("error", "Error interno al finalizar el partido: " + e.getMessage());
     }
+    return "redirect:/partidos/" + id;
+}
 }

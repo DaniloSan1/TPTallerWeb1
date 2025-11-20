@@ -9,4 +9,8 @@ public interface ServicioCalificacion {
     public List<Calificacion> obtenerCalificacionesPorPartido(Long partidoId);
     double calcularCalificacionPromedioUsuario(Long usuarioId);
     List<Calificacion>obtenerCalificacionesPorCalificador(Long usuarioId);
+    public Calificacion obtenerPorId(Long calificacionId);
+    public void guardarCalificacionSinPartido(Usuario calificador, Usuario calificado, Integer puntuacion, String comentario);
+    public void actualizarCalificacion(Calificacion calificacion);
+    public List<Calificacion> obtenerCalificacionesPorCalificado(Long id);
 }

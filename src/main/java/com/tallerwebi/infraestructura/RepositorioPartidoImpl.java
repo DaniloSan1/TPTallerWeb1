@@ -151,5 +151,37 @@ public class RepositorioPartidoImpl implements RepositorioPartido {
             session.delete(partido);
         }
     }
+
+
+
+    @Override
+    public List<Partido> partidosTerminadosDelUsuario(Long usuarioId){
+        final Session session = sessionFactory.getCurrentSession();
+       String hql = "SELECT DISTINCT p FROM Partido p " +
+             "JOIN p.equipos pe " +
+             "JOIN pe.equipo e " +
+             "JOIN e.jugadores ej " +
+             "WHERE ej.usuario.id = :usuarioId " +
+             "AND p.fechaFinalizacion IS NOT NULL";
+       var query = session.createQuery(hql, Partido.class);
+       query.setParameter("usuarioId", usuarioId);
+       return query.list();
+    }
+    @Override
+    public List<Partido> partidosGanadosDelUsuario(Long usuarioId) {
+    final Session session = sessionFactory.getCurrentSession();
+    
+    String hql = "SELECT DISTINCT p FROM Partido p " +
+                 "JOIN p.equipoGanador eg " +
+                 "JOIN eg.jugadores ej " +
+                 "WHERE p.fechaFinalizacion IS NOT NULL " +
+                 "AND ej.usuario.id = :usuarioId";
+
+    var query = session.createQuery(hql, Partido.class);
+    query.setParameter("usuarioId", usuarioId);
+    
+    return query.list();
+    }
 }
+
 

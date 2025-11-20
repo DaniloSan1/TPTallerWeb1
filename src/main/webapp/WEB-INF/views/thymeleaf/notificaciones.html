@@ -14,6 +14,32 @@
 
     <h2 class="mt-5">Notificaciones</h2>
 
+    <!-- ==================== TABS ==================== -->
+    <ul class="nav nav-tabs mt-4">
+
+        <!-- TAB: TODAS -->
+        <li class="nav-item">
+            <a class="nav-link"
+               th:classappend="${soloNoLeidas} ? '' : 'active'"
+               th:href="@{/perfil/notificaciones}">
+                Todas
+            </a>
+        </li>
+
+        <!-- TAB: NO LEÍDAS -->
+        <li class="nav-item">
+            <a class="nav-link"
+               th:classappend="${soloNoLeidas} ? 'active' : ''"
+               th:href="@{/perfil/notificaciones/no-leidas}">
+                No leídas
+                <span class="badge bg-danger ms-1"
+                      th:if="${notificacionesNoLeidas != 0}"
+                      th:text="${notificacionesNoLeidas}"></span>
+            </a>
+        </li>
+
+    </ul>
+
     <!-- Si no hay notificaciones -->
     <div th:if="${notificaciones == null or notificaciones.isEmpty()}">
         <p>No tienes notificaciones.</p>
@@ -70,7 +96,7 @@
 
                     <form th:action="@{/perfil/notificaciones/marcar-como-leida}" method="post" style="display:inline;">
                         <input type="hidden" name="idNotificacion" th:value="${n.id}" />
-                        <button type="submit" class="btn btn-sm btn-primary">Ver partido</button>
+                        <button type="submit" class="btn btn-sm btn-warning">Ver invitación</button>
                     </form>
 
                     <form th:action="@{/perfil/notificaciones/eliminar}" method="post" style="display:inline;">
@@ -79,7 +105,6 @@
                     </form>
 
                 </div>
-
             </div>
 
         </li>

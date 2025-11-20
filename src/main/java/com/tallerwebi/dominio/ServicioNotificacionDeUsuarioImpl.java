@@ -14,10 +14,10 @@ public class ServicioNotificacionDeUsuarioImpl implements ServicioNotificacionDe
 
 
     @Override
-    public void crearNotificacion(Usuario usuario, String mensaje, NotificacionEnum tipoDeNotificacion) {
-        NotificacionDeUsuario notificacionDeUsuario = new NotificacionDeUsuario(usuario, mensaje, tipoDeNotificacion);
-        notificacionDeUsuario.setFecha(LocalDate.now());
-        repositorioNotificacion.guardar(notificacionDeUsuario);
+    public void crearNotificacion(Usuario usuario, String mensaje, NotificacionEnum tipoDeNotificacion, Long idPartido) {
+            NotificacionDeUsuario notificacionDeUsuario = new NotificacionDeUsuario(usuario, mensaje, tipoDeNotificacion, idPartido);
+            notificacionDeUsuario.setFecha(LocalDate.now());
+            repositorioNotificacion.guardar(notificacionDeUsuario);
     }
 
     @Override
@@ -58,6 +58,7 @@ public class ServicioNotificacionDeUsuarioImpl implements ServicioNotificacionDe
         // Según el tipo de notificación
         NotificacionEnum tipo = notificacion.getTipoDeNotificacion();
 
+        //sepramaos el username del remitente del texto
         // PARA SOLICITUD DE AMISTAD
         if (tipo == NotificacionEnum.SOLICITUD_AMISTAD) {
             // mensaje esperado: "El usuario X te ha enviado una solicitud"
@@ -76,6 +77,15 @@ public class ServicioNotificacionDeUsuarioImpl implements ServicioNotificacionDe
             } catch (Exception ignored) {}
         }
 
+        //PARA SINVITACION DE PARTIDO
+        if(tipo == NotificacionEnum.INVITACION_PARTIDO){
+            //mensaje essperado = "El usuario X te ha invitado a ub partido"
+            String mensaje = notificacion.getMensaje();
+            try{
+                return mensaje.split("El usuario")[1].split("te ha invitado")[0].trim();
+            } catch (Exception ignored) {}
+        }
+
         return null;
     }
 
@@ -83,5 +93,26 @@ public class ServicioNotificacionDeUsuarioImpl implements ServicioNotificacionDe
     public Integer contarNoLeidas(Long idUsuario) {
         return repositorioNotificacion.contarNoLeidas(idUsuario);
     }
+
+    @Override
+    public List<NotificacionDeUsuario> obtenerListaDeNotificacionesNoLeidas(Usuario usuario) {
+        return repositorioNotificacion.obtenerListaDeNotificacionesNoLeidas(usuario);
+    }
+
+    @Override
+    public Long marcarComoLeidaYObtenerIdDePartido(Long idNotificacion) {
+        NotificacionDeUsuario n = repositorioNotificacion.obtenerNotificacion(idNotificacion);
+        if (n == null) return null;
+
+        n.setLeida(true);
+        repositorioNotificacion.actualizar(n);
+
+        if (n.getTipoDeNotificacion() == NotificacionEnum.INVITACION_PARTIDO) {
+            return n.getReferenciaIdPartido();
+        }
+
+        return null;
+    }
+
 
 }

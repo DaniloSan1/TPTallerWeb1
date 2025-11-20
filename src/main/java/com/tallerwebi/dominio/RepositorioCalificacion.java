@@ -11,4 +11,5 @@ public interface RepositorioCalificacion {
     public int contarCalificacionesDelUsuario(Long calificadoId);
     public List<Calificacion>obtenerPorCalificado(Long calificadoId);
     public List<Calificacion>obtenerPorCalificador(Long calificadorId);
+    public Calificacion obtenerPorId(Long calificacionId);
 }

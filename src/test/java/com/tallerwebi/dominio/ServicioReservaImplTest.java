@@ -20,12 +20,14 @@ public class ServicioReservaImplTest {
     private Horario horarioMock;
     private Usuario usuarioMock;
     private Reserva reservaMock;
+    private RepositorioTorneo repositorioTorneoMock;
 
     @BeforeEach
     public void setUp() {
         repositorioMock = mock(RepositorioReserva.class);
         repositorioHorarioMock = mock(RepositorioHorario.class);
-        servicioReserva = new ServicioReservaImpl(repositorioMock, repositorioHorarioMock);
+        repositorioTorneoMock = mock(RepositorioTorneo.class);
+        servicioReserva = new ServicioReservaImpl(repositorioMock, repositorioHorarioMock, repositorioTorneoMock);
         horarioMock = mock(Horario.class);
         when(horarioMock.getId()).thenReturn(4L);
         when(horarioMock.getDiaSemana()).thenReturn(LocalDateTime.now().plusDays(1).getDayOfWeek());
