@@ -37,7 +37,7 @@ public class ControladorUsuario {
                               ServicioAmistad servicioAmistad,
                               ServicioSolicitudUnirse servicioSolicitudUnirse,
                               ServicioCalificacion servicioCalificacion,
-                              ServicioNotificacionDeUsuario servicioNotificacionDeUsuario,ServicioGoles servicioGoles,ServicioPartido servicioPartido) {
+                              ServicioNotificacionDeUsuario servicioNotificacionDeUsuario,ServicioGoles servicioGoles,ServicioPartido servicioPartido,ServicioImagenes servicioImagenes) {
         this.servicioLogin = servicioLogin;
         this.servicioUsuario = servicioUsuario;
         this.servicioAmistad = servicioAmistad;
@@ -56,9 +56,9 @@ public class ControladorUsuario {
                               ServicioUsuario servicioUsuario,
                               ServicioAmistad servicioAmistad,
                               ServicioNotificacionDeUsuario servicioNotificacionDeUsuario,
-                              ServicioCalificacion servicioCalificacion,ServicioGoles servicioGoles,ServicioPartido servicioPartido) {
+                              ServicioCalificacion servicioCalificacion,ServicioGoles servicioGoles,ServicioPartido servicioPartido,ServicioImagenes servicioImagenes) {
         // Keep servicioSolicitudUnirse as null for backwards compatibility
-        this(servicioLogin, servicioUsuario, servicioAmistad, null, servicioCalificacion, servicioNotificacionDeUsuario,servicioGoles,servicioPartido);
+        this(servicioLogin, servicioUsuario, servicioAmistad, null, servicioCalificacion, servicioNotificacionDeUsuario,servicioGoles,servicioPartido,servicioImagenes);
     }
 
     @GetMapping("/ver/id/{id}")
@@ -85,7 +85,6 @@ public class ControladorUsuario {
                     modelo.addAttribute("estadoAmistad", amistad != null ? amistad.getEstadoDeAmistad() : null);
                 }
             }
-        }
             Double calificacionPromedioUsuario = servicioCalificacion.calcularCalificacionPromedioUsuario(usuarioAVer.getId());
             int golesTotalesUsuario=servicioGoles.devolverCantidadTotalDeGolesDelUsuario(usuarioAVer.getId());
             Double golesPromedioUsuario=servicioGoles.devolverGolesPromedioPorPartidoDelUsuario(usuarioAVer.getId());
