@@ -10,10 +10,21 @@
 }
 
 .detalle-jugador {
-    width: calc(100% - 6rem);
+    /* Use flex to let the text area adapt to available space and avoid mid-word breaks */
+    flex: 1 1 auto;
+    min-width: 0; /* allow flex children to shrink properly */
     padding: 0.5rem;
 }
 
 #chapita-capitan {
  color:var(--secondary-color);
+}
+
+.detalle-jugador .list-group-item {
+    /* Keep position and short metadata on a single line; show ellipsis if it doesn't fit */
+    word-break: normal;
+    overflow-wrap: normal;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }

@@ -3,6 +3,10 @@
     width: 100%;
 }
 
+.participante-item .card {
+    height: auto; /* ensure card height adapts to its content */
+}
+
 .profile-avatar {
     background-color: #f7f7f7 !important;
     width: 3rem;
