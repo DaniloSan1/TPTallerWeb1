@@ -12,4 +12,5 @@ public interface ServicioCalificacion {
     public Calificacion obtenerPorId(Long calificacionId);
     public void guardarCalificacionSinPartido(Usuario calificador, Usuario calificado, Integer puntuacion, String comentario);
     public void actualizarCalificacion(Calificacion calificacion);
+    public List<Calificacion> obtenerCalificacionesPorCalificado(Long id);
 }

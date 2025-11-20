@@ -57,4 +57,8 @@ public class ServicioCalificacionImpl implements ServicioCalificacion{
     public void actualizarCalificacion(Calificacion calificacion) {
         repositorioCalificacion.guardarCalificacion(calificacion);
     }
+
+    public List<Calificacion> obtenerCalificacionesPorCalificado(Long id){
+        return repositorioCalificacion.obtenerPorCalificado(id);
+    }
 }
