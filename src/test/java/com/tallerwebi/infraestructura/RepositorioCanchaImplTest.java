@@ -12,7 +12,6 @@ import com.tallerwebi.dominio.Horario;
 import com.tallerwebi.infraestructura.config.HibernateTestInfraestructuraConfig;
 import com.tallerwebi.dominio.RepositorioCancha;
 import com.tallerwebi.dominio.Zona;
-import com.tallerwebi.infraestructura.RepositorioCanchaIpl;
 
 import org.hibernate.SessionFactory;
 
@@ -41,7 +40,8 @@ public class RepositorioCanchaImplTest {
 
     @BeforeEach
     public void init() {
-    this.repositorioCancha = new RepositorioCanchaIpl(this.sessionFactory);
+    RepositorioCanchaIpl repo = new RepositorioCanchaIpl(this.sessionFactory);
+    this.repositorioCancha = repo;
         cancha1 = new Cancha();
         cancha2 = new Cancha();
         cancha3 = new Cancha();

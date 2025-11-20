@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+    <head>
+        <meta charset="utf-8" />
+        <meta
+            name="viewport"
+            content="width=device-width, initial-scale=1, shrink-to-fit=no"
+        />
+
+        <title>Agregar Cancha</title>
+
+        <link
+            rel="stylesheet"
+            th:href="@{/webjars/bootstrap/5.2.0/css/bootstrap.min.css}"
+        />
+        <link rel="stylesheet" th:href="@{/css/main.css}" />
+    </head>
+    <body>
+        <!-- Include the navbar fragment -->
+        <div th:replace="~{fragments/navbar :: navbar}"></div>
+
+        <main role="main" class="container">
+            <div class="container card" style="margin-top: 2rem">
+                <div class="card-header">
+                    <h2>Agregar nueva cancha</h2>
+                </div>
+                <div class="card-body">
+                    <form th:action="@{/admin/cancha/crear}" method="post" th:onsubmit="window.location.href='/canchas-disponibles'">
+                        <div class="mb-3">
+                            <label for="nombre" class="form-label">Nombre</label>
+                            <input type="text" class="form-control" id="nombre" name="nombre" required />
+                        </div>
+                        <div class="mb-3">
+                            <label for="capacidad" class="form-label">Capacidad</label>
+                            <input type="number" class="form-control" id="capacidad" name="capacidad" required />
+                        </div>
+                        <div class="mb-3">
+                            <label for="direccion" class="form-label">Dirección</label>
+                            <input type="text" class="form-control" id="direccion" name="direccion" required />
+                        </div>
+                        <div class="mb-3">
+                            <label for="zona" class="form-label">Zona</label>
+                            <select class="form-select" id="zona" name="zona" required>
+                                <option value="NORTE">NORTE</option>
+                                <option value="SUR">SUR</option>
+                                <option value="ESTE">ESTE</option>
+                                <option value="OESTE">OESTE</option>
+                                <option value="CENTRO">CENTRO</option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label for="precio" class="form-label">Precio</label>
+                            <input type="number" class="form-control" id="precio" name="precio" required />
+                        </div>
+                        <div class="mb-3">
+                            <label for="tipoSuelo" class="form-label">Tipo de Suelo</label>
+                            <input type="text" class="form-control" id="tipoSuelo" name="tipoSuelo" required />
+                        </div>
+                        <div class="mb-3">
+                            <label for="horarios" class="form-label">Horarios Disponibles</label>
+                            <div id="horarios-container">
+                                <!-- Se inicializa el primer horario con índice 0 -->
+                                <div class="input-group mb-3 align-items-center" data-index="0">
+                                    <input type="time" class="form-control" name="horaInicio_0" placeholder="Hora Inicio" required />
+                                    <input type="time" class="form-control" name="horaFin_0" placeholder="Hora Fin" required />
+                                    <select class="form-select" name="diaSemana_0" required>
+                                        <option value="LUNES">LUNES</option>
+                                        <option value="MARTES">MARTES</option>
+                                        <option value="MIERCOLES">MIERCOLES</option>
+                                        <option value="JUEVES">JUEVES</option>
+                                        <option value="VIERNES">VIERNES</option>
+                                        <option value="SABADO">SABADO</option>
+                                        <option value="DOMINGO">DOMINGO</option>
+                                    </select>
+                                    <div class="form-check ms-2">
+                                        <input type="hidden" name="disponible_0" value="off" />
+                                        <input class="form-check-input" type="checkbox" name="disponible_0" value="on" checked />
+                                        <label class="form-check-label">Disponible</label>
+                                    </div>
+                                </div>
+                            </div>
+                            <input type="hidden" id="horarios-count" name="horariosCount" value="1" />
+                            <button type="button" class="btn btn-secondary" onclick="agregarHorario()">Agregar Horario</button>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Agregar Cancha</button>
+                        <div id="error-horario" class="text-danger mt-2" style="display:none;">Debe haber al menos un horario disponible.</div>
+                    </form>
+                </div>
+            </div>
+        </main>
+        <!-- Include the footer fragment -->
+        <footer th:replace="~{fragments/footer :: footer}"></footer>
+        <script
+            type="text/javascript"
+            th:src="@{/webjars/bootstrap/5.2.0/js/bootstrap.min.js}"
+        ></script>
+        <script>
+
+            // Validación antes de enviar el formulario (corrige selección de checkboxes)
+            document.querySelector('form').addEventListener('submit', function(e) {
+                const checkboxes = document.querySelectorAll("input[type='checkbox'][name^='disponible_']");
+                let alMenosUnoDisponible = false;
+                checkboxes.forEach(cb => {
+                    if (cb.checked) {
+                        alMenosUnoDisponible = true;
+                    }
+                });
+                if (!alMenosUnoDisponible) {
+                    e.preventDefault();
+                    document.getElementById('error-horario').style.display = 'block';
+                } else {
+                    document.getElementById('error-horario').style.display = 'none';
+                }
+            });
+
+            function agregarHorario() {
+                const container = document.getElementById('horarios-container');
+                let countInput = document.getElementById('horarios-count');
+                let index = parseInt(countInput.value);
+                const horarioGroup = document.createElement('div');
+                horarioGroup.className = 'input-group mb-3 align-items-center';
+                horarioGroup.setAttribute('data-index', index);
+                horarioGroup.innerHTML = `
+                    <input type="time" class="form-control" name="horaInicio_${index}" placeholder="Hora Inicio" required />
+                    <input type="time" class="form-control" name="horaFin_${index}" placeholder="Hora Fin" required />
+                    <select class="form-select" name="diaSemana_${index}" required>
+                        <option value="LUNES">LUNES</option>
+                        <option value="MARTES">MARTES</option>
+                        <option value="MIERCOLES">MIERCOLES</option>
+                        <option value="JUEVES">JUEVES</option>
+                        <option value="VIERNES">VIERNES</option>
+                        <option value="SABADO">SABADO</option>
+                        <option value="DOMINGO">DOMINGO</option>
+                    </select>
+                    <div class="form-check ms-2">
+                        <input type="hidden" name="disponible_${index}" value="off" />
+                        <input class="form-check-input" type="checkbox" name="disponible_${index}" value="on" checked />
+                        <label class="form-check-label">Disponible</label>
+                    </div>
+                `;
+                container.appendChild(horarioGroup);
+                countInput.value = index + 1;
+            }
+        </script>
+    </body>
+</html>
