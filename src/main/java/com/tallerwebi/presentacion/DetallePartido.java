@@ -1,4 +1,3 @@
-
 package com.tallerwebi.presentacion;
 
 import java.time.LocalDateTime;
@@ -8,10 +7,8 @@ import java.util.Set;
 import java.util.TreeSet;
 import java.util.stream.Collectors;
 
-import com.tallerwebi.dominio.Equipo;
 import com.tallerwebi.dominio.Nivel;
 import com.tallerwebi.dominio.Partido;
-import com.tallerwebi.dominio.PartidoEquipo;
 import com.tallerwebi.dominio.Usuario;
 import com.tallerwebi.dominio.Zona;
 
@@ -144,7 +141,6 @@ public class DetallePartido {
         return finalizado;
     }
 
-
     public List<DetalleParticipante> getParticipantes() {
         return equipos.stream()
                 .flatMap(equipo -> equipo.getParticipantes().stream())
@@ -152,10 +148,28 @@ public class DetallePartido {
     }
 
     public String getFechaGoogleCalendar() {
-        if (fecha == null) return "";
-        java.time.format.DateTimeFormatter formatter = java.time.format.DateTimeFormatter.ofPattern("yyyyMMdd'T'HHmmss'Z'");
+        if (fecha == null)
+            return "";
+        java.time.format.DateTimeFormatter formatter = java.time.format.DateTimeFormatter
+                .ofPattern("yyyyMMdd'T'HHmmss'Z'");
         String inicio = fecha.format(formatter);
         String fin = fecha.plusHours(1).format(formatter);
         return inicio + "/" + fin;
+    }
+
+    public String getFechaFormateada() {
+        if (fecha != null) {
+            java.time.format.DateTimeFormatter formatter = java.time.format.DateTimeFormatter.ofPattern("dd/MM/yyyy");
+            return fecha.format(formatter);
+        }
+        return "Fecha no disponible";
+    }
+
+    public String getHoraFormateada() {
+        if (fecha != null) {
+            java.time.format.DateTimeFormatter formatter = java.time.format.DateTimeFormatter.ofPattern("HH:mm");
+            return fecha.format(formatter);
+        }
+        return "Hora no disponible";
     }
 }

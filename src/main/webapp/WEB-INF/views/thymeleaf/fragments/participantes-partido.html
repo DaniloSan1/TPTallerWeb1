@@ -41,14 +41,17 @@
             class="list-group"
         >
             <div
-                class="position-relative"
+                class="position-relative participante-item"
                 th:each="participante : ${participantes}"
             >
                 <div
                     th:replace="~{fragments/jugador-simple :: jugador-simple (jugador=${participante})}"
                 ></div>
                 <!-- Dropdown -->
-                <div class="dropdown position-absolute top-0 end-0">
+                <div
+                    class="dropdown position-absolute"
+                    style="top: 2px !important; right: 2px !important"
+                >
                     <button
                         class="btn btn-light dropdown-toggle"
                         type="button"
