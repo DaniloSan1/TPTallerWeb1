@@ -175,10 +175,35 @@
                                 required
                             />
                             <button type="submit" class="btn btn-primary">
-                                <i class="bi bi-search"></i>
                             </button>
                         </form>
                     </div>
+                </div>
+            </div>
+            <!-- Sección de Calificaciones recibidas -->
+            <div class="container my-4">
+                <h3 class="mb-3">Calificaciones recibidas</h3>
+
+                <div th:if="${#lists.isEmpty(calificaciones)}" class="alert alert-secondary">
+                    No hay calificaciones aún.
+                </div>
+
+                <div th:if="${!#lists.isEmpty(calificaciones)}" class="d-flex align-items-center justify-content-center">
+                    <button id="prevCal" class="btn btn-outline-secondary me-2" onclick="prevCal()">&laquo;</button>
+                    <div id="calContainer" style="max-width:720px; width:100%">
+                        <div th:each="cal, stat : ${calificaciones}" class="review-item card p-3 mb-2" th:attr="data-index=${stat.index}">
+                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                <strong th:text="${cal.calificador != null ? (cal.calificador.nombre != null ? cal.calificador.nombre : cal.calificador.username) : 'Anónimo'}">Usuario</strong>
+                                <span class="badge bg-primary rating-badge" th:attr="data-rating=${cal.puntuacion}"></span>
+                            </div>
+
+                            <p class="card-text" th:text="${cal.comentario != null and cal.comentario != '' ? cal.comentario : 'Sin comentario'}">Comentario</p>
+                            <div class="text-end">
+                                <a th:if="${cal.calificador != null}" th:href="@{/perfil/ver/id/{id}(id=${cal.calificador.id})}" class="btn btn-outline-primary btn-sm">Ver perfil</a>
+                            </div>
+                        </div>
+                    </div>
+                    <button id="nextCal" class="btn btn-outline-secondary ms-2" onclick="nextCal()">&raquo;</button>
                 </div>
             </div>
             <!-- Tus amigos -->
@@ -249,5 +274,59 @@
             type="text/javascript"
             th:src="@{/webjars/bootstrap/5.2.0/js/bootstrap.bundle.min.js}"
         ></script>
+        <script>
+            // Render y navegación para calificaciones en el perfil
+            let calIndex = 0;
+
+            function renderCalStars() {
+                const starEntity = "&#9733;";
+                const emptyEntity = "&#9734;";
+                const badgeElems = document.querySelectorAll(".rating-badge");
+                badgeElems.forEach((b) => {
+                    const v = parseFloat(b.getAttribute("data-rating"));
+                    if (isNaN(v) || v === 0) {
+                        b.innerText = "Sin";
+                        return;
+                    }
+                    const r = Math.round(v);
+                    let s = "";
+                    for (let i = 0; i < r; i++) s += starEntity;
+                    for (let i = r; i < 5; i++) s += emptyEntity;
+                    b.innerHTML = s;
+                    b.style.backgroundColor = "#0d6efd";
+                    b.style.color = "gold";
+                });
+            }
+
+            function showCal(i) {
+                const items = document.querySelectorAll(".review-item");
+                if (!items || items.length === 0) return;
+                if (i < 0) i = 0;
+                if (i > items.length - 1) i = items.length - 1;
+                calIndex = i;
+                items.forEach((it, idx) => {
+                    it.style.display = idx === i ? "block" : "none";
+                });
+
+                const prev = document.getElementById("prevCal");
+                const next = document.getElementById("nextCal");
+                if (prev) prev.disabled = i === 0;
+                if (next) next.disabled = i === items.length - 1;
+            }
+
+            function nextCal() {
+                showCal(calIndex + 1);
+            }
+
+            function prevCal() {
+                showCal(calIndex - 1);
+            }
+
+            document.addEventListener("DOMContentLoaded", function () {
+                renderCalStars();
+                const items = document.querySelectorAll(".review-item");
+                if (items && items.length > 0) showCal(0);
+            });
+        </script>
     </body>
 </html>
