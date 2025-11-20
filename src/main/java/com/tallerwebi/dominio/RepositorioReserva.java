@@ -10,4 +10,5 @@ public interface RepositorioReserva {
     List<Reserva> porUsuario(Usuario usuario);
     List<Reserva> porUsuarioTodas(Usuario usuario);
     List<Reserva> porCanchaYFecha(Cancha cancha, LocalDate fecha);
+    List<Reserva> porCancha(Cancha cancha);
 }

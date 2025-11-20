@@ -2,12 +2,14 @@ package com.tallerwebi.dominio;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
 
 
 @Service("servicioHorario")
+@Transactional
 public class ServicioHorarioImpl implements ServicioHorario {
 
     private final RepositorioHorario repositorioHorario;
@@ -44,4 +46,38 @@ public class ServicioHorarioImpl implements ServicioHorario {
         }
         return repositorioHorario.obtenerDisponiblesPorCancha(cancha);
     }
-}
+
+    @Override
+    public void cambiarDisponibilidad(Long id, Boolean disponible) {
+        if (id == null) {
+            throw new IllegalArgumentException("El id del horario no puede ser nulo");
+        }
+        repositorioHorario.cambiarDisponibilidad(id, disponible);
+    }
+
+    @Override
+    @Transactional
+    public void guardar(Horario horario) {
+        if (horario == null) {
+            throw new IllegalArgumentException("El horario no puede ser nulo");
+        }
+        repositorioHorario.guardar(horario);
+    }
+
+    @Override
+    @Transactional
+    public void eliminarPorId(Long id) {
+        if (id == null) {
+            throw new IllegalArgumentException("El id del horario no puede ser nulo");
+        }
+        repositorioHorario.eliminarPorId(id);
+    }
+    @Override
+    @Transactional
+    public void actualizarHorarios(Horario horario) {
+        if (horario == null) {
+            throw new IllegalArgumentException("El horario no puede ser nulo");
+        }
+        repositorioHorario.actualizarHorarios(horario);
+        }
+    }

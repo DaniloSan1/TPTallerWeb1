@@ -20,4 +20,6 @@ public interface RepositorioPartido {
 
     List<Partido> listarPorEquipoConInfoCancha(Long idEquipo);
 
+    void eliminar(Partido partido);
+    void eliminarPorId(Long id);
 }

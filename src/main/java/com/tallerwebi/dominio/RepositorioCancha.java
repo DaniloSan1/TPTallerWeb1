@@ -6,4 +6,6 @@ public interface RepositorioCancha {
     List<Cancha> MostrarCanchasConHorariosDisponibles(String busqueda, Zona zona, Double precioMinimo, Double precioMaximo);
     Cancha BuscarCanchaPorId(Long id);
     List<Cancha> obtenerTodasLasCanchas();
+    void eliminarPorId(Long id);
+    void guardar(Cancha cancha);
 }

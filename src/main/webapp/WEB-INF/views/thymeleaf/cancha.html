@@ -31,10 +31,10 @@
             </div>
 
             <div
-                th:if="${success != null}"
+                th:if="${success != null or mensaje != null}"
                 id="alertSuccess"
                 class="alert alert-success text-center"
-                th:text="${success}"
+                th:text="${success != null ? success : mensaje}"
             ></div>
 
             <div
@@ -203,6 +203,14 @@
                                 class="btn btn-success w-100"
                                 >Reseñar cancha</a
                             >
+                            <div th:if="${session.ROL == 'ADMIN'}" class="w-100 mt-2 d-flex flex-column gap-2">
+                                <form th:action="@{'/admin/cancha/' + ${cancha.id} + '/eliminar'}" method="post" style="width: 100%;" id="formEliminarCancha">
+                                    <button type="button" class="btn btn-danger w-100" onclick="confirmarEliminarCancha(event)">Eliminar cancha</button>
+                                </form>
+        <!-- Modal para error de eliminación -->
+        <div id="alertaErrorEliminar" class="alert alert-danger mt-3 d-none" role="alert"></div>
+                                <a th:href="@{'/admin/cancha/' + ${cancha.id} + '/editar-horarios'}" class="btn btn-warning w-100">Editar horarios</a>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -274,6 +282,7 @@
                                 <li
                                     class="list-group-item d-flex justify-content-between align-items-center"
                                     th:each="horario : ${horarios}"
+                                    th:if="${horario.disponible}"
                                 >
                                     <div>
                                         <strong
@@ -366,7 +375,42 @@
                 }
             });
         </script>
-
+  <script>
+        function confirmarEliminarCancha(e) {
+            e.preventDefault();
+            if (confirm('¿Seguro que deseas eliminar esta cancha?')) {
+                var form = document.getElementById('formEliminarCancha');
+                fetch(form.action, {
+                    method: 'POST',
+                    headers: { 'X-Requested-With': 'XMLHttpRequest' },
+                    body: new FormData(form)
+                })
+                .then(response => {
+                    if (response.redirected) {
+                        window.location.href = response.url;
+                        return null;
+                    }
+                    return response.text();
+                })
+                .then(html => {
+                    var alerta = document.getElementById('alertaErrorEliminar');
+                    if (html && (html.includes('No se pudo eliminar la cancha') || html.includes('reservas asociadas'))) {
+                        var msg = 'Esta cancha tiene reservas activas y no puede ser eliminada.';
+                        if (html.includes('reservas asociadas')) {
+                            msg = 'No se puede eliminar la cancha porque tiene reservas activas.';
+                        }
+                        alerta.textContent = msg;
+                        alerta.classList.remove('d-none');
+                        window.scrollTo({ top: 0, behavior: 'smooth' });
+                    } else if (html) {
+                        alerta.classList.add('d-none');
+                        window.location.href = '/spring/canchas-disponibles';
+                    }
+                })
+                .catch(() => window.location.href = '/spring/canchas-disponibles');
+            }
+        }
+        </script>
         <script>
             function mostrarImagenModal(url) {
                 const modalImg = document.getElementById("imagenAmpliada");
