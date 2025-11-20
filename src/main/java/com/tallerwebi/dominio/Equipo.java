@@ -18,6 +18,10 @@ public class Equipo {
     @Column(name = "insignia_url")
     private String insigniaUrl;
 
+    @Enumerated(EnumType.STRING)
+    @Column(name = "tipo")
+    private TipoEquipo tipo;
+
     @ManyToOne
     @JoinColumn(name = "creado_por_id")
     private Usuario creadoPor;
@@ -37,10 +41,15 @@ public class Equipo {
     }
 
     public Equipo(String nombre, String descripcion, Usuario creadoPor, LocalDateTime fechaCreacion) {
+        this(nombre, descripcion, creadoPor, fechaCreacion, TipoEquipo.PRIVADO);
+    }
+
+    public Equipo(String nombre, String descripcion, Usuario creadoPor, LocalDateTime fechaCreacion, TipoEquipo tipo) {
         this.nombre = nombre;
         this.descripcion = descripcion;
         this.creadoPor = creadoPor;
         this.fechaCreacion = fechaCreacion;
+        this.tipo = tipo;
     }
 
     @PrePersist
@@ -113,6 +122,14 @@ public class Equipo {
 
     public void setInsigniaUrl(String insigniaUrl) {
         this.insigniaUrl = insigniaUrl;
+    }
+
+    public TipoEquipo getTipo() {
+        return tipo;
+    }
+
+    public void setTipo(TipoEquipo tipo) {
+        this.tipo = tipo;
     }
 
     public boolean yaExisteJugador(Long usuarioId) {

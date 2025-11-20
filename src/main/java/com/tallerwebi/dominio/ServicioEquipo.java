@@ -8,7 +8,7 @@ import java.util.List;
 
 @Service
 public interface ServicioEquipo {
-    Equipo crearEquipo(String nombre, String descripcion, String insigniaUrl, Usuario creador);
+    Equipo crearEquipo(String nombre, String descripcion, String insigniaUrl, Usuario creador, TipoEquipo tipo);
 
     Equipo buscarPorId(Long id) throws EquipoNoEncontrado;
 

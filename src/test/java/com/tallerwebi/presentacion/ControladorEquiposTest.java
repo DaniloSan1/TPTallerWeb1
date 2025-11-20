@@ -303,7 +303,7 @@ class ControladorEquiposTest {
         when(servicioLoginMock.buscarPorEmail(email)).thenReturn(usuario);
         when(multipartFileMock.isEmpty()).thenReturn(false);
         when(servicioImagenesMock.subirImagen(multipartFileMock)).thenReturn("url-insignia");
-        when(servicioEquipoMock.crearEquipo(nombre, descripcion, "url-insignia", usuario)).thenReturn(equipoCreado);
+        when(servicioEquipoMock.crearEquipo(nombre, descripcion, "url-insignia", usuario, TipoEquipo.PRIVADO)).thenReturn(equipoCreado);
 
         // When
         ModelMap model = new ModelMap();
@@ -312,7 +312,7 @@ class ControladorEquiposTest {
 
         // Then
         assertThat(vista, equalTo("redirect:/equipos/" + equipoCreado.getId()));
-        verify(servicioEquipoMock).crearEquipo(nombre, descripcion, "url-insignia", usuario);
+        verify(servicioEquipoMock).crearEquipo(nombre, descripcion, "url-insignia", usuario, TipoEquipo.PRIVADO);
         verify(redirectAttributesMock).addFlashAttribute("success", "Equipo creado exitosamente");
     }
 

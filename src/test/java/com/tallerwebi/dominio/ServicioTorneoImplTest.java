@@ -16,6 +16,8 @@ public class ServicioTorneoImplTest {
     private RepositorioTorneo repositorioTorneo;
     private RepositorioReserva repositorioReserva;
     private ServicioTorneoImpl servicioTorneo;
+    private RepositorioEquipo repositorioEquipo;
+    private RepositorioUsuario repositorioUsuario;
 
     private Torneo torneo;
     private Cancha cancha;
@@ -25,7 +27,7 @@ public class ServicioTorneoImplTest {
     void setUp() {
         repositorioTorneo = mock(RepositorioTorneo.class);
         repositorioReserva = mock(RepositorioReserva.class);
-        servicioTorneo = new ServicioTorneoImpl(repositorioTorneo, repositorioReserva);
+        servicioTorneo = new ServicioTorneoImpl(repositorioTorneo, repositorioReserva, repositorioEquipo, repositorioUsuario);
 
         cancha = new Cancha();
         cancha.setId(1L);

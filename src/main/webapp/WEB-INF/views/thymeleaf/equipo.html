@@ -27,7 +27,7 @@
         <!-- Include the navbar fragment -->
         <div th:replace="~{fragments/navbar :: navbar}"></div>
 
-        <main role="main" class="container" style="padding-top: 135px">
+        <main role="main" class="container">
             <div th:unless="${equipo}" class="no-match"></div>
 
             <div id="contenedor-equipo">
@@ -116,7 +116,7 @@
                         >
                             <h2>&iexcl;Miembros del Equipo!</h2>
                             <button
-                                th:if="${esCreador}"
+                                th:if="${esCreador and equipo.tipo == 'PRIVADO'}"
                                 type="button"
                                 class="btn btn-primary"
                                 data-bs-toggle="modal"

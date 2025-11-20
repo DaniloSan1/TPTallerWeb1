@@ -43,7 +43,7 @@ public class RepositorioTorneoImpl implements RepositorioTorneo {
 
     @Override
     public Boolean existeCanchaYFecha(Cancha cancha, LocalDate fecha) {
-        String hql = "SELECT COUNT(t) FROM Torneo t WHERE t.cancha = :cancha AND t.fecha = :fecha";
+        String hql = "SELECT COUNT(t) FROM Torneo t WHERE t.cancha = :cancha AND t.fecha = :fecha and t.estado = 'CONFIRMADO'";
         Long count = sessionFactory.getCurrentSession()
                 .createQuery(hql, Long.class)
                 .setParameter("cancha", cancha)

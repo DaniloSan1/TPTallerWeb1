@@ -28,6 +28,8 @@ public class ServicioLoginImpl implements ServicioLogin {
         if (usuarioEncontrado != null) {
             throw new UsuarioNoEncontradoException();
         }
+        usuario.setFotoPerfil(
+                "https://taller-web-1-416711641372-us-east-2.s3.us-east-2.amazonaws.com/ejemplos/avatar.png");
         repositorioUsuario.guardar(usuario);
     }
 

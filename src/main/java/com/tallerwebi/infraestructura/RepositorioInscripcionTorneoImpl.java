@@ -48,4 +48,12 @@ public class RepositorioInscripcionTorneoImpl implements RepositorioInscripcionT
                 .setParameter("idTorneo", idTorneo)
                 .getResultList();
     }
+    
+    @Override
+    public List<InscripcionTorneo> listarInscripcionesPorTorneo(Long torneoId) {
+        return getSession()
+                .createQuery("FROM InscripcionTorneo i WHERE i.torneo.id = :torneoId", InscripcionTorneo.class)
+                .setParameter("torneoId", torneoId)
+                .getResultList();
+    }
 }

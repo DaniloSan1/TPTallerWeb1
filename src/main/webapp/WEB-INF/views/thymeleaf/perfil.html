@@ -21,7 +21,10 @@
         <div th:replace="~{fragments/navbar :: navbar}"></div>
 
         <div class="profile-header">
-            <div class="profile-avatar"></div>
+            <div
+                class="profile-avatar"
+                th:style="'background: url(' + ${usuario.fotoPerfil != null ? usuario.fotoPerfil : '../assets/avatar.png'} + ') center/cover no-repeat;'"
+            ></div>
         </div>
 
         <main role="main" class="container">

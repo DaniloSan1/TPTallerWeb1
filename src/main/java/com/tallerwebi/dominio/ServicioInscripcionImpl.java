@@ -43,6 +43,12 @@ public class ServicioInscripcionImpl implements ServicioInscripcion {
         if (equipo == null) {
             throw new RuntimeException("Equipo no encontrado");
         }
+        List<InscripcionTorneo> inscripcionesTodas = inscripcionRepo
+                .listarInscripcionesPorTorneo(torneoId);
+
+        if (inscripcionesTodas.size() >= 10) {
+            throw new RuntimeException("El torneo ya alcanzó el límite de 10 equipos.");
+    }
 
         // Validar que no esté ya inscripto
         List<InscripcionTorneo> inscripciones = inscripcionRepo.buscarPorTorneo(torneo.getId());

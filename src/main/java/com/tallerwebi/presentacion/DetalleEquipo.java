@@ -19,6 +19,7 @@ public class DetalleEquipo {
     private Long creadorId;
     private List<DetalleParticipante> listaJugadores;
     private List<DetallePartidoLista> listaPartidos;
+    private String tipo;
 
     public DetalleEquipo(Equipo equipo, List<Partido> partidos, List<EquipoJugador> jugadores, Usuario usuario) {
         this.id = equipo.getId();
@@ -31,6 +32,7 @@ public class DetalleEquipo {
                 .collect(Collectors.toList());
         listaPartidos = partidos.stream()
                 .map(partido -> new DetallePartidoLista(partido, usuario)).collect(Collectors.toList());
+        this.tipo = equipo.getTipo().toString();
 
     }
 
@@ -64,5 +66,9 @@ public class DetalleEquipo {
 
     public List<DetallePartidoLista> getListaPartidos() {
         return listaPartidos;
+    }
+
+    public String getTipo() {
+        return tipo;
     }
 }

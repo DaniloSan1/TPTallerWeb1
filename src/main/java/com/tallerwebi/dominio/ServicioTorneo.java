@@ -15,5 +15,6 @@ public interface ServicioTorneo {
     Torneo obtenerPorId(Long id);
 
     void cancelarTorneo(Long id);
+    void finalizarTorneo(Long id, Long ganadorId, Long goleadorId);
 
 }
