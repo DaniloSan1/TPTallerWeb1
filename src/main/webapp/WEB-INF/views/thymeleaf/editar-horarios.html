@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+    <title>Editar Horarios</title>
+    <link rel="stylesheet" th:href="@{/webjars/bootstrap/5.2.0/css/bootstrap.min.css}" />
+    <link rel="stylesheet" th:href="@{/css/main.css}" />
+</head>
+<body>
+    <div th:replace="~{fragments/navbar :: navbar}"></div>
+    <main role="main" class="container">
+        <div class="container card" style="margin-top: 2rem">
+            <div class="card-header">
+                <h2>Editar horarios de la cancha <span th:text="${cancha.nombre}"></span></h2>
+            </div>
+            <div class="card-body">
+                <form th:action="@{'/admin/cancha/' + ${cancha.id} + '/editar-horarios'}" method="post">
+                    <div id="horariosContainer">
+                        <div th:each="horario, iterStat : ${horarios}">
+                            <input type="hidden" th:name="${'horarioId_' + iterStat.index}" th:value="${horario.id}" />
+                            <div class="row mb-3 align-items-end horario-row">
+                                <div class="col-md-3">
+                                    <label>Dia</label>
+                                    <select class="form-select" th:name="${'diaSemana_' + iterStat.index}" th:value="${horario.diaSemana}">
+                                    <option th:selected="${horario.diaSemana == T(java.time.DayOfWeek).MONDAY}" value="MONDAY">Lunes</option>
+                                    <option th:selected="${horario.diaSemana == T(java.time.DayOfWeek).TUESDAY}" value="TUESDAY">Martes</option>
+                                    <option th:selected="${horario.diaSemana == T(java.time.DayOfWeek).WEDNESDAY}" value="WEDNESDAY">Miércoles</option>
+                                    <option th:selected="${horario.diaSemana == T(java.time.DayOfWeek).THURSDAY}" value="THURSDAY">Jueves</option>
+                                    <option th:selected="${horario.diaSemana == T(java.time.DayOfWeek).FRIDAY}" value="FRIDAY">Viernes</option>
+                                    <option th:selected="${horario.diaSemana == T(java.time.DayOfWeek).SATURDAY}" value="SATURDAY">Sábado</option>
+                                    <option th:selected="${horario.diaSemana == T(java.time.DayOfWeek).SUNDAY}" value="SUNDAY">Domingo</option>
+                                </select>
+                            </div>
+                            <div class="col-md-3">
+                                <label>Hora inicio</label>
+                                <input type="time" class="form-control" th:name="${'horaInicio_' + iterStat.index}" th:value="${horario.horaInicio}" required />
+                            </div>
+                            <div class="col-md-3">
+                                <label>Hora fin</label>
+                                <input type="time" class="form-control" th:name="${'horaFin_' + iterStat.index}" th:value="${horario.horaFin}" required />
+                            </div>
+                            <div class="col-md-2">
+                                <label>Disponible</label>
+                                <input type="hidden" th:name="${'disponible_' + iterStat.index}" value="off" />
+                                <input type="checkbox" class="form-check-input" th:name="${'disponible_' + iterStat.index}" th:value="on" th:checked="${horario.disponible}" />
+                            </div>
+                                <div class="col-md-2">
+                                    <label>Eliminar</label>
+                                    <input type="hidden" th:name="${'eliminar_' + iterStat.index}" value="off" />
+                                    <input type="checkbox" class="form-check-input" th:name="${'eliminar_' + iterStat.index}" th:value="on" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Botón para agregar nuevos horarios dinámicamente -->
+                    <div class="mb-3">
+                        <button type="button" id="addHorarioBtn" class="btn btn-secondary">Agregar horario</button>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary">Guardar cambios</button>
+                </form>
+
+                <!-- Template oculto para crear nuevos horarios -->
+                <div id="newHorarioTemplate" style="display:none">
+                        <div class="row mb-3 align-items-end horario-row">
+                        <input type="hidden" name="horarioId___INDEX___" value="" />
+                        <div class="col-md-3">
+                            <label>Dia</label>
+                            <select class="form-select" name="diaSemana___INDEX___">
+                                <option value="MONDAY">Lunes</option>
+                                <option value="TUESDAY">Martes</option>
+                                <option value="WEDNESDAY">Miércoles</option>
+                                <option value="THURSDAY">Jueves</option>
+                                <option value="FRIDAY">Viernes</option>
+                                <option value="SATURDAY">Sábado</option>
+                                <option value="SUNDAY">Domingo</option>
+                            </select>
+                        </div>
+                        <div class="col-md-3">
+                            <label>Hora inicio</label>
+                            <input type="time" class="form-control" name="horaInicio___INDEX___" />
+                        </div>
+                        <div class="col-md-3">
+                            <label>Hora fin</label>
+                            <input type="time" class="form-control" name="horaFin___INDEX___" />
+                        </div>
+                        <div class="col-md-2">
+                            <label>Disponible</label>
+                            <input type="hidden" name="disponible___INDEX___" value="off" />
+                            <input type="checkbox" class="form-check-input" name="disponible___INDEX___" value="on" />
+                        </div>
+                        <div class="col-md-2">
+                            <label>Eliminar</label>
+                            <input type="hidden" name="eliminar___INDEX___" value="off" />
+                            <input type="checkbox" class="form-check-input" name="eliminar___INDEX___" value="on" />
+                        </div>
+                    </div>
+                </div>
+
+                <input type="hidden" id="horariosCount" name="horariosCount" th:value="${#lists.size(horarios)}" />
+            </div>
+        </div>
+    </main>
+    <footer th:replace="~{fragments/footer :: footer}"></footer>
+     <script th:inline="javascript">
+                    /*<![CDATA[*/
+                    var nextIndex = /*[[${#lists.size(horarios)}]]*/ 0;
+                    document.addEventListener('DOMContentLoaded', function() {
+                        var addBtn = document.getElementById('addHorarioBtn');
+                        var container = document.getElementById('horariosContainer');
+                        var template = document.getElementById('newHorarioTemplate').innerHTML;
+
+                        // Attach remove handlers to existing rows' buttons
+                        var existingRemoveBtns = document.querySelectorAll('#horariosContainer .removeHorarioBtn');
+                        existingRemoveBtns.forEach(function(btn) {
+                            btn.addEventListener('click', function(e) {
+                                var row = btn.closest('.horario-row');
+                                if (!row) return;
+                                var idInput = row.querySelector('input[name^="horarioId_"]');
+                                if (idInput && idInput.value && idInput.value.trim() !== '') {
+                                    // Existing horario: mark eliminar checkbox and hide row so it's submitted as deleted
+                                    var eliminarCheckbox = row.querySelector('input[type="checkbox"][name^="eliminar_"]');
+                                    if (eliminarCheckbox) eliminarCheckbox.checked = true;
+                                    row.style.display = 'none';
+                                } else {
+                                    // New horario: just remove from DOM
+                                    row.remove();
+                                }
+                            });
+                        });
+
+                        addBtn.addEventListener('click', function() {
+                            var html = template.replace(/___INDEX___/g, nextIndex);
+                            // Append new node
+                            var wrapper = document.createElement('div');
+                            wrapper.innerHTML = html;
+                            // Attach remove handler for the dynamically created remove button
+                            var removeBtn = wrapper.querySelector('.removeHorarioBtn');
+                            if (removeBtn) {
+                                removeBtn.addEventListener('click', function() {
+                                    wrapper.remove();
+                                    var countInput = document.getElementById('horariosCount');
+                                    if (countInput) {
+                                        var v = parseInt(countInput.value) || 0;
+                                        countInput.value = Math.max(0, v - 1);
+                                    }
+                                });
+                            }
+                            container.appendChild(wrapper);
+                            nextIndex++;
+                            // update count input
+                            var countInput = document.getElementById('horariosCount');
+                            if (countInput) countInput.value = nextIndex;
+                        });
+                    });
+                    /*]]>*/
+                </script>
+    <script type="text/javascript" th:src="@{/webjars/bootstrap/5.2.0/js/bootstrap.min.js}"></script>
+</body>
+</html>

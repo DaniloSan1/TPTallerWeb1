@@ -14,12 +14,6 @@ import com.tallerwebi.dominio.Zona;
 @Repository
 @Transactional
 public class RepositorioCanchaIpl implements RepositorioCancha {
-
-    @Override
-    public List<Cancha> obtenerTodasLasCanchas() {
-        String hql = "FROM Cancha";
-        return sessionFactory.getCurrentSession().createQuery(hql, Cancha.class).getResultList();
-    }
     private SessionFactory sessionFactory;
 
     @Autowired
@@ -64,7 +58,31 @@ public class RepositorioCanchaIpl implements RepositorioCancha {
 
     @Override
     public Cancha BuscarCanchaPorId(Long id) {
-        return sessionFactory.getCurrentSession().get(Cancha.class, id);
+        String hql = "SELECT c FROM Cancha c LEFT JOIN FETCH c.horarios WHERE c.id = :id";
+        List<Cancha> result = sessionFactory.getCurrentSession()
+            .createQuery(hql, Cancha.class)
+            .setParameter("id", id)
+            .getResultList();
+        return result.isEmpty() ? null : result.get(0);
+    }
+
+    @Override
+    public List<Cancha> obtenerTodasLasCanchas() {
+        String hql = "FROM Cancha";
+        return sessionFactory.getCurrentSession().createQuery(hql, Cancha.class).getResultList();
+    }
+
+    @Override
+    public void eliminarPorId(Long id) {
+        Cancha cancha = sessionFactory.getCurrentSession().get(Cancha.class, id);
+        if (cancha != null) {
+            sessionFactory.getCurrentSession().delete(cancha);
+        }
+    }
+
+    @Override
+    public void guardar(Cancha cancha) {
+        sessionFactory.getCurrentSession().saveOrUpdate(cancha);
     }
 }
     

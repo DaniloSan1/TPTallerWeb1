@@ -137,6 +137,21 @@ public class RepositorioPartidoImpl implements RepositorioPartido {
         query.setParameter("idEquipo", idEquipo);
         return query.list();
     }
+    @Override
+    public void eliminar(Partido partido) {
+        final Session session = sessionFactory.getCurrentSession();
+        session.delete(partido);
+    }
+
+    @Override
+    public void eliminarPorId(Long id) {
+        final Session session = sessionFactory.getCurrentSession();
+        Partido partido = session.get(Partido.class, id);
+        if (partido != null) {
+            session.delete(partido);
+        }
+    }
+
 
 
     @Override

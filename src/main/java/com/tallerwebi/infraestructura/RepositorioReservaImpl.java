@@ -71,20 +71,33 @@ public class RepositorioReservaImpl implements RepositorioReserva {
     }
     
     @Override
-public List<Reserva> porCanchaYFecha(Cancha cancha, LocalDate fecha) {
-    LocalDateTime inicioDelDia = fecha.atStartOfDay();
-    LocalDateTime finDelDia = fecha.atTime(23, 59, 59);
+    public List<Reserva> porCanchaYFecha(Cancha cancha, LocalDate fecha) {
+        LocalDateTime inicioDelDia = fecha.atStartOfDay();
+        LocalDateTime finDelDia = fecha.atTime(23, 59, 59);
 
-    String hql = "FROM Reserva r " +
-                 "WHERE r.horario.cancha = :cancha " +
-                 "AND r.activa = true " +
-                 "AND r.fechaReserva BETWEEN :inicio AND :fin";
+        String hql = "FROM Reserva r " +
+                     "WHERE r.horario.cancha = :cancha " +
+                     "AND r.activa = true " +
+                     "AND r.fechaReserva BETWEEN :inicio AND :fin";
 
-    return sessionFactory.getCurrentSession()
-            .createQuery(hql, Reserva.class)
-            .setParameter("cancha", cancha)
-            .setParameter("inicio", inicioDelDia)
-            .setParameter("fin", finDelDia)
-            .getResultList();
-}
+        return sessionFactory.getCurrentSession()
+                .createQuery(hql, Reserva.class)
+                .setParameter("cancha", cancha)
+                .setParameter("inicio", inicioDelDia)
+                .setParameter("fin", finDelDia)
+                .getResultList();
+    }
+
+    @Override
+    public List<Reserva> porCancha(Cancha cancha) {
+        String hql = "FROM Reserva r WHERE r.horario.cancha = :cancha";
+        return sessionFactory.getCurrentSession()
+                .createQuery(hql, Reserva.class)
+                .setParameter("cancha", cancha)
+                .getResultList();
+    }
+
+    public void eliminar(Reserva reserva) {
+        sessionFactory.getCurrentSession().delete(reserva);
+    }
 }

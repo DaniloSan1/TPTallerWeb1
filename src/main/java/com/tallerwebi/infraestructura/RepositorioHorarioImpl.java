@@ -28,19 +28,25 @@ public class RepositorioHorarioImpl implements RepositorioHorario {
 
     @Override
     public List<Horario> obtenerPorCancha(Cancha cancha) {
-        String hql = "FROM Horario h WHERE h.cancha = :cancha";
+        if (cancha == null || cancha.getId() == null) {
+            throw new IllegalArgumentException("La cancha no puede ser nula y debe tener un id");
+        }
+        String hql = "FROM Horario h WHERE h.cancha.id = :canchaId";
         return sessionFactory.getCurrentSession()
                 .createQuery(hql, Horario.class)
-                .setParameter("cancha", cancha)
+                .setParameter("canchaId", cancha.getId())
                 .getResultList();
     }
 
     @Override
     public List<Horario> obtenerDisponiblesPorCancha(Cancha cancha) {
-        String hql = "FROM Horario h WHERE h.cancha = :cancha AND h.disponible = true";
+        if (cancha == null || cancha.getId() == null) {
+            throw new IllegalArgumentException("La cancha no puede ser nula y debe tener un id");
+        }
+        String hql = "FROM Horario h WHERE h.cancha.id = :canchaId AND h.disponible = true";
         return sessionFactory.getCurrentSession()
                 .createQuery(hql, Horario.class)
-                .setParameter("cancha", cancha)
+                .setParameter("canchaId", cancha.getId())
                 .getResultList();
     }
     @Override
@@ -49,6 +55,25 @@ public class RepositorioHorarioImpl implements RepositorioHorario {
         if (horario != null) {
             horario.setDisponible(disponible);
             sessionFactory.getCurrentSession().update(horario);
+        }
+    }
+
+    @Override
+    public void guardar(Horario horario) {
+        sessionFactory.getCurrentSession().save(horario);
+    }
+
+    @Override
+    @Transactional
+    public void actualizarHorarios(Horario horarios) {
+        sessionFactory.getCurrentSession().update(horarios);
+    }
+
+    @Override
+    public void eliminarPorId(Long id) {
+        Horario horario = obtenerPorId(id);
+        if (horario != null) {
+            sessionFactory.getCurrentSession().delete(horario);
         }
     }
 }
