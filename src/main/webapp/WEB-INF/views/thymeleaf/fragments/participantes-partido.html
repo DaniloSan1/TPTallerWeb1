@@ -9,7 +9,7 @@
             style="border-bottom: 1px solid black; min-height: 100px"
         >
             <img
-                th:src="${equipo.insigniaUrl != null ? equipo.insigniaUrl : 'https://www.ligaprofesional.ar/wp-content/uploads/2024/06/BOC-escudo.png'}"
+                th:src="${equipo.insigniaUrl != null ? equipo.insigniaUrl : 'https://taller-web-1-416711641372-us-east-2.s3.us-east-2.amazonaws.com/insignia-default.png'}"
                 alt="Insignia del equipo"
                 class="img-fluid"
                 style="max-height: 4rem; max-width: 4rem; object-fit: contain"
@@ -18,7 +18,7 @@
             <a
                 class="btn btn-sm btn-outline-primary ms-2"
                 th:if="${showDropdown}"
-                th:href="@{/equipos/{id}/editar(id=${equipo.id})}"
+                th:href="@{/equipos/{id}/editar(id=${equipo.idEquipo})}"
                 >Editar</a
             >
             <h4
@@ -160,7 +160,7 @@
                             >
                                 <option
                                     th:each="equipo : ${equipos}"
-                                    th:value="${equipo.id}"
+                                    th:value="${equipo.idEquipo}"
                                     th:text="${equipo.nombre}"
                                 ></option>
                             </select>

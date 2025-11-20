@@ -31,7 +31,7 @@ public class ServicioPartidoImplTest {
         private ServicioPartido servicioPartido;
         private ServicioPartidoEquipo servicioPartidoEquipo;
         private RepositorioGoles repositorioGoles;
-        
+
         @BeforeEach
         public void init() {
                 repositorioPartidoMock = Mockito.mock(RepositorioPartido.class);
@@ -43,15 +43,14 @@ public class ServicioPartidoImplTest {
                 partidoMock = Mockito.mock(Partido.class);
                 usuarioMock = Mockito.mock(Usuario.class);
                 equipoMock = Mockito.mock(Equipo.class);
-                repositorioGoles=Mockito.mock(RepositorioGoles.class);
-                servicioPartidoEquipo=Mockito.mock(ServicioPartidoEquipo.class);
-                
+                repositorioGoles = Mockito.mock(RepositorioGoles.class);
+                servicioPartidoEquipo = Mockito.mock(ServicioPartidoEquipo.class);
 
                 Mockito.when(usuarioMock.getEmail()).thenReturn("usuario@email.com");
                 servicioPartido = new ServicioPartidoImpl(repositorioPartidoMock,
                                 repositorioReservaMock,
                                 repositorioUsuarioMock, servicioEquipoJugadorMock, servicioEquipoMock,
-                                repositorioPartidoEquipoMock,servicioPartidoEquipo,repositorioGoles);
+                                repositorioPartidoEquipoMock, servicioPartidoEquipo, repositorioGoles);
         }
 
         @Test
@@ -144,7 +143,8 @@ public class ServicioPartidoImplTest {
 
                 assertEquals(1, partidosFiltrados.size());
                 assertEquals(Nivel.PRINCIPIANTE, partidosFiltrados.get(0).getNivel());
-                Mockito.verify(repositorioPartidoMock, Mockito.times(1)).listar(null, null, Nivel.PRINCIPIANTE, null, null);
+                Mockito.verify(repositorioPartidoMock, Mockito.times(1)).listar(null, null, Nivel.PRINCIPIANTE, null,
+                                null);
         }
 
         @Test
@@ -231,10 +231,12 @@ public class ServicioPartidoImplTest {
                 Equipo equipo1Mock = Mockito.mock(Equipo.class);
                 Equipo equipo2Mock = Mockito.mock(Equipo.class);
                 Mockito.when(servicioEquipoMock.crearEquipo("Equipo 1", "Equipo generado para Título X",
-                                "https://www.ligaprofesional.ar/wp-content/uploads/2024/06/BOC-escudo.png", usuarioCreadorPartido, TipoEquipo.PUBLICO))
+                                "https://taller-web-1-416711641372-us-east-2.s3.us-east-2.amazonaws.com/insignia-default.png",
+                                usuarioCreadorPartido, TipoEquipo.PUBLICO))
                                 .thenReturn(equipo1Mock);
                 Mockito.when(servicioEquipoMock.crearEquipo("Equipo 2", "Equipo generado para Título X",
-                                "https://www.ligaprofesional.ar/wp-content/uploads/2024/06/BOC-escudo.png", usuarioCreadorPartido, TipoEquipo.PUBLICO))
+                                "https://taller-web-1-416711641372-us-east-2.s3.us-east-2.amazonaws.com/insignia-default.png",
+                                usuarioCreadorPartido, TipoEquipo.PUBLICO))
                                 .thenReturn(equipo2Mock);
 
                 Partido partidoCreado = servicioPartido.crearDesdeReserva(
@@ -255,8 +257,6 @@ public class ServicioPartidoImplTest {
 
                 Mockito.verify(repositorioPartidoMock, Mockito.times(1)).guardar(Mockito.same(partidoCreado));
         }
-  
-
 
         @Test
         public void deberiaListarPartidosPorEquipo() {
