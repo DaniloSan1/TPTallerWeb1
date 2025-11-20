@@ -1,6 +1,7 @@
 package com.tallerwebi.presentacion;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 import com.tallerwebi.dominio.EquipoJugador;
 
@@ -67,5 +68,13 @@ public class DetalleParticipante {
 
     public String getFotoPerfilUrl() {
         return fotoPerfilUrl;
+    }
+
+    public String getFechaUnionFormateada() {
+        if (fechaUnion != null) {
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+            return fechaUnion.format(formatter);
+        }
+        return "Fecha no disponible";
     }
 }

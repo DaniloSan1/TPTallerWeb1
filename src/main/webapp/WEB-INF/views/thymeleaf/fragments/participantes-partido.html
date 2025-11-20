@@ -6,13 +6,19 @@
     >
         <div
             class="d-flex flex-row align-items-center justify-content-between gap-2"
-            style="border-bottom: 1px solid black"
+            style="border-bottom: 1px solid black; min-height: 100px"
         >
+            <img
+                th:src="${equipo.insigniaUrl != null ? equipo.insigniaUrl : 'https://taller-web-1-416711641372-us-east-2.s3.us-east-2.amazonaws.com/insignia-default.png'}"
+                alt="Insignia del equipo"
+                class="img-fluid"
+                style="max-height: 4rem; max-width: 4rem; object-fit: contain"
+            />
             <h4 class="mt-2 flex-grow-1" th:text="${equipo.nombre}"></h4>
             <a
                 class="btn btn-sm btn-outline-primary ms-2"
                 th:if="${showDropdown}"
-                th:href="@{/equipos/{id}/editar(id=${equipo.id})}"
+                th:href="@{/equipos/{id}/editar(id=${equipo.idEquipo})}"
                 >Editar</a
             >
             <h4
@@ -35,14 +41,17 @@
             class="list-group"
         >
             <div
-                class="position-relative"
+                class="position-relative participante-item"
                 th:each="participante : ${participantes}"
             >
                 <div
                     th:replace="~{fragments/jugador-simple :: jugador-simple (jugador=${participante})}"
                 ></div>
                 <!-- Dropdown -->
-                <div class="dropdown position-absolute top-0 end-0">
+                <div
+                    class="dropdown position-absolute"
+                    style="top: 2px !important; right: 2px !important"
+                >
                     <button
                         class="btn btn-light dropdown-toggle"
                         type="button"
@@ -151,7 +160,7 @@
                             >
                                 <option
                                     th:each="equipo : ${equipos}"
-                                    th:value="${equipo.id}"
+                                    th:value="${equipo.idEquipo}"
                                     th:text="${equipo.nombre}"
                                 ></option>
                             </select>

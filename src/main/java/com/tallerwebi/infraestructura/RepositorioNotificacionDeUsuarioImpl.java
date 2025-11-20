@@ -68,6 +68,14 @@ public class RepositorioNotificacionDeUsuarioImpl implements RepositorioNotifica
         return resultado != null ? resultado.intValue() : 0;
     }
 
+    @Override
+    public List<NotificacionDeUsuario> obtenerListaDeNotificacionesNoLeidas(Usuario usuario) {
+    String hql = "FROM NotificacionDeUsuario n WHERE n.leida = false AND n.usuario = :usuario ORDER BY n.fecha DESC";
+    return sessionFactory.getCurrentSession().createQuery(hql, NotificacionDeUsuario.class)
+        .setParameter("usuario",usuario)
+        .getResultList();
+    }
+
 
 }
 

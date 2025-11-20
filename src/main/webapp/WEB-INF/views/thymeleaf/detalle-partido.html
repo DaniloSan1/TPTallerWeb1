@@ -55,7 +55,9 @@
                                     <span class="material-symbols-outlined"
                                         >calendar_month</span
                                     >
-                                    <span th:text="${partido.fecha}"></span>
+                                    <span
+                                        th:text="${partido.fechaFormateada + ' a las ' + partido.horaFormateada}"
+                                    ></span>
                                 </h4>
                                 <h4 class="d-flex align-items-center gap-2">
                                     <span class="material-symbols-outlined"
@@ -398,7 +400,7 @@
                             <option value="">Selecciona un equipo</option>
                             <option
                                 th:each="equipo : ${partido.equipos}"
-                                th:value="${equipo.id}"
+                                th:value="${equipo.idEquipo}"
                                 th:text="${equipo.nombre}"
                             ></option>
                         </select>

@@ -57,7 +57,7 @@
                             class="d-flex justify-content-center align-items-center"
                         >
                             <img
-                                th:src="${equipo.insigniaUrl != null ? equipo.insigniaUrl : 'https://www.ligaprofesional.ar/wp-content/uploads/2024/06/BOC-escudo.png'}"
+                                th:src="${equipo.insigniaUrl != null ? equipo.insigniaUrl : 'https://taller-web-1-416711641372-us-east-2.s3.us-east-2.amazonaws.com/insignia-default.png'}"
                                 alt="Insignia del equipo"
                                 class="img-fluid"
                                 style="
@@ -160,7 +160,11 @@
                                     ></div>
                                 </a>
                                 <div
-                                    class="dropdown position-absolute top-0 end-0"
+                                    class="dropdown position-absolute"
+                                    style="
+                                        top: 2px !important;
+                                        right: 2px !important;
+                                    "
                                 >
                                     <button
                                         class="btn btn-light dropdown-toggle"

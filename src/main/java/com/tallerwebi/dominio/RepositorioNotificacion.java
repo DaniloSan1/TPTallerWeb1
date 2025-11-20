@@ -13,4 +13,5 @@ public interface RepositorioNotificacion {
     public NotificacionDeUsuario obtenerNotificacion(Long id);
     public void actualizar(NotificacionDeUsuario notificacionDeUsuario);
     public Integer contarNoLeidas(Long idUsuario);
+    List<NotificacionDeUsuario> obtenerListaDeNotificacionesNoLeidas(Usuario usuario);
 }

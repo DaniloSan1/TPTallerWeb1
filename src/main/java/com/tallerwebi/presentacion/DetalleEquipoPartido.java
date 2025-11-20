@@ -12,11 +12,13 @@ public class DetalleEquipoPartido {
     private String nombre;
     private Integer goles;
     private List<DetalleParticipante> participantes;
+    private String insigniaUrl;
 
     public DetalleEquipoPartido(PartidoEquipo equipoEnPartido) {
         this.id = equipoEnPartido.getId();
         this.idEquipo = equipoEnPartido.getEquipo().getId();
         this.nombre = equipoEnPartido.getEquipo().getNombre();
+        this.insigniaUrl = equipoEnPartido.getEquipo().getInsigniaUrl();
         this.participantes = equipoEnPartido.getEquipo().getJugadores().stream()
                 .map(DetalleParticipante::new)
                 .sorted(Comparator.comparing(DetalleParticipante::isEsCapitan).reversed()
@@ -43,5 +45,9 @@ public class DetalleEquipoPartido {
 
     public Integer getGoles() {
         return goles;
+    }
+
+    public String getInsigniaUrl() {
+        return insigniaUrl;
     }
 }
