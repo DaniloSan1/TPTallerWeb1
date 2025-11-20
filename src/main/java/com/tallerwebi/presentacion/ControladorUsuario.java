@@ -90,6 +90,8 @@ public class ControladorUsuario {
             Double golesPromedioUsuario=servicioGoles.devolverGolesPromedioPorPartidoDelUsuario(usuarioAVer.getId());
             int partidosJugadosUsuario=servicioPartido.partidosTerminadosDelUsuario(usuarioAVer.getId()).size();
             int partidosGanadosUsuario=servicioPartido.partidosGanadosDelUsuario(usuarioAVer.getId()).size();
+            List<Calificacion> calificacionesUsuario=servicioCalificacion.obtenerCalificacionesPorCalificado(usuarioAVer.getId());
+            modelo.addAttribute("calificacionesUsuario", calificacionesUsuario);
             modelo.addAttribute("partidosJugadosUsuario", partidosJugadosUsuario);
             modelo.addAttribute("partidosGanadosUsuario", partidosGanadosUsuario);
             modelo.addAttribute("calificacionPromedioUsuario", calificacionPromedioUsuario);
@@ -122,6 +124,8 @@ public class ControladorUsuario {
         Double golesPromedioUsuario=servicioGoles.devolverGolesPromedioPorPartidoDelUsuario(usuarioAVer.getId());
         int partidosJugadosUsuario=servicioPartido.partidosTerminadosDelUsuario(usuarioAVer.getId()).size();
         int partidosGanadosUsuario=servicioPartido.partidosGanadosDelUsuario(usuarioAVer.getId()).size();
+        List<Calificacion> calificacionesUsuario=servicioCalificacion.obtenerCalificacionesPorCalificado(usuarioAVer.getId());
+        modelo.addAttribute("calificacionesUsuario", calificacionesUsuario);
         modelo.addAttribute("partidosJugadosUsuario",partidosJugadosUsuario);
         modelo.addAttribute("partidosGanadosUsuario", partidosGanadosUsuario);
         modelo.addAttribute("golesTotalesUsuario",golesTotalesUsuario);
@@ -152,6 +156,8 @@ public class ControladorUsuario {
             Double golesPromedio=servicioGoles.devolverGolesPromedioPorPartidoDelUsuario(usuario.getId());
             int partidosJugados=servicioPartido.partidosTerminadosDelUsuario(usuario.getId()).size();
             int partidosGanados=servicioPartido.partidosGanadosDelUsuario(usuario.getId()).size();
+            List<Calificacion> calificaciones=servicioCalificacion.obtenerCalificacionesPorCalificado(usuario.getId());
+            modelo.addAttribute("calificaciones", calificaciones);
             modelo.addAttribute("partidosJugados", partidosJugados);
             modelo.addAttribute("partidosGanados", partidosGanados);
             modelo.addAttribute("golesTotales", golesTotales);
