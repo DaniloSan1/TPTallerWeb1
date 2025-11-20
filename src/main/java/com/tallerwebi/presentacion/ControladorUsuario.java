@@ -287,7 +287,7 @@ public class ControladorUsuario {
                                                                                                                        // para
                                                                                                                        // la
                                                                                                                        // noti
-                servicioNotificacionDeUsuario.crearNotificacion(receptor, mensaje, NotificacionEnum.SOLICITUD_AMISTAD); // crea
+                servicioNotificacionDeUsuario.crearNotificacion(receptor, mensaje, NotificacionEnum.SOLICITUD_AMISTAD,null); // crea
                                                                                                                         // la
                                                                                                                         // noti
 
@@ -308,7 +308,7 @@ public class ControladorUsuario {
         String mensaje = "El usuario " + usuarioQueAceptaSolicitud.getUsername()
                 + " ha aceptado tu solicitud de amistad!";
         servicioNotificacionDeUsuario.crearNotificacion(amistad.getUsuario1(), mensaje,
-                NotificacionEnum.SOLICITUD_ACEPTADA);
+                NotificacionEnum.SOLICITUD_ACEPTADA,null);
         return "redirect:/perfil/solicitudes";
     }
 
@@ -384,13 +384,49 @@ public class ControladorUsuario {
     @PostMapping("/notificaciones/marcar-como-leida")
     public String marcarComoLeidaYRedirigir(@RequestParam Long idNotificacion) {
 
+        NotificacionDeUsuario n = servicioNotificacionDeUsuario.obtenerNotificacionPorId(idNotificacion);
+
+        if (n == null)
+            return "redirect:/perfil/notificaciones";
+
+        // Si es invitación a partido → redirigir al partido
+        if (n.getTipoDeNotificacion() == NotificacionEnum.INVITACION_PARTIDO) {
+
+            Long partidoId = servicioNotificacionDeUsuario
+                .marcarComoLeidaYObtenerIdDePartido(idNotificacion);
+
+            if (partidoId != null) {
+                return "redirect:/partidos/" + partidoId;
+            }
+
+            return "redirect:/perfil/notificaciones";
+        }
+
         String username = servicioNotificacionDeUsuario
-                .marcarComoLeidaYObtenerUsername(idNotificacion);
+            .marcarComoLeidaYObtenerUsername(idNotificacion);
 
         if (username != null) {
             return "redirect:/perfil/ver/username/" + username;
         }
 
         return "redirect:/perfil/notificaciones";
+    }
+
+
+    @GetMapping("/notificaciones/no-leidas")
+    public String verNoLeidas(ModelMap modelo, HttpServletRequest request) throws UsuarioNoEncontradoException {
+        String email = (String) request.getSession().getAttribute("EMAIL");
+        if (email == null) {
+            return "redirect:/login";
+        }
+
+        Usuario usuario = servicioLogin.buscarPorEmail(email);
+
+        List<NotificacionDeUsuario> noLeidas =
+            servicioNotificacionDeUsuario.obtenerListaDeNotificacionesNoLeidas(usuario);
+
+        modelo.addAttribute("notificaciones", noLeidas);
+        modelo.addAttribute("soloNoLeidas", true); // para marcar como activo el tab en el html
+        return "notificaciones";
     }
 }

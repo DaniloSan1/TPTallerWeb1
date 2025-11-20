@@ -1,9 +1,11 @@
 package com.tallerwebi.dominio;
 
+import com.tallerwebi.dominio.excepcion.UsuarioNoEncontradoException;
+
 import java.util.List;
 
 public interface ServicioSolicitudUnirse {
-    String crearInvitacion(Long partidoId, Usuario creador, String emailDestino);
+    String crearInvitacion(Long partidoId, Usuario creador, String emailDestino) throws UsuarioNoEncontradoException;
 
     MensajeResultado aceptarPorToken(String token, Usuario quienAcepta);
 

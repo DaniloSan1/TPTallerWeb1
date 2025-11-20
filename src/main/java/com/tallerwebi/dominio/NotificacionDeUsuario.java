@@ -1,5 +1,7 @@
 package com.tallerwebi.dominio;
 
+import org.springframework.lang.Nullable;
+
 import javax.persistence.*;
 import java.time.LocalDate;
 
@@ -17,16 +19,20 @@ private LocalDate fecha;
 
 private NotificacionEnum tipoDeNotificacion;
 
+@Nullable
+private Long referenciaIdPartido;
+
 @ManyToOne
 @JoinColumn(name = "usuario_id", nullable = false)
     private Usuario usuario; //el que recibe la notificacion
 
     public NotificacionDeUsuario() {}
 
-    public NotificacionDeUsuario(Usuario usuario, String mensaje, NotificacionEnum tipoDeNotificacion) {
+    public NotificacionDeUsuario(Usuario usuario, String mensaje, NotificacionEnum tipoDeNotificacion,  Long referenciaIdPartido) {
         this.mensaje = mensaje;
         this.usuario = usuario;
         this.tipoDeNotificacion = tipoDeNotificacion;
+        this.referenciaIdPartido = referenciaIdPartido;
     }
 
     public Long getId() {
@@ -75,5 +81,13 @@ private NotificacionEnum tipoDeNotificacion;
 
     public  void setTipoDeNotificacion(NotificacionEnum tipoDeNotificacion) {
         this.tipoDeNotificacion = tipoDeNotificacion;
+    }
+
+    public Long getReferenciaIdPartido() {
+        return referenciaIdPartido;
+    }
+
+    public void setReferenciaIdPartido(Long referenciaIdPartido) {
+        this.referenciaIdPartido = referenciaIdPartido;
     }
 }
