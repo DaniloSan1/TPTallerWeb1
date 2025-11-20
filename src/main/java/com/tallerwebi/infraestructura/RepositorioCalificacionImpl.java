@@ -23,7 +23,11 @@ public class RepositorioCalificacionImpl implements RepositorioCalificacion {
 
     @Override
     public void guardarCalificacion(Calificacion calificacion) {
-     sessionFactory.getCurrentSession().save(calificacion);
+        if (calificacion.getId() == null) {
+            sessionFactory.getCurrentSession().save(calificacion);
+        } else {
+            sessionFactory.getCurrentSession().merge(calificacion);
+        }
     }
     @Override
     public List <Calificacion> obtenerPorPartido(Long idPartido) {
@@ -65,5 +69,10 @@ public class RepositorioCalificacionImpl implements RepositorioCalificacion {
         return sessionFactory.getCurrentSession().createQuery(hql,Calificacion.class)
         .setParameter("calificadorId", calificadorId)
         .getResultList(); 
+    }
+
+    @Override
+    public Calificacion obtenerPorId(Long calificacionId) {
+        return sessionFactory.getCurrentSession().get(Calificacion.class, calificacionId);
     }
 }

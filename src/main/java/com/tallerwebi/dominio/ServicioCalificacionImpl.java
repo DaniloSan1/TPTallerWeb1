@@ -43,4 +43,18 @@ public class ServicioCalificacionImpl implements ServicioCalificacion{
     public List<Calificacion>obtenerCalificacionesPorCalificador(Long usuarioId){
         return repositorioCalificacion.obtenerPorCalificador(usuarioId);
     } 
+
+    @Override
+    public Calificacion obtenerPorId(Long calificacionId) {
+        return repositorioCalificacion.obtenerPorId(calificacionId);
+    }
+
+    public void guardarCalificacionSinPartido(Usuario calificador, Usuario calificado, Integer puntuacion, String comentario) {
+        Calificacion calificacion = new Calificacion(calificador, calificado, null, puntuacion, comentario);
+        repositorioCalificacion.guardarCalificacion(calificacion);
+    }
+
+    public void actualizarCalificacion(Calificacion calificacion) {
+        repositorioCalificacion.guardarCalificacion(calificacion);
+    }
 }

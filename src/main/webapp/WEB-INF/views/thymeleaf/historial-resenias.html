@@ -98,14 +98,15 @@
                             >
                                 Nombre del Calificado
                             </h5>
-                            <p class="mb-1">
-                                Puntuación:
+
+                            <div class="mb-2">
                                 <span
-                                    class="fw-bold"
-                                    th:text="${calificacion.puntuacion}"
-                                    >5</span
-                                >/5
-                            </p>
+                                    th:each="star : ${#numbers.sequence(1,5)}"
+                                    th:class="${star <= calificacion.puntuacion ? 'bi bi-star-fill text-warning' : 'bi bi-star text-warning'}"
+                                >
+                                </span>
+                            </div>
+
                             <p
                                 class="card-text"
                                 th:text="${calificacion.comentario ?: 'Sin comentarios'}"
@@ -118,6 +119,12 @@
                                     class="btn btn-outline-primary btn-sm"
                                 >
                                     Ver Perfil
+                                </a>
+                                <a
+                                    th:href="@{/calificaciones/editar-calificacion/{id}(id=${calificacion.id})}"
+                                    class="btn btn-outline-secondary btn-sm"
+                                >
+                                    Editar
                                 </a>
                             </div>
                         </div>
