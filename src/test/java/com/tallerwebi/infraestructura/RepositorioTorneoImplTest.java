@@ -81,25 +81,29 @@ public class RepositorioTorneoImplTest {
     }
 
     @Test
-    void alVerificarExistenciaPorCanchaYFechaDeberiaRetornarTrueSiExiste() {
-        LocalDate fecha = LocalDate.now().plusDays(1);
-        when(session.createQuery("SELECT COUNT(t) FROM Torneo t WHERE t.cancha = :cancha AND t.fecha = :fecha", Long.class))
-                .thenReturn(queryCount);
-        when(queryCount.setParameter("cancha", cancha)).thenReturn(queryCount);
-        when(queryCount.setParameter("fecha", fecha)).thenReturn(queryCount);
-        when(queryCount.getSingleResult()).thenReturn(2L);
+void alVerificarExistenciaPorCanchaYFechaDeberiaRetornarTrueSiExiste() {
+    LocalDate fecha = LocalDate.now().plusDays(1);
 
-        Boolean existe = repositorio.existeCanchaYFecha(cancha, fecha);
+    when(session.createQuery(
+            "SELECT COUNT(t) FROM Torneo t WHERE t.cancha = :cancha AND t.fecha = :fecha and t.estado = 'CONFIRMADO'",
+            Long.class))
+        .thenReturn(queryCount);
 
-        assertTrue(existe);
-        verify(queryCount).setParameter("cancha", cancha);
-        verify(queryCount).setParameter("fecha", fecha);
-    }
+    when(queryCount.setParameter("cancha", cancha)).thenReturn(queryCount);
+    when(queryCount.setParameter("fecha", fecha)).thenReturn(queryCount);
+    when(queryCount.getSingleResult()).thenReturn(2L);
 
+    Boolean existe = repositorio.existeCanchaYFecha(cancha, fecha);
+
+    assertTrue(existe);
+    verify(queryCount).setParameter("cancha", cancha);
+    verify(queryCount).setParameter("fecha", fecha);
+}
     @Test
     void alVerificarExistenciaPorCanchaYFechaDeberiaRetornarFalseSiNoExiste() {
         LocalDate fecha = LocalDate.now().plusDays(1);
-        when(session.createQuery("SELECT COUNT(t) FROM Torneo t WHERE t.cancha = :cancha AND t.fecha = :fecha", Long.class))
+        when(session.createQuery("SELECT COUNT(t) FROM Torneo t WHERE t.cancha = :cancha AND t.fecha = :fecha and t.estado = 'CONFIRMADO'",
+            Long.class))
                 .thenReturn(queryCount);
         when(queryCount.setParameter("cancha", cancha)).thenReturn(queryCount);
         when(queryCount.setParameter("fecha", fecha)).thenReturn(queryCount);
