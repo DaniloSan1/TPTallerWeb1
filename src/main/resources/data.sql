@@ -193,7 +193,7 @@ INSERT INTO SolicitudUnirse (partido_id, creador_id, token, emailDestino, estado
 	(2, 6, 'token-john-5', 'test@unlam.edu.ar', 'PENDIENTE', NOW(), DATE_ADD(NOW(), INTERVAL 2 DAY));
 
 INSERT INTO Torneo (id, nombre, fecha, finalizado, precio, estado, cancha_id, ganador_id, goleador_id, organizador_id) VALUES
-(1, 'Torneo Primavera', '2025-11-20', 0, 5000, 'CONFIRMADO', 1, null, null, 1),
+(1, 'Torneo Primavera', '2025-11-23', 0, 5000, 'CONFIRMADO', 1, null, null, 1),
 (2, 'Torneo Verano', '2025-12-10', 0, 7000, 'CONFIRMADO', 2, null, null, 2);
 
 -- Insert equipos for torneos
@@ -201,8 +201,3 @@ INSERT INTO Equipo(id, nombre, creado_por_id, fechaCreacion, descripcion, insign
 (NULL, 'Equipo Torneo A', 2, NOW(), 'Equipo privado para el Torneo Primavera. Jugadores experimentados.', 'https://taller-web-1-416711641372-us-east-2.s3.us-east-2.amazonaws.com/insignia-default.png', 'PRIVADO'),
 (NULL, 'Equipo Torneo B', 3, NOW(), 'Equipo privado para el Torneo Primavera. Buscamos diversión y buen juego.', 'https://taller-web-1-416711641372-us-east-2.s3.us-east-2.amazonaws.com/insignia-default.png', 'PRIVADO'),
 (NULL, 'Equipo Torneo C', 4, NOW(), 'Equipo privado para el Torneo Verano. Pasión por el fútbol.', 'https://taller-web-1-416711641372-us-east-2.s3.us-east-2.amazonaws.com/insignia-default.png', 'PRIVADO');
-
-INSERT INTO InscripcionTorneo (id, fechaInscripcion, torneo_id, equipo_id) VALUES
-(1, NOW(), 1, 7),
-(2, NOW(), 1, 8),
-(3, NOW(), 1, 9);

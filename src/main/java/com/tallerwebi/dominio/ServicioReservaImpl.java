@@ -15,11 +15,13 @@ public class ServicioReservaImpl implements ServicioReserva {
 
     private final RepositorioReserva repositorioReserva;
     private final RepositorioHorario repositorioHorario;
+    private final RepositorioTorneo repositorioTorneo;
 
     @Autowired
-    public ServicioReservaImpl(RepositorioReserva repositorioReserva, RepositorioHorario repositorioHorario) {
+    public ServicioReservaImpl(RepositorioReserva repositorioReserva, RepositorioHorario repositorioHorario, RepositorioTorneo repositorioTorneo) {
         this.repositorioReserva = repositorioReserva;
         this.repositorioHorario = repositorioHorario;
+        this.repositorioTorneo = repositorioTorneo;
     }
 
     @Override
@@ -32,6 +34,9 @@ public class ServicioReservaImpl implements ServicioReserva {
         }
         if (reserva.getFechaReserva() == null) {
             throw new RuntimeException("La fecha de la reserva no puede ser nula");
+        }
+        if (repositorioTorneo.existeCanchaYFecha(reserva.getCancha(), reserva.getFechaReserva().toLocalDate())) {
+            throw new RuntimeException("Hay un torneo disponible para esa fecha");
         }
 
         // if (!this.estaDisponible(reserva.getHorario(), reserva.getFechaReserva())) {
