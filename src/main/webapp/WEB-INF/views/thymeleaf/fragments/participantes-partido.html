@@ -6,8 +6,14 @@
     >
         <div
             class="d-flex flex-row align-items-center justify-content-between gap-2"
-            style="border-bottom: 1px solid black"
+            style="border-bottom: 1px solid black; min-height: 100px"
         >
+            <img
+                th:src="${equipo.insigniaUrl != null ? equipo.insigniaUrl : 'https://www.ligaprofesional.ar/wp-content/uploads/2024/06/BOC-escudo.png'}"
+                alt="Insignia del equipo"
+                class="img-fluid"
+                style="max-height: 4rem; max-width: 4rem; object-fit: contain"
+            />
             <h4 class="mt-2 flex-grow-1" th:text="${equipo.nombre}"></h4>
             <a
                 class="btn btn-sm btn-outline-primary ms-2"
